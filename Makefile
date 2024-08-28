@@ -2,15 +2,15 @@ local:
 	mkdir -p tmp
 	npx antora --version
 	npx antora --stacktrace --log-format=pretty \
-		product-docs-playbook.yml \
+		product-docs-playbook-local.yml \
 		2>&1 | tee tmp/local-build.log 2>&1
 
-netlify:
+remote:
 	mkdir -p tmp
 	npm install && npm update
 	npx antora --version
 	npx antora --stacktrace --log-format=pretty \
-		lh-netlify-playbook.yml \
+		product-docs-playbook-remote.yml \
 		2>&1 | tee tmp/netlify-build.log 2>&1
 
 clean:
