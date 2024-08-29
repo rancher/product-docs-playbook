@@ -11,7 +11,7 @@ remote:
 	npx antora --version
 	npx antora --stacktrace --log-format=pretty \
 		product-docs-playbook-remote.yml \
-		2>&1 | tee tmp/netlify-build.log 2>&1
+		2>&1 | tee tmp/remote-build.log 2>&1
 
 clean:
 	rm -rf build
