@@ -19,3 +19,5 @@ clean:
 environment:
 	npm install && npm update
 
+preview:
+	npx http-server build/site -c-1
