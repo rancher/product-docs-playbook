@@ -69,7 +69,7 @@ git submodule update --init
 Open a terminal at the root of the git repository. Run the command below.
 
 ```
-npm install
+npm ci
 ```
 
 ### Run Antora to build the static website
