@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Etcd 备份与恢复 :: Rancher product documentation</title>
+    <link rel="canonical" href="https://documentation.suse.com/cloudnative/rke2/latest/zh/backup_restore.html">
+    <link rel="prev" href="cluster_access.html">
+    <link rel="next" href="networking/basic_network_options.html">
+    <meta name="generator" content="Antora 3.1.10">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+<link rel="stylesheet" href="../../../_/css/search.css">
+<link rel="icon" href="../../../_/img/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="../../../_/css/font-styles.css">
+<link rel="stylesheet" href="../../../_/fonts/css/all.css">
+<link rel="stylesheet" href="../../../_/css/site-extra.css">
+<link rel="stylesheet" href="../../../_/css/vendor/tabs.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link
+href="https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap" rel="stylesheet">
+<link href="https://documentation.suse.com/docserv/res/fonts/poppins/poppins.css" rel="stylesheet">
+<!-- <link href="https://fonts.googleapis.com/css?family=Montserrat|Roboto&display=swap" rel="stylesheet"> -->
+<link rel="stylesheet" href="../../../_/css/vendor/light.css">
+<!-- <script src="/docserv/res/lightheaded/analytics.js"
+        type="text/javascript"></script> -->
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<script type="module">import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs'; mermaid.initialize({"startOnLoad":true});</script><header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <div class="navbar-item">
+        <a class=" navbar-logo" href="https://documentation.suse.com/" aria-label="SUSE Documentation Home"><img class="logo"
+            src="../../../_/img/logo.svg" alt="SUSE logo"/></a>
+      </div>
+      <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <label class="visual-search-label" for="search-input">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+          <input label="Search" aria-label="Search" id="search-input" type="text" placeholder="Search the docs" >
+        </div>
+      </div>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <div class="navbar-item has-dropdown is-hoverable">
+          <div class="navbar-link">
+            <img src="../../../_/img/resources.png" class="langIcon Resurces" alt="Resources" title="Resources">
+          </div>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="https://github.com/rancher/rke2-product-docs"><i class="fab fa-github"></i>&nbsp;RKE2</a>
+            <div class="has-submenu">
+              <a class="navbar-item" href="#" ><i class="fas fa-file-alt"></i>&nbsp;Report Issue &nbsp;<i class="fas fa-chevron-right"></i></a>
+              <div class="submenu">
+                <a class="navbar-item" href="https://scc.suse.com">SCC (Recommended)</a>
+                <a class="navbar-item" href="https://github.com/rancher/rke2-product-docs/issues">GitHub Issue</a>
+              </div>
+            </div>
+            <a class="navbar-item" href="https://github.com/rancher/product-docs-playbook/blob/main/CONTRIBUTING.md"><i class="fas fa-user-edit"></i>&nbsp;Contribute</a>
+          </div>
+        </div>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <div class="navbar-link"><img src="../../../_/img/language.png" class="langIcon Language" alt="Language"
+              title="Language"></div>
+          <div class="navbar-dropdown">
+            <!--  </div><div>Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div> -->
+              <a role="button" class="navbar-item" id="en" onclick="selectLanguage(this.id)">
+                <!--<img src="../../../_/img/engFlag.svg" class="langIcon english">-->
+                &nbsp;English
+              </a>
+              <a role="button" class="navbar-item" id="zh" onclick="selectLanguage(this.id)">
+                <!--<img src="../../../_/img/china.svg" class="langIcon china">-->
+                &nbsp;中文
+              </a>
+            <!-- LANGUAGESELECTOR -->
+          </div>
+        </div>
+        <!--
+        <div class="navbar-item">
+          <a href="https://twitter.com/SUSE">
+            <img alt="X-logo" class="x-logo" src="../../../_/img/x-logo-white.png">
+          </a>
+        </div>
+        -->
+      </div>
+    </div>
+
+    <!--   <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+
+        </div>
+        <div class="navbar-item">
+          <span class="control">
+          </span>
+        </div>
+        <div class="navbar-item">
+          <span class="control">
+          </span>
+        </div>
+        <div class="navbar-item">
+          <span class="control">
+          </span>
+        </div>
+        <div class="navbar-item">
+          <span class="control">
+          </span>
+        </div>
+      </div> -->
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="rke2" data-version="latest">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="../en/introduction.html">RKE2</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="introduction.html">介绍</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Installation</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="install/quickstart.html">快速开始</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="install/requirements.html">要求</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="install/configuration.html">配置选项</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="install/ha.html">高可用</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="install/methods.html">安装方法</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="install/containerd_registry_configuration.html">Containerd 镜像仓库配置</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="install/airgap.html">离线安装</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="install/windows_airgap.html">Windows 离线安装</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="install/server_roles.html">管理 Server 角色</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="install/uninstall.html">卸载</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Upgrades</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="upgrade/upgrade.html">升级 SUSE® Rancher Prime: RKE2 集群</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="upgrade/manual_upgrade.html">手动升级</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="upgrade/automated_upgrade.html">自动升级</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Security</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="security/about_hardened_images.html">强化镜像</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="security/hardening_guide.html">CIS Hardening Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="security/cis_self_assessment16.html">CIS 1.6 Self-Assessment Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="security/cis_self_assessment123.html">CIS 1.23 Self-Assessment Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="security/fips_support.html">FIPS 140-2 启用</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="security/pod_security_policies.html">默认 Pod 安全策略</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="security/pod_security_standards.html">默认 Pod 安全标准</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="security/selinux.html">SELinux</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="security/secrets_encryption.html">Secret 加密</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="security/certificates.html">Certificate Management</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="security/token.html">Token Management</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="architecture.html">下一代 Kubernetes 发行版剖析</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="cluster_access.html">集群访问</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="1">
+    <a class="nav-link" href="backup_restore.html">Etcd 备份与恢复</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Networking</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="networking/basic_network_options.html">Network Options</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="networking/multus_sriov.html">Multus and SR-IOV</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="networking/networking_services.html">Networking Services</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="helm.html">Helm 集成</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="advanced.html">高级选项和配置</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">References</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="reference/cli_tools.html">CLI 工具</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="reference/linux_agent_config.html">Agent 配置参考</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="reference/logging.html">日志</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="reference/resource_profiling.html">Resource Profiling</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="reference/server_config.html">Server 配置参考</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="reference/windows_agent_config.html">Windows Agent 配置参考</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="known_issues.html">已知问题和限制</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Release Notes</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="release-notes/v1.24.X.html">v1.24.X</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="release-notes/v1.25.X.html">v1.25.X</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="release-notes/v1.26.X.html">v1.26.X</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="release-notes/v1.27.X.html">v1.27.X</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="release-notes/v1.28.X.html">v1.28.X</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="release-notes/v1.29.X.html">v1.29.X</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="release-notes/v1.30.X.html">v1.30.X</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">RKE2</span>
+    <span class="version">Latest</span>
+  </div>
+  <ul class="components">
+        <li class="component">
+          <div class="title"><a href="../../../cluster-api/v0.16/en/index.html">Cluster API</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../cluster-api/v0.16/en/index.html">0.16</a>
+            </li>
+            <li class="version">
+              <a href="../../../cluster-api/v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../cluster-api/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../cluster-api/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../cluster-api/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../cluster-api/v0.11/en/index.html">0.11</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../continuous-delivery/v0.11/en/index.html">Continuous Delivery</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../continuous-delivery/v0.11/en/index.html">0.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../continuous-delivery/v0.10/en/index.html">0.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../continuous-delivery/v0.9/en/index.html">0.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../k3s/latest/en/introduction.html">K3s</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../k3s/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../os-manager/1.6/en/index.html">OS Manager</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../os-manager/1.6/en/index.html">1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../os-manager/1.5/en/index.html">1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../policy-manager/1.22/en/introduction.html">Policy Manager</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../policy-manager/1.22/en/introduction.html">1.22-next</a>
+            </li>
+            <li class="version">
+              <a href="../../../policy-manager/1.21/en/introduction.html">1.21</a>
+            </li>
+            <li class="version">
+              <a href="../../../policy-manager/1.20/en/introduction.html">1.20</a>
+            </li>
+            <li class="version">
+              <a href="../../../policy-manager/1.19/en/introduction.html">1.19</a>
+            </li>
+            <li class="version">
+              <a href="../../../policy-manager/1.18/en/introduction.html">1.18</a>
+            </li>
+            <li class="version">
+              <a href="../../../policy-manager/1.17/en/introduction.html">1.17</a>
+            </li>
+            <li class="version">
+              <a href="../../../policy-manager/1.16/en/introduction.html">1.16</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component is-current">
+          <div class="title"><a href="../en/introduction.html">RKE2</a></div>
+          <ul class="versions">
+            <li class="version is-current is-latest">
+              <a href="../en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../rancher-manager/latest/en/about-rancher/what-is-rancher.html">SUSE® Rancher Manager</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../rancher-manager/latest/en/about-rancher/what-is-rancher.html">Latest</a>
+            </li>
+            <li class="version">
+              <a href="../../../rancher-manager/v2.10/en/about-rancher/what-is-rancher.html">v2.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../rancher-manager/v2.9/en/about-rancher/what-is-rancher.html">v2.9</a>
+            </li>
+            <li class="version">
+              <a href="../../../rancher-manager/v2.8/en/about-rancher/what-is-rancher.html">v2.8</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../security/5.4/en/overview.html">SUSE® Security</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../security/5.4/en/overview.html">5.4</a>
+            </li>
+            <li class="version">
+              <a href="../../../security/5.3/en/overview.html">5.3</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../storage/1.9.0/en/longhorn-documentation.html">SUSE® Storage</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../storage/1.9.0/en/longhorn-documentation.html">1.9.0 (Dev)</a>
+            </li>
+            <li class="version">
+              <a href="../../../storage/1.8.0/en/longhorn-documentation.html">1.8.0 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../storage/1.7.0/en/longhorn-documentation.html">1.7.0</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../virtualization/v1.5/en/introduction/overview.html">SUSE® Virtualization</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../virtualization/v1.5/en/introduction/overview.html">v1.5 (Dev)</a>
+            </li>
+            <li class="version">
+              <a href="../../../virtualization/v1.4/en/introduction/overview.html">v1.4 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../virtualization/v1.3/en/introduction/overview.html">v1.3</a>
+            </li>
+          </ul>
+        </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../../rancher-manager/latest/en/about-rancher/what-is-rancher.html" aria-label="Home" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../en/introduction.html">RKE2</a></li>
+    <li><a href="backup_restore.html">Etcd 备份与恢复</a></li>
+  </ul>
+</nav>
+  <div class="edit-this-page"><a href="https://github.com/rancher/rke2-product-docs/edit/main/versions/latest/modules/zh/pages/backup_restore.adoc">Edit this Page</a></div>
+  </div>
+  <div class="content">
+<aside class="toc sidebar" data-title="On this page" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Etcd 备份与恢复</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>在本节中，你将学习如何创建 RKE2 集群数据的备份以及如何使用备份恢复集群。</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><code>/var/lib/rancher/rke2</code> 是 RKE2 的默认数据目录，但是你可以通过 <code>data-dir</code> 参数自行进行配置。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_创建快照"><a class="anchor" href="#_创建快照"></a>创建快照</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>快照是默认启动的。</p>
+</div>
+<div class="paragraph">
+<p>快照目录默认为 <code>/var/lib/rancher/rke2/server/db/snapshots</code>。</p>
+</div>
+<div class="paragraph">
+<p>要配置快照间隔或保留快照的数量，请参阅<a href="#_选项">选项</a>。</p>
+</div>
+<div class="paragraph">
+<p>在 RKE2 中，快照会存储在每个 etcd 节点上。如果你有多个 etcd 或 etcd + control plane 节点，你将拥有本地 etcd 快照的多个副本。</p>
+</div>
+<div class="paragraph">
+<p>你可以在 RKE2 运行时使用 <code>etcd-snapshot</code> 子命令手动执行快照。例如：<code>rke2 etcd-snapshot save --name pre-upgrade-snapshot</code>。</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_集群重置"><a class="anchor" href="#_集群重置"></a>集群重置</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>RKE2 启用了一项功能，可以通过传递 <code>--cluster-reset</code> 标志将集群重置为一个成员集群。将此标志传递给 RKE2 server 时，它将使用相同的数据目录重置集群，数据 etcd 的目录存在于 <code>/var/lib/rancher/rke2/server/db/etcd</code> 中，这个标志可以在集群丢失仲裁时传递。</p>
+</div>
+<div class="paragraph">
+<p>要传递重置标志，首先你需要停止 RKE2 服务（如果 RKE2 是通过 systemd 启用的）：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">systemctl stop rke2-server
+rke2 server --cluster-reset</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>结果</strong>：日志中的一条消息表示 RKE2 可以在没有标志的情况下重新启动。再次启动 RKE2，它应该将 RKE2 作为一个成员集群启动。</p>
+</div>
+<div class="sect2">
+<h3 id="_将快照恢复到现有节点"><a class="anchor" href="#_将快照恢复到现有节点"></a>将快照恢复到现有节点</h3>
+<div class="paragraph">
+<p>使用备份恢复 RKE2 时，旧的数据目录将被移动到 <code>/var/lib/rancher/rke2/server/db/etcd-old-%date%/</code>。然后 RKE2 将尝试通过创建一个新的数据目录来恢复快照，并使用一个具有一个 etcd 成员的新 RKE2 集群启动 etcd。</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>如果通过 systemd 启用，则必须在所有 Server 节点上停止 RKE2 服务。使用以下命令执行此操作：</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">systemctl stop rke2-server</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>接下来，使用以下命令在第一个 Server 节点上启动快照恢复：</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">rke2 server \
+  --cluster-reset \
+  --cluster-reset-restore-path=&lt;PATH-TO-SNAPSHOT&gt;</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>恢复完成后，在第一个 Server 节点上启动 rke2-server 服务，如下所示：</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">systemctl start rke2-server</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>删除其他 Server 节点上的 rke2 db 目录，如下：</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">rm -rf /var/lib/rancher/rke2/server/db</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>使用以下命令在其他 Server 节点上启动 rke2-server 服务：</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">systemctl start rke2-server</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p><strong>结果</strong>：成功恢复后，日志中的一条消息表明 etcd 正在运行，RKE2 可以在没有标志的情况下重启。再次启动 RKE2，RKE2 应该会成功运行并通过指定的快照恢复。</p>
+</div>
+<div class="paragraph">
+<p>RKE2 重置集群时会在 <code>/var/lib/rancher/rke2/server/db/reset-flag</code> 中创建一个空文件。该文件留在原地是没有问题的，但必须删除它才能执行后续的重置或恢复。RKE2 正常启动时会删除该文件。</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_将快照恢复到新节点"><a class="anchor" href="#_将快照恢复到新节点"></a>将快照恢复到新节点</h3>
+<div class="paragraph">
+<p><strong>警告</strong>：对于 rke2 v.1.20.9 及之前的所有版本，由于存在一个已知问题，即引导数据可能无法在恢复时保存（步骤 1 -下面的 3 假定了这种情况），因此你需要先备份和恢复证书。请参阅下面的<a href="#_恢复快照的其他注意事项">注意事项</a>，了解特定版本的恢复注意事项。</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>备份 <code>/var/lib/rancher/rke2/server/cred</code>、<code>/var/lib/rancher/rke2/server/tls</code>、<code>/var /lib/rancher/rke2/server/token</code> 和 <code>/etc/rancher</code></p>
+</li>
+<li>
+<p>将上面步骤 1 中的证书恢复到第一个新 Server 节点。</p>
+</li>
+<li>
+<p>在第一个新 Server 节点上安装 rke2 v1.20.8+rke2r1，如下所示：</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -sfL https://get.rke2.io | INSTALL_RKE2_VERSION="v1.20.8+rke2r1" sh -</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>如果 RKE2 已启用，请停止所有 Server 节点上的 RKE2 服务，并使用以下命令在第一个 Server 节点上启动快照恢复：</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">systemctl stop rke2-server
+rke2 server \
+  --cluster-reset \
+  --cluster-reset-restore-path=&lt;PATH-TO-SNAPSHOT&gt;</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>恢复完成后，在第一个 Server 节点上启动 rke2-server 服务，如下所示：</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">systemctl start rke2-server</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>你可以根据标准 <a href="install/ha.html#_3_启动其他_server_节点" class="xref page">RKE2 HA 安装文档</a>继续向集群添加新的 Server 和 Worker 节点。</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_恢复快照的其他注意事项"><a class="anchor" href="#_恢复快照的其他注意事项"></a>恢复快照的其他注意事项</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>执行备份恢复时，用户不需要使用创建快照时使用的 RKE2 版本。用户可以使用更新的版本进行恢复。如果你在恢复时更改版本，请注意正在使用哪个 etcd 版本。</p>
+</li>
+<li>
+<p>快照默认启用，并且每 12 小时获取一次。快照写入到 <code>${data-dir}/server/db/snapshots</code>，默认 <code>${data-dir}</code> 为 <code>/var/lib/rancher /rke2</code>。</p>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="_rke2_v1_20_11rke2r1_的要求"><a class="anchor" href="#_rke2_v1_20_11rke2r1_的要求"></a>rke2 v1.20.11+rke2r1 的要求</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>使用备份将 RKE2 恢复到使用 rke2 v1.20.11+rke2r1 的新节点时，请运行 <code>rke2-killall.sh</code> 确保所有 pod 在初始恢复后已停止，如下所示：</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"> curl -sfL https://get.rke2.io | sudo INSTALL_RKE2_VERSION=v1.20.11+rke2r1
+ rke2 server \
+ --cluster-reset \
+ --cluster-reset-restore-path=&lt;PATH-TO-SNAPSHOT&gt; \
+ --token=&lt;token used in the original cluster&gt;
+ rke2-killall.sh</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>恢复完成后，在第一个 Server 节点上启动 rke2-server 服务，如下所示：</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"> systemctl enable rke2-server
+ systemctl start rke2-server</code></pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_选项"><a class="anchor" href="#_选项"></a>选项</h3>
+<div class="paragraph">
+<p>这些选项可以在配置文件中设置：</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">选项</th>
+<th class="tableblock halign-left valign-top">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>etcd-disable-snapshots</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">禁用自动 etcd 快照</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>etcd-snapshot-schedule-cron</code> value</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cron 规范中的快照间隔时间。eg. 每 4 小时 <code>0 */4 * * *</code>（默认值：<code>0 */12 * * *</code>）</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>etcd-snapshot-retention</code> value</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">要保留的快照数量（默认值：5）</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>etcd-snapshot-dir</code> value</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">保存数据库快照的目录。（默认位置：<code>${data-dir}/db/snapshots</code>）</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>cluster-reset</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">忘记所有对等点，成为新集群的唯一成员。也可以使用环境变量 <code>[$RKE2_CLUSTER_RESET]</code> 进行设置。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>cluster-reset-restore-path</code> value</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">要恢复的快照文件路径</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_s3_兼容_api_支持"><a class="anchor" href="#_s3_兼容_api_支持"></a>S3 兼容 API 支持</h3>
+<div class="paragraph">
+<p>RKE2 支持向具有 S3 兼容 API 的系统写入 etcd 快照和从系统中恢复 etcd 快照。S3 支持按需和计划快照。</p>
+</div>
+<div class="paragraph">
+<p>以下参数已添加到 <code>server</code> 子命令中。<code>etcd-snapshot</code> 子命令也存在这些标志，但是删除了 <code>--etcd-s3</code> 部分以避免冗余。</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">选项</th>
+<th class="tableblock halign-left valign-top">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>--etcd-s3</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">启用备份到 S3</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>--etcd-s3-endpoint</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">S3 端点网址</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>--etcd-s3-endpoint-ca</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">S3 自定义 CA 证书，用于连接到 S3 端点</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>--etcd-s3-skip-ssl-verify</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">禁用 S3 SSL 证书验证</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>--etcd-s3-access-key</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">S3 access key</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>--etcd-s3-secret-key</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">S3 secret key</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>--etcd-s3-bucket</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">S3 存储桶名称</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>--etcd-s3-region</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">S3 区域/存储桶位置（可选）。默认为 us-east-1</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>--etcd-s3-folder</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">S3 文件夹</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>执行按需的 etcd 快照并将其保存到 S3：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">rke2 etcd-snapshot \
+  --s3 \
+  --s3-bucket=&lt;S3-BUCKET-NAME&gt; \
+  --s3-access-key=&lt;S3-ACCESS-KEY&gt; \
+  --s3-secret-key=&lt;S3-SECRET-KEY&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>要从 S3 中执行按需的 etcd 快照还原，首先确保 RKE2 没有运行。然后运行以下命令：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">rke2 server \
+  --cluster-reset \
+  --etcd-s3 \
+  --cluster-reset-restore-path=&lt;SNAPSHOT-NAME&gt; \
+  --etcd-s3-bucket=&lt;S3-BUCKET-NAME&gt; \
+  --etcd-s3-access-key=&lt;S3-ACCESS-KEY&gt; \
+  --etcd-s3-secret-key=&lt;S3-SECRET-KEY&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="cluster_access.html">集群访问</a></span>
+  <span class="next"><a href="networking/basic_network_options.html">Network Options</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<script src="../../../_/js/site.js"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+<script src="../../../_/js/vendor/lunr.js"></script>
+<script src="../../../_/js/vendor/lunr-languages.js"></script>
+<script src="../../../_/js/search-ui.js" id="search-ui-script" data-site-root-path="../../.." data-snippet-length="100" data-stylesheet="../../../_/css/search.css"></script>
+<script async src="../../../search-index.js"></script>
+<script src="../../../_/js/vendor/langSelection.js"></script>
+<script async src="../../../_/js/vendor/tabs.js"></script>
+
+
+  </body>
+</html>
