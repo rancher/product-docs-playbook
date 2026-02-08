@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Automatic Replica Balancing | SUSE® Storage  1.9</title>
+    <link rel="canonical" href="https://documentation.suse.com/cloudnative/storage/1.10/en/high-availability/automatic-replica-balancing.html">
+    <meta name="generator" content="Antora 3.1.10">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+<meta http-equiv="last-modified" content="2025-12-22"/>
+<link rel="stylesheet" href="../../../../_/css/search.css">
+<link rel="icon" href="../../../../_/img/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="../../../../_/css/font-styles.css">
+<link rel="stylesheet" href="../../../../_/fonts/css/all.css">
+<link rel="stylesheet" href="../../../../_/css/site-extra.css">
+<link rel="stylesheet" href="../../../../_/css/vendor/tabs.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap&family=SUSE+Mono:ital,wght@0,100..800;1,100..800" rel="stylesheet">
+<link href="https://documentation.suse.com/docserv/res/fonts/poppins/poppins.css" rel="stylesheet">
+<link rel="stylesheet" href="../../../../_/css/vendor/light.css">
+<script src="/docserv/res/lightheaded/analytics.js" type="text/javascript"></script>
+<script type="module">
+  import { defineCustomElements, setAssetPath } from 'https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.9/shared-header.esm.js';
+  defineCustomElements();
+  setAssetPath("https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.9/assets");
+</script>
+<!-- Default English link -->
+<link href="https://documentation.suse.com/cloudnative/storage/1.9/en/high-availability/automatic-replica-balancing.html" hreflang="x-default" rel="alternate"/>
+<!-- Link for the currently processed page -->
+<link href="https://documentation.suse.com/cloudnative/storage/1.9/en/high-availability/automatic-replica-balancing.html" hrefLang="en-US" rel="alternate" />
+
+<!-- JSON-LD for doc metadata -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Automatic Replica Balancing | SUSE Storage 1.9",
+  "headline": "Automatic Replica Balancing",
+  "description": "Automatic Replica Balancing",
+  "inLanguage": "en",
+  "dateModified": "2025-12-22T00:00:00Z",
+  "author": {
+    "@type": "Organization",
+    "name": "SUSE Product & Solution Documentation Team",
+    "url": "https://documentation.suse.com"
+  },
+  "mentions": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "SUSE Storage",
+      "softwareVersion": "1.9",
+      "applicationCategory": "Cloud Infrastructure",
+      "operatingSystem": "Linux"
+    }
+  ],
+  "publisher": {
+    "@type": "Organization",
+    "name": "SUSE",
+    "url": "https://documentation.suse.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.suse.com/assets/img/suse-white-logo-green.svg"
+    }
+  }
+}
+</script>
+<!-- end JSON-LD for doc metadata -->
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<script type="module">import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs'; mermaid.initialize({"startOnLoad":true});</script><shared-header
+language="en"
+languages='{
+    "en": { "label": "English", "url": "https://documentation.suse.com/en-us/" },
+    "de": { "label": "Deutsch", "url": "https://documentation.suse.com/de-de/" },
+    "fr": { "label": "Français", "url": "https://documentation.suse.com/fr-fr/" },
+    "es": { "label": "Español", "url": "https://documentation.suse.com/es-es/" },
+    "zh_CN": { "label": "中文", "url": "https://documentation.suse.com/zh-cn/" },
+    "pt_BR": { "label": "Português Brasileiro", "url": "https://documentation.suse.com/pt-br/" }
+}'
+enable-search='false'>
+</shared-header>
+
+<!-- Leaving as a comment, I expect it will be required again next year.
+<a target=_blank"" class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_bEiGZbUNzLD8Tcy"> Documentation survey </a>
+--><div class="body">
+<div class="nav-container" data-component="storage" data-version="1.9">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-explore is-active" data-panel="explore">
+  <div class="context">
+    <span class="title">SUSE® Storage</span>
+    <span class="version">1.9</span>
+  </div>
+  <ul class="components">
+        <li class="component">
+          <div class="title"><a href="../../../../admission-controller/1.31/en/introduction.html">Admission Controller</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../admission-controller/1.32/en/introduction.html">1.32-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../admission-controller/1.31/en/introduction.html">1.31-latest</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.30/en/introduction.html">1.30</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.29/en/introduction.html">1.29</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.28/en/introduction.html">1.28</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../cluster-api/v0.25/en/index.html">Cluster API</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../cluster-api/v0.25/en/index.html">0.25</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.24/en/index.html">0.24</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.23/en/index.html">0.23</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.22/en/index.html">0.22</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.21/en/index.html">0.21</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.20/en/index.html">0.20</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.19/en/index.html">0.19</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.18/en/index.html">0.18</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.17/en/index.html">0.17</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.16/en/index.html">0.16</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.11/en/index.html">0.11</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../continuous-delivery/v0.14/en/index.html">Continuous Delivery</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../continuous-delivery/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.11/en/index.html">0.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.10/en/index.html">0.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.9/en/index.html">0.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../k3s/latest/en/introduction.html">K3s</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../k3s/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../os-manager/1.8/en/index.html">OS Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../os-manager/1.9/en/index.html">1.9-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../os-manager/1.8/en/index.html">1.8</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.7/en/index.html">1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.6/en/index.html">1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.5/en/index.html">1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rke2/latest/en/introduction.html">RKE2</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rke2/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-observability/latest/en/classic.html">SUSE Observability</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../suse-observability/latest/en/classic.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">SUSE® Rancher for AWS</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-manager/v2.13/en/about-rancher/what-is-rancher.html">SUSE® Rancher Manager</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-manager/v2.13/en/about-rancher/what-is-rancher.html">v2.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.12/en/about-rancher/what-is-rancher.html">v2.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.11/en/about-rancher/what-is-rancher.html">v2.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.10/en/about-rancher/what-is-rancher.html">v2.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.9/en/about-rancher/what-is-rancher.html">v2.9</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.8/en/about-rancher/what-is-rancher.html">v2.8</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../security/5.4/en/overview.html">SUSE® Security</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../security/5.4/en/overview.html">5.4</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.3/en/overview.html">5.3</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component is-current">
+          <div class="title"><a href="../../../1.10/en/longhorn-documentation.html">SUSE® Storage</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../1.11/en/longhorn-documentation.html">1.11 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../1.10/en/longhorn-documentation.html">1.10 (Latest)</a>
+            </li>
+            <li class="version is-current">
+              <a href="../longhorn-documentation.html">1.9</a>
+            </li>
+            <li class="version">
+              <a href="../../../1.8/en/longhorn-documentation.html">1.8</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-virtual-clusters/v1.0.1/en/introduction.html">SUSE® Virtual Clusters</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/1.0.2/en/introduction.html">1.0.2-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../suse-virtual-clusters/v1.0.1/en/introduction.html">v1.0.1-latest</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.0/en/introduction.html">v1.0.0</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../virtualization/v1.6/en/introduction/overview.html">SUSE® Virtualization</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../virtualization/v1.7/en/introduction/overview.html">v1.7 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../virtualization/v1.6/en/introduction/overview.html">v1.6 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../virtualization/v1.5/en/introduction/overview.html">v1.5</a>
+            </li>
+          </ul>
+        </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+<ul>
+    <li>
+      <a class="home-link-dsc" href="https://documentation.suse.com/" title="documentation.suse.com" aria-label="SUSE Documentation Home"></a>
+    </li>
+    <li>
+      <a href="https://documentation.suse.com/cloudnative/storage" title="SUSE Storage" aria-label="SUSE Documentation - SUSE Storage">
+        SUSE Storage
+      </a>
+    </li>
+  </ul>
+</nav><div class="page-versions">
+  <button class="version-menu-toggle" title="Show other versions of page">1.9</button>
+  <div class="version-menu">
+    <a class="version" href="../../../1.11/en/high-availability/automatic-replica-balancing.html">1.11 (Dev)</a>
+    <a class="version" href="../../../1.10/en/high-availability/automatic-replica-balancing.html">1.10 (Latest)</a>
+    <a class="version is-current" href="automatic-replica-balancing.html">1.9</a>
+    <a class="version" href="../../../1.8/en/high-availability/automatic-replica-balancing.html">1.8</a>
+  </div>
+</div>
+  <div class="edit-this-page"><a href="https://github.com/rancher/longhorn-product-docs/edit/main/docs/version-1.9/modules/en/pages/high-availability/automatic-replica-balancing.adoc"><strong>Edit</strong></a></div>
+        <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <label class="visual-search-label-bc" for="search-input">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+          <input label="Search" aria-label="Search" id="search-input" type="text" placeholder="Search the docs" >
+          <label class="filter checkbox" style="display: none">
+            <input type="checkbox" data-facet-filter="component:storage" checked> Only this project
+          </label>
+        </div>
+      </div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="On this page" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Automatic Replica Balancing</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>When replicas are scheduled unevenly on nodes or zones, SUSE Storage <code>Replica Auto Balance</code> setting enables the replicas for automatic balancing when a new node is available to the cluster or when the replica count for a volume is updated.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_replica_auto_balance_settings"><a class="anchor" href="#_replica_auto_balance_settings"></a>Replica Auto Balance Settings</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_global_setting"><a class="anchor" href="#_global_setting"></a>Global setting</h3>
+<div class="paragraph">
+<p>SUSE Storage supports 3 options for global Replica Auto Balance setting:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>disabled</code>. This is the default option, no Replica Auto Balance will be done.</p>
+</li>
+<li>
+<p><code>least-effort</code>. This option instructs SUSE Storage to balance replicas for minimal redundancy.
+For example, after adding node-2, a volume with 4 off-balanced replicas will only rebalance 1 replica.</p>
+<div class="listingblock">
+<div class="content">
+<pre>  node-1
+  +-- replica-a
+  +-- replica-b
+  +-- replica-c
+  node-2
+  +-- replica-d</pre>
+</div>
+</div>
+</li>
+<li>
+<p><code>best-effort</code>. This option instructs SUSE Storage to try balancing replicas for even redundancy.
+For example, after adding node-2, a volume with 4 off-balanced replicas will rebalance 2 replicas.</p>
+<div class="listingblock">
+<div class="content">
+<pre>  node-1
+  +-- replica-a
+  +-- replica-b
+  node-2
+  +-- replica-c
+  +-- replica-d</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>SUSE Storage does not forcefully re-schedule the replicas to a zone that does not have enough nodes
+to support even balance. Instead, SUSE Storage will re-schedule to balance at the node level.</p>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_volume_specific_setting"><a class="anchor" href="#_volume_specific_setting"></a>Volume specific setting</h3>
+<div class="paragraph">
+<p>SUSE Storage also supports setting individual volume for <code>Replica Auto Balance</code>. The setting can be specified in <code>volume.spec.replicaAutoBalance</code>, this overrules the global setting.</p>
+</div>
+<div class="paragraph">
+<p>There are 4 options available for individual volume setting:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>Ignored</code>. This is the default option that instructs SUSE Storage to inherit from the global setting.</p>
+</li>
+<li>
+<p><code>disabled</code>. This option instructs SUSE Storage not to perform Replica Auto Balance.</p>
+</li>
+<li>
+<p><code>least-effort</code>. This option instructs SUSE Storage to balance replicas for minimal redundancy.
+For example, after adding node-2, a volume with 4 off-balanced replicas will only rebalance 1 replica.</p>
+<div class="listingblock">
+<div class="content">
+<pre>  node-1
+  +-- replica-a
+  +-- replica-b
+  +-- replica-c
+  node-2
+  +-- replica-d</pre>
+</div>
+</div>
+</li>
+<li>
+<p><code>best-effort</code>. This option instructs SUSE Storage to try balancing replicas for even redundancy.
+For example, after adding node-2, a volume with 4 off-balanced replicas will rebalance 2 replicas.</p>
+<div class="listingblock">
+<div class="content">
+<pre>  node-1
+  +-- replica-a
+  +-- replica-b
+  node-2
+  +-- replica-c
+  +-- replica-d</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>SUSE Storage does not forcefully re-schedule the replicas to a zone that does not have enough nodes
+to support even balance. Instead, SUSE Storage will re-schedule to balance at the node level.</p>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_how_to_set_replica_auto_balance_for_volumes"><a class="anchor" href="#_how_to_set_replica_auto_balance_for_volumes"></a>How to Set Replica Auto Balance For Volumes</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>There are 3 ways to set <code>Replica Auto Balance</code> for SUSE Storage volumes:</p>
+</div>
+<div class="sect2">
+<h3 id="_change_the_global_setting"><a class="anchor" href="#_change_the_global_setting"></a>Change the global setting</h3>
+<div class="paragraph">
+<p>You can change the global default setting for <code>Replica Auto Balance</code> inside SUSE Storage UI settings.
+The global setting only functions as a default value, similar to the replica count.
+It does not change any existing volume settings.
+When a volume is created without specifying <code>Replica Auto Balance</code>, SUSE Storage will automatically set to <code>ignored</code> to inherit from the global setting.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_set_individual_volumes_to_auto_balance_replicas_using_the_suse_storage_ui"><a class="anchor" href="#_set_individual_volumes_to_auto_balance_replicas_using_the_suse_storage_ui"></a>Set individual volumes to auto-balance replicas using the SUSE Storage UI</h3>
+<div class="paragraph">
+<p>You can change the <code>Replica Auto Balance</code> setting for individual volume after creation on the volume detail page, or do multiple updates on the listed volume page.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_set_individual_volumes_to_auto_balance_replicas_using_a_storageclass"><a class="anchor" href="#_set_individual_volumes_to_auto_balance_replicas_using_a_storageclass"></a>Set individual volumes to auto-balance replicas using a StorageClass</h3>
+<div class="paragraph">
+<p>SUSE Storage also exposes the <code>Replica Auto Balance</code> setting as a parameter in a StorageClass.
+You can create a StorageClass with a specified <code>Replica Auto Balance</code> setting, then create PVCs using this StorageClass.</p>
+</div>
+<div class="paragraph">
+<p>For example, the below YAML file defines a StorageClass which tells the SUSE Storage CSI driver to set the <code>Replica Auto Balance</code> to <code>least-effort</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: hyper-converged
+provisioner: driver.longhorn.io
+allowVolumeExpansion: true
+parameters:
+  numberOfReplicas: "3"
+  replicaAutoBalance: "least-effort"
+  staleReplicaTimeout: "2880" # 48 hours in minutes
+  fromBackup: ""</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_replica_auto_balance_disk_pressure_threshold"><a class="anchor" href="#_replica_auto_balance_disk_pressure_threshold"></a>Replica Auto Balance Disk Pressure Threshold (%)</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>When <code>Replica Auto Balance</code> is enabled with <code>best-effort</code>, you can set a <code>Replica Auto Balance Disk Pressure Threshold (%)</code>. This threshold defines the disk usage level at which SUSE Storage will automatically attempt to migrate replicas to another disk on the same node.</p>
+</div>
+<div class="paragraph">
+<p>For example, if the threshold is set to 75%, SUSE Storage will try to migrate replicas sequentially when the disk consumption reaches 75% capacity.</p>
+</div>
+<div class="paragraph">
+<p>SUSE Storage prioritizes balancing replicas across node and zone first. Once the node and zones are balanced, it will then consider balancing within a single node based on disk pressure.</p>
+</div>
+<div class="paragraph">
+<p>Since SUSE Storage v1.7.0, when rebuilding replicas on the same node, SUSE Storage uses local file data synchronization for more efficient data transfer.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_limitations"><a class="anchor" href="#_limitations"></a>Limitations</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The automatic replica balancing feature in SUSE Storage activates only for volumes with a robustness status of <code>Healthy</code>.</p>
+</div>
+<div class="paragraph">
+<p><strong>Unhealthy volumes</strong> or <strong>detached volumes</strong> are not automatically rebalanced, even when a node has low available space.</p>
+</div>
+<div class="paragraph">
+<p>This behavior is a deliberate design choice to ensure system stability and data integrity:
+* Moving replicas or triggering automatic rebuilds on an unhealthy volume could further compromise data integrity. This design requires manual intervention to enable an administrator to assess the volume&#8217;s condition before initiating potentially risky operations.
+* Detached volumes do not actively serve I/O. Skipping automatic rebalance prevents unnecessary rebuilds and saves cluster resources.</p>
+</div>
+<div class="paragraph">
+<p>If a volume is unhealthy or detached, moving replicas requires manual intervention, such as:
+* Rebuilding replicas after the volume is inspected and/or attached.
+* Attaching the volume if it is detached (to restore a healthy state, if possible).</p>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<script src="../../../../_/js/site.js"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+<script src="../../../../_/js/vendor/lunr.js"></script>
+<script src="../../../../_/js/vendor/lunr-languages.js"></script>
+<script src="../../../../_/js/search-ui.js" id="search-ui-script" data-site-root-path="../../../.." data-snippet-length="100" data-stylesheet="../../../../_/css/search.css"></script>
+<script async src="../../../../search-index.js"></script>
+<script src="../../../../_/js/vendor/langSelection.js"></script>
+<script async src="../../../../_/js/vendor/tabs.js"></script>
+
+
+<script src="../../../../_/js/CNLanguageSwitcher.js"></script>
+  </body>
+</html>
