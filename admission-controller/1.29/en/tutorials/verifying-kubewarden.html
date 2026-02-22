@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Verifying Kubewarden | Admission Controller  1.29</title>
+    <link rel="canonical" href="https://documentation.suse.com/cloudnative/admission-controller/1.31/en/tutorials/verifying-kubewarden.html">
+    <link rel="prev" href="testing-policies/03-cluster-operators.html">
+    <link rel="next" href="publish-policy-to-artifact-hub.html">
+    <meta name="description" content="Verifying Kubewarden.">
+    <meta name="keywords" content="["kubewarden", "kubernetes", "security", "verification"]">
+    <meta name="generator" content="Antora 3.1.10">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+<meta http-equiv="last-modified" content="2025-10-08"/>
+<link rel="stylesheet" href="../../../../_/css/search.css">
+<link rel="icon" href="../../../../_/img/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="../../../../_/css/font-styles.css">
+<link rel="stylesheet" href="../../../../_/fonts/css/all.css">
+<link rel="stylesheet" href="../../../../_/css/site-extra.css">
+<link rel="stylesheet" href="../../../../_/css/vendor/tabs.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap&family=SUSE+Mono:ital,wght@0,100..800;1,100..800" rel="stylesheet">
+<link href="https://documentation.suse.com/docserv/res/fonts/poppins/poppins.css" rel="stylesheet">
+<link rel="stylesheet" href="../../../../_/css/vendor/light.css">
+<script src="/docserv/res/lightheaded/analytics.js" type="text/javascript"></script>
+<script type="module">
+  import { defineCustomElements, setAssetPath } from 'https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/shared-header.esm.js';
+  defineCustomElements();
+  setAssetPath("https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/assets");
+</script>
+<!-- Default English link -->
+<link href="https://documentation.suse.com/cloudnative/admission-controller/1.29/en/tutorials/verifying-kubewarden.html" hreflang="x-default" rel="alternate"/>
+<!-- Link for the currently processed page -->
+<link href="https://documentation.suse.com/cloudnative/admission-controller/1.29/en/tutorials/verifying-kubewarden.html" hrefLang="en-US" rel="alternate" />
+
+<!-- JSON-LD for doc metadata -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Verifying Kubewarden | SUSE Security Admission Controller 1.29",
+  "headline": "Verifying Kubewarden",
+  "description": "Verifying Kubewarden.",
+  "inLanguage": "en",
+  "dateModified": "2025-10-08T00:00:00Z",
+  "author": {
+    "@type": "Organization",
+    "name": "SUSE Product & Solution Documentation Team",
+    "url": "https://documentation.suse.com"
+  },
+  "mentions": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "SUSE Security Admission Controller",
+      "softwareVersion": "1.29",
+      "applicationCategory": "Cloud Infrastructure",
+      "operatingSystem": "Linux"
+    }
+  ],
+  "publisher": {
+    "@type": "Organization",
+    "name": "SUSE",
+    "url": "https://documentation.suse.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.suse.com/assets/img/suse-white-logo-green.svg"
+    }
+  }
+}
+</script>
+<!-- end JSON-LD for doc metadata -->
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<script type="module">import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs'; mermaid.initialize({"startOnLoad":true});</script><shared-header
+language="en"
+languages='{
+    "en": { "label": "English", "url": "https://documentation.suse.com/en-us/" },
+    "de": { "label": "Deutsch", "url": "https://documentation.suse.com/de-de/" },
+    "fr": { "label": "Français", "url": "https://documentation.suse.com/fr-fr/" },
+    "es": { "label": "Español", "url": "https://documentation.suse.com/es-es/" },
+    "zh_CN": { "label": "中文", "url": "https://documentation.suse.com/zh-cn/" },
+    "pt_BR": { "label": "Português Brasileiro", "url": "https://documentation.suse.com/pt-br/" }
+}'
+enable-search='false'>
+</shared-header>
+
+<!-- Leaving as a comment, I expect it will be required again next year.
+<a target=_blank"" class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_bEiGZbUNzLD8Tcy"> Documentation survey </a>
+--><div class="body">
+<div class="nav-container" data-component="admission-controller" data-version="1.29">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title">Admission Controller</h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../introduction.html">Introduction</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../quick-start.html">Quick start</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Tutorials</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="writing-policies/index.html">Writing Kubewarden policies</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="writing-policies/CEL/01-intro-cel.html">Introduction to CEL</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="writing-policies/CEL/02-reusing-vap.html">Reusing ValidatingAdmissionPolicies</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="writing-policies/CEL/03-context-aware.html">Context-aware CEL policies</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="writing-policies/CEL/04-example-sigstore.html">Sigstore host capabilities</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="writing-policies/rust/01-intro-rust.html">Rust</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="writing-policies/rust/02-create-policy.html">Creating a policy</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="writing-policies/rust/03-define-policy-settings.html">Defining policy settings</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="writing-policies/rust/04-write-validation-logic.html">Writing validation logic</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="writing-policies/rust/05-mutation-policy.html">Creating a new mutation policy</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="writing-policies/rust/06-logging.html">Logging</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="writing-policies/rust/07-build-and-distribute.html">Building and distributing policies</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="writing-policies/rust/08-raw-policies.html">Raw policies</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="writing-policies/go/01-intro-go.html">Writing policies in Go</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="writing-policies/go/02-scaffold.html">Creating a new validation policy</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="writing-policies/go/03-policy-settings.html">Defining policy settings</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="writing-policies/go/04-validation.html">Writing the validation logic</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="writing-policies/go/05-e2e-tests.html">End-to-end testing</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="writing-policies/go/06-logging.html">Logging</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="writing-policies/go/07-automate.html">Integrating with GitHub Actions</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="writing-policies/go/08-distribute.html">Distributing policy</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="writing-policies/go/09-validation-with-queries.html">Validation using JSON queries</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="writing-policies/go/10-raw-policies.html">Writing raw policies</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="writing-policies/rego/01-intro-rego.html">Rego</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="writing-policies/rego/02-builtin-support.html">Builtin support</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Open Policy Agent</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="writing-policies/rego/open-policy-agent/01-intro.html">Introduction to Open Policy Agent</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="writing-policies/rego/open-policy-agent/02-create-policy.html">Creating a new policy</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="writing-policies/rego/open-policy-agent/03-build-and-run.html">Build and run a OPA policy for Kubewarden</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="writing-policies/rego/open-policy-agent/04-distribute.html">Distributing an OPA policy with Kubewarden</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="writing-policies/rego/open-policy-agent/05-raw-policies.html">Writing raw policies</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Gatekeeper</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="writing-policies/rego/gatekeeper/01-intro.html">Gatekeeper support</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="writing-policies/rego/gatekeeper/02-create-policy.html">Creating a new Gatekeeper Rego policy</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="writing-policies/rego/gatekeeper/03-build-and-run.html">Build and run a Gatekeeper policy</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="writing-policies/rego/gatekeeper/04-distribute.html">Distributing a Gatekeeper policy with Kubewarden</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="writing-policies/dotnet.html">C#</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="writing-policies/swift.html">Swift</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="writing-policies/typescript.html">Typescript</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="writing-policies/other-languages.html">Other languages</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">WASI</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="writing-policies/wasi/01-intro-wasi.html">WASI</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="writing-policies/wasi/02-raw-policies.html">Writing raw policies</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="writing-policies/metadata.html">Policy metadata</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Testing policies</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="testing-policies/index.html">Policy testing</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="testing-policies/02-policy-authors.html">Testing for policy authors</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="testing-policies/03-cluster-operators.html">Testing for cluster operators</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="verifying-kubewarden.html">Verifying Kubewarden</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="publish-policy-to-artifact-hub.html">Publish policies to Artifact Hub</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Explanations</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../explanations/mutating-policies.html">Mutating policies</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../explanations/context-aware-policies.html">Context aware policies</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../explanations/policy-groups.html">Policy Groups</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../explanations/certificates.html">Certificate rotation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../explanations/distributing-policies.html">Distributing policies</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Comparisons</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../explanations/comparisons/opa-comparison.html">Kubewarden vs OPA Gatekeeper</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../explanations/audit-scanner/audit-scanner.html">What is the Audit Scanner?</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../explanations/audit-scanner/limitations.html">Audit Scanner - Limitations</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../explanations/audit-scanner/policy-reports.html">Audit Scanner - Policy Reports</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../explanations/architecture.html">Admission Controller architecture</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Howtos</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../howtos/tasks.html">Common tasks</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../howtos/install-kwctl.html">Install <code>kwctl</code></a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../howtos/production-deployments.html">Production deployments</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../howtos/deploy-at-scale.html">Deployment at scale</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../howtos/audit-scanner.html">Audit Scanner</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../howtos/policies.html">Configuring policies</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../howtos/emergency-disable.html">Emergency disable</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Configuring Policy Servers</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../howtos/policy-servers/01-custom-cas.html">Using custom CAs</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../howtos/policy-servers/02-private-registry.html">Configuring PolicyServers to use private registries</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../howtos/policy-servers/03-production-deployments.html">Production deployments</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../howtos/policy-groups.html">Policy groups</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../howtos/psp-migration.html">PSP migration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../howtos/vap-migration.html">ValidatingAdmissionPolicy migration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../howtos/pod-security-admission-with-kubewarden.html">Pod Security Admission</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../howtos/custom-certificate-authorities.html">Custom certificate authorities</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../howtos/raw-policies.html">Raw policies</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../howtos/argocd-installation.html">ArgoCD Installation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../howtos/security-hardening/security-hardening.html">Security</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../howtos/security-hardening/secure-supply-chain.html">Secure supply chain</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../howtos/security-hardening/webhook-mtls.html">Enable mTLS with K3s</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Air gap</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../howtos/airgap/01-requirements.html">Requirements</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../howtos/airgap/02-install.html">Installation</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../howtos/airgap/03-hauler.html">Hauler installation</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Telemetry quick starts</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../howtos/telemetry/10-opentelemetry-qs.html">Open Telemetry quick start</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../howtos/telemetry/20-tracing-qs.html">Tracing quickstart</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../howtos/telemetry/30-metrics-qs.html">Metrics quickstart</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../howtos/telemetry/40-custom-otel-collector.html">Custom OpenTelemetry Collector</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../howtos/Rancher-Fleet.html">Rancher Fleet</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Rancher UI extension</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../howtos/ui-extension/01-install.html">Quickstart</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../howtos/ui-extension/02-metrics.html">Monitoring</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../howtos/ui-extension/03-tracing.html">Tracing</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Rancher Application Collection</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../howtos/application-collection/01-verify-images.html">Verify images</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Workarounds</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../howtos/workarounds/policy-server-certificate-expiry.html">Certificate rotation</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../howtos/contribution-guide/contribution-guide.html">Contribution guide</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../howtos/contribution-guide/contributing.html">Contributing to documentation</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../howtos/contribution-guide/suggesting-an-improvement.html">Improving documentation</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../howtos/gatekeeper-migration.html">Migrating Gatekeeper policies to Kubewarden</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Reference</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/CRDs.html">Custom Resource Definitions (CRD)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/dependency-matrix.html">Dependency matrix</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/artifacts.html">Artifacts</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/upgrade-path.html">Upgrade path</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/metrics-reference.html">Metrics reference</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/monitor-mode.html">Monitor mode</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Policy specification</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reference/spec/01-intro-spec.html">Policy communication specification</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reference/spec/02-settings.html">Policy settings</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reference/spec/03-validating-policies.html">Validating policies</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reference/spec/04-mutating-policies.html">Mutating policies</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reference/spec/05-context-aware-policies.html">Context aware policies</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Host capabilities</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/spec/host-capabilities/01-intro-host-capabilities.html">Host capabilities specification</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/spec/host-capabilities/02-signature-verifier-policies.html">Signature verifier policies</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/spec/host-capabilities/03-container-registry.html">Container registry capabilities</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/spec/host-capabilities/04-net.html">Network capabilities</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/spec/host-capabilities/05-crypto.html">Cryptographic capabilities</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/spec/host-capabilities/06-kubernetes.html">Kubernetes capabilities</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/oci-registries-support.html">OCI registry support for Kubewarden</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Security</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reference/security-hardening/webhooks-hardening.html">Webhooks</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/threat-model.html">Threat Model</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/policy-evaluation-timeout.html">Policy evaluation timeout protection</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/verification-config.html">Verification configuration format</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/sources_yaml.html">Reference for sources.yaml</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/kwctl-cli.html"><code>kwctl</code> CLI</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/policy-server-cli.html">Policy Server CLI</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../personas.html">For who?</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../use-cases.html">Use cases</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../organization.html">Organization</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../enterprise.html">Enterprise</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../glossary.html">Glossary</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../disclosure.html">Security disclosure</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Admission Controller</span>
+    <span class="version">1.29</span>
+  </div>
+  <ul class="components">
+        <li class="component is-current">
+          <div class="title"><a href="../../../1.31/en/introduction.html">Admission Controller</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../1.32/en/introduction.html">1.32-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../1.31/en/introduction.html">1.31-latest</a>
+            </li>
+            <li class="version">
+              <a href="../../../1.30/en/introduction.html">1.30</a>
+            </li>
+            <li class="version is-current">
+              <a href="../introduction.html">1.29</a>
+            </li>
+            <li class="version">
+              <a href="../../../1.28/en/introduction.html">1.28</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../cluster-api/v0.25/en/index.html">Cluster API</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../cluster-api/v0.25/en/index.html">0.25</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.24/en/index.html">0.24</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.23/en/index.html">0.23</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.22/en/index.html">0.22</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.21/en/index.html">0.21</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.20/en/index.html">0.20</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.19/en/index.html">0.19</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.18/en/index.html">0.18</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.17/en/index.html">0.17</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.16/en/index.html">0.16</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.11/en/index.html">0.11</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../continuous-delivery/v0.14/en/index.html">Continuous Delivery</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../continuous-delivery/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.11/en/index.html">0.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.10/en/index.html">0.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.9/en/index.html">0.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../k3s/latest/en/introduction.html">K3s</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../k3s/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../os-manager/1.8/en/index.html">OS Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../os-manager/1.9/en/index.html">1.9-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../os-manager/1.8/en/index.html">1.8</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.7/en/index.html">1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.6/en/index.html">1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.5/en/index.html">1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rke2/latest/en/introduction.html">RKE2</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rke2/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-observability/latest/en/classic.html">SUSE Observability</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../suse-observability/latest/en/classic.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">SUSE® Rancher for AWS</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-manager/v2.13/en/about-rancher/what-is-rancher.html">SUSE® Rancher Manager</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-manager/v2.13/en/about-rancher/what-is-rancher.html">v2.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.12/en/about-rancher/what-is-rancher.html">v2.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.11/en/about-rancher/what-is-rancher.html">v2.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.10/en/about-rancher/what-is-rancher.html">v2.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.9/en/about-rancher/what-is-rancher.html">v2.9</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.8/en/about-rancher/what-is-rancher.html">v2.8</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../security/5.4/en/overview.html">SUSE® Security</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../security/5.4/en/overview.html">5.4</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.3/en/overview.html">5.3</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../storage/1.10/en/longhorn-documentation.html">SUSE® Storage</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../storage/1.11/en/longhorn-documentation.html">1.11 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../storage/1.10/en/longhorn-documentation.html">1.10 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../storage/1.9/en/longhorn-documentation.html">1.9</a>
+            </li>
+            <li class="version">
+              <a href="../../../../storage/1.8/en/longhorn-documentation.html">1.8</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-virtual-clusters/v1.0.1/en/introduction.html">SUSE® Virtual Clusters</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/1.0.2/en/introduction.html">1.0.2-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../suse-virtual-clusters/v1.0.1/en/introduction.html">v1.0.1-latest</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.0/en/introduction.html">v1.0.0</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../virtualization/v1.6/en/introduction/overview.html">SUSE® Virtualization</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../virtualization/v1.7/en/introduction/overview.html">v1.7 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../virtualization/v1.6/en/introduction/overview.html">v1.6 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../virtualization/v1.5/en/introduction/overview.html">v1.5</a>
+            </li>
+          </ul>
+        </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+<ul>
+    <li>
+      <a class="home-link-dsc" href="https://documentation.suse.com/" title="documentation.suse.com" aria-label="SUSE Documentation Home"></a>
+    </li>
+    <li>
+      <a href="https://documentation.suse.com/cloudnative/admission-controller" title="Admission Controller" aria-label="SUSE Documentation - Admission Controller">
+        Admission Controller
+      </a>
+    </li>
+      <li>
+          Tutorials
+      </li>
+  </ul>
+</nav><div class="page-versions">
+  <button class="version-menu-toggle" title="Show other versions of page">1.29</button>
+  <div class="version-menu">
+    <a class="version" href="../../../1.32/en/tutorials/verifying-kubewarden.html">1.32-dev</a>
+    <a class="version" href="../../../1.31/en/tutorials/verifying-kubewarden.html">1.31-latest</a>
+    <a class="version" href="../../../1.30/en/tutorials/verifying-kubewarden.html">1.30</a>
+    <a class="version is-current" href="verifying-kubewarden.html">1.29</a>
+    <a class="version" href="../../../1.28/en/tutorials/verifying-kubewarden.html">1.28</a>
+  </div>
+</div>
+  <div class="edit-this-page"><a href="https://github.com/rancher/kubewarden-product-docs/edit/main/docs/version-1.29/modules/en/pages/tutorials/verifying-kubewarden.adoc"><strong>Edit</strong></a></div>
+        <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <label class="visual-search-label-bc" for="search-input">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+          <input label="Search" aria-label="Search" id="search-input" type="text" placeholder="Search the docs" >
+          <label class="filter checkbox" style="display: none">
+            <input type="checkbox" data-facet-filter="component:admission-controller" checked> Only this project
+          </label>
+        </div>
+      </div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="On this page" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Verifying Kubewarden</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Kubewarden stack provides different attestations and assurances:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Provenance attestations: Inform of the build process, build dependencies, and aids in replicating the builds. Implement <a href="https://slsa.dev/spec/v1.0/">SLSA</a> Standard (level 3 in our case).</p>
+</li>
+<li>
+<p>SBOMs attestations: Contain the software dependencies. Help downstream consumers ascertain vulnerabilities of Kubewarden and its dependencies.</p>
+</li>
+<li>
+<p>Signed artifacts: Indicate if an artifact is authentic or not, providing supply chain security. This includes the deliverables, but also the provenance and SBOM attestations.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Kubewarden artifacts, provenance attestations and SBOMs are signed using <a href="https://docs.sigstore.dev">Sigstore</a>,
+with the keyless workflow. This means that the signing certificate contains the
+following info, where <code>*</code> matches any following characters:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>issuer: <code>https://token.actions.githubusercontent.com</code></p>
+</li>
+<li>
+<p>subject: <code>https://github.com/kubewarden/*</code></p>
+</li>
+<li>
+<p>x509 certificate extension for GHA, "github_workflow_repository": <code>kubewarden/*</code></p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The subject used in the <code>--certificate-identity-regexp</code> cosign CLI flag in this
+tutorial utilizes the <code>https://github.com/kubewarden/*</code> values to simplify the
+explanation. However, this allows artifacts from repositories with the same prefix to
+bypass validation. For example: <code>github.com/kubewarden/policy-server1</code>.</p>
+</div>
+<div class="paragraph">
+<p>If you want a more secure check, you need to use a full URL:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>https://github.com/kubewarden/policy-server/.github/workflows/container-image.yml@refs/tags/v1.18.0</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note that the URL includes the full repository path, the workflow file path,
+and the version tag. If you follow this best practice, you can use the cosign
+CLI flag <code>--certificate-identity</code> with the full URL.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The Kubewarden team is also making efforts to improve the secure supply chain
+and to make the whole stack SLSA level 3 compliant. Therefore, the main
+artifacts also include SBOM and provenance files. In the following sections, we
+will show how to verify the different artifacts produced by the Kubewarden team
+and how to ensure the secure supply chain of the artifacts using SBOM and
+provenance files.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="container-images"><a class="anchor" href="#container-images"></a>Container images</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To verify the keyless-signed container images produced by the Kubewarden team,
+you can use the <code>cosign</code> CLI tool. For example, to verify the
+<code>kubewarden/policy-server</code> image, you can execute the following command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-console hljs" data-lang="console">cosign verify ghcr.io/kubewarden/policy-server:v1.18.0 \
+  --certificate-identity-regexp 'https://github.com/kubewarden/*' \
+  --certificate-oidc-issuer https://token.actions.githubusercontent.com
+
+Verification for ghcr.io/kubewarden/policy-server:v1.18.0 --
+The following checks were performed on each of these signatures:
+  - The cosign claims were validated
+  - Existence of the claims in the transparency log was verified offline
+  - The code-signing certificate was verified using trusted certificate authority certificates
+
+&lt;snipped json&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can then verify that the certificate in the returned JSON contains the
+correct issuer, subject, and <code>github_workflow_repository</code> extensions.</p>
+</div>
+<div class="paragraph">
+<p>The same applies to all other images produced by the Kubewarden team, such as
+<code>kubewarden/kubewarden-controller</code> and <code>kubewarden/audit-scanner</code>.</p>
+</div>
+<div class="paragraph">
+<p>All container images also have SBOM and provenance files that can be used to
+ensure the secure supply chain of the images. You can find attestation files on
+the release page of the component or attached to the container image in the OCI
+registry.</p>
+</div>
+<div class="paragraph">
+<p>We use Docker to build the images and their attestations. However, the cosign
+command <a href="https://github.com/sigstore/cosign/issues/2688">does not yet support</a>
+the verification of the attestations generated by Docker from the OCI registry.
+For this reason, you need to download the files from the release page or the
+registry and verify them locally. If you want to download the attestation files
+from the OCI registry, you can follow the
+<a href="https://docs.docker.com/build/metadata/attestations/attestation-storage/">Docker documentation</a>
+and use tools like <code>crane</code> or <code>docker</code> itself to download the files from the registry.</p>
+</div>
+<div class="paragraph">
+<p>When downloading the tarball with attestation files from the release page of
+the Kubewarden components, extract them, verify the signature for the checksum
+file, and then check the attestation files:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-console hljs" data-lang="console">$ tar -xvf attestation-amd64.tar.gz
+
+$ cosign verify-blob --bundle audit-scanner-attestation-amd64-checksum-cosign.bundle \
+    --certificate-oidc-issuer=https://token.actions.githubusercontent.com \
+    --certificate-identity="https://github.com/kubewarden/audit-scanner/.github/workflows/attestation.yml@refs/tags/v1.18.0" \
+    audit-scanner-attestation-amd64-checksum.txt
+Verified OK
+
+$ sha256sum -c audit-scanner-attestation-amd64-checksum.txt
+audit-scanner-attestation-amd64-provenance.json: OK
+audit-scanner-attestation-amd64-sbom-451fac2e52226302ff449bfe053b3831fd93409b4dad24581b6121cc24daa2c2.json: OK</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now that the files integrity is verified, you can inspect the SBOM and Provenance files.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_helm_charts"><a class="anchor" href="#_helm_charts"></a>Helm charts</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You can find Admission Controller Helm charts in our <code>https://</code> traditional
+Helm repository under <a href="https://charts.kubewarden.io" class="bare">https://charts.kubewarden.io</a>.</p>
+</div>
+<div class="paragraph">
+<p>The same Helm charts are signed via Sigstore&#8217;s keyless signing, and pushed to an
+OCI repository that holds both the Helm chart and its provenance attestation as OCI
+artifacts.</p>
+</div>
+<div class="paragraph">
+<p>The Helm charts are published alongside a <a href="https://hauler.dev">Hauler</a> manifest
+that lists all needed artifacts.</p>
+</div>
+<div class="sect2">
+<h3 id="_verifying_with_hauler"><a class="anchor" href="#_verifying_with_hauler"></a>Verifying with Hauler</h3>
+<div class="paragraph">
+<p>Hauler automatically verifies the artifacts on download. For more information,
+refer to <a href="../howtos/airgap/03-hauler.html" class="xref page">our documentation</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_verifying_manually"><a class="anchor" href="#_verifying_manually"></a>Verifying manually</h3>
+<div class="paragraph">
+<p>Since Helm 3.8.0, Helm has support for OCI registries, but because of
+constraints in them, they can&#8217;t be searched via <code>helm</code>. You can find the
+<a href="https://github.com/orgs/kubewarden/packages?tab=packages&amp;q=charts">list of charts in GitHub Container Registry</a>.</p>
+</div>
+<div class="paragraph">
+<p>To verify a Helm chart, you need <code>cosign</code> installed. Then execute the following
+command, for example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>cosign verify ghcr.io/kubewarden/charts/kubewarden-defaults:1.5.4 \
+  --certificate-identity-regexp 'https://github.com/kubewarden/*' \
+  --certificate-oidc-issuer https://token.actions.githubusercontent.com
+
+Verification for ghcr.io/kubewarden/charts/kubewarden-defaults:1.5.4 --
+The following checks were performed on each of these signatures:
+  - The cosign claims were validated
+  - Existence of the claims in the transparency log was verified offline
+  - The code-signing certificate was verified using trusted certificate authority certificates
+
+&lt;snipped json&gt;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can then verify that the cert in the returned json contains the correct
+issuer, subject, and <code>github_workflow_repository</code> extensions.</p>
+</div>
+<div class="paragraph">
+<p>The chart attestations are pushed to the OCI registry as an artifact layer. See the <a href="#container-images">container images</a> section on how to verify them.</p>
+</div>
+<div class="paragraph">
+<p>Kubewarden charts ship <code>imagelist.txt</code> and (<code>policylist.txt</code> when relevant) inside
+of the chart. Hence, if you already verified the chart, you can use those lists
+to verify the consumed container images and policies.</p>
+</div>
+<div class="paragraph">
+<p>Kubewarden also follows the usual practices with regards to Helm charts. Hence, one
+can also find all the images in the Helm charts with a plugin such as
+<a href="https://github.com/cvila84/helm-image">helm-image</a>, or with the following script:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">#!/usr/bin/env bash
+helm pull --untar kubewarden/kubewarden-controller &amp;&amp; \
+helm pull --untar kubewarden/kubewarden-defaults &amp;&amp; \
+{ helm template ./kubewarden-controller; helm template ./kubewarden-defaults } \
+    | yq '..|.image? | select(.)' \
+    | sort -u | sed 's/"//g'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>which gives us:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>ghcr.io/kubewarden/kubewarden-controller:v0.5.5
+ghcr.io/kubewarden/policy-server:v0.3.1
+ghcr.io/kubewarden/kubectl:v1.21.4</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now, for each image in that list you can verify their Sigstore signatures following the instructions from the <a href="#container-images">previous section</a>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_kwctl"><a class="anchor" href="#_kwctl"></a>kwctl</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>kwctl binaries are signed using <a href="https://docs.sigstore.dev/cosign/signing/signing_with_blobs/">Sigstore&#8217;s blob signing</a>.</p>
+</div>
+<div class="paragraph">
+<p>When you download a <a href="https://github.com/kubewarden/kwctl/releases/"><code>kwctl</code>
+release</a> each zip file contains
+two files that can be used for verification: <code>kwctl.sig</code> and <code>kwctl.pem</code>.</p>
+</div>
+<div class="paragraph">
+<p>In order to verify kwctl you need cosign installed, and then execute the
+following command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>cosign verify-blob \
+  --signature kwctl-linux-x86_64.sig \
+  --cert kwctl-linux-x86_64.pem kwctl-linux-x86_64
+  --certificate-identity-regexp 'https://github.com/kubewarden/*' \
+  --certificate-oidc-issuer https://token.actions.githubusercontent.com
+
+Verified OK</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can then verify that the cert in the returned json contains the correct
+issuer, subject, and <code>github_workflow_repository</code> extensions.</p>
+</div>
+<div class="paragraph">
+<p>The SBOMs are signed and published in the
+<a href="https://github.com/kubewarden/kwctl/releases">GitHub Releases</a> of the project.</p>
+</div>
+<div class="paragraph">
+<p>The provenance attestation for <code>kwctl</code> is verified by using
+<a href="https://cli.github.com/manual/gh_attestation_verify"><code>gh attestation verify</code></a>. For
+example with <code>gh attestation verify kwctl-linux-x86_64 --repo kubewarden/kwctl</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_policies"><a class="anchor" href="#_policies"></a>Policies</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Policies maintained by the Kubewarden team are also signed using the Sigstore project. Similar to
+usual container images, one can verify them using <code>cosign</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>cosign verify ghcr.io/kubewarden/policies/verify-image-signatures:v0.2.5 \
+  --certificate-identity-regexp 'https://github.com/kubewarden/*' \
+  --certificate-oidc-issuer https://token.actions.githubusercontent.com
+
+Verification for ghcr.io/kubewarden/policies/verify-image-signatures:v0.2.5 --
+The following checks were performed on each of these signatures:
+  - The cosign claims were validated
+  - Existence of the claims in the transparency log was verified offline
+  - The code-signing certificate was verified using trusted certificate authority certificates
+
+  &lt;snipped json&gt;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can then verify that the cert in the returned json contains the correct
+issuer, subject, and <code>github_workflow_repository</code> extensions.</p>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="testing-policies/03-cluster-operators.html">Testing for cluster operators</a></span>
+  <span class="next"><a href="publish-policy-to-artifact-hub.html">Publish policies to Artifact Hub</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<script src="../../../../_/js/site.js"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+<script src="../../../../_/js/vendor/lunr.js"></script>
+<script src="../../../../_/js/vendor/lunr-languages.js"></script>
+<script src="../../../../_/js/search-ui.js" id="search-ui-script" data-site-root-path="../../../.." data-snippet-length="100" data-stylesheet="../../../../_/css/search.css"></script>
+<script async src="../../../../search-index.js"></script>
+<script src="../../../../_/js/vendor/langSelection.js"></script>
+<script async src="../../../../_/js/vendor/tabs.js"></script>
+
+
+<script src="../../../../_/js/CNLanguageSwitcher.js"></script>
+  </body>
+</html>

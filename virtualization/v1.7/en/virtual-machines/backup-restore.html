@@ -1,0 +1,1974 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Virtual Machine Backup, Snapshot &amp; Restore | SUSE® Virtualization  v1.7 (Dev)</title>
+    <link rel="canonical" href="https://documentation.suse.com/cloudnative/virtualization/v1.6/en/virtual-machines/backup-restore.html">
+    <link rel="prev" href="clone-vm.html">
+    <link rel="next" href="live-migration.html">
+    <meta name="generator" content="Antora 3.1.10">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+<meta http-equiv="last-modified" content="2026-01-08"/>
+<link rel="stylesheet" href="../../../../_/css/search.css">
+<link rel="icon" href="../../../../_/img/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="../../../../_/css/font-styles.css">
+<link rel="stylesheet" href="../../../../_/fonts/css/all.css">
+<link rel="stylesheet" href="../../../../_/css/site-extra.css">
+<link rel="stylesheet" href="../../../../_/css/vendor/tabs.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap&family=SUSE+Mono:ital,wght@0,100..800;1,100..800" rel="stylesheet">
+<link href="https://documentation.suse.com/docserv/res/fonts/poppins/poppins.css" rel="stylesheet">
+<link rel="stylesheet" href="../../../../_/css/vendor/light.css">
+<script src="/docserv/res/lightheaded/analytics.js" type="text/javascript"></script>
+<script type="module">
+  import { defineCustomElements, setAssetPath } from 'https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/shared-header.esm.js';
+  defineCustomElements();
+  setAssetPath("https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/assets");
+</script>
+<!-- Default English link -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/en/virtual-machines/backup-restore.html" hreflang="x-default" rel="alternate"/>
+<!-- Link for the currently processed page -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/en/virtual-machines/backup-restore.html" hrefLang="en-US" rel="alternate" />
+
+<!-- JSON-LD for doc metadata -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Virtual Machine Backup, Snapshot &amp;amp; Restore | SUSE Virtualization v1.7",
+  "headline": "Virtual Machine Backup, Snapshot &amp;amp; Restore",
+  "description": "Virtual Machine Backup, Snapshot &amp;amp; Restore",
+  "inLanguage": "en",
+  "dateModified": "2026-01-08T00:00:00Z",
+  "author": {
+    "@type": "Organization",
+    "name": "SUSE Product & Solution Documentation Team",
+    "url": "https://documentation.suse.com"
+  },
+  "mentions": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "SUSE Virtualization",
+      "softwareVersion": "v1.7",
+      "applicationCategory": "Cloud Infrastructure",
+      "operatingSystem": "Linux"
+    }
+  ],
+  "publisher": {
+    "@type": "Organization",
+    "name": "SUSE",
+    "url": "https://documentation.suse.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.suse.com/assets/img/suse-white-logo-green.svg"
+    }
+  }
+}
+</script>
+<!-- end JSON-LD for doc metadata -->
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<script type="module">import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs'; mermaid.initialize({"startOnLoad":true});</script><shared-header
+language="en"
+languages='{
+    "en": { "label": "English", "url": "https://documentation.suse.com/en-us/" },
+    "de": { "label": "Deutsch", "url": "https://documentation.suse.com/de-de/" },
+    "fr": { "label": "Français", "url": "https://documentation.suse.com/fr-fr/" },
+    "es": { "label": "Español", "url": "https://documentation.suse.com/es-es/" },
+    "zh_CN": { "label": "中文", "url": "https://documentation.suse.com/zh-cn/" },
+    "pt_BR": { "label": "Português Brasileiro", "url": "https://documentation.suse.com/pt-br/" }
+}'
+enable-search='false'>
+</shared-header>
+
+<!-- Leaving as a comment, I expect it will be required again next year.
+<a target=_blank"" class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_bEiGZbUNzLD8Tcy"> Documentation survey </a>
+--><div class="body">
+<div class="nav-container" data-component="virtualization" data-version="v1.7">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title">SUSE® Virtualization</h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Introduction</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/overview.html">Overview</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/deploy-ha-cluster.html">Deploy a High-Availability Cluster</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/deploy-singlenode-cluster.html">Deploy a Single-Node Cluster</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/glossary.html">Glossary</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/document-conventions.html">Document Conventions</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Installation and Setup</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/requirements.html">Hardware and Network Requirements</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Installation Media</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/media/net-install.html">Net Install ISO</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/media/install-binaries-mode.html">Install Binaries Only</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Installation Methods</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/methods/iso-install.html">ISO Installation</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/methods/usb-install.html">USB Installation</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/methods/pxe-boot-install.html">PXE Boot Installation</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Configuration</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/config/configuration-file.html">Configuration File</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/config/update-configuration.html">Update the Configuration After Installation</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/config/settings.html">Settings</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/config/cloudinitcrd.html">CloudInit CRD</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/post-installation.html">Post-Installation Tasks</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/management-address.html">Management Address</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/external-disk.html">External Disk Support</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/authentication.html">Authentication</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/airgap.html">Air-Gapped Environment</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/single-node-clusters.html">Single-Node Clusters</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Upgrades</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/upgrades.html">Upgrades</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-1-2-to-v1-2-0.html">Upgrade from v1.1.2 to v1.2.0 (not recommended)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-2-0-to-v1-2-1.html">Upgrade from v1.1.2/v1.1.3/v1.2.0 to v1.2.1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-2-1-to-v1-2-2.html">Upgrade from v1.2.1 to v1.2.2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-2-2-to-v1-3-1.html">Upgrade from v1.2.2/v1.3.0 to v1.3.1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-3-1-to-v1-3-2.html">Upgrade from v1.3.1 to v1.3.2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-3-2-to-v1-4-0.html">Upgrade from v1.3.2 to v1.4.0</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-4-0-to-v1-4-1.html">Upgrade from v1.4.0 to v1.4.1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-4-1-to-v1-4-2.html">Upgrade from v1.4.1 to v1.4.2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-4-1-to-v1-4-3.html">Upgrade from v1.4.1 or v1.4.2 to v1.4.3</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-4-2-to-v1-5-0.html">Upgrade from v1.4.2 or v1.4.3 to v1.5.0</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-4-2-to-v1-5-1.html">Upgrade from v1.4.2 or v1.4.3 to v1.5.1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-4-2-to-v1-5-2.html">Upgrade from v1.4.2 or v1.4.3 to v1.5.2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-5-0-to-v1-5-1.html">Upgrade from v1.5.0 to v1.5.1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-5-0-to-v1-5-2.html">Upgrade from v1.5.0 or v1.5.1 to v1.5.2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-5-x-to-v1-6-x.html">Upgrade from v1.5.x to v1.6.x</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-6-x-to-v1-6-y.html">Upgrade from v1.6.x to v1.6.y</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-6-x-to-v1-7-x.html">Upgrade from v1.6.x to v1.7.x</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-7-x-to-v1-7-y.html">Upgrade from v1.7.x to v1.7.y</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/troubleshooting.html">Troubleshooting</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Hosts</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../hosts/hosts.html">Host Management</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../hosts/witness-node.html">Witness Node</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../hosts/vgpu-support.html">vGPU Support</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Virtual Machines</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="virtual-machines.html">Virtual Machines</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Virtual Machine Images</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="vm-images/upload-image.html">Upload Images</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="vm-images/custom-suse-images.html">Custom SUSE Virtual Machine Images</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="vm-images/image-security.html">Image Security</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="create-vm.html">Create a Virtual Machine</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="create-windows-vm.html">Create a Windows Virtual Machine</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="edit-vm.html">Edit a Virtual Machine</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="access-vm.html">Access to the Virtual Machine</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="clone-vm.html">Clone a Virtual Machine</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="backup-restore.html">Virtual Machine Backup, Snapshot &amp; Restore</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="live-migration.html">Live Migration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="hotplug-volume.html">Hot-Plug Volumes</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="resource-overcommit.html">Resource Overcommit</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="cpu-pinning.html">CPU Pinning</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="cpu-memory-hotplug.html">CPU and Memory Hotplug</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="nic-hotplug.html">NIC Hotplug</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Storage</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Volumes</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../storage/volumes/create-volume.html">Create a Volume</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../storage/volumes/edit-volume.html">Edit a Volume</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../storage/volumes/clone-volume.html">Clone a Volume</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../storage/volumes/export-volume.html">Export a Volume to Image</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../storage/volumes/volume-snapshots.html">Volume Snapshots</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../storage/volumes/volume-security.html">Volume Security</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../storage/storageclass.html">StorageClass</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../storage/csidriver.html">Third-Party Storage Support</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../storage/longhorn-v2-data-engine.html">Longhorn V2 Data Engine</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../storage/storage-validator.html">Storage Validator</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Networking</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/cluster-network.html">Cluster Network</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/vm-network.html">VM Network</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/deep-dive.html">Networking Deep Dive</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/load-balancer.html">Load Balancer</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/ip-pool.html">IP Pool</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/storage-network.html">Storage Network</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/vm-migration-network.html">VM Migration Network</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/kubeovn-vpc.html">Virtual Private Cloud</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/vm-isolation.html">Virtual Machine Isolation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/best-practices.html">Networking Best Practices</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Observability</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../observability/logging.html">Logging</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../observability/monitoring.html">Monitoring</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Add-ons</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/add-ons.html">Add-ons</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/harvester-seeder.html">Harvester Seeder</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/kubeovn-operator.html">Kube-OVN Operator (Experimental)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/lvm-local-storage.html">CSI Driver LVM (Experimental)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/nvidia-driver-toolkit.html">NVIDIA Driver Toolkit</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/pcidevices-controller.html">PCI Devices Controller</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/rancher-vcluster.html">Rancher vCluster (Experimental)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/virtual-machine-auto-balance.html">Virtual Machine Auto Balance (Experimental)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/vm-dhcp-controller.html">VM DHCP Controller (Experimental)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/vm-import-controller.html">VM Import Controller</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Integrations</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Rancher Integration</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/rancher-integration.html">SUSE Rancher Prime Integration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/virtualization-management.html">Virtualization Management</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Node Driver</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../integrations/rancher/node-driver/node-driver.html">Harvester Node Driver</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../integrations/rancher/node-driver/rke2-cluster.html">Creating an RKE2 Kubernetes Cluster</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../integrations/rancher/node-driver/k3s-cluster.html">Creating a K3s Kubernetes Cluster</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/cloud-provider.html">Harvester Cloud Provider</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/csi-driver.html">Harvester CSI Driver</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/resource-quota.html">Resource Quotas</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/rancher-terraform-provider.html">Rancher Terraform</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/import-vm.html">Import a Cluster Built on a SUSE® Virtualization VM</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/harvester-ui-extension.html">Harvester UI Extension</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../integrations/terraform/terraform-provider.html">Terraform Provider</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Troubleshooting</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/installation.html">Installation Issues</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/operating-system.html">Operating System Issues</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/cluster.html">Cluster Issues</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/virtual-machines.html">Virtual Machine Issues</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/monitoring.html">Monitoring Issues</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/logging.html">Logging Issues</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/rancher.html">Rancher Issues</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/faq.html">FAQ</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Developer Content</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../developer/addon-development.html">Add-on Development Guide</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../api.html">API</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">SUSE® Virtualization</span>
+    <span class="version">v1.7 (Dev)</span>
+  </div>
+  <ul class="components">
+        <li class="component">
+          <div class="title"><a href="../../../../admission-controller/1.31/en/introduction.html">Admission Controller</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../admission-controller/1.32/en/introduction.html">1.32-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../admission-controller/1.31/en/introduction.html">1.31-latest</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.30/en/introduction.html">1.30</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.29/en/introduction.html">1.29</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.28/en/introduction.html">1.28</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../cluster-api/v0.25/en/index.html">Cluster API</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../cluster-api/v0.25/en/index.html">0.25</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.24/en/index.html">0.24</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.23/en/index.html">0.23</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.22/en/index.html">0.22</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.21/en/index.html">0.21</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.20/en/index.html">0.20</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.19/en/index.html">0.19</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.18/en/index.html">0.18</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.17/en/index.html">0.17</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.16/en/index.html">0.16</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.11/en/index.html">0.11</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../continuous-delivery/v0.14/en/index.html">Continuous Delivery</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../continuous-delivery/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.11/en/index.html">0.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.10/en/index.html">0.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.9/en/index.html">0.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../k3s/latest/en/introduction.html">K3s</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../k3s/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../os-manager/1.8/en/index.html">OS Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../os-manager/1.9/en/index.html">1.9-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../os-manager/1.8/en/index.html">1.8</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.7/en/index.html">1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.6/en/index.html">1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.5/en/index.html">1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rke2/latest/en/introduction.html">RKE2</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rke2/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-observability/latest/en/classic.html">SUSE Observability</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../suse-observability/latest/en/classic.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">SUSE® Rancher for AWS</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-manager/v2.13/en/about-rancher/what-is-rancher.html">SUSE® Rancher Manager</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-manager/v2.13/en/about-rancher/what-is-rancher.html">v2.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.12/en/about-rancher/what-is-rancher.html">v2.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.11/en/about-rancher/what-is-rancher.html">v2.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.10/en/about-rancher/what-is-rancher.html">v2.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.9/en/about-rancher/what-is-rancher.html">v2.9</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.8/en/about-rancher/what-is-rancher.html">v2.8</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../security/5.4/en/overview.html">SUSE® Security</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../security/5.4/en/overview.html">5.4</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.3/en/overview.html">5.3</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../storage/1.10/en/longhorn-documentation.html">SUSE® Storage</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../storage/1.11/en/longhorn-documentation.html">1.11 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../storage/1.10/en/longhorn-documentation.html">1.10 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../storage/1.9/en/longhorn-documentation.html">1.9</a>
+            </li>
+            <li class="version">
+              <a href="../../../../storage/1.8/en/longhorn-documentation.html">1.8</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-virtual-clusters/v1.0.1/en/introduction.html">SUSE® Virtual Clusters</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/1.0.2/en/introduction.html">1.0.2-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../suse-virtual-clusters/v1.0.1/en/introduction.html">v1.0.1-latest</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.0/en/introduction.html">v1.0.0</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component is-current">
+          <div class="title"><a href="../../../v1.6/en/introduction/overview.html">SUSE® Virtualization</a></div>
+          <ul class="versions">
+            <li class="version is-current">
+              <a href="../introduction/overview.html">v1.7 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../v1.6/en/introduction/overview.html">v1.6 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../v1.5/en/introduction/overview.html">v1.5</a>
+            </li>
+          </ul>
+        </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+<ul>
+    <li>
+      <a class="home-link-dsc" href="https://documentation.suse.com/" title="documentation.suse.com" aria-label="SUSE Documentation Home"></a>
+    </li>
+    <li>
+      <a href="https://documentation.suse.com/cloudnative/virtualization" title="SUSE Virtualization" aria-label="SUSE Documentation - SUSE Virtualization">
+        SUSE Virtualization
+      </a>
+    </li>
+      <li>
+          Virtual Machines
+      </li>
+  </ul>
+</nav><div class="page-versions">
+  <button class="version-menu-toggle" title="Show other versions of page">v1.7 (Dev)</button>
+  <div class="version-menu">
+    <a class="version is-current" href="backup-restore.html">v1.7 (Dev)</a>
+    <a class="version" href="../../../v1.6/en/virtual-machines/backup-restore.html">v1.6 (Latest)</a>
+    <a class="version" href="../../../v1.5/en/virtual-machines/backup-restore.html">v1.5</a>
+  </div>
+</div>
+  <div class="edit-this-page"><a href="https://github.com/rancher/harvester-product-docs/edit/main/versions/v1.7/modules/en/pages/virtual-machines/backup-restore.adoc"><strong>Edit</strong></a></div>
+        <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <label class="visual-search-label-bc" for="search-input">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+          <input label="Search" aria-label="Search" id="search-input" type="text" placeholder="Search the docs" >
+          <label class="filter checkbox" style="display: none">
+            <input type="checkbox" data-facet-filter="component:virtualization" checked> Only this project
+          </label>
+        </div>
+      </div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="On this page" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>This is unreleased documentation for SUSE® Virtualization v1.7 (Dev).</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<h1 class="page">Virtual Machine Backup, Snapshot &amp; Restore</h1>
+<div class="sect1">
+<h2 id="_virtual_machine_backup_restore"><a class="anchor" href="#_virtual_machine_backup_restore"></a>Virtual Machine Backup &amp; Restore</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Virtual machine backups are created from the <strong>Virtual Machines</strong> page. The virtual machine backup volumes will be stored in the <strong>Backup Target</strong> (an NFS or S3 server), and they can be used to either restore a new virtual machine or replace an existing virtual machine.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/vm/vm-backup.png" alt="vm backup">
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>A backup target must be configured. For more information, see <a href="#_configure_backup_target">Configure Backup Target</a>. If no backup target is set, a message prompts you to configure one.</p>
+</div>
+<div class="paragraph">
+<p>Backup support is currently limited to SUSE Storage volumes. SUSE Virtualization is unable to create backups of volumes in external storage.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_configure_backup_target"><a class="anchor" href="#_configure_backup_target"></a>Configure Backup Target</h3>
+<div class="paragraph">
+<p>A backup target is an endpoint used to access a backup store in SUSE Virtualization. A backup store is an NFS server or S3 compatible server that stores the backups of virtual machine volumes. The backup target can be set at <code>Settings &gt; backup-target</code>.</p>
+</div>
+<div class="paragraph">
+<p>The following table outlines parameters common to all backup targets.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Type</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Type of server that stores the backups of volumes used by virtual machines. You can select either <code>NFS</code> or <code>S3</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Refresh Interval</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Number of seconds that SUSE Virtualization waits before syncing backups with the backupstore. When the value is <code>0</code>, backups are synced only if all backup volumes are in the <code>Ready</code> state.</p></td>
+</tr>
+</tbody>
+</table>
+<div id="_tabs_1" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_1_s3" class="tab">
+<p>S3</p>
+</li>
+<li id="_tabs_1_nfs" class="tab">
+<p>NFS</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_1_s3--panel" class="tabpanel" aria-labelledby="_tabs_1_s3">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Endpoint</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(Optional) Hostname or IP address of the endpoint used to access the S3 server</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>BucketName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the S3 bucket</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>BucketRegion</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AWS Region in which the S3 bucket was created</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>AccessKeyID</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">First part of the access key you use to authenticate requests to AWS services (for example, <code>AKIAIOSFODNN7EXAMPLE</code>)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>SecretAccessKey</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Second part of the access key you use to authenticate requests to AWS services (for example, <code>wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY</code>)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Certificate</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Self-signed SSL certificate of the S3 server</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">VirtualHostedStyle</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Option to use virtual-hosted–style URLs, wherein the bucket name is part of the domain name in the URL (<code>bucket.example.com</code>)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="_tabs_1_nfs--panel" class="tabpanel" aria-labelledby="_tabs_1_nfs">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Endpoint</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">URL of the <a href="https://longhorn.io/docs/1.8.0/snapshots-and-backups/backup-and-restore/set-backup-target/#set-up-nfs-backupstore">NFS server</a></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_create_a_virtual_machine_backup"><a class="anchor" href="#_create_a_virtual_machine_backup"></a>Create a Virtual Machine Backup</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Once the backup target is set, go to the <code>Virtual Machines</code> page.</p>
+</li>
+<li>
+<p>Click <code>Take Backup</code> of the virtual machine actions to create a new virtual machine backup.</p>
+</li>
+<li>
+<p>Set a custom backup name and click <code>Create</code> to create a new virtual machine backup.</p>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/vm/create-backup.png" alt="create backup">
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p><strong>Result:</strong> The backup is created. You will receive a notification message, and you can also go to the <code>Backup &amp; Snapshot &gt; VM Backups</code> page to view all virtual machine backups.</p>
+</div>
+<div class="paragraph">
+<p>The <code>State</code> will be set to <code>Ready</code> once the backup is complete.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/vm/vm-backup-results.png" alt="vm backup results">
+</div>
+</div>
+<div class="paragraph">
+<p>Users can either restore a new virtual machine or replace an existing virtual machine using this backup.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The network configuration of a virtual machine running an Ubuntu release later than 16.04 is likely managed by <code>netplan</code> by default. Before creating backups, you must stop the virtual machine, edit the configuration (<strong>Edit Config &#8594; Advanced Options</strong>), and then restart the virtual machine. Use the following <code>network</code> settings as reference for DHCP configuration.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">network:
+  ethernets:
+    enp1s0:
+      dhcp4: true
+      dhcp6: true
+      dhcp-identifier: mac
+  version: 2</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The restored virtual machine retains the machine ID of the original virtual machine. If <code>dhcp-identifier: mac</code> is not specified, the restored virtual machine receives the same IP address from the DHCP server because <code>netplan</code> uses the machine ID as the DHCP client identifier by default. This is why you must configure the <code>network</code> settings before creating backups of virtual machines running Ubuntu. Failure to do so may result in unexpected behavior and potential network conflicts.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Starting with v1.7.0, SUSE Virtualization supports backups and snapshots for Longhorn V2 Data Engine volumes.</p>
+</div>
+<div class="paragraph">
+<p>However, deleting the latest backup of a virtual machine or enabling the SUSE Storage setting <a href="https://documentation.suse.com/cloudnative/storage/latest/en/longhorn-system/settings.html#_auto_cleanup_snapshot_when_delete_backup">Auto Cleanup Snapshot When Delete Backup</a> blocks all subsequent operations on related volumes. This is a <a href="https://github.com/longhorn/longhorn/issues/9064">known issue</a> that affects operations such as volume snapshots, backups, and live migration.</p>
+</div>
+<div class="paragraph">
+<p>No viable workaround is currently available. Resolving the blocked state requires deleting the affected volume to restore Longhorn Manager functionality.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_restore_a_new_virtual_machine_using_a_backup"><a class="anchor" href="#_restore_a_new_virtual_machine_using_a_backup"></a>Restore a new virtual machine using a backup</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Go to the <code>VM Backups</code> page.</p>
+</li>
+<li>
+<p>Click the <code>Restore Backup</code> button at the top right.</p>
+</li>
+<li>
+<p>Specify the new virtual machine name and click <code>Create</code>.</p>
+</li>
+<li>
+<p>A new virtual machine will be restored using the backup volumes and metadata, and you can access it from the <code>Virtual Machines</code> page.</p>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/vm/restore-vm.png" alt="restore vm">
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_replace_an_existing_virtual_machine_using_a_backup"><a class="anchor" href="#_replace_an_existing_virtual_machine_using_a_backup"></a>Replace an existing virtual machine using a backup</h3>
+<div class="paragraph">
+<p>You can replace an existing virtual machine using the backup with the same virtual machine backup target.</p>
+</div>
+<div class="paragraph">
+<p>You can choose to either delete or retain the previous volumes. By default, all previous volumes are deleted.</p>
+</div>
+<div class="paragraph">
+<p><strong>Requirements:</strong> The virtual machine must exist and is required to be in the powered-off status.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Go to the <code>VM Backups</code> page.</p>
+</li>
+<li>
+<p>Click the <code>Restore Backup</code> button at the top right.</p>
+</li>
+<li>
+<p>Click <code>Replace Existing</code>.</p>
+</li>
+<li>
+<p>You can view the restore process from the <code>Virtual Machines</code> page.</p>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/vm/vm-restore-existing.png" alt="vm restore existing">
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_restore_a_new_virtual_machine_on_another_suse_virtualization_cluster"><a class="anchor" href="#_restore_a_new_virtual_machine_on_another_suse_virtualization_cluster"></a>Restore a new virtual machine on another SUSE Virtualization cluster</h3>
+<div class="paragraph">
+<p>Users can now restore a new virtual machine on another cluster by leveraging the virtual machine metadata &amp; content backup feature.</p>
+</div>
+<div class="sect3">
+<h4 id="_prerequisites"><a class="anchor" href="#_prerequisites"></a>Prerequisites</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>v1.4.0 and later: The controller automatically syncs the virtual machine images with the new cluster, except when a virtual machine image with the same name or display name already exists on the new cluster.</p>
+</li>
+<li>
+<p>Earlier than v1.4.0: You must upload and configure the virtual machine images on the <a href="#_upload_the_same_virtual_machine_images_to_a_new_cluster">new cluster</a>. Ensure that the image names and configuration are identical so that the virtual machines can be restored.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_upload_the_same_virtual_machine_images_to_a_new_cluster"><a class="anchor" href="#_upload_the_same_virtual_machine_images_to_a_new_cluster"></a>Upload the same virtual machine images to a new cluster</h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Download the virtual machine image from the existing cluster.</p>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/vm/download-vm-image.png" alt="download vm image">
+</div>
+</div>
+</li>
+<li>
+<p>Decompress the downloaded image.</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ gzip -d &lt;image.gz&gt;</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Host the image on a server that is accessible to the new cluster.</p>
+<div class="paragraph">
+<p>Example (simple HTTP server):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ python -m http.server</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Check the existing image name (normally starts with <code>image-</code>) and create the same one on the new cluster.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">$ kubectl get vmimages -A
+NAMESPACE   NAME                               DISPLAY-NAME                              SIZE         AGE
+default     image-79hdq                        focal-server-cloudimg-amd64.img           566886400    5h36m
+default     image-l7924                        harvester-v1.0.0-rc2-amd64.iso            3964551168   137m
+default     image-lvqxn                        opensuse-leap-15.3.x86_64-nocloud.qcow2   568524800    5h35m</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Apply a <code>VirtualMachineImage</code> YAML with the same name and configuration in the new cluster.</p>
+<div class="paragraph">
+<p>Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ cat &lt;&lt;EOF | kubectl apply -f -
+apiVersion: harvesterhci.io/v1beta1
+kind: VirtualMachineImage
+metadata:
+  name: image-79hdq
+  namespace: default
+spec:
+  displayName: focal-server-cloudimg-amd64.img
+  pvcName: ""
+  pvcNamespace: ""
+  sourceType: download
+  url: https://&lt;server-ip-to-host-image&gt;:8000/&lt;image-name&gt;
+EOF</pre>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>SUSE Virtualization can restore virtual machines only if the image name and configuration on both old and new clusters are identical.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_restore_a_new_virtual_machine_in_a_new_cluster"><a class="anchor" href="#_restore_a_new_virtual_machine_in_a_new_cluster"></a>Restore a new virtual machine in a new cluster</h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Setup the same backup target in a new cluster. And the backup controller will automatically sync the backup metadata to the new cluster.</p>
+</li>
+<li>
+<p>Go to the <code>VM Backups</code> page.</p>
+</li>
+<li>
+<p>Select the synced virtual machine backup metadata and choose to restore a new virtual machine with a specified virtual machine name.</p>
+</li>
+<li>
+<p>A new virtual machine will be restored using the backup volumes and metadata. You can access it from the <code>Virtual Machines</code> page.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_virtual_machine_snapshot_restore"><a class="anchor" href="#_virtual_machine_snapshot_restore"></a>Virtual Machine Snapshot &amp; Restore</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Virtual machine snapshots are created from the <strong>Virtual Machines</strong> page. The virtual machine snapshot volumes will be stored in the cluster, and they can be used to either restore a new virtual machine or replace an existing virtual machine.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/vm/vm-snapshot.png" alt="vm snapshot">
+</div>
+</div>
+<div class="sect2">
+<h3 id="_create_a_virtual_machine_snapshot"><a class="anchor" href="#_create_a_virtual_machine_snapshot"></a>Create a Virtual Machine Snapshot</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Go to the <code>Virtual Machines</code> page.</p>
+</li>
+<li>
+<p>Click <code>Take VM Snapshot</code> of the VM actions to create a new virtual machine snapshot.</p>
+</li>
+<li>
+<p>Set a custom snapshot name and click <code>Create</code> to create a new virtual machine snapshot.</p>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/vm/create-snapshot.png" alt="create snapshot">
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p><strong>Result:</strong> The snapshot is created. You can also go to the <code>Backup &amp; Snapshot &gt; virtual machine Snapshots</code> page to view all VM snapshots.</p>
+</div>
+<div class="paragraph">
+<p>The <code>State</code> will be set to <code>Ready</code> once the snapshot is complete.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/vm/vm-snapshot-results.png" alt="vm snapshot results">
+</div>
+</div>
+<div class="paragraph">
+<p>Users can either restore a new virtual machine or replace an existing virtual machine using this snapshot.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The network configuration of a virtual machine running an Ubuntu release later than 16.04 is likely managed by <code>netplan</code> by default. Before creating backups, you must stop the virtual machine, edit the configuration (<strong>Edit Config &#8594; Advanced Options</strong>), and then restart the virtual machine. Use the following <code>network</code> settings as reference for DHCP configuration.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">network:
+  ethernets:
+    enp1s0:
+      dhcp4: true
+      dhcp6: true
+      dhcp-identifier: mac
+  version: 2</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The restored virtual machine retains the machine ID of the original virtual machine. If <code>dhcp-identifier: mac</code> is not specified, the restored virtual machine receives the same IP address from the DHCP server because <code>netplan</code> uses the machine ID as the DHCP client identifier by default. This is why you must configure the <code>network</code> settings before creating backups of virtual machines running Ubuntu. Failure to do so may result in unexpected behavior and potential network conflicts.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Starting with v1.7.0, SUSE Virtualization supports backups and snapshots for Longhorn V2 Data Engine volumes.</p>
+</div>
+<div class="paragraph">
+<p>However, deleting the latest backup of a virtual machine blocks all subsequent operations on related volumes. This is a <a href="https://github.com/longhorn/longhorn/issues/9064">known issue</a> that affects operations such as volume snapshots, backups, and live migration.</p>
+</div>
+<div class="paragraph">
+<p>No viable workaround is currently available. Resolving the blocked state requires deleting the affected volume to restore Longhorn Manager functionality.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_restore_a_new_virtual_machine_using_a_snapshot"><a class="anchor" href="#_restore_a_new_virtual_machine_using_a_snapshot"></a>Restore a new virtual machine using a snapshot</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Go to the <code>VM Snapshots</code> page.</p>
+</li>
+<li>
+<p>Click the <code>Restore Snapshot</code> button at the top right.</p>
+</li>
+<li>
+<p>Specify the new virtual machine name and click <code>Create</code>.</p>
+</li>
+<li>
+<p>A new virtual machine will be restored using the snapshot volumes and metadata, and you can access it from the <code>Virtual Machines</code> page.</p>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/vm/restore-vm-snapshot.png" alt="restore vm snapshot">
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_replace_an_existing_virtual_machine_using_a_snapshot"><a class="anchor" href="#_replace_an_existing_virtual_machine_using_a_snapshot"></a>Replace an existing virtual machine using a snapshot</h3>
+<div class="paragraph">
+<p>You can replace an existing virtual machine using the snapshot.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>You can only choose to retain the previous volumes.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Go to the <code>VM Snapshots</code> page.</p>
+</li>
+<li>
+<p>Click the <code>Restore Snapshot</code> button at the top right.</p>
+</li>
+<li>
+<p>Click <code>Replace Existing</code>.</p>
+</li>
+<li>
+<p>You can view the restore process from the <code>Virtual Machines</code> page.</p>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/vm/restore-vm-snapshot-existing.png" alt="restore vm snapshot existing">
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_virtual_machine_snapshot_space_management"><a class="anchor" href="#_virtual_machine_snapshot_space_management"></a>Virtual Machine Snapshot Space Management</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Volumes consume extra disk space in the cluster whenever you create a new virtual machine backup or snapshot. To manage this, you can configure space usage limits at the namespace and virtual machine levels. The configured values represent the maximum amount of disk space that can be used by all backups and snapshots. No limits are set by default.</p>
+</div>
+<div class="sect2">
+<h3 id="_configure_the_snapshot_space_usage_limit_at_the_namespace_level"><a class="anchor" href="#_configure_the_snapshot_space_usage_limit_at_the_namespace_level"></a>Configure the Snapshot Space Usage Limit at the Namespace Level</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Go to the <strong>Namespaces</strong> screen.</p>
+</li>
+<li>
+<p>Locate the target namespace, and then select <strong>⋮ &#8594; Edit Quota</strong>.</p>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/vm/edit-quota-namespace.png" alt="edit quota namespace">
+</div>
+</div>
+</li>
+<li>
+<p>Specify the maximum amount of disk space that can be consumed by all snapshots in the namespace, and then and click <strong>Save</strong>.</p>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/vm/edit-quota-namespace-save.png" alt="edit quota namespace save">
+</div>
+</div>
+</li>
+<li>
+<p>Verify that the configured value is displayed on the <strong>Namespaces</strong> screen.</p>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/vm/edit-quota-namespace-read.png" alt="edit quota namespace read">
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_configure_the_snapshot_space_usage_limit_at_the_virtual_machine_level"><a class="anchor" href="#_configure_the_snapshot_space_usage_limit_at_the_virtual_machine_level"></a>Configure the Snapshot Space Usage Limit at the Virtual Machine Level</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Go to the <strong>Virtual Machines</strong> screen.</p>
+</li>
+<li>
+<p>Locate the target virtual machine, and then select <strong>⋮ &#8594; Edit VM Quota</strong>.</p>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/vm/edit-quota-vm.png" alt="edit quota vm">
+</div>
+</div>
+</li>
+<li>
+<p>Specify the maximum total amount of disk space that can be consumed by all snapshots for the virtual machine, and then and click <strong>Save</strong>.</p>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/vm/edit-quota-vm-save.png" alt="edit quota vm save">
+</div>
+</div>
+</li>
+<li>
+<p>Verify that the configured value is displayed on the <strong>Quotas</strong> tab of the virtual machine details screen.</p>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/vm/edit-quota-vm-read.png" alt="edit quota vm read">
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_filesystem_freeze_for_virtual_machine_backups_and_snapshots"><a class="anchor" href="#_filesystem_freeze_for_virtual_machine_backups_and_snapshots"></a>Filesystem freeze for virtual machine backups and snapshots</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>When a guest virtual machine is connected with the <strong>QEMU Guest Agent</strong>, the SUSE Virtualization controller performs filesystem freeze operations through Kubevirt&#8217;s <a href="https://github.com/kubevirt/kubevirt/blob/main/docs/freeze.md#virt-freezer">virt-freezer</a> application to ensure filesystem consistency during virtual machine backups and snapshots.</p>
+</div>
+<div class="paragraph">
+<p>This feature is particularly valuable for virtual machines with high I/O activity or critical data that requires point-in-time consistency guarantees.</p>
+</div>
+<div class="sect2">
+<h3 id="_prerequisites_2"><a class="anchor" href="#_prerequisites_2"></a>Prerequisites</h3>
+<div class="paragraph">
+<p>Filesystem freeze and thaw functionality depends on virtual machine configuration, which is <em>not controlled by SUSE Virtualization</em>. You must ensure that virtual machines are configured correctly and support the required libvirt commands.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Red Hat Enterprise Linux (RHEL)</strong> and <strong>SUSE Linux Enterprise (SLE) Micro</strong>: These systems may lack sufficient permissions for filesystem freeze operations by default. You may be required to create custom SELinux policies.</p>
+</li>
+<li>
+<p><strong>Windows</strong>: Filesystem freeze operations are available on these systems only when the Volume Shadow Copy Service (VSS) service is enabled.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>When the virt-freezer application is triggered, KubeVirt communicates with the QEMU Guest Agent to translate operating system-specific calls. Linux systems use fsfreeze syscalls, while Windows systems use VSS APIs.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_verifying_filesystem_freeze_compatibility"><a class="anchor" href="#_verifying_filesystem_freeze_compatibility"></a>Verifying filesystem freeze compatibility</h3>
+<div class="paragraph">
+<p>To verify that your virtual machine supports filesystem freeze operations, perform the following steps:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Access the virtual machine&#8217;s virt-launcher <code>compute</code> container.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">POD=$(kubectl get pods -n default \
+  -l vm.kubevirt.io/name=vm1 \
+  -o jsonpath='{.items[0].metadata.name}')
+kubectl exec -it $POD -n default -c compute -- bash</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Attempt to freeze the filesystem using the virt-freezer application, which is available in the <code>compute</code> container:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">virt-freezer --freeze --namespace &lt;VM namespace&gt; --name &lt;VM name&gt;</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Verify the result of the freeze operation.</p>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Do not skip this step. In addition, you must thaw virtual machine filesystems before performing any other operations.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_troubleshooting_filesystem_freeze_issues"><a class="anchor" href="#_troubleshooting_filesystem_freeze_issues"></a>Troubleshooting filesystem freeze issues</h3>
+<div class="sect3">
+<h4 id="_filesystem_freeze_error_due_to_insufficient_permissions"><a class="anchor" href="#_filesystem_freeze_error_due_to_insufficient_permissions"></a>Filesystem freeze error due to insufficient permissions</h4>
+<div class="paragraph">
+<p>A <code>Failed to freeze filesystem</code> error may cause backup or snapshot failures on some Linux distributions.</p>
+</div>
+<div class="paragraph">
+<p>This issue typically occurs when SELinux denies read access to the QEMU Guest Agent (<code>qemu-ga</code>). You can verify the cause using the following steps:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>[Verify that your virtual machine supports filesystem freeze operations](#verifying-filesystem-freeze-compatibility).</p>
+</li>
+<li>
+<p>Check for SELinux <code>Permission denied</code> errors in the system logs.</p>
+<div class="paragraph">
+<p>If you see a message similar to the following, SELinux is blocking the required access:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-console hljs" data-lang="console">{"component":"freezer","level":"error","msg":"Freezing VMI failed","reason":"server error. command Freeze failed: \"LibvirtError(Code=1, Domain=10, Message='internal error: unable to execute QEMU agent command 'guest-fsfreeze-freeze': failed to open /data: Permission denied')\""}</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>To resolve the issue, you must create and install a custom SELinux policy module. This solution has been verified to work with <strong>RHEL</strong> and <strong>SLE Micro</strong>.</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Using <code>audit2allow</code> may grant broad permissions, as it allows all actions found in the logs. Carefully review the generated policy, or consider mounting volumes with appropriate SELinux labels for enhanced security.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Generate a custom SELinux policy module from audit logs.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">grep qemu-ga /var/log/audit/audit.log | audit2allow -M my_qemu_ga</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Install the generated policy module.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">semodule -i my_qemu_ga.pp</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Repeat steps 1 and 2 until <strong>virt-freezer</strong> can successfully freeze the filesystems.</p>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>You must thaw virtual machine filesystems before performing other operations.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">virt-freezer --unfreeze --namespace &lt;VM namespace&gt; --name &lt;VM name&gt;</code></pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_scheduled_virtual_machine_backups_and_snapshots"><a class="anchor" href="#_scheduled_virtual_machine_backups_and_snapshots"></a>Scheduled virtual machine backups and snapshots</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>SUSE Virtualization supports the creation of virtual machine backups and snapshots on a scheduled basis, with the option to retain a specific number of backups and snapshots. You can suspend, resume, and update the schedule at runtime.</p>
+</div>
+<div class="sect2">
+<h3 id="_create_the_virtual_machine_schedule"><a class="anchor" href="#_create_the_virtual_machine_schedule"></a>Create the Virtual Machine Schedule</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Go to the <strong>Virtual Machine Schedules</strong> screen, and then click <strong>Create Schedule</strong>.</p>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/vm/create-schedule.png" alt="create schedule">
+</div>
+</div>
+</li>
+<li>
+<p>Configure the following settings:</p>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/vm/configure-schedule.png" alt="configure schedule">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Type</strong>: Select either <strong>Backup</strong> or <strong>Snapshot</strong>.</p>
+</li>
+<li>
+<p><strong>Namespace</strong> and <strong>Virtual Machine Name</strong>: Specify the namespace and name of the source virtual machine.</p>
+</li>
+<li>
+<p><strong>Cron Schedule</strong>: Specify the cron expression (a string consisting of fields separated by whitespace characters) that defines the schedule properties.</p>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The backup or snapshot creation interval must be <strong>at least one hour</strong>. Frequent backup or snapshot deletion results in heavy I/O load.</p>
+</div>
+<div class="paragraph">
+<p>If two schedules have the same granularity level, each iteration&#8217;s timing offset must be <strong>at least 10 minutes</strong>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p><strong>Retain</strong>: Specify the number of up-to-date backups or snapshots to be retained.</p>
+<div class="paragraph">
+<p>When this value is exceeded, the SUSE Virtualization controller deletes the oldest backups or snapshots, and Longhorn starts the snapshot purge.</p>
+</div>
+</li>
+<li>
+<p><strong>Max Failure</strong>: Specify the maximum number of consecutive failed backup or snapshot creation attempts to be allowed.</p>
+<div class="paragraph">
+<p>When this value is exceeded, the SUSE Virtualization controller suspends the schedule.</p>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Click <strong>Create</strong>.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_check_the_status_of_a_virtual_machine_schedule"><a class="anchor" href="#_check_the_status_of_a_virtual_machine_schedule"></a>Check the Status of a Virtual Machine Schedule</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Go to the <strong>Virtual Machine Schedules</strong> screen.</p>
+</li>
+<li>
+<p>Locate the target schedule, and then click the name to open the details screen.</p>
+</li>
+<li>
+<p>On the <strong>Basics</strong> tab, verify that the settings are correct.</p>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/vm/check-schedule-basic.png" alt="check schedule basic">
+</div>
+</div>
+</li>
+<li>
+<p>On the <strong>Backups</strong> tab, check the status of the backups or snapshots that were created according to the schedule.</p>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/vm/check-schedule-backups.png" alt="check schedule backups">
+</div>
+</div>
+<div class="paragraph">
+<p>Backups and snapshots that are marked <strong>Ready</strong> can be used to restore the source virtual machine. For more information, see <a href="#_virtual_machine_backup_restore">Virtual Machine Backup &amp; Restore</a> and <a href="#_virtual_machine_snapshot_restore">Virtual Machine Snapshot &amp; Restore</a>.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/vm/check-schedule-restore.png" alt="check schedule restore">
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_edit_a_virtual_machine_schedule"><a class="anchor" href="#_edit_a_virtual_machine_schedule"></a>Edit a Virtual Machine Schedule</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Go to the <strong>Virtual Machine Schedules</strong> screen.</p>
+</li>
+<li>
+<p>Locate the target schedule, and then select <strong>⋮ &#8594; Edit Config</strong>.</p>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/vm/edit-schedule-config.png" alt="edit schedule config">
+</div>
+</div>
+</li>
+<li>
+<p>Edit the <strong>Cron Schedule</strong>, <strong>Retain</strong>, or <strong>Max Failure</strong> values.</p>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/vm/edit-schedule-parameters.png" alt="edit schedule parameters">
+</div>
+</div>
+</li>
+<li>
+<p>Click <strong>Save</strong> to apply the changes.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_suspend_or_resume_a_virtual_machine_schedule"><a class="anchor" href="#_suspend_or_resume_a_virtual_machine_schedule"></a>Suspend or Resume a Virtual Machine Schedule</h3>
+<div class="paragraph">
+<p>You can suspend active schedules and resume suspended schedules.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Go to the <strong>Virtual Machine Schedules</strong> screen.</p>
+</li>
+<li>
+<p>Locate the target schedule, and then select <strong>⋮ &#8594; Suspend</strong> or <strong>Resume</strong>.</p>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/vm/suspend-resume-schedule.png" alt="suspend resume schedule">
+</div>
+</div>
+<div class="paragraph">
+<p>The schedule is automatically suspended when the number of consecutive failed backup or snapshot creation attempts exceeds the <strong>Max Failure</strong> value.</p>
+</div>
+<div class="paragraph">
+<p>SUSE Virtualization does not allow you to resume a suspended schedule for backup creation if the backup target is not reachable.</p>
+</div>
+</li>
+</ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If a schedule was automatically suspended because the <strong>Max Failure</strong> value was exceeded, you must explicitly resume that schedule after verifying that the backup or snapshot can be created successfully. For example, when the backup target becomes reachable again after a period of disconnection, you can first create a backup manually and check the result.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_virtual_machine_operations_and_suse_virtualization_upgrades"><a class="anchor" href="#_virtual_machine_operations_and_suse_virtualization_upgrades"></a>Virtual Machine Operations and SUSE Virtualization Upgrades</h3>
+<div class="paragraph">
+<p>Before you upgrade SUSE Virtualization, ensure that no virtual machine backups or snapshots are in use, and that all virtual machine schedules are suspended. The SUSE Virtualization UI displays the following error messages when upgrade attempts are rejected:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Virtual machine backups or snapshots are being created, deleted, or used during the upgrade attempt</p>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/vm/upgrade-vmbackup.png" alt="upgrade vmbackup">
+</div>
+</div>
+</li>
+<li>
+<p>Virtual machine schedules are active during the upgrade attempt</p>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/vm/upgrade-svmbackup.png" alt="upgrade svmbackup">
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>To avoid such issues, SUSE plans to implement automatic suspension of all virtual machine schedules before the upgrade process is started. The suspended schedules will also be automatically resumed after the upgrade is completed. For more information, see <a href="https://github.com/harvester/harvester/issues/6759">Issue #6759</a>.</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>SUSE Storage has a similar feature called <a href="https://longhorn.io/docs/1.10.0/snapshots-and-backups/scheduling-backups-and-snapshots/">recurring snapshots and backups</a>, which uses recurring jobs to create periodic snapshots or backups of SUSE Storage volumes. This feature is not integrated into SUSE Virtualization because it conflicts with certain operations (for example, virtual machine attachment and cluster upgrades). Recurring SUSE Storage snapshot and backup jobs can also generate heavy I/O without SUSE Virtualization&#8217;s awareness, and in some cases, even destabilize the cluster.</p>
+</div>
+<div class="paragraph">
+<p>For best results, use the <a href="#_scheduled_virtual_machine_backups_and_snapshots">scheduled virtual machine backups and snapshots</a> feature in SUSE Virtualization, which has safeguard mechanisms that mitigate heavy I/O when possible. Again, SUSE Virtualization does not support recurring SUSE Storage snapshots and backups.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="clone-vm.html">Clone a Virtual Machine</a></span>
+  <span class="next"><a href="live-migration.html">Live Migration</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<script src="../../../../_/js/site.js"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+<script src="../../../../_/js/vendor/lunr.js"></script>
+<script src="../../../../_/js/vendor/lunr-languages.js"></script>
+<script src="../../../../_/js/search-ui.js" id="search-ui-script" data-site-root-path="../../../.." data-snippet-length="100" data-stylesheet="../../../../_/css/search.css"></script>
+<script async src="../../../../search-index.js"></script>
+<script src="../../../../_/js/vendor/langSelection.js"></script>
+<script async src="../../../../_/js/vendor/tabs.js"></script>
+
+
+<script src="../../../../_/js/CNLanguageSwitcher.js"></script>
+  </body>
+</html>

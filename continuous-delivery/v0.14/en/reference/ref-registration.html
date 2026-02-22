@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cluster Registration Internals | Continuous Delivery  0.14</title>
+    <link rel="canonical" href="https://documentation.suse.com/cloudnative/continuous-delivery/v0.14/en/reference/ref-registration.html">
+    <link rel="prev" href="ref-status-fields.html">
+    <link rel="next" href="ref-configuration.html">
+    <meta name="generator" content="Antora 3.1.10">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+<meta http-equiv="last-modified" content="2025-07-23"/>
+<link rel="stylesheet" href="../../../../_/css/search.css">
+<link rel="icon" href="../../../../_/img/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="../../../../_/css/font-styles.css">
+<link rel="stylesheet" href="../../../../_/fonts/css/all.css">
+<link rel="stylesheet" href="../../../../_/css/site-extra.css">
+<link rel="stylesheet" href="../../../../_/css/vendor/tabs.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap&family=SUSE+Mono:ital,wght@0,100..800;1,100..800" rel="stylesheet">
+<link href="https://documentation.suse.com/docserv/res/fonts/poppins/poppins.css" rel="stylesheet">
+<link rel="stylesheet" href="../../../../_/css/vendor/light.css">
+<script src="/docserv/res/lightheaded/analytics.js" type="text/javascript"></script>
+<script type="module">
+  import { defineCustomElements, setAssetPath } from 'https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/shared-header.esm.js';
+  defineCustomElements();
+  setAssetPath("https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/assets");
+</script>
+<!-- Default English link -->
+<link href="https://documentation.suse.com/cloudnative/continuous-delivery/v0.14/en/reference/ref-registration.html" hreflang="x-default" rel="alternate"/>
+<!-- Link for the currently processed page -->
+<link href="https://documentation.suse.com/cloudnative/continuous-delivery/v0.14/en/reference/ref-registration.html" hrefLang="en-US" rel="alternate" />
+
+<!-- JSON-LD for doc metadata -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Cluster Registration Internals | SUSE Rancher Prime Continuous Delivery v0.14",
+  "headline": "Cluster Registration Internals",
+  "description": "Cluster Registration Internals",
+  "inLanguage": "en",
+  "dateModified": "2025-07-23T00:00:00Z",
+  "author": {
+    "@type": "Organization",
+    "name": "SUSE Product & Solution Documentation Team",
+    "url": "https://documentation.suse.com"
+  },
+  "mentions": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "SUSE Rancher Prime Continuous Delivery",
+      "softwareVersion": "v0.14",
+      "applicationCategory": "Cloud Infrastructure",
+      "operatingSystem": "Linux"
+    }
+  ],
+  "publisher": {
+    "@type": "Organization",
+    "name": "SUSE",
+    "url": "https://documentation.suse.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.suse.com/assets/img/suse-white-logo-green.svg"
+    }
+  }
+}
+</script>
+<!-- end JSON-LD for doc metadata -->
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<script type="module">import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs'; mermaid.initialize({"startOnLoad":true});</script><shared-header
+language="en"
+languages='{
+    "en": { "label": "English", "url": "https://documentation.suse.com/en-us/" },
+    "de": { "label": "Deutsch", "url": "https://documentation.suse.com/de-de/" },
+    "fr": { "label": "Français", "url": "https://documentation.suse.com/fr-fr/" },
+    "es": { "label": "Español", "url": "https://documentation.suse.com/es-es/" },
+    "zh_CN": { "label": "中文", "url": "https://documentation.suse.com/zh-cn/" },
+    "pt_BR": { "label": "Português Brasileiro", "url": "https://documentation.suse.com/pt-br/" }
+}'
+enable-search='false'>
+</shared-header>
+
+<!-- Leaving as a comment, I expect it will be required again next year.
+<a target=_blank"" class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_bEiGZbUNzLD8Tcy"> Documentation survey </a>
+--><div class="body">
+<div class="nav-container" data-component="continuous-delivery" data-version="v0.14">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title">Continuous Delivery</h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Overview</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../persona.html">Key Personas and Their Roles</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Tutorials</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tutorials/quickstart.html">Quickstart</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tutorials/tut-deployment.html">Creating a Deployment</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tutorials/uninstall.html">Uninstall</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Explanations</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../explanations/architecture.html">Architecture</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../explanations/concepts.html">Core Concepts</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../explanations/ref-bundle-stages.html">Bundle Lifecycle</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../explanations/gitrepo-content.html">Git Repository Contents</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../explanations/namespaces.html">Namespaces</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../explanations/resources-during-deployment.html">Custom Resources During Deployment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">How-tos for Operators</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../how-tos-for-operators/installation.html">Installation Details</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../how-tos-for-operators/cluster-registration.html">Register Downstream Clusters</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../how-tos-for-operators/cluster-group.html">Create Cluster Groups</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../how-tos-for-operators/multi-user.html">Setup Multi User</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">How-tos for Users</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../how-tos-for-users/gitrepo-add.html">Create a GitRepo Resource</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../how-tos-for-users/gitrepo-targets.html">Mapping to Downstream Clusters</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../how-tos-for-users/bundle-diffs.html">Generating Diffs to Ignore Modified GitRepos</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../how-tos-for-users/webhook.html">Using Webhooks Instead of Polling</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../how-tos-for-users/imagescan.html">Using Image Scan to Update Container Image References</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../how-tos-for-users/bundle-add.html">Create a Bundle Resource</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../how-tos-for-users/observability.html">Observability</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../how-tos-for-users/oci-storage.html">OCI Storage</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../how-tos-for-users/rollout.html">Rollout Strategy</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../how-tos-for-users/helm-ops.html">Helm Ops</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../how-tos-for-users/fetch-helm-oci.html">Fetch Helm Ops</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../how-tos-for-users/fine-tune-error.html">Fine Tuning Error Detection</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Fleet CLI</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../how-tos-for-users/install-use-fleet-cli.html">Install and Use Fleet CLI</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../how-tos-for-users/validate-fleet-cli.html">Validate Fleet CLI Deployment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Reference</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">CLI</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="cli/fleet-agent/fleet-agent.html">fleet-agent</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="cli/fleet-agent/fleet-agent_clusterstatus.html">fleet-agent clusterstatus</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="cli/fleet-agent/fleet-agent_register.html">fleet-agent register</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="cli/fleet-cli/fleet.html">fleet</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="cli/fleet-cli/fleet_apply.html">fleet apply</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="cli/fleet-cli/fleet_cleanup.html">fleet cleanup</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="cli/fleet-cli/fleet_cleanup_clusterregistration.html">fleet cleanup clusterregistration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="cli/fleet-cli/fleet_cleanup_gitjob.html">fleet cleanup gitjob</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="cli/fleet-cli/fleet_deploy.html">fleet deploy</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="cli/fleet-cli/fleet_gitcloner.html">fleet gitcloner</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="cli/fleet-cli/fleet_target.html">fleet target</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="cli/fleet-cli/fleet_test.html">fleet test</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="cli/fleet-controller/fleet-controller.html">fleet-controller</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="cli/fleet-controller/fleet-controller_agentmanagement.html">fleet-controller agentmanagement</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="cli/fleet-controller/fleet-controller_cleanup.html">fleet-controller cleanup</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="cli/fleet-controller/fleet-controller_gitjob.html">fleet-controller gitjob</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="ref-status-fields.html">Status Fields</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="ref-registration.html">Cluster Registration Internals</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="ref-configuration.html">Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="ref-resources.html">List of Deployed Resources</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="ref-crds.html">Custom Resources Spec</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="ref-fleet-yaml.html">fleet.yaml</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="ref-gitrepo.html">GitRepo Resource</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="ref-bundle.html">Bundle Resource</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../troubleshooting.html">Troubleshooting</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Experimental Features</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../experimental-features/enableexperimental.html">Enable Experimental Features</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../experimental-features/scheduling.html">Scheduling</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../experimental-features/experimental-downstream-resource.html">Automated propagation of resources to downstream clusters</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="ref-schedule.html">Schedule Resource reference</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Changelog</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../changelogs/v0.14.0.html">v0.14.0</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../changelogs/v0.14.1.html">v0.14.1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../changelogs/v0.14.2.html">v0.14.2 (latest)</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Continuous Delivery</span>
+    <span class="version">0.14</span>
+  </div>
+  <ul class="components">
+        <li class="component">
+          <div class="title"><a href="../../../../admission-controller/1.31/en/introduction.html">Admission Controller</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../admission-controller/1.32/en/introduction.html">1.32-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../admission-controller/1.31/en/introduction.html">1.31-latest</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.30/en/introduction.html">1.30</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.29/en/introduction.html">1.29</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.28/en/introduction.html">1.28</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../cluster-api/v0.25/en/index.html">Cluster API</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../cluster-api/v0.25/en/index.html">0.25</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.24/en/index.html">0.24</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.23/en/index.html">0.23</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.22/en/index.html">0.22</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.21/en/index.html">0.21</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.20/en/index.html">0.20</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.19/en/index.html">0.19</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.18/en/index.html">0.18</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.17/en/index.html">0.17</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.16/en/index.html">0.16</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.11/en/index.html">0.11</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component is-current">
+          <div class="title"><a href="../index.html">Continuous Delivery</a></div>
+          <ul class="versions">
+            <li class="version is-current is-latest">
+              <a href="../index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../v0.11/en/index.html">0.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../v0.10/en/index.html">0.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../v0.9/en/index.html">0.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../k3s/latest/en/introduction.html">K3s</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../k3s/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../os-manager/1.8/en/index.html">OS Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../os-manager/1.9/en/index.html">1.9-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../os-manager/1.8/en/index.html">1.8</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.7/en/index.html">1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.6/en/index.html">1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.5/en/index.html">1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rke2/latest/en/introduction.html">RKE2</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rke2/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-observability/latest/en/classic.html">SUSE Observability</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../suse-observability/latest/en/classic.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">SUSE® Rancher for AWS</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-manager/v2.13/en/about-rancher/what-is-rancher.html">SUSE® Rancher Manager</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-manager/v2.13/en/about-rancher/what-is-rancher.html">v2.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.12/en/about-rancher/what-is-rancher.html">v2.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.11/en/about-rancher/what-is-rancher.html">v2.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.10/en/about-rancher/what-is-rancher.html">v2.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.9/en/about-rancher/what-is-rancher.html">v2.9</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.8/en/about-rancher/what-is-rancher.html">v2.8</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../security/5.4/en/overview.html">SUSE® Security</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../security/5.4/en/overview.html">5.4</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.3/en/overview.html">5.3</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../storage/1.10/en/longhorn-documentation.html">SUSE® Storage</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../storage/1.11/en/longhorn-documentation.html">1.11 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../storage/1.10/en/longhorn-documentation.html">1.10 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../storage/1.9/en/longhorn-documentation.html">1.9</a>
+            </li>
+            <li class="version">
+              <a href="../../../../storage/1.8/en/longhorn-documentation.html">1.8</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-virtual-clusters/v1.0.1/en/introduction.html">SUSE® Virtual Clusters</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/1.0.2/en/introduction.html">1.0.2-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../suse-virtual-clusters/v1.0.1/en/introduction.html">v1.0.1-latest</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.0/en/introduction.html">v1.0.0</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../virtualization/v1.6/en/introduction/overview.html">SUSE® Virtualization</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../virtualization/v1.7/en/introduction/overview.html">v1.7 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../virtualization/v1.6/en/introduction/overview.html">v1.6 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../virtualization/v1.5/en/introduction/overview.html">v1.5</a>
+            </li>
+          </ul>
+        </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+<ul>
+    <li>
+      <a class="home-link-dsc" href="https://documentation.suse.com/" title="documentation.suse.com" aria-label="SUSE Documentation Home"></a>
+    </li>
+    <li>
+      <a href="https://documentation.suse.com/cloudnative/continuous-delivery" title="Continuous Delivery" aria-label="SUSE Documentation - Continuous Delivery">
+        Continuous Delivery
+      </a>
+    </li>
+      <li>
+          Reference
+      </li>
+  </ul>
+</nav><div class="page-versions">
+  <button class="version-menu-toggle" title="Show other versions of page">0.14</button>
+  <div class="version-menu">
+    <a class="version is-current" href="ref-registration.html">0.14</a>
+    <a class="version" href="../../../v0.13/en/reference/ref-registration.html">0.13</a>
+    <a class="version" href="../../../v0.12/en/reference/ref-registration.html">0.12</a>
+    <a class="version" href="../../../v0.11/en/reference/ref-registration.html">0.11</a>
+    <a class="version" href="../../../v0.10/en/reference/ref-registration.html">0.10</a>
+    <a class="version" href="../../../v0.9/en/reference/ref-registration.html">0.9</a>
+  </div>
+</div>
+  <div class="edit-this-page"><a href="https://github.com/rancher/fleet-product-docs/edit/product-docs/versions/v0.14/modules/en/pages/reference/ref-registration.adoc"><strong>Edit</strong></a></div>
+        <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <label class="visual-search-label-bc" for="search-input">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+          <input label="Search" aria-label="Search" id="search-input" type="text" placeholder="Search the docs" >
+          <label class="filter checkbox" style="display: none">
+            <input type="checkbox" data-facet-filter="component:continuous-delivery" checked> Only this project
+          </label>
+        </div>
+      </div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="On this page" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Cluster Registration Internals</h1>
+<div class="sect1">
+<h2 id="_how_does_cluster_registration_work"><a class="anchor" href="#_how_does_cluster_registration_work"></a>How does cluster registration work?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This text describes cluster registration with more technical details. The text ignores agent initiated registration, as it&#8217;s not commonly used.
+<a href="../how-tos-for-operators/cluster-registration.html#_agent_initiated" class="xref page">Agent initiated registration</a> is <a href="../how-tos-for-operators/cluster-registration.html#_create_cluster_registration_tokens" class="xref page">"`ClusterRegistrationToken` first"</a>, which means pre-creating a cluster is optional.</p>
+</div>
+<div class="paragraph">
+<p>See "<a href="../how-tos-for-operators/cluster-registration.html" class="xref page">Register Downstream Clusters</a>" to learn how to register clusters.</p>
+</div>
+<div class="sect2">
+<h3 id="_cluster_first"><a class="anchor" href="#_cluster_first"></a>Cluster first</h3>
+<div class="paragraph">
+<p><code>fleet-controller</code> starts up and may "bootstrap" the local cluster resource. In Rancher creating the local cluster resource is handled by the fleetcluster controller instead, but otherwise the process is identical.</p>
+</div>
+<div class="paragraph">
+<p>The process is identical for the local cluster or any downstream cluster. It starts by  creating a cluster resource, which refers to a kubeconfig secret.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_creating_the_bootstrap_secret_for_the_downstream_cluster"><a class="anchor" href="#_creating_the_bootstrap_secret_for_the_downstream_cluster"></a>Creating the Bootstrap Secret for the Downstream Cluster</h3>
+<div class="paragraph">
+<p>In this step a <code>ClusterRegistationToken</code> and an "import" service account are created based on a <code>Cluster</code> resource.</p>
+</div>
+<div class="paragraph">
+<p>The SUSE® Rancher Prime Continuous Delivery controller creates a <a href="../explanations/architecture.html#_security" class="xref page"><code>ClusterRegistrationToken</code></a> and waits for it to be complete. The <code>ClusterRegistationToken</code> triggers the creation of the "import" service account, which can create <code>ClusterRegistrations</code> and read any secret in the system registration namespace (eg "cattle-fleet-clusters-system"). The <code>import.go</code> controller will enqueue itself until the "import" service account exists, because that account is needed to create the <code>fleet-agent-bootstrap</code> secret.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_creating_the_suse_rancher_prime_continuous_delivery_agent_deployment"><a class="anchor" href="#_creating_the_suse_rancher_prime_continuous_delivery_agent_deployment"></a>Creating the SUSE® Rancher Prime Continuous Delivery Agent Deployment</h3>
+<div class="paragraph">
+<p>The SUSE® Rancher Prime Continuous Delivery controller will now create the SUSE® Rancher Prime Continuous Delivery agent deployment and the bootstrap secret on the downstream cluster.</p>
+</div>
+<div class="paragraph">
+<p>The bootstrap secret contains the API server URL of the upstream cluster and is used to build a kubeconfig to access the upstream cluster. Both values are taken from the SUSE® Rancher Prime Continuous Delivery controller config configmap. That configmap is part of the helm chart.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_suse_rancher_prime_continuous_delivery_agent_starts_registration_upgrades_to_request_account"><a class="anchor" href="#_suse_rancher_prime_continuous_delivery_agent_starts_registration_upgrades_to_request_account"></a>SUSE® Rancher Prime Continuous Delivery Agent Starts Registration, Upgrades to Request Account</h3>
+<div class="paragraph">
+<p>The agent uses the "import" account to upgrade to a request account.</p>
+</div>
+<div class="paragraph">
+<p>Immediately the SUSE® Rancher Prime Continuous Delivery agent checks for a <code>fleet-agent-bootstrap</code> secret. If the bootstrap secret, which contains the "import" kubeconfig, is present the agent starts registering.</p>
+</div>
+<div class="paragraph">
+<p>Then agent creates the final <code>ClusterRegistration</code> resource in fleet-default on the management cluster, with a random number. The random number will be used for the registration secret&#8217;s name.</p>
+</div>
+<div class="paragraph">
+<p>The SUSE® Rancher Prime Continuous Delivery controller triggers and tries to grant the <code>ClusterRegistration</code> request to create agent&#8217;s service account and create the 'c-*' registration secret with the client&#8217;s new kubeconfig. The registration secret name is <code>hash("clientID-clientRandom")</code>.</p>
+</div>
+<div class="paragraph">
+<p>The new kubeconfig uses the "request" account. The "request" account can access the cluster status, <code>BundleDeployments</code> and <code>Contents</code>.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/FleetRegistrationToken.svg" alt="Static" width="600">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="registered-watches-for-bundledeployments"><a class="anchor" href="#registered-watches-for-bundledeployments"></a>SUSE® Rancher Prime Continuous Delivery Agent is Registered, Watches for <code>BundleDeployments</code></h3>
+<div class="paragraph">
+<p>At this point the agent is fully registered and will persist the "request" account into a <code>fleet-agent</code> secret.
+The API server URL and CA are copied from the bootstrap secret, which inherited these values from the SUSE® Rancher Prime Continuous Delivery controller&#8217;s Helm chart values.</p>
+</div>
+<div class="paragraph">
+<p>The bootstrap secret is deleted. When the agent restarts, it will not re-register, since the bootstrap secret is missing.</p>
+</div>
+<div class="paragraph">
+<p>The agent starts watching its <a href="../explanations/namespaces.html#_cluster_namespaces" class="xref page">Cluster Namespace</a>" for <code>BundleDeployments</code>. At this point the agent is ready to deploy workloads.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_notes"><a class="anchor" href="#_notes"></a>Notes</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>The registration starts with the "import" account and pivots to the "request" account.</p>
+</li>
+<li>
+<p>The fleet-default namespace has all the cluster registrations, the "import" account uses a separate namespace.</p>
+</li>
+<li>
+<p>Once the agent is registered, <code>fleet-controller</code> will trigger on a cluster or namespace change. The <code>manageagent</code> controller will then create a bundle to adopt the existing agent deployment. The agent will update itself to the bundle and since the "generation" environment variable changes, it will restart.</p>
+</li>
+<li>
+<p>If no bootstrap secret exists, the agent will not re-register.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_diagram"><a class="anchor" href="#_diagram"></a>Diagram</h2>
+<div class="sectionbody">
+<div class="imageblock"><div class="mermaid content" style=" ">graph TD
+    subgraph "Upstream (Management Cluster)"
+        direction LR
+        subgraph "Flow 1: Agent-Initiated"
+            direction TB
+            A0(Optional: Admin Creates Cluster with clientID) --> A1
+            A1(Admin Creates<br>ClusterRegistrationToken) --> A2{Fleet Controller Creates Secret<br>for a temporary 'import' ServiceAccount}
+        end
+        subgraph "Flow 2: Manager-Initiated (for existing cluster)"
+            direction TB
+            B1(Admin Creates Kubeconfig Secret<br>for an existing cluster) --> B2(Admin Creates Cluster Resource<br>referencing the Kubeconfig Secret.<br>Can define a clientID here)
+            B2 --> B3{Fleet Controller uses admin-provided<br>kubeconfig to deploy agent}
+        end
+    end
+    subgraph "Downstream (Managed Cluster)"
+        direction LR
+        subgraph "Agent Install (Flow 1)"
+            direction TB
+            A3(Admin installs Fleet Agent via Helm<br>using the 'import' token secret.<br>Can provide clientID)
+        end
+        subgraph "Agent Deployed (Flow 2)"
+             direction TB
+             B4(Agent & bootstrap secret are deployed.<br>Bootstrap contains an 'import' kubeconfig.)
+        end
+    end
+    subgraph "Common Registration Stages (Identity Handshake)"
+        direction TB
+        C1(Agent pod starts, using its local 'agent' SA.<br>Finds & uses the 'import' kubeconfig<br>from the bootstrap secret to talk to Upstream.)
+        C1 --> C2(Using its 'import' identity, Agent creates<br>a ClusterRegistration resource on Upstream)
+        C2 --> C3{Upstream Controller creates a permanent<br>'request' ServiceAccount & a new,<br>long-term kubeconfig/secret for it.}
+        C3 --> C4(Agent receives and persists the<br>'request' SA credentials.<br>The temporary bootstrap secret is deleted.)
+        C4 --> C5{Upstream Controller creates a dedicated<br>Cluster Namespace for this agent.}
+        C5 --> C6(✅ Agent Fully Registered.<br>Uses its 'request' identity to watch<br>for workloads in its namespace.)
+    end
+    %% Styling
+    style A0 fill:#e0f2fe,stroke:#0ea5e9,stroke-width:2px
+    style A1 fill:#e0f2fe,stroke:#0ea5e9,stroke-width:2px
+    style B1 fill:#e0f2fe,stroke:#0ea5e9,stroke-width:2px
+    style A3 fill:#d1fae5,stroke:#10b981,stroke-width:2px
+    style B2 fill:#e0f2fe,stroke:#0ea5e9,stroke-width:2px
+    style A2 fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
+    style B3 fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
+    style B4 fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
+    style C1 fill:#f3e8ff,stroke:#8b5cf6,stroke-width:2px
+    style C2 fill:#f3e8ff,stroke:#8b5cf6,stroke-width:2px
+    style C3 fill:#f3e8ff,stroke:#8b5cf6,stroke-width:2px
+    style C4 fill:#f3e8ff,stroke:#8b5cf6,stroke-width:2px
+    style C5 fill:#f3e8ff,stroke:#8b5cf6,stroke-width:2px
+    style C6 fill:#dcfce7,stroke:#22c55e,stroke-width:2px,font-weight:bold
+    %% Connections
+    A2 --> A3
+    B3 --> B4
+    A3 --> C1
+    B4 --> C1</div></div>
+<div class="sect2">
+<h3 id="_registration_process_and_controllers"><a class="anchor" href="#_registration_process_and_controllers"></a>Registration Process and Controllers</h3>
+<div class="paragraph">
+<p>Detailed analysis of the registration process for clusters. This shows the interaction of controllers, resources and service accounts during the registration of a new downstream cluster or the local cluster.</p>
+</div>
+<div class="paragraph">
+<p>It is important to note that there are multiple ways to start this:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Creating a bootstrap config. SUSE® Rancher Prime Continuous Delivery does this for the local agent.</p>
+</li>
+<li>
+<p>Creating a <code>Cluster</code> resource with a kubeconfig. Rancher does this for downstream clusters. See <a href="../how-tos-for-operators/cluster-registration.html#_manager_initiated" class="xref page">manager-initiated registration</a>.</p>
+</li>
+<li>
+<p>Create a <code>ClusterRegistrationToken</code> resource, optionally create a <code>Cluster</code> resource for a pre-defined (<code>clientID</code>) cluster. See <a href="../how-tos-for-operators/cluster-registration.html#_agent_initiated" class="xref page">agent-initiated registration</a>.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/FleetRegistration.svg" alt="Registration">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_secrets_during_agent_deployment"><a class="anchor" href="#_secrets_during_agent_deployment"></a>Secrets during Agent Deployment</h3>
+<div class="paragraph">
+<p>This diagram shows the resources created during registration and focuses on the k8s API server configuration.</p>
+</div>
+<div class="paragraph">
+<p>The <code>import.go</code> controller triggers on Cluster creation/update events and deploys the agent.</p>
+</div>
+<div class="paragraph">
+<p><strong>This image shows how the API server URL and CA propagates through the secrets during registration:</strong></p>
+</div>
+<div class="paragraph">
+<p>The arrows in the diagram show how the API server values are copied from
+the Helm values to the cluster registration secret on the upstream
+cluster and finally downstream to the bootstrap secret of the agent.</p>
+</div>
+<div class="paragraph">
+<p>There is one special case, if the agent is for the local/"bootstrap"
+cluster, the server values also exist in the kubeconfig secret,
+referenced by the Cluster resource. In this case the kubeconfig secret
+contains the upstream server URL and CA, next to the downstream&#8217;s
+kubeconfig. If the settings are present in the kubeconfig secret, they
+override the configured values.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/FleetRegistrationSecrets.svg" alt="Registration Secrets">
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_suse_rancher_prime_continuous_delivery_cluster_registration_in_rancher"><a class="anchor" href="#_suse_rancher_prime_continuous_delivery_cluster_registration_in_rancher"></a>SUSE® Rancher Prime Continuous Delivery Cluster Registration in Rancher</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Rancher installs the fleet helm chart. The API server URL and CA are <a href="https://github.com/rancher/rancher/blob/release/v2.9/pkg/controllers/dashboard/fleetcharts/controller.go#L111-L112">derived from Rancher&#8217;s settings</a>.</p>
+</div>
+<div class="paragraph">
+<p>SUSE® Rancher Prime Continuous Delivery will pass these values to a SUSE® Rancher Prime Continuous Delivery agent, so it can connect back to the SUSE® Rancher Prime Continuous Delivery controller.</p>
+</div>
+<div class="sect2">
+<h3 id="_import_cluster_into_rancher"><a class="anchor" href="#_import_cluster_into_rancher"></a>Import Cluster into Rancher</h3>
+<div class="paragraph">
+<p>When the user runs <code>curl | kubectl apply</code>, the applied manifest includes the rancher agent deployment.</p>
+</div>
+<div class="paragraph">
+<p>The deployment contains a secret <code>cattle-credentials-</code> which contains the API URL and a token.</p>
+</div>
+<div class="paragraph">
+<p>The Rancher agent starts up and reports downstream&#8217;s kubeconfig to upstream.</p>
+</div>
+<div class="paragraph">
+<p>Rancher then creates the fleet Cluster resource, which references a <a href="https://github.com/rancher/rancher/blob/871b6d9137246bd93733f01184ea435f40c5d56c/pkg/provisioningv2/kubeconfig/manager.go#L69">kubeconfig secret</a>.</p>
+</div>
+<div class="paragraph">
+<p>👉SUSE® Rancher Prime Continuous Delivery will use this kubeconfig to deploy the agent on the downstream cluster.</p>
+</div>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="ref-status-fields.html">Status Fields</a></span>
+  <span class="next"><a href="ref-configuration.html">Configuration</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<script src="../../../../_/js/site.js"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+<script src="../../../../_/js/vendor/lunr.js"></script>
+<script src="../../../../_/js/vendor/lunr-languages.js"></script>
+<script src="../../../../_/js/search-ui.js" id="search-ui-script" data-site-root-path="../../../.." data-snippet-length="100" data-stylesheet="../../../../_/css/search.css"></script>
+<script async src="../../../../search-index.js"></script>
+<script src="../../../../_/js/vendor/langSelection.js"></script>
+<script async src="../../../../_/js/vendor/tabs.js"></script>
+
+
+<script src="../../../../_/js/CNLanguageSwitcher.js"></script>
+  </body>
+</html>
