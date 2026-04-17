@@ -11,6 +11,7 @@ local:
 	find build/site -type f -name "sitemap*.xml" -exec sh -c 'mv "$$0" "$${0%.xml}.xml-not-used"' {} \;
 	mv build/site/*.xml-not-used build/site/sitemaps.not-used/. > /dev/null 2>&1 || true
 	gzip build/site/sitemaps.not-used/*.xml-not-used > /dev/null 2>&1 || true
+	make compress-indexes
 
 remote:
 	mkdir -p tmp
@@ -26,6 +27,7 @@ remote:
 	find build/site -type f -name "sitemap*.xml" -exec sh -c 'mv "$$0" "$${0%.xml}.xml-not-used"' {} \;
 	mv build/site/*.xml-not-used build/site/sitemaps.not-used/. > /dev/null 2>&1 || true
 	gzip build/site/sitemaps.not-used/*.xml-not-used > /dev/null 2>&1 || true
+	make compress-indexes
 
 clean:
 	rm -rf build
@@ -35,3 +37,11 @@ environment:
 
 preview:
 	npx http-server build/site -c-1
+
+compress-indexes:
+	find build/site/lang-indexes -name '*.js' -type f -exec gzip -9 -k {} \;
+	find build/site/lang-indexes -name '*.js' -type f -delete
+
+restore-indexes:
+	find build/site/lang-indexes -name '*.js.gz' -type f -exec gunzip -k {} \;
+	find build/site/lang-indexes -name '*.js.gz' -type f -delete
