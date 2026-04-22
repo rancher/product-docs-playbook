@@ -1,8 +1,10 @@
 local:
 	mkdir -p tmp
 	npx antora --version
-	npx antora --stacktrace --log-format=pretty --log-level=info product-docs-playbook-local.yml 2>&1 | tee tmp/local-build.log 2>&1
-	cp build/site/search-index.js tmp/.
+	npx antora --stacktrace --log-format=pretty --log-level=info \
+		product-docs-playbook-local.yml \
+		2>&1 | tee tmp/local-build.log 2>&1
+  cp build/site/search-index.js tmp/.
 	node ./product-docs-common/jscript/split-search-index.js build/site/search-index.js build/site/lang-indexes
 	rm -f build/site/lang-indexes/search-index-source.js
 	mkdir -p build/site/sitemaps.not-used
@@ -14,8 +16,10 @@ remote:
 	mkdir -p tmp
 	npm ci
 	npx antora --version
-	npx antora --stacktrace --log-format=pretty --log-level=info product-docs-playbook-remote.yml 2>&1 | tee tmp/remote-build.log 2>&1
-	cp build/site/search-index.js tmp/.
+	npx antora --stacktrace --log-format=pretty --log-level=info \
+		product-docs-playbook-remote.yml \
+		2>&1 | tee tmp/remote-build.log 2>&1
+  cp build/site/search-index.js tmp/.
 	node ./product-docs-common/jscript/split-search-index.js build/site/search-index.js build/site/lang-indexes
 	rm -f build/site/lang-indexes/search-index-source.js
 	mkdir -p build/site/sitemaps.not-used
