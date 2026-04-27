@@ -1,0 +1,1605 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Guide de renforcement de la sécurité CIS | K3s  Latest</title>
+    <link rel="canonical" href="https://documentation.suse.com/cloudnative/k3s/latest/fr/security/hardening-guide.html">
+    <link rel="prev" href="secrets-encryption.html">
+    <link rel="next" href="self-assessment-1.11.html">
+    <meta name="generator" content="Antora 3.1.10">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+<meta http-equiv="last-modified" content="2025-12-31"/>
+<link rel="stylesheet" href="../../../../_/css/search.css">
+<link rel="icon" href="../../../../_/img/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="../../../../_/css/font-styles.css">
+<link rel="stylesheet" href="../../../../_/fonts/css/all.css">
+<link rel="stylesheet" href="../../../../_/css/site-extra.css">
+<link rel="stylesheet" href="../../../../_/css/vendor/tabs.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap&family=SUSE+Mono:ital,wght@0,100..800;1,100..800" rel="stylesheet">
+<link href="https://documentation.suse.com/docserv/res/fonts/poppins/poppins.css" rel="stylesheet">
+<link rel="stylesheet" href="../../../../_/css/vendor/light.css">
+<script src="/docserv/res/lightheaded/analytics.js" type="text/javascript"></script>
+<script type="module">
+  import { defineCustomElements, setAssetPath } from 'https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/shared-header.esm.js';
+  defineCustomElements();
+  setAssetPath("https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/assets");
+</script>
+<!-- Default English link -->
+<link href="https://documentation.suse.com/cloudnative/k3s/latest/en/security/hardening-guide.html" hreflang="x-default" rel="alternate"/>
+<!-- Link for the currently processed page -->
+<link href="https://documentation.suse.com/cloudnative/k3s/latest/fr/security/hardening-guide.html" hrefLang="fr-FR" rel="alternate" />
+<!-- Link for the English page -->
+<link href="https://documentation.suse.com/cloudnative/k3s/latest/en/security/hardening-guide.html" hreflang="en-US" rel="alternate" />
+<!-- Link for the Japanese page -->
+<link href="https://documentation.suse.com/cloudnative/k3s/latest/ja/security/hardening-guide.html" hreflang="ja-JP" rel="alternate" />
+<!-- Link for the Chinese page -->
+<link href="https://documentation.suse.com/cloudnative/k3s/latest/zh/security/hardening-guide.html" hreflang="zh-CN" rel="alternate" />
+<!-- Link for the German page -->
+<link href="https://documentation.suse.com/cloudnative/k3s/latest/de/security/hardening-guide.html" hreflang="de-DE" rel="alternate" />
+<!-- Link for the Spanish page -->
+<link href="https://documentation.suse.com/cloudnative/k3s/latest/es/security/hardening-guide.html" hreflang="es-ES" rel="alternate" />
+<!-- Link for the Brazilian Portuguese page -->
+<link href="https://documentation.suse.com/cloudnative/k3s/latest/pt/security/hardening-guide.html" hreflang="pt-BR" rel="alternate" />
+
+<!-- JSON-LD for doc metadata -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Guide de renforcement de la sécurité CIS | SUSE Rancher Prime: K3s latest",
+  "headline": "Guide de renforcement de la sécurité CIS",
+  "description": "Guide de renforcement de la sécurité CIS",
+  "inLanguage": "fr",
+  "dateModified": "2025-12-31T00:00:00Z",
+  "author": {
+    "@type": "Organization",
+    "name": "SUSE Product & Solution Documentation Team",
+    "url": "https://documentation.suse.com"
+  },
+  "mentions": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "SUSE Rancher Prime: K3s",
+      "softwareVersion": "latest",
+      "applicationCategory": "Cloud Infrastructure",
+      "operatingSystem": "Linux"
+    }
+  ],
+  "publisher": {
+    "@type": "Organization",
+    "name": "SUSE",
+    "url": "https://documentation.suse.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.suse.com/assets/img/suse-white-logo-green.svg"
+    }
+  }
+}
+</script>
+<!-- end JSON-LD for doc metadata -->
+
+<!-- SUVA - Begin Ask Geeko-->
+<!--
+searchUnifyChatbot ("Ask Geeko") Copyright ©2024 Grazitti Interactive - All Rights Reserved. NOTICE: All information contained herein is, and remains the property of Grazitti Interactive and its suppliers, if any. The intellectual and technical concepts contained herein are proprietary to Grazitti Interactive and its suppliers and may be covered by India, U.S. and Foreign Patents, patents in process, and are protected by trade secret or copyright law. Dissemination of this information or reproduction of this material is strictly forbidden unless prior written permission is obtained from Grazitti Interactive.
+-->
+<meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport"/>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/Allow/an.js?c485cb3c-93d4-4942-99e8-91f3b8ca5636"></script>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/js/index.js?q=gAAAAABp3JBN9VuEJTi5tFafLIMwgMkCPdJS3Qm56lSYx93ir3Twt9hgSvd3OHEt6-nYfSbY3yHq0Zv8PRPsSy4nbqZiaJ4cZvRc6ItVZdvwz9Urf35cH6OUyPOwdA0phlS-zVIznQ2rWW438p-91NlTHuxJuOFpnA=="></script>
+<link rel="stylesheet" href="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/css/index.css">
+<div id="searchUnifyChatbot"></div>
+<!-- SUVA - End Ask Geeko-->
+<!--BEGIN QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+<script type='text/javascript' src="../../../../_/js/qualtrics.js" defer></script>
+<!--END QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<script type="module">import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs'; mermaid.initialize({"startOnLoad":true});</script><shared-header
+language="en"
+languages='{
+    "en": { "label": "English", "url": "https://documentation.suse.com/en-us/" },
+    "de": { "label": "Deutsch", "url": "https://documentation.suse.com/de-de/" },
+    "fr": { "label": "Français", "url": "https://documentation.suse.com/fr-fr/" },
+    "es": { "label": "Español", "url": "https://documentation.suse.com/es-es/" },
+    "zh_CN": { "label": "中文", "url": "https://documentation.suse.com/zh-cn/" },
+    "pt_BR": { "label": "Português Brasileiro", "url": "https://documentation.suse.com/pt-br/" }
+}'
+enable-search='false'>
+</shared-header>
+
+<!-- Leaving as a comment, I expect it will be required again next year.
+<a target=_blank"" class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_bEiGZbUNzLD8Tcy"> Documentation survey </a>
+-->
+<div class="body">
+<div class="nav-container" data-component="k3s" data-version="latest">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title">K3s</h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../introduction.html">Introduction</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../quick-start.html">Guide de démarrage rapide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../installation/installation.html">Installation</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation/requirements.html">Configuration requise</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation/configuration.html">Options de configuration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation/private-registry.html">Configuration du registre privé</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation/registry-mirror.html">Miroir de registre intégré</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation/airgap.html">Installation en isolation physique</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation/server-roles.html">Gestion des rôles de serveur</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation/packaged-components.html">Gestion des composants en paquet</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation/uninstall.html">Désinstallation de K3s</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../datastore/datastore.html">Datastore de cluster</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../datastore/backup-restore.html">Sauvegarde et restauration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../datastore/ha-embedded.html">Haute disponibilité d’etcd embarqué</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../datastore/ha.html">Base de données externe à haute disponibilité</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../datastore/cluster-loadbalancer.html">Équilibreur de charge de cluster</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../upgrades/upgrades.html">Mises à niveau</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/killall.html">Arrêt de K3s</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/manual.html">Mises à niveau manuelles</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/automated.html">Mises à niveau automatisées</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/roll-back.html">Retour à l&#8217;état initial de K3s</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="security.html">Sécurité</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="secrets-encryption.html">Configuration du chiffrement des secrets</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="hardening-guide.html">Guide de renforcement de la sécurité CIS</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="self-assessment-1.11.html">CIS 1.11 Guide d&#8217;auto-évaluation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="self-assessment-1.10.html">CIS 1.10 Guide d&#8217;auto-évaluation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="self-assessment-1.9.html">CIS 1.9 Guide d&#8217;auto-évaluation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="self-assessment-1.8.html">CIS 1.8 Guide d&#8217;auto-évaluation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="self-assessment-1.7.html">CIS 1.7 Guide d&#8217;auto-évaluation</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../cli/cli.html">Outils en ligne de commande (CLI)</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../cli/server.html">serveur</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../cli/agent.html">agent</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../cli/certificate.html">certificate</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../cli/etcd-snapshot.html">etcd-snapshot</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../cli/secrets-encrypt.html">secrets-encrypt</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../cli/token.html">token</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../architecture.html">Architecture</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../cluster-access.html">Accès au cluster</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Ajouts</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/helm.html">Helm</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/import-images.html">Importer des images</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/storage.html">Volumes et stockage</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../networking/networking.html">Réseautique</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/basic-network-options.html">Options réseau de base</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/distributed-multicloud.html">Cluster hybride distribué ou multicloud</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/multus-ipams.html">Les plugins Multus et IPAM</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/networking-services.html">Services de réseau</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../advanced.html">Options avancées / Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Référence</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/env-variables.html">Variables d&#8217;environnement</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/flag-deprecation.html">Cesser la prise en charge des indicateurs</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/metrics.html">Métriques</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/resource-profiling.html">Profilage des ressources</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">notes de version</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../release-notes/v1.34.X.html">v1.34.X</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../release-notes/v1.33.X.html">v1.33.X</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../release-notes/v1.32.X.html">v1.32.X</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../release-notes-old/v1.31.X.html">v1.31.X</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Plus ancien&#8230;&#8203;</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../release-notes-old/v1.30.X.html">v1.30.X</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../release-notes-old/v1.29.X.html">v1.29.X</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../release-notes-old/v1.28.X.html">v1.28.X</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../release-notes-old/v1.27.X.html">v1.27.X</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../release-notes-old/v1.26.X.html">v1.26.X</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../release-notes-old/v1.25.X.html">v1.25.X</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../release-notes-old/v1.24.X.html">v1.24.X</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../related-projects.html">Projets connexes</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../known-issues.html">Problèmes connus</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../faq.html">FAQ</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">K3s</span>
+    <span class="version">Latest</span>
+  </div>
+  <ul class="components">
+        <li class="component">
+          <div class="title"><a href="../../../../admission-controller/1.33-latest/en/introduction.html">Admission Controller</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../admission-controller/1.34/en/introduction.html">1.34-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../admission-controller/1.33-latest/en/introduction.html">1.33-latest</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.32/en/introduction.html">1.32</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.31/en/introduction.html">1.31</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.30/en/introduction.html">1.30</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.29/en/introduction.html">1.29</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.28/en/introduction.html">1.28</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../cluster-api/v0.26/en/index.html">Cluster API</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../cluster-api/v0.27/en/index.html">v0.27-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../cluster-api/v0.26/en/index.html">v0.26</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.25/en/index.html">0.25</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.24/en/index.html">0.24</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.23/en/index.html">0.23</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.22/en/index.html">0.22</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.21/en/index.html">0.21</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.20/en/index.html">0.20</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.19/en/index.html">0.19</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.18/en/index.html">0.18</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.17/en/index.html">0.17</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.16/en/index.html">0.16</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.11/en/index.html">0.11</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../continuous-delivery/next/en/index.html">Continuous Delivery</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../continuous-delivery/next/en/index.html">Next</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.11/en/index.html">0.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.10/en/index.html">0.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.9/en/index.html">0.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component is-current">
+          <div class="title"><a href="../../en/introduction.html">K3s</a></div>
+          <ul class="versions">
+            <li class="version is-current is-latest">
+              <a href="../../en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../os-manager/1.9/en/index.html">OS Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../os-manager/1.10/en/index.html">1.10-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../os-manager/1.9/en/index.html">1.9</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.8/en/index.html">1.8</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.7/en/index.html">1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.6/en/index.html">1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.5/en/index.html">1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-ai/latest/en/introduction.html">Rancher AI</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-ai/latest/en/introduction.html">latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rke2/latest/en/introduction.html">RKE2</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rke2/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-observability/latest/en/classic.html">SUSE Observability</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../suse-observability/latest/en/classic.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">SUSE Rancher Developer Access</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">SUSE® Rancher for AWS</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-manager/v2.13/en/about-rancher/what-is-rancher.html">SUSE® Rancher Manager</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-manager/v2.13/en/about-rancher/what-is-rancher.html">v2.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.12/en/about-rancher/what-is-rancher.html">v2.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.11/en/about-rancher/what-is-rancher.html">v2.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.10/en/about-rancher/what-is-rancher.html">v2.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.9/en/about-rancher/what-is-rancher.html">v2.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../security/5.5/en/overview.html">SUSE® Security</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../security/5.5/en/overview.html">5.5</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.4/en/overview.html">5.4</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.3/en/overview.html">5.3</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../storage/1.11/en/longhorn-documentation.html">SUSE® Storage</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../storage/1.12/en/longhorn-documentation.html">1.12 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../storage/1.11/en/longhorn-documentation.html">1.11 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../storage/1.10/en/longhorn-documentation.html">1.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../storage/1.9/en/longhorn-documentation.html">1.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-virtual-clusters/1.0.2/en/release-notes/version-1.0.2.html">SUSE® Virtual Clusters</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">v1.1.0 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../suse-virtual-clusters/1.0.2/en/release-notes/version-1.0.2.html">v1.0.2-latest</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.1/en/introduction.html">v1.0.1</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.0/en/introduction.html">v1.0.0</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../virtualization/v1.7/en/introduction/overview.html">SUSE® Virtualization</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../virtualization/v1.8/en/introduction/overview.html">v1.8 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../virtualization/v1.7/en/introduction/overview.html">v1.7 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../virtualization/v1.6/en/introduction/overview.html">v1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../virtualization/v1.5/en/introduction/overview.html">v1.5</a>
+            </li>
+          </ul>
+        </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+<ul>
+    <li>
+      <a class="home-link-dsc" href="https://documentation.suse.com/" title="documentation.suse.com" aria-label="SUSE Documentation Home"></a>
+    </li>
+    <li>
+      <a href="https://documentation.suse.com/cloudnative/k3s" title="K3s" aria-label="SUSE Documentation - K3s">
+        K3s
+      </a>
+    </li>
+      <li>
+          <a href="security.html" title="Sécurité" aria-label="Sécurité">Sécurité</a>
+      </li>
+  </ul>
+</nav>      <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <label class="visual-search-label-bc" for="search-input">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+          <input label="Search" aria-label="Search" id="search-input" type="text" placeholder="Searchercher dans les documents" >
+          <label class="filter checkbox" style="display: none">
+            <input type="checkbox" data-facet-filter="component:k3s" checked> Only this project
+          </label>
+        </div>
+      </div>
+</div>
+  <div class="content">
+<aside
+  class="toc sidebar"
+  data-title="Sur cette page" data-levels="2">
+  <div class="toc-menu">
+    <!-- start qualtrics -->
+    <div id='ZN_8qZUmklKYbBqAYe'><!--DO NOT REMOVE-CONTENTS PLACED HERE--></div>
+    <div id="qualtrics_container"></div>
+    <!-- end qualtrics -->
+  </div>
+</aside><article class="doc">
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>
+
+Ce document a été traduit à l'aide d'une technologie de traduction automatique.
+Bien que nous nous efforcions de fournir des traductions exactes,
+nous ne fournissons aucune garantie quant à l'exhaustivité, l'exactitude ou la
+fiabilité du contenu traduit. En cas de divergence, la version originale
+<a href="https://documentation.suse.com/cloudnative/k3s/latest/en/security/hardening-guide.html">
+anglaise
+</a>
+prévaut et fait foi.
+
+</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<h1 class="page">Guide de renforcement de la sécurité CIS</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Ce document fournit des conseils prescriptifs pour le renforcement d&#8217;une installation de production de K3s. Il décrit les configurations et les contrôles nécessaires pour répondre aux contrôles de référence Kubernetes du Center for Internet Security (CIS).</p>
+</div>
+<div class="paragraph">
+<p>K3s applique et active par défaut un certain nombre d&#8217;atténuations de sécurité et passera un certain nombre de contrôles CIS Kubernetes sans modification. Il existe quelques exceptions notables qui nécessitent une intervention manuelle pour se conformer pleinement à la référence CIS :</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>K3s ne modifiera pas le système d&#8217;exploitation hôte. Toute modification au niveau de l&#8217;hôte devra être effectuée manuellement.</p>
+</li>
+<li>
+<p>Certains contrôles de stratégie CIS pour <code>NetworkPolicies</code> et <code>PodSecurityStandards</code> (<code>PodSecurityPolicies</code> sur v1.24 et versions antérieures) limiteront la fonctionnalité du cluster. Vous devez opter pour que K3s configure ces éléments en ajoutant les options appropriées (activation des plugins d&#8217;admission) à vos arguments de ligne de commande ou à votre fichier de configuration, ainsi qu&#8217;en appliquant manuellement les stratégies appropriées. Des détails supplémentaires sont présentés dans les sections ci-dessous.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>La première section (1.1) de la référence CIS concerne principalement les permissions et la propriété des manifestes de pod. K3s ne les utilise pas pour les composants principaux, puisque tout est intégré dans un seul binaire.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_exigences_au_niveau_de_lhôte"><a class="anchor" href="#_exigences_au_niveau_de_lhôte"></a>Exigences au niveau de l&#8217;hôte</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Il existe deux domaines d&#8217;exigences au niveau de l&#8217;hôte : les paramètres du noyau Linux et la configuration du processus et du répertoire etcd. Ceci est décrit dans cette section.</p>
+</div>
+<div class="sect2">
+<h3 id="_assurez_vous_que_protect_kernel_defaults_est_défini"><a class="anchor" href="#_assurez_vous_que_protect_kernel_defaults_est_défini"></a>Assurez-vous que <code>protect-kernel-defaults</code> est défini</h3>
+<div class="paragraph">
+<p>C&#8217;est un drapeau kubelet qui fera quitter le kubelet si les paramètres du noyau requis ne sont pas définis ou sont définis sur des valeurs différentes des valeurs par défaut du kubelet.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<code>protect-kernel-defaults</code> est exposé comme un drapeau de niveau supérieur pour K3s.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_définir_les_paramètres_du_noyau_linux"><a class="anchor" href="#_définir_les_paramètres_du_noyau_linux"></a>Définir les paramètres du noyau Linux</h4>
+<div class="paragraph">
+<p>Créez un fichier nommé <code>/etc/sysctl.d/90-kubelet.conf</code> et ajoutez l&#8217;extrait ci-dessous. Ensuite, exécutez <code>sysctl -p /etc/sysctl.d/90-kubelet.conf</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">vm.panic_on_oom=0
+vm.overcommit_memory=1
+kernel.panic=10
+kernel.panic_on_oops=1</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_configuration_des_composants_kubernetes"><a class="anchor" href="#_configuration_des_composants_kubernetes"></a>Configuration des composants Kubernetes</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>La configuration ci-dessous doit être placée dans le <a href="../installation/configuration.html#_configuration_file" class="xref page">fichier de configuration</a>, et contient toutes les remédiations nécessaires pour le renforcement de la sécurité des composants Kubernetes.</p>
+</div>
+<div id="_tabs_1" class="openblock tabs is-sync data-sync-group-id=pod-sec is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_1_v1_29_et_versions_ultérieures" class="tab">
+<p>v1.29 et versions ultérieures</p>
+</li>
+<li id="_tabs_1_v1_25_v1_28" class="tab">
+<p>v1.25 - v1.28</p>
+</li>
+<li id="_tabs_1_v1_24_et_versions_antérieures" class="tab">
+<p>v1.24 et versions antérieures</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_1_v1_29_et_versions_ultérieures--panel" class="tabpanel" aria-labelledby="_tabs_1_v1_29_et_versions_ultérieures">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">protect-kernel-defaults: true
+secrets-encryption: true
+kube-apiserver-arg:
+  - "enable-admission-plugins=NodeRestriction,EventRateLimit"
+  - 'admission-control-config-file=/var/lib/rancher/k3s/server/psa.yaml'
+  - 'audit-log-path=/var/lib/rancher/k3s/server/logs/audit.log'
+  - 'audit-policy-file=/var/lib/rancher/k3s/server/audit.yaml'
+  - 'audit-log-maxage=30'
+  - 'audit-log-maxbackup=10'
+  - 'audit-log-maxsize=100'
+  - 'service-account-extend-token-expiration=false'
+kube-controller-manager-arg:
+  - 'terminated-pod-gc-threshold=100'
+kubelet-arg:
+  - 'streaming-connection-idle-timeout=5m'
+  - "tls-cipher-suites=TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305"</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_v1_25_v1_28--panel" class="tabpanel" aria-labelledby="_tabs_1_v1_25_v1_28">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">protect-kernel-defaults: true
+secrets-encryption: true
+kube-apiserver-arg:
+  - "enable-admission-plugins=NodeRestriction,EventRateLimit"
+  - 'admission-control-config-file=/var/lib/rancher/k3s/server/psa.yaml'
+  - 'audit-log-path=/var/lib/rancher/k3s/server/logs/audit.log'
+  - 'audit-policy-file=/var/lib/rancher/k3s/server/audit.yaml'
+  - 'audit-log-maxage=30'
+  - 'audit-log-maxbackup=10'
+  - 'audit-log-maxsize=100'
+kube-controller-manager-arg:
+  - 'terminated-pod-gc-threshold=10'
+kubelet-arg:
+  - 'streaming-connection-idle-timeout=5m'
+  - "tls-cipher-suites=TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305"</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_v1_24_et_versions_antérieures--panel" class="tabpanel" aria-labelledby="_tabs_1_v1_24_et_versions_antérieures">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">protect-kernel-defaults: true
+secrets-encryption: true
+kube-apiserver-arg:
+  - 'enable-admission-plugins=NodeRestriction,PodSecurityPolicy,NamespaceLifecycle,ServiceAccount'
+  - 'audit-log-path=/var/lib/rancher/k3s/server/logs/audit.log'
+  - 'audit-policy-file=/var/lib/rancher/k3s/server/audit.yaml'
+  - 'audit-log-maxage=30'
+  - 'audit-log-maxbackup=10'
+  - 'audit-log-maxsize=100'
+kube-controller-manager-arg:
+  - 'terminated-pod-gc-threshold=10'
+kubelet-arg:
+  - 'streaming-connection-idle-timeout=5m'
+  - 'make-iptables-util-chains=true'
+  - "tls-cipher-suites=TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305"</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_exigences_dexécution_de_kubernetes"><a class="anchor" href="#_exigences_dexécution_de_kubernetes"></a>Exigences d&#8217;exécution de Kubernetes</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Les exigences d&#8217;exécution pour se conformer au CIS Benchmark sont centrées sur la sécurité des pods (via PSP ou PSA), les politiques réseau et les journaux d&#8217;audit de l&#8217;API Server. Ceci est décrit dans cette section.</p>
+</div>
+<div class="paragraph">
+<p>Par défaut, K3s n&#8217;inclut aucune politique de sécurité des pods ou politique réseau. Cependant, K3s est livré avec un contrôleur qui appliquera les politiques réseau, si elles sont créées. K3s n&#8217;active pas l&#8217;audit par défaut, donc la configuration des journaux d&#8217;audit et la politique d&#8217;audit doivent être créées manuellement. Par défaut, K3s fonctionne avec les contrôleurs d&#8217;admission <code>PodSecurity</code> et <code>NodeRestriction</code> activés, entre autres.</p>
+</div>
+<div class="sect2">
+<h3 id="_sécurité_des_pods"><a class="anchor" href="#_sécurité_des_pods"></a>Sécurité des Pods</h3>
+<div id="_tabs_2" class="openblock tabs is-sync data-sync-group-id=pod-sec is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_2_v1_25_et_versions_ultérieures" class="tab">
+<p>v1.25 et versions ultérieures</p>
+</li>
+<li id="_tabs_2_v1_24_et_versions_antérieures" class="tab">
+<p>v1.24 et versions antérieures</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_2_v1_25_et_versions_ultérieures--panel" class="tabpanel" aria-labelledby="_tabs_2_v1_25_et_versions_ultérieures">
+<div class="paragraph">
+<p>K3s v1.25 et versions ultérieures prennent en charge <a href="https://kubernetes.io/docs/concepts/security/pod-security-admission/">les admissions de sécurité des pods (PSAs)</a> pour contrôler la sécurité des pods. Les PSAs sont activées en passant le drapeau suivant au serveur K3s :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>--kube-apiserver-arg="admission-control-config-file=/var/lib/rancher/k3s/server/psa.yaml"</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>La stratégie doit être écrite dans un fichier nommé <code>psa.yaml</code> dans le répertoire <code>/var/lib/rancher/k3s/server</code>.</p>
+</div>
+<div class="paragraph">
+<p>Voici un exemple de PSA conforme :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: apiserver.config.k8s.io/v1
+kind: AdmissionConfiguration
+plugins:
+- name: PodSecurity
+  configuration:
+    apiVersion: pod-security.admission.config.k8s.io/v1beta1
+    kind: PodSecurityConfiguration
+    defaults:
+      enforce: "restricted"
+      enforce-version: "latest"
+      audit: "restricted"
+      audit-version: "latest"
+      warn: "restricted"
+      warn-version: "latest"
+    exemptions:
+      usernames: []
+      runtimeClasses: []
+      namespaces: [kube-system, cis-operator-system]</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_2_v1_24_et_versions_antérieures--panel" class="tabpanel" aria-labelledby="_tabs_2_v1_24_et_versions_antérieures">
+<div class="paragraph">
+<p>K3s v1.24 et les versions antérieures prennent en charge <a href="https://kubernetes.io/docs/concepts/security/pod-security-policy/">les politiques de sécurité des pods (PSP)</a> pour contrôler la sécurité des pods. Les PSP sont activées en passant le drapeau suivant au serveur K3s :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>--kube-apiserver-arg="enable-admission-plugins=NodeRestriction,PodSecurityPolicy"</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Cela aura pour effet de maintenir le <code>NodeRestriction</code> plugin ainsi que d&#8217;activer le <code>PodSecurityPolicy</code>.</p>
+</div>
+<div class="paragraph">
+<p>Lorsque les PSP sont activées, une stratégie peut être appliquée pour satisfaire les contrôles nécessaires décrits dans la section 5.2 du CIS Benchmark.</p>
+</div>
+<div class="paragraph">
+<p>Voici un exemple d&#8217;une PSP conforme :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: restricted-psp
+spec:
+  privileged: false                # CIS - 5.2.1
+  allowPrivilegeEscalation: false  # CIS - 5.2.5
+  requiredDropCapabilities:        # CIS - 5.2.7/8/9
+    - ALL
+  volumes:
+    - 'configMap'
+    - 'emptyDir'
+    - 'projected'
+    - 'secret'
+    - 'downwardAPI'
+    - 'csi'
+    - 'persistentVolumeClaim'
+    - 'ephemeral'
+  hostNetwork: false               # CIS - 5.2.4
+  hostIPC: false                   # CIS - 5.2.3
+  hostPID: false                   # CIS - 5.2.2
+  runAsUser:
+    rule: 'MustRunAsNonRoot'       # CIS - 5.2.6
+  seLinux:
+    rule: 'RunAsAny'
+  supplementalGroups:
+    rule: 'MustRunAs'
+    ranges:
+      - min: 1
+        max: 65535
+  fsGroup:
+    rule: 'MustRunAs'
+    ranges:
+      - min: 1
+        max: 65535
+  readOnlyRootFilesystem: false</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Pour que la PSP ci-dessus soit efficace, nous devons créer un ClusterRole et un ClusterRoleBinding. Nous devons également inclure une "stratégie système sans restriction" qui est nécessaire pour les pods au niveau système nécessitant des privilèges supplémentaires, ainsi qu&#8217;une stratégie supplémentaire permettant les sysctls nécessaires au bon fonctionnement de servicelb.</p>
+</div>
+<div class="paragraph">
+<p>En combinant la configuration ci-dessus avec la <a href="#_networkpolicies">politique réseau</a> décrite dans la section suivante, un seul fichier peut être placé dans le répertoire <code>/var/lib/rancher/k3s/server/manifests</code>. Voici un exemple d&#8217;un fichier <code>policy.yaml</code> :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: restricted-psp
+spec:
+  privileged: false
+  allowPrivilegeEscalation: false
+  requiredDropCapabilities:
+    - ALL
+  volumes:
+    - 'configMap'
+    - 'emptyDir'
+    - 'projected'
+    - 'secret'
+    - 'downwardAPI'
+    - 'csi'
+    - 'persistentVolumeClaim'
+    - 'ephemeral'
+  hostNetwork: false
+  hostIPC: false
+  hostPID: false
+  runAsUser:
+    rule: 'MustRunAsNonRoot'
+  seLinux:
+    rule: 'RunAsAny'
+  supplementalGroups:
+    rule: 'MustRunAs'
+    ranges:
+      - min: 1
+        max: 65535
+  fsGroup:
+    rule: 'MustRunAs'
+    ranges:
+      - min: 1
+        max: 65535
+  readOnlyRootFilesystem: false
+---
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: system-unrestricted-psp
+  annotations:
+    seccomp.security.alpha.kubernetes.io/allowedProfileNames: '*'
+spec:
+  allowPrivilegeEscalation: true
+  allowedCapabilities:
+  - '*'
+  fsGroup:
+    rule: RunAsAny
+  hostIPC: true
+  hostNetwork: true
+  hostPID: true
+  hostPorts:
+  - max: 65535
+    min: 0
+  privileged: true
+  runAsUser:
+    rule: RunAsAny
+  seLinux:
+    rule: RunAsAny
+  supplementalGroups:
+    rule: RunAsAny
+  volumes:
+  - '*'
+---
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: svclb-psp
+  annotations:
+    seccomp.security.alpha.kubernetes.io/allowedProfileNames: '*'
+spec:
+  allowPrivilegeEscalation: false
+  allowedCapabilities:
+  - NET_ADMIN
+  allowedUnsafeSysctls:
+  - net.ipv4.ip_forward
+  - net.ipv6.conf.all.forwarding
+  fsGroup:
+    rule: RunAsAny
+  hostPorts:
+  - max: 65535
+    min: 0
+  runAsUser:
+    rule: RunAsAny
+  seLinux:
+    rule: RunAsAny
+  supplementalGroups:
+    rule: RunAsAny
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: psp:restricted-psp
+rules:
+- apiGroups:
+  - policy
+  resources:
+  - podsecuritypolicies
+  verbs:
+  - use
+  resourceNames:
+  - restricted-psp
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: psp:system-unrestricted-psp
+rules:
+- apiGroups:
+  - policy
+  resources:
+  - podsecuritypolicies
+  resourceNames:
+  - system-unrestricted-psp
+  verbs:
+  - use
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: psp:svclb-psp
+rules:
+- apiGroups:
+  - policy
+  resources:
+  - podsecuritypolicies
+  resourceNames:
+  - svclb-psp
+  verbs:
+  - use
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: default:restricted-psp
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: psp:restricted-psp
+subjects:
+- kind: Group
+  name: system:authenticated
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: system-unrestricted-node-psp-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: psp:system-unrestricted-psp
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: system:nodes
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: system-unrestricted-svc-acct-psp-rolebinding
+  namespace: kube-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: psp:system-unrestricted-psp
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: system:serviceaccounts
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: svclb-psp-rolebinding
+  namespace: kube-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: psp:svclb-psp
+subjects:
+- kind: ServiceAccount
+  name: svclb
+---
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: intra-namespace
+  namespace: kube-system
+spec:
+  podSelector: {}
+  ingress:
+    - from:
+      - namespaceSelector:
+          matchLabels:
+            name: kube-system
+---
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: intra-namespace
+  namespace: default
+spec:
+  podSelector: {}
+  ingress:
+    - from:
+      - namespaceSelector:
+          matchLabels:
+            name: default
+---
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: intra-namespace
+  namespace: kube-public
+spec:
+  podSelector: {}
+  ingress:
+    - from:
+      - namespaceSelector:
+          matchLabels:
+            name: kube-public</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Les ajouts critiques de Kubernetes tels que CNI, DNS et Ingress sont exécutés en tant que pods dans l&#8217;espace de noms <code>kube-system</code>. Par conséquent, cet espace de noms aura une politique moins restrictive afin que ces composants puissent fonctionner correctement.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_networkpolicies"><a class="anchor" href="#_networkpolicies"></a>Politiques Réseau</h3>
+<div class="paragraph">
+<p>Le CIS exige que tous les espaces de noms aient une politique réseau appliquée qui limite raisonnablement le trafic vers les espaces de noms et les pods.</p>
+</div>
+<div class="paragraph">
+<p>Les politiques réseau doivent être placées dans le répertoire <code>/var/lib/rancher/k3s/server/manifests</code>, où elles seront automatiquement déployées au démarrage.</p>
+</div>
+<div class="paragraph">
+<p>Voici un exemple d&#8217;une politique réseau conforme.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: intra-namespace
+  namespace: kube-system
+spec:
+  podSelector: {}
+  ingress:
+    - from:
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: kube-system</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Avec les restrictions appliquées, DNS sera bloqué à moins d&#8217;être expressément autorisé. Ci-dessous se trouve une politique réseau qui permettra au trafic de circuler pour DNS.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-network-dns-policy
+  namespace: &lt;NAMESPACE&gt;
+spec:
+  ingress:
+  - ports:
+    - port: 53
+      protocol: TCP
+    - port: 53
+      protocol: UDP
+  podSelector:
+    matchLabels:
+      k8s-app: kube-dns
+  policyTypes:
+  - Ingress</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Le metrics-server et le contrôleur d&#8217;entrée Traefik seront bloqués par défaut si des stratégies réseau ne sont pas créées pour permettre l&#8217;accès. Assurez-vous d&#8217;utiliser l&#8217;exemple de yaml ci-dessous :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-all-metrics-server
+  namespace: kube-system
+spec:
+  podSelector:
+    matchLabels:
+      k8s-app: metrics-server
+  ingress:
+  - {}
+  policyTypes:
+  - Ingress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-all-svclbtraefik-ingress
+  namespace: kube-system
+spec:
+  podSelector:
+    matchLabels:
+      svccontroller.k3s.cattle.io/svcname: traefik
+  ingress:
+  - {}
+  policyTypes:
+  - Ingress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-all-traefik-v121-ingress
+  namespace: kube-system
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: traefik
+  ingress:
+  - {}
+  policyTypes:
+  - Ingress
+---</code></pre>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Les opérateurs doivent gérer les stratégies réseau normalement pour les espaces de noms supplémentaires qui sont créés.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_configuration_de_laudit_du_serveur_api"><a class="anchor" href="#_configuration_de_laudit_du_serveur_api"></a>Configuration de l&#8217;audit du serveur API</h3>
+<div class="paragraph">
+<p>Les exigences CIS 1.2.22 à 1.2.25 sont liées à la configuration des journaux d&#8217;audit pour le serveur API. K3s ne crée pas par défaut le répertoire des journaux et la politique d&#8217;audit, car les exigences d&#8217;audit sont spécifiques aux politiques et à l&#8217;environnement de chaque utilisateur.</p>
+</div>
+<div class="paragraph">
+<p>Le répertoire des journaux doit idéalement être créé avant de démarrer K3s. Il est recommandé d&#8217;appliquer des autorisations d&#8217;accès restrictives pour éviter la fuite d&#8217;informations sensibles potentielles.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">sudo mkdir -p -m 700 /var/lib/rancher/k3s/server/logs</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Une stratégie d&#8217;audit de démarrage pour enregistrer les métadonnées des requêtes est fournie ci-dessous. La stratégie doit être écrite dans un fichier nommé <code>audit.yaml</code> dans le répertoire <code>/var/lib/rancher/k3s/server</code>. Des informations détaillées sur la configuration de la stratégie pour le serveur API peuvent être trouvées dans la <a href="https://kubernetes.io/docs/tasks/debug-application-cluster/audit/">documentation</a> Kubernetes.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: audit.k8s.io/v1
+kind: Policy
+rules:
+- level: Metadata</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Les deux configurations doivent être passées en tant qu&#8217;arguments au serveur API comme suit :</p>
+</div>
+<div id="_tabs_3" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_3_config" class="tab">
+<p>config</p>
+</li>
+<li id="_tabs_3_cmdline" class="tab">
+<p>cmdline</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_3_config--panel" class="tabpanel" aria-labelledby="_tabs_3_config">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">kube-apiserver-arg:
+  - 'admission-control-config-file=/var/lib/rancher/k3s/server/psa.yaml'
+  - 'audit-log-path=/var/lib/rancher/k3s/server/logs/audit.log'
+  - 'audit-policy-file=/var/lib/rancher/k3s/server/audit.yaml'
+  - 'audit-log-maxage=30'
+  - 'audit-log-maxbackup=10'
+  - 'audit-log-maxsize=100'</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_3_cmdline--panel" class="tabpanel" aria-labelledby="_tabs_3_cmdline">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">--kube-apiserver-arg='audit-log-path=/var/lib/rancher/k3s/server/logs/audit.log'
+--kube-apiserver-arg='audit-policy-file=/var/lib/rancher/k3s/server/audit.yaml'</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>K3s doit être redémarré pour charger la nouvelle configuration.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">sudo systemctl daemon-reload
+sudo systemctl restart k3s.service</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_opérations_manuelles"><a class="anchor" href="#_opérations_manuelles"></a>Opérations manuelles</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Les éléments suivants sont des contrôles que K3s ne passe actuellement pas avec la configuration ci-dessus appliquée. Ces contrôles nécessitent une intervention manuelle pour se conformer pleinement au CIS Benchmark.</p>
+</div>
+<div class="sect2">
+<h3 id="_contrôle_1_1_20"><a class="anchor" href="#_contrôle_1_1_20"></a>Contrôle 1.1.20</h3>
+<div class="paragraph">
+<p>Assurez-vous que les permissions du fichier de certificat de l&#8217;infrastructure de clés publiques Kubernetes sont définies sur 600 ou plus restrictives (Manuel)</p>
+</div>
+<details>
+<summary class="title">Correction</summary>
+<div class="content">
+<div class="paragraph">
+<p>Les fichiers de certificat de l&#8217;infrastructure de clés publiques de K3s sont stockés dans <code>/var/lib/rancher/k3s/server/tls/</code> avec la permission 644.
+Pour remédier à cela, exécutez la commande suivante :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">chmod -R 600 /var/lib/rancher/k3s/server/tls/*.crt</code></pre>
+</div>
+</div>
+</div>
+</details>
+</div>
+<div class="sect2">
+<h3 id="_contrôle_1_2_9"><a class="anchor" href="#_contrôle_1_2_9"></a>Contrôle 1.2.9</h3>
+<div class="paragraph">
+<p>Assurez-vous que le plugin de contrôle d&#8217;admission EventRateLimit est défini</p>
+</div>
+<details>
+<summary class="title">Correction</summary>
+<div class="content">
+<div class="paragraph">
+<p>Suivez la <a href="https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/#eventratelimit">documentation Kubernetes</a> et définissez les limites souhaitées dans un fichier de configuration.
+Pour cette configuration psa et d&#8217;autres, cette documentation utilise /var/lib/rancher/k3s/server/psa.yaml.
+Ensuite, éditez le fichier de configuration K3s /etc/rancher/k3s/config.yaml et définissez les paramètres ci-dessous.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">kube-apiserver-arg:
+  - "enable-admission-plugins=NodeRestriction,EventRateLimit"
+  - "admission-control-config-file=/var/lib/rancher/k3s/server/psa.yaml"</code></pre>
+</div>
+</div>
+</div>
+</details>
+</div>
+<div class="sect2">
+<h3 id="_contrôle_1_2_11"><a class="anchor" href="#_contrôle_1_2_11"></a>Contrôle 1.2.11</h3>
+<div class="paragraph">
+<p>Assurez-vous que le plugin de contrôle d&#8217;admission AlwaysPullImages est défini</p>
+</div>
+<details>
+<summary class="title">Correction</summary>
+<div class="content">
+<div class="paragraph">
+<p>Permissif, selon les directives CIS, « Ce paramètre pourrait avoir un impact sur les clusters hors ligne ou isolés, qui ont des images préchargées et n&#8217;ont pas accès à un registre pour extraire les images en cours d&#8217;utilisation. Ce paramètre n&#8217;est pas approprié pour les clusters qui utilisent cette configuration."
+Éditez le fichier de configuration K3s /etc/rancher/k3s/config.yaml et définissez le paramètre ci-dessous.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">kube-apiserver-arg:
+  - "enable-admission-plugins=...,AlwaysPullImages,..."</code></pre>
+</div>
+</div>
+</div>
+</details>
+</div>
+<div class="sect2">
+<h3 id="_contrôle_1_2_21"><a class="anchor" href="#_contrôle_1_2_21"></a>Contrôle 1.2.21</h3>
+<div class="paragraph">
+<p>Assurez-vous que l&#8217;argument&#8201;&#8212;&#8201;request-timeout est défini de manière appropriée.</p>
+</div>
+<details>
+<summary class="title">Correction</summary>
+<div class="content">
+<div class="paragraph">
+<p>Permissif, selon les directives CIS, "il est recommandé de définir cette limite comme appropriée et de changer la limite par défaut de 60 secondes uniquement si nécessaire".
+Éditez le fichier de configuration K3s /etc/rancher/k3s/config.yaml et définissez le paramètre ci-dessous si nécessaire. Exemples :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">kube-apiserver-arg:
+  - "request-timeout=300s"</code></pre>
+</div>
+</div>
+</div>
+</details>
+</div>
+<div class="sect2">
+<h3 id="_contrôle_4_2_13"><a class="anchor" href="#_contrôle_4_2_13"></a>Contrôle 4.2.13</h3>
+<div class="paragraph">
+<p>Assurez-vous qu&#8217;une limite est définie sur les PID des pods</p>
+</div>
+<details>
+<summary class="title">Correction</summary>
+<div class="content">
+<div class="paragraph">
+<p>Décidez d&#8217;un niveau approprié pour ce paramètre et définissez-le. Si vous utilisez un fichier de configuration K3s /etc/rancher/k3s/config.yaml, éditez le fichier pour définir <code>podPidsLimit</code> à</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">kubelet-arg:
+  - "pod-max-pids=&lt;value&gt;"</code></pre>
+</div>
+</div>
+</div>
+</details>
+</div>
+<div class="sect2">
+<h3 id="_contrôle_5_x"><a class="anchor" href="#_contrôle_5_x"></a>Contrôle 5.X</h3>
+<div class="paragraph">
+<p>Tous les contrôles 5.X sont liés à la configuration de la stratégie Kubernetes. Ces contrôles ne sont pas appliqués par K3s par défaut.</p>
+</div>
+<div class="paragraph">
+<p>Référez-vous à <a href="self-assessment-1.8.html#_5_1_rbac_and_service_accounts" class="xref page">CIS 1.8 Section 5</a> pour plus d&#8217;informations sur la façon de créer et d&#8217;appliquer ces politiques.</p>
+</div>
+<div class="sect3">
+<h4 id="_contrôle_5_1_5"><a class="anchor" href="#_contrôle_5_1_5"></a>Contrôle 5.1.5</h4>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>La remédiation pour obtenir un score de passage n&#8217;est nécessaire que pour cis-1.9.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<details>
+<summary class="title">Correction</summary>
+<div class="content">
+<div class="paragraph">
+<p>Créez des comptes de service explicites chaque fois qu&#8217;une charge de travail Kubernetes nécessite un accès spécifique au serveur API Kubernetes.
+Au minimum, appliquez le correctif suivant :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl patch serviceaccount --namespace default default --patch '{"automountServiceAccountToken": false}'
+kubectl patch serviceaccount --namespace kube-node-lease default --patch '{"automountServiceAccountToken": false}'
+kubectl patch serviceaccount --namespace kube-public default --patch '{"automountServiceAccountToken": false}'</code></pre>
+</div>
+</div>
+</div>
+</details>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_conclusion"><a class="anchor" href="#_conclusion"></a>Conclusion</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Si vous avez suivi ce guide, votre cluster K3s sera configuré pour se conformer au CIS Kubernetes Benchmark. Vous pouvez consulter le <a href="self-assessment-1.11.html" class="xref page">Guide d&#8217;auto-évaluation CIS 1.11</a> pour comprendre les attentes de chacun des contrôles du benchmark et comment vous pouvez faire de même sur votre cluster.</p>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="secrets-encryption.html">Configuration du chiffrement des secrets</a></span>
+  <span class="next"><a href="self-assessment-1.11.html">CIS 1.11 Guide d&#8217;auto-évaluation</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<script src="../../../../_/js/site.js"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+<script src="../../../../_/js/vendor/lunr.js"></script>
+<script src="../../../../_/js/search-ui.js" id="search-ui-script" data-site-root-path="../../../.." data-snippet-length="100" data-stylesheet="../../../../_/css/search.css"></script>
+<script async src="../../../../search-index.js"></script>
+<script src="../../../../_/js/vendor/langSelection.js"></script>
+<script async src="../../../../_/js/vendor/tabs.js"></script>
+
+
+<script src="../../../../_/js/CNLanguageSwitcher.js"></script>
+  </body>
+</html>

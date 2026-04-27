@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Uso de autoridades de certificación personalizadas | Admission Controller  1.34-dev</title>
+    <link rel="prev" href="../emergency-disable.html">
+    <link rel="next" href="02-private-registry.html">
+    <meta name="description" content="Configura PolicyServer para utilizar autoridades de certificación personalizadas o fuentes inseguras junto con los registros especificados.">
+    <meta name="keywords" content="["SUSE Security Admission Controller", "kubewarden", "kubernetes", "custom certificate authorities"]">
+    <meta name="generator" content="Antora 3.1.10">
+    <link rel="stylesheet" href="../../../../../_/css/site.css">
+<meta http-equiv="last-modified" content="2026-03-18"/>
+<link rel="stylesheet" href="../../../../../_/css/search.css">
+<link rel="icon" href="../../../../../_/img/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="../../../../../_/css/font-styles.css">
+<link rel="stylesheet" href="../../../../../_/fonts/css/all.css">
+<link rel="stylesheet" href="../../../../../_/css/site-extra.css">
+<link rel="stylesheet" href="../../../../../_/css/vendor/tabs.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap&family=SUSE+Mono:ital,wght@0,100..800;1,100..800" rel="stylesheet">
+<link href="https://documentation.suse.com/docserv/res/fonts/poppins/poppins.css" rel="stylesheet">
+<link rel="stylesheet" href="../../../../../_/css/vendor/light.css">
+<script src="/docserv/res/lightheaded/analytics.js" type="text/javascript"></script>
+<script type="module">
+  import { defineCustomElements, setAssetPath } from 'https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/shared-header.esm.js';
+  defineCustomElements();
+  setAssetPath("https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/assets");
+</script>
+<!-- Default English link -->
+<link href="https://documentation.suse.com/cloudnative/admission-controller/1.34/en/howtos/policy-servers/01-custom-cas.html" hreflang="x-default" rel="alternate"/>
+<!-- Link for the currently processed page -->
+<link href="https://documentation.suse.com/cloudnative/admission-controller/1.34/es/howtos/policy-servers/01-custom-cas.html" hrefLang="es-ES" rel="alternate" />
+<!-- Link for the English page -->
+<link href="https://documentation.suse.com/cloudnative/admission-controller/1.34/en/howtos/policy-servers/01-custom-cas.html" hreflang="en-US" rel="alternate" />
+<!-- Link for the Japanese page -->
+<link href="https://documentation.suse.com/cloudnative/admission-controller/1.34/ja/howtos/policy-servers/01-custom-cas.html" hreflang="ja-JP" rel="alternate" />
+<!-- Link for the Chinese page -->
+<link href="https://documentation.suse.com/cloudnative/admission-controller/1.34/zh/howtos/policy-servers/01-custom-cas.html" hreflang="zh-CN" rel="alternate" />
+<!-- Link for the German page -->
+<link href="https://documentation.suse.com/cloudnative/admission-controller/1.34/de/howtos/policy-servers/01-custom-cas.html" hreflang="de-DE" rel="alternate" />
+<!-- Link for the French page -->
+<link href="https://documentation.suse.com/cloudnative/admission-controller/1.34/fr/howtos/policy-servers/01-custom-cas.html" hreflang="fr-FR" rel="alternate" />
+<!-- Link for the Brazilian Portuguese page -->
+<link href="https://documentation.suse.com/cloudnative/admission-controller/1.34/pt/howtos/policy-servers/01-custom-cas.html" hreflang="pt-BR" rel="alternate" />
+
+<!-- JSON-LD for doc metadata -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Uso de autoridades de certificación personalizadas | SUSE Security Admission Controller 1.34",
+  "headline": "Uso de autoridades de certificación personalizadas",
+  "description": "Configura PolicyServer para utilizar autoridades de certificación personalizadas o fuentes inseguras junto con los registros especificados.",
+  "inLanguage": "es",
+  "dateModified": "2026-03-18T00:00:00Z",
+  "author": {
+    "@type": "Organization",
+    "name": "SUSE Product & Solution Documentation Team",
+    "url": "https://documentation.suse.com"
+  },
+  "mentions": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "SUSE Security Admission Controller",
+      "softwareVersion": "1.34",
+      "applicationCategory": "Cloud Infrastructure",
+      "operatingSystem": "Linux"
+    }
+  ],
+  "publisher": {
+    "@type": "Organization",
+    "name": "SUSE",
+    "url": "https://documentation.suse.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.suse.com/assets/img/suse-white-logo-green.svg"
+    }
+  }
+}
+</script>
+<!-- end JSON-LD for doc metadata -->
+
+<!-- SUVA - Begin Ask Geeko-->
+<!--
+searchUnifyChatbot ("Ask Geeko") Copyright ©2024 Grazitti Interactive - All Rights Reserved. NOTICE: All information contained herein is, and remains the property of Grazitti Interactive and its suppliers, if any. The intellectual and technical concepts contained herein are proprietary to Grazitti Interactive and its suppliers and may be covered by India, U.S. and Foreign Patents, patents in process, and are protected by trade secret or copyright law. Dissemination of this information or reproduction of this material is strictly forbidden unless prior written permission is obtained from Grazitti Interactive.
+-->
+<meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport"/>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/Allow/an.js?c485cb3c-93d4-4942-99e8-91f3b8ca5636"></script>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/js/index.js?q=gAAAAABp3JBN9VuEJTi5tFafLIMwgMkCPdJS3Qm56lSYx93ir3Twt9hgSvd3OHEt6-nYfSbY3yHq0Zv8PRPsSy4nbqZiaJ4cZvRc6ItVZdvwz9Urf35cH6OUyPOwdA0phlS-zVIznQ2rWW438p-91NlTHuxJuOFpnA=="></script>
+<link rel="stylesheet" href="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/css/index.css">
+<div id="searchUnifyChatbot"></div>
+<!-- SUVA - End Ask Geeko-->
+<!--BEGIN QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+<script type='text/javascript' src="../../../../../_/js/qualtrics.js" defer></script>
+<!--END QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+    <script>var uiRootPath = '../../../../../_'</script>
+  </head>
+  <body class="article">
+<script type="module">import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs'; mermaid.initialize({"startOnLoad":true});</script><shared-header
+language="en"
+languages='{
+    "en": { "label": "English", "url": "https://documentation.suse.com/en-us/" },
+    "de": { "label": "Deutsch", "url": "https://documentation.suse.com/de-de/" },
+    "fr": { "label": "Français", "url": "https://documentation.suse.com/fr-fr/" },
+    "es": { "label": "Español", "url": "https://documentation.suse.com/es-es/" },
+    "zh_CN": { "label": "中文", "url": "https://documentation.suse.com/zh-cn/" },
+    "pt_BR": { "label": "Português Brasileiro", "url": "https://documentation.suse.com/pt-br/" }
+}'
+enable-search='false'>
+</shared-header>
+
+<!-- Leaving as a comment, I expect it will be required again next year.
+<a target=_blank"" class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_bEiGZbUNzLD8Tcy"> Documentation survey </a>
+-->
+<div class="body">
+<div class="nav-container" data-component="admission-controller" data-version="1.34">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title">Admission Controller</h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../introduction.html">Introducción</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../quick-start.html">Inicio rápido</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Tutoriales</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../tutorials/writing-policies/index.html">Escribiendo SUSE Security Admission Controller políticas</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../tutorials/writing-policies/CEL/01-intro-cel.html">Introducción a CEL</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../tutorials/writing-policies/CEL/02-reusing-vap.html">Reusing ValidatingAdmissionPolicies</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../tutorials/writing-policies/CEL/03-context-aware.html">Políticas CEL conscientes del contexto</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../tutorials/writing-policies/CEL/04-example-sigstore.html">Capacidades del host de Sigstore</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../tutorials/writing-policies/rust/01-intro-rust.html">Rust</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../tutorials/writing-policies/rust/02-create-policy.html">Creación de una directiva</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../tutorials/writing-policies/rust/03-define-policy-settings.html">Definiendo ajustes de la directiva</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../tutorials/writing-policies/rust/04-write-validation-logic.html">Escribiendo lógica de validación</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../tutorials/writing-policies/rust/05-mutation-policy.html">Creando una nueva política de mutación</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../tutorials/writing-policies/rust/06-logging.html">Registro</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../tutorials/writing-policies/rust/07-build-and-distribute.html">Construcción y distribución de directivas</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../tutorials/writing-policies/rust/08-raw-policies.html">Directivas en bruto</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../tutorials/writing-policies/go/01-intro-go.html">Escribir directivas en Go</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../tutorials/writing-policies/go/02-scaffold.html">Creando una nueva política de validación</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../tutorials/writing-policies/go/03-policy-settings.html">Definiendo ajustes de la directiva</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../tutorials/writing-policies/go/04-validation.html">Escribiendo la lógica de validación</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../tutorials/writing-policies/go/05-e2e-tests.html">Pruebas de extremo a extremo</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../tutorials/writing-policies/go/06-logging.html">Registro</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../tutorials/writing-policies/go/07-automate.html">Integración con GitHub Actions</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../tutorials/writing-policies/go/08-distribute.html">Distribuir directiva</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../tutorials/writing-policies/go/09-validation-with-queries.html">Validación utilizando consultas JSON</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../tutorials/writing-policies/go/10-raw-policies.html">Escribiendo directivas en bruto</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../tutorials/writing-policies/rego/01-intro-rego.html">Rego</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../tutorials/writing-policies/rego/02-builtin-support.html">Soporte integrado</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Open Policy Agent</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../tutorials/writing-policies/rego/open-policy-agent/01-intro.html">Introducción al Open Policy Agent</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../tutorials/writing-policies/rego/open-policy-agent/02-create-policy.html">Creación de una nueva directiva</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../tutorials/writing-policies/rego/open-policy-agent/03-build-and-run.html">Construir y ejecutar una política OPA para Admission Controller</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../tutorials/writing-policies/rego/open-policy-agent/04-distribute.html">Distribuyendo una política de OPA con SUSE Security Admission Controller</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../tutorials/writing-policies/rego/open-policy-agent/05-raw-policies.html">Escribiendo directivas en bruto</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Gatekeeper</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../tutorials/writing-policies/rego/gatekeeper/01-intro.html">Soporte de Gatekeeper</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../tutorials/writing-policies/rego/gatekeeper/02-create-policy.html">Creando una nueva política de Rego de Gatekeeper</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../tutorials/writing-policies/rego/gatekeeper/03-build-and-run.html">Crea y ejecuta una directiva de Gatekeeper</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../tutorials/writing-policies/rego/gatekeeper/04-distribute.html">Distribuyendo una directiva de Gatekeeper con SUSE Security Admission Controller</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials/writing-policies/dotnet.html">C#</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">TypeScript</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../tutorials/writing-policies/typescript/01-intro-typescript.html">Escribir directivas en TypeScript/JavaScript</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../tutorials/writing-policies/typescript/02-scaffold.html">Creando una nueva directiva de validación</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../tutorials/writing-policies/typescript/03-policy-settings.html">Definiendo ajustes de directiva</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../tutorials/writing-policies/typescript/04-validation.html">Escribiendo la lógica de validación</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../tutorials/writing-policies/typescript/05-e2etests.html">Pruebas de extremo a extremo</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials/writing-policies/swift.html">Swift</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials/writing-policies/other-languages.html">Otros idiomas</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">WASI</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../tutorials/writing-policies/wasi/01-intro-wasi.html">WASI</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../tutorials/writing-policies/wasi/02-raw-policies.html">Escribiendo directivas en bruto</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials/writing-policies/metadata.html">Metadatos de la directiva</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Pruebas de directivas</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials/testing-policies/index.html">Pruebas de directivas</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials/testing-policies/02-policy-authors.html">Pruebas para autores de directivas</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials/testing-policies/03-cluster-operators.html">Pruebas para operadores de clúster</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../tutorials/verifying-kubewarden.html">Verificando SUSE Security Admission Controller</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../tutorials/publish-policy-to-artifact-hub.html">Publicar directivas en Artifact Hub</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Explicaciones</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../explanations/mutating-policies.html">Directivas de mutación</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../explanations/context-aware-policies.html">Políticas conscientes del contexto</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../explanations/policy-groups.html">Grupos de directivas</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../explanations/certificates.html">Rotación de certificados</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../explanations/distributing-policies.html">Distribuyendo directivas</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Comparaciones</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../explanations/comparisons/opa-comparison.html">SUSE Security Admission Controller vs OPA Gatekeeper</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../explanations/audit-scanner/audit-scanner.html">¿Qué es el Audit Scanner?</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../explanations/audit-scanner/limitations.html">Escáner de Auditoría - Limitaciones</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../explanations/audit-scanner/policy-reports.html">Escáner de Auditoría - InformesDeDirectiva</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../explanations/architecture.html">Admission Controller arquitectura</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Howtos</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tasks.html">Tareas habituales</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../install-kwctl.html">Instalar <code>kwctl</code></a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../production-deployments.html">Despliegues de producción</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../deploy-at-scale.html">Ampliación a gran escala</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../audit-scanner.html">Escáner de Auditoría</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../policies.html">Configurando directivas</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../policies-eval-resources-in-controller-namespace.html">Permitir evaluaciones en el espacio de nombres del Controlador de Admisión</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../emergency-disable.html">Desactivación de emergencia</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Configuración de Servidores de Directivas</span>
+<ul class="nav-list">
+  <li class="nav-item is-current-page" data-depth="3">
+    <a class="nav-link" href="01-custom-cas.html">Uso de CAs personalizadas</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="02-private-registry.html">Configurando PolicyServers para utilizar registros privados</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="03-production-deployments.html">Despliegues de producción</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="04-using-proxies.html">Uso de proxies</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="05-private-sigstore.html">Configuración de Servidores de Directivas para instancias privadas de Sigstore</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../policy-groups.html">Grupos de directivas</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../psp-migration.html">Migración de PSP</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../vap-migration.html">Migración de ValidatingAdmissionPolicy</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../pod-security-admission-with-kubewarden.html">Admisión de Seguridad de Pods</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../custom-certificate-authorities.html">Autoridades de Certificación Personalizadas</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../proxy-configuration.html">Configuración de proxy:</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../raw-policies.html">Directivas en bruto</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../argocd-installation.html">Instalación de ArgoCD</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../security-hardening/security-hardening.html">Seguridad</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../security-hardening/secure-supply-chain.html">Sistema de suministro seguro</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../security-hardening/webhook-mtls.html">Habilitar mTLS con K3s</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Entorno aislado</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../airgap/01-requirements.html">Requisitos</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../airgap/02-install.html">Instalación</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../airgap/03-hauler.html">Instalación de Hauler</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Inicios rápidos de telemetría</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../telemetry/10-opentelemetry-qs.html">Inicio rápido de Open Telemetry</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../telemetry/20-tracing-qs.html">Inicio rápido de trazado</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../telemetry/30-metrics-qs.html">Inicio rápido de métricas</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../telemetry/40-custom-otel-collector.html">Recolector de OpenTelemetry personalizado</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../Rancher-Fleet.html">Fleet con Rancher</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Extensión de la interfaz de usuario de Rancher</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../ui-extension/01-install.html">Quickstart</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../ui-extension/02-metrics.html">Monitorización</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../ui-extension/03-tracing.html">Seguimiento</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Colección de aplicaciones de Rancher</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../application-collection/01-verify-images.html">Verificar imágenes</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Soluciones</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../workarounds/policy-server-certificate-expiry.html">Rotación de certificados, versiones ≥ v1.16</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../contribution-guide/contribution-guide.html">Guía de contribuciones</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../contribution-guide/contributing.html">Contribuyendo a la documentación</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../contribution-guide/suggesting-an-improvement.html">Mejorando la documentación</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../gatekeeper-migration.html">Migrando directivas de Gatekeeper a SUSE Security Admission Controller</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Referencia</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../reference/CRDs.html">Definiciones de recursos personalizadas (CRD)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../reference/dependency-matrix.html">Matriz de dependencias</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../reference/artifacts.html">Artefactos</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../reference/upgrade-path.html">Vía de actualizar versión</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../reference/metrics-reference.html">Referencia de métricas</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../reference/monitor-mode.html">Modo monitor</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Especificación de directivas</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../reference/spec/01-intro-spec.html">Especificación de comunicación de directivas</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../reference/spec/02-settings.html">Configuración de la directiva</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../reference/spec/03-validating-policies.html">Validando directivas</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../reference/spec/04-mutating-policies.html">Directivas de mutación</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../reference/spec/05-context-aware-policies.html">Políticas conscientes del contexto</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Capacidades del host</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../reference/spec/host-capabilities/01-intro-host-capabilities.html">Especificación de capacidades del host</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../reference/spec/host-capabilities/02-signature-verifier-policies.html">Directivas de verificación de firmas</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../reference/spec/host-capabilities/03-container-registry.html">Capacidades del registro de contenedores</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../reference/spec/host-capabilities/04-net.html">Capacidades de red</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../reference/spec/host-capabilities/05-crypto.html">Capacidades criptográficas</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../reference/spec/host-capabilities/06-kubernetes.html">Kubernetes capabilities</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../reference/oci-registries-support.html">Soporte de registro OCI para Admission Controller</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Seguridad</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../reference/security-hardening/webhooks-hardening.html">Webhooks</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../reference/threat-model.html">Modelo de Amenaza</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../reference/policy-evaluation-timeout.html">Protección contra el tiempo de espera de evaluación de directivas</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../reference/verification-config.html">Formato de configuración de verificación</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../reference/sources_yaml.html">Referencia para sources.yaml</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../reference/kwctl-cli.html"><code>kwctl</code> CLI</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../reference/policy-server-cli.html">CLI del Policy Server</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../personas.html">¿Para quién?</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../use-cases.html">Casos de uso</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../organization.html">Organización</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../enterprise.html">Empresa</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../glossary.html">Glosario</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../disclosure.html">Divulgación de seguridad</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Admission Controller</span>
+    <span class="version">1.34-dev</span>
+  </div>
+  <ul class="components">
+        <li class="component is-current">
+          <div class="title"><a href="../../../../1.33-latest/en/introduction.html">Admission Controller</a></div>
+          <ul class="versions">
+            <li class="version is-current">
+              <a href="../../../en/introduction.html">1.34-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../1.33-latest/en/introduction.html">1.33-latest</a>
+            </li>
+            <li class="version">
+              <a href="../../../../1.32/en/introduction.html">1.32</a>
+            </li>
+            <li class="version">
+              <a href="../../../../1.31/en/introduction.html">1.31</a>
+            </li>
+            <li class="version">
+              <a href="../../../../1.30/en/introduction.html">1.30</a>
+            </li>
+            <li class="version">
+              <a href="../../../../1.29/en/introduction.html">1.29</a>
+            </li>
+            <li class="version">
+              <a href="../../../../1.28/en/introduction.html">1.28</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../cluster-api/v0.26/en/index.html">Cluster API</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.27/en/index.html">v0.27-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../../cluster-api/v0.26/en/index.html">v0.26</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.25/en/index.html">0.25</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.24/en/index.html">0.24</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.23/en/index.html">0.23</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.22/en/index.html">0.22</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.21/en/index.html">0.21</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.20/en/index.html">0.20</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.19/en/index.html">0.19</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.18/en/index.html">0.18</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.17/en/index.html">0.17</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.16/en/index.html">0.16</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.11/en/index.html">0.11</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../continuous-delivery/next/en/index.html">Continuous Delivery</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../continuous-delivery/next/en/index.html">Next</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../continuous-delivery/v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../continuous-delivery/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../continuous-delivery/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../continuous-delivery/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../continuous-delivery/v0.11/en/index.html">0.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../continuous-delivery/v0.10/en/index.html">0.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../continuous-delivery/v0.9/en/index.html">0.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../k3s/latest/en/introduction.html">K3s</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../k3s/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../os-manager/1.9/en/index.html">OS Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../../os-manager/1.10/en/index.html">1.10-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../../os-manager/1.9/en/index.html">1.9</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../os-manager/1.8/en/index.html">1.8</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../os-manager/1.7/en/index.html">1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../os-manager/1.6/en/index.html">1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../os-manager/1.5/en/index.html">1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../rancher-ai/latest/en/introduction.html">Rancher AI</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../rancher-ai/latest/en/introduction.html">latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../rke2/latest/en/introduction.html">RKE2</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../rke2/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../suse-observability/latest/en/classic.html">SUSE Observability</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../suse-observability/latest/en/classic.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">SUSE Rancher Developer Access</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">SUSE® Rancher for AWS</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../rancher-manager/v2.13/en/about-rancher/what-is-rancher.html">SUSE® Rancher Manager</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../rancher-manager/v2.13/en/about-rancher/what-is-rancher.html">v2.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../rancher-manager/v2.12/en/about-rancher/what-is-rancher.html">v2.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../rancher-manager/v2.11/en/about-rancher/what-is-rancher.html">v2.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../rancher-manager/v2.10/en/about-rancher/what-is-rancher.html">v2.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../rancher-manager/v2.9/en/about-rancher/what-is-rancher.html">v2.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../security/5.5/en/overview.html">SUSE® Security</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../security/5.5/en/overview.html">5.5</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../security/5.4/en/overview.html">5.4</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../security/5.3/en/overview.html">5.3</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../storage/1.11/en/longhorn-documentation.html">SUSE® Storage</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../../storage/1.12/en/longhorn-documentation.html">1.12 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../../storage/1.11/en/longhorn-documentation.html">1.11 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../storage/1.10/en/longhorn-documentation.html">1.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../storage/1.9/en/longhorn-documentation.html">1.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../suse-virtual-clusters/1.0.2/en/release-notes/version-1.0.2.html">SUSE® Virtual Clusters</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">v1.1.0 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../../suse-virtual-clusters/1.0.2/en/release-notes/version-1.0.2.html">v1.0.2-latest</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../suse-virtual-clusters/v1.0.1/en/introduction.html">v1.0.1</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../suse-virtual-clusters/v1.0.0/en/introduction.html">v1.0.0</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../virtualization/v1.7/en/introduction/overview.html">SUSE® Virtualization</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../../virtualization/v1.8/en/introduction/overview.html">v1.8 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../../virtualization/v1.7/en/introduction/overview.html">v1.7 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../virtualization/v1.6/en/introduction/overview.html">v1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../virtualization/v1.5/en/introduction/overview.html">v1.5</a>
+            </li>
+          </ul>
+        </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+<ul>
+    <li>
+      <a class="home-link-dsc" href="https://documentation.suse.com/" title="documentation.suse.com" aria-label="SUSE Documentation Home"></a>
+    </li>
+    <li>
+      <a href="https://documentation.suse.com/cloudnative/admission-controller" title="Admission Controller" aria-label="SUSE Documentation - Admission Controller">
+        Admission Controller
+      </a>
+    </li>
+      <li>
+          Howtos
+      </li>
+  </ul>
+</nav><div class="page-versions">
+  <button class="version-menu-toggle" title="Show other versions of page">1.34-dev</button>
+  <div class="version-menu">
+    <a class="version is-current" href="01-custom-cas.html">1.34-dev</a>
+    <a class="version is-missing" href="../../../../1.33-latest/en/introduction.html">1.33-latest</a>
+    <a class="version is-missing" href="../../../../1.32/en/introduction.html">1.32</a>
+    <a class="version is-missing" href="../../../../1.31/en/introduction.html">1.31</a>
+    <a class="version is-missing" href="../../../../1.30/en/introduction.html">1.30</a>
+    <a class="version is-missing" href="../../../../1.29/en/introduction.html">1.29</a>
+    <a class="version is-missing" href="../../../../1.28/en/introduction.html">1.28</a>
+  </div>
+</div>
+      <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <label class="visual-search-label-bc" for="search-input">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+          <input label="Search" aria-label="Search" id="search-input" type="text" placeholder="Buscar en los documentos" >
+          <label class="filter checkbox" style="display: none">
+            <input type="checkbox" data-facet-filter="component:admission-controller" checked> Only this project
+          </label>
+        </div>
+      </div>
+</div>
+  <div class="content">
+<aside
+  class="toc sidebar"
+  data-title="En esta página" data-levels="2">
+  <div class="toc-menu">
+    <!-- start qualtrics -->
+    <div id='ZN_8qZUmklKYbBqAYe'><!--DO NOT REMOVE-CONTENTS PLACED HERE--></div>
+    <div id="qualtrics_container"></div>
+    <!-- end qualtrics -->
+  </div>
+</aside><article class="doc">
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Nota"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>
+
+Este documento ha sido traducido utilizando tecnología de traducción automática.
+Si bien nos esforzamos por proporcionar traducciones precisas,
+no ofrecemos garantías sobre la integridad, precisión o confiabilidad del contenido traducido.
+En caso de discrepancia, la versión original en
+<a href="https://documentation.suse.com/cloudnative/admission-controller/1.34/en/howtos/policy-servers/01-custom-cas.html">
+inglés
+</a>
+prevalecerá y constituirá el texto autorizado.
+
+</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+            <div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Aviso"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Esta es documentación inédita para Admission Controller 1.34-dev.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+                <h1 class="page">Uso de autoridades de certificación personalizadas</h1>
+<div class="sect1">
+<h2 id="_autoridades_de_certificación_personalizadas_para_registros_de_directivas"><a class="anchor" href="#_autoridades_de_certificación_personalizadas_para_registros_de_directivas"></a>Autoridades de Certificación Personalizadas para registros de directivas</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Es posible especificar y configurar las Autoridades de Certificación que un PolicyServer utiliza al obtener los artefactos de ClusterAdmissionPolicy del registro de directivas. Los siguientes <code>spec</code> campos configuran el ejecutable <code>policy-server</code> desplegado a tal efecto.</p>
+</div>
+<div class="sect2">
+<h3 id="_fuentes_inseguras"><a class="anchor" href="#_fuentes_inseguras"></a>Fuentes inseguras</h3>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Importante"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>El comportamiento predeterminado de <code>kwctl</code> y <code>policy-server</code> es hacer cumplir HTTPS con certificados de confianza que coincidan con el almacén CA del sistema. Puedes interactuar con registros utilizando certificados no confiables o incluso sin TLS, utilizando la configuración <code>insecure_sources</code>. Este enfoque es <strong>altamente desaconsejado</strong> para entornos más cercanos a producción.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Para configurar el PolicyServer para aceptar conexiones inseguras a registros específicos, utiliza el campo <code>spec.insecureSources</code> de PolicyServer. Este campo acepta una lista de URIs inseguras. Por ejemplo:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">spec:
+  insecureSources:
+    - localhost:5000
+    - host.k3d.internal:5000</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Consulta <a href="../custom-certificate-authorities.html" class="xref page">Autoridades de Certificación Personalizadas</a> para más información sobre cómo el ejecutable <code>policy-server</code> trata las URIs inseguras.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_autoridades_de_certificación_personalizadas"><a class="anchor" href="#_autoridades_de_certificación_personalizadas"></a>Autoridades de Certificación Personalizadas</h3>
+<div class="paragraph">
+<p>Puedes configurar el PolicyServer con una cadena de certificados personalizada de 1 o más certificados para un URI específico. Para hacer esto, utilizas el campo <code>spec.sourceAuthorities</code>.</p>
+</div>
+<div class="paragraph">
+<p>Este campo es un mapa de URIs, cada uno con su propia lista de cadenas que contienen certificados codificados en Privacy Enhanced Mail (PEM). Por ejemplo:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">spec:
+  sourceAuthorities:
+    "registry-pre.example.com":
+      - |
+        -----BEGIN CERTIFICATE-----
+        ca-pre1-1 PEM cert
+        -----END CERTIFICATE-----
+      - |
+        -----BEGIN CERTIFICATE-----
+        ca-pre1-2 PEM cert
+        -----END CERTIFICATE-----
+    "registry-pre2.example.com:5500":
+      - |
+        -----BEGIN CERTIFICATE-----
+        ca-pre2 PEM cert
+        -----END CERTIFICATE-----</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Consulta <a href="../custom-certificate-authorities.html" class="xref page">Autoridades de Certificación Personalizadas</a> para más información sobre cómo el ejecutable <code>policy-server</code> las trata.</p>
+</div>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="../emergency-disable.html">Desactivación de emergencia</a></span>
+  <span class="next"><a href="02-private-registry.html">Configurando PolicyServers para utilizar registros privados</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<script src="../../../../../_/js/site.js"></script>
+<script async src="../../../../../_/js/vendor/highlight.js"></script>
+<script src="../../../../../_/js/vendor/lunr.js"></script>
+<script src="../../../../../_/js/search-ui.js" id="search-ui-script" data-site-root-path="../../../../.." data-snippet-length="100" data-stylesheet="../../../../../_/css/search.css"></script>
+<script async src="../../../../../search-index.js"></script>
+<script src="../../../../../_/js/vendor/langSelection.js"></script>
+<script async src="../../../../../_/js/vendor/tabs.js"></script>
+
+
+<script src="../../../../../_/js/CNLanguageSwitcher.js"></script>
+  </body>
+</html>

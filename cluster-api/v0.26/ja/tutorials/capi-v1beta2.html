@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CAPI v1beta2へのアップグレード | Cluster API  v0.26</title>
+    <link rel="canonical" href="https://documentation.suse.com/cloudnative/cluster-api/v0.26/ja/tutorials/capi-v1beta2.html">
+    <link rel="prev" href="rancher.html">
+    <link rel="next" href="../reference/capiprovider.html">
+    <meta name="generator" content="Antora 3.1.10">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+<link rel="stylesheet" href="../../../../_/css/search.css">
+<link rel="icon" href="../../../../_/img/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="../../../../_/css/font-styles.css">
+<link rel="stylesheet" href="../../../../_/fonts/css/all.css">
+<link rel="stylesheet" href="../../../../_/css/site-extra.css">
+<link rel="stylesheet" href="../../../../_/css/vendor/tabs.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap&family=SUSE+Mono:ital,wght@0,100..800;1,100..800" rel="stylesheet">
+<link href="https://documentation.suse.com/docserv/res/fonts/poppins/poppins.css" rel="stylesheet">
+<link rel="stylesheet" href="../../../../_/css/vendor/light.css">
+<script src="/docserv/res/lightheaded/analytics.js" type="text/javascript"></script>
+<script type="module">
+  import { defineCustomElements, setAssetPath } from 'https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/shared-header.esm.js';
+  defineCustomElements();
+  setAssetPath("https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/assets");
+</script>
+<!-- Default English link -->
+<link href="https://documentation.suse.com/cloudnative/cluster-api/v0.26/en/tutorials/capi-v1beta2.html" hreflang="x-default" rel="alternate"/>
+<!-- Link for the currently processed page -->
+<link href="https://documentation.suse.com/cloudnative/cluster-api/v0.26/ja/tutorials/capi-v1beta2.html" hrefLang="ja-JP" rel="alternate" />
+<!-- Link for the English page -->
+<link href="https://documentation.suse.com/cloudnative/cluster-api/v0.26/en/tutorials/capi-v1beta2.html" hreflang="en-US" rel="alternate" />
+<!-- Link for the Chinese page -->
+<link href="https://documentation.suse.com/cloudnative/cluster-api/v0.26/zh/tutorials/capi-v1beta2.html" hreflang="zh-CN" rel="alternate" />
+<!-- Link for the German page -->
+<link href="https://documentation.suse.com/cloudnative/cluster-api/v0.26/de/tutorials/capi-v1beta2.html" hreflang="de-DE" rel="alternate" />
+<!-- Link for the French page -->
+<link href="https://documentation.suse.com/cloudnative/cluster-api/v0.26/fr/tutorials/capi-v1beta2.html" hreflang="fr-FR" rel="alternate" />
+<!-- Link for the Spanish page -->
+<link href="https://documentation.suse.com/cloudnative/cluster-api/v0.26/es/tutorials/capi-v1beta2.html" hreflang="es-ES" rel="alternate" />
+<!-- Link for the Brazilian Portuguese page -->
+<link href="https://documentation.suse.com/cloudnative/cluster-api/v0.26/pt/tutorials/capi-v1beta2.html" hreflang="pt-BR" rel="alternate" />
+
+<!-- JSON-LD for doc metadata -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "CAPI v1beta2へのアップグレード | SUSE Rancher Prime Cluster API v0.26",
+  "headline": "CAPI v1beta2へのアップグレード",
+  "description": "CAPI v1beta2へのアップグレード",
+  "inLanguage": "ja",
+  "dateModified": "T00:00:00Z",
+  "author": {
+    "@type": "Organization",
+    "name": "SUSE Product & Solution Documentation Team",
+    "url": "https://documentation.suse.com"
+  },
+  "mentions": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "SUSE Rancher Prime Cluster API",
+      "softwareVersion": "v0.26",
+      "applicationCategory": "Cloud Infrastructure",
+      "operatingSystem": "Linux"
+    }
+  ],
+  "publisher": {
+    "@type": "Organization",
+    "name": "SUSE",
+    "url": "https://documentation.suse.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.suse.com/assets/img/suse-white-logo-green.svg"
+    }
+  }
+}
+</script>
+<!-- end JSON-LD for doc metadata -->
+
+<!-- SUVA - Begin Ask Geeko-->
+<!--
+searchUnifyChatbot ("Ask Geeko") Copyright ©2024 Grazitti Interactive - All Rights Reserved. NOTICE: All information contained herein is, and remains the property of Grazitti Interactive and its suppliers, if any. The intellectual and technical concepts contained herein are proprietary to Grazitti Interactive and its suppliers and may be covered by India, U.S. and Foreign Patents, patents in process, and are protected by trade secret or copyright law. Dissemination of this information or reproduction of this material is strictly forbidden unless prior written permission is obtained from Grazitti Interactive.
+-->
+<meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport"/>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/Allow/an.js?c485cb3c-93d4-4942-99e8-91f3b8ca5636"></script>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/js/index.js?q=gAAAAABp3JBN9VuEJTi5tFafLIMwgMkCPdJS3Qm56lSYx93ir3Twt9hgSvd3OHEt6-nYfSbY3yHq0Zv8PRPsSy4nbqZiaJ4cZvRc6ItVZdvwz9Urf35cH6OUyPOwdA0phlS-zVIznQ2rWW438p-91NlTHuxJuOFpnA=="></script>
+<link rel="stylesheet" href="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/css/index.css">
+<div id="searchUnifyChatbot"></div>
+<!-- SUVA - End Ask Geeko-->
+<!--BEGIN QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+<script type='text/javascript' src="../../../../_/js/qualtrics.js" defer></script>
+<!--END QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<script type="module">import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs'; mermaid.initialize({"startOnLoad":true});</script><shared-header
+language="en"
+languages='{
+    "en": { "label": "English", "url": "https://documentation.suse.com/en-us/" },
+    "de": { "label": "Deutsch", "url": "https://documentation.suse.com/de-de/" },
+    "fr": { "label": "Français", "url": "https://documentation.suse.com/fr-fr/" },
+    "es": { "label": "Español", "url": "https://documentation.suse.com/es-es/" },
+    "zh_CN": { "label": "中文", "url": "https://documentation.suse.com/zh-cn/" },
+    "pt_BR": { "label": "Português Brasileiro", "url": "https://documentation.suse.com/pt-br/" }
+}'
+enable-search='false'>
+</shared-header>
+
+<!-- Leaving as a comment, I expect it will be required again next year.
+<a target=_blank"" class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_bEiGZbUNzLD8Tcy"> Documentation survey </a>
+-->
+<div class="body">
+<div class="nav-container" data-component="cluster-api" data-version="v0.26">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title">Cluster API</h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../index.html">概要</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../overview/architecture.html">アーキテクチャ</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../overview/glossary.html">用語集</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../overview/features.html">機能</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../overview/certified.html">認定プロバイダー</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">チュートリアル</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="first-cluster.html">最初のクラスター</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="rancher.html">Rancher のセットアップ</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="capi-v1beta2.html">CAPI v1beta2へのアップグレード</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">リファレンス</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/capiprovider.html">CAPIProvider</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/clusterctlconfig.html">ClusterctlConfig</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">ユーザーガイド</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../user/clusterclass.html">ClusterClassを使用してCAPIクラスターをプロビジョニングする</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../user/fleet.html">Fleetを使用してクラスターを作成する</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../user/rancher-cluster-registration.html">Rancher クラスターの登録</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../user/caapf.html">CAPI Addon Provider Fleet</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../user/gitops.html">カメとCAPIのためのGitOpsのベストプラクティス</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../user/cluster-resource-mapping.html">におけるクラスターリソースの関係SUSE® Rancher Prime Cluster API</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../user/providers.html">認定プロバイダーをインストールする</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">オペレーターガイド</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operator/clusterclass.html">ClusterClassを有効にする</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operator/certification.html">プロバイダー認証</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operator/certificationsuite.html">プロバイダーのテストスイート</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operator/airgapped.html">エアギャップ(された)環境</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">開発者ガイド</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../developer/development.html">開発環境</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../developer/guidelines.html">開発ガイドライン</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">トラブルシューティングガイド</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/troubleshooting.html">トラブルシューティング</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">セキュリティ</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../security/slsa.html">SLSA</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../changelogs/index.html">リリースノート</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../changelogs/changelogs/v0.26.0.html">v0.26.0 (latest)</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Cluster API</span>
+    <span class="version">v0.26</span>
+  </div>
+  <ul class="components">
+        <li class="component">
+          <div class="title"><a href="../../../../admission-controller/1.33-latest/en/introduction.html">Admission Controller</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../admission-controller/1.34/en/introduction.html">1.34-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../admission-controller/1.33-latest/en/introduction.html">1.33-latest</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.32/en/introduction.html">1.32</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.31/en/introduction.html">1.31</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.30/en/introduction.html">1.30</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.29/en/introduction.html">1.29</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.28/en/introduction.html">1.28</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component is-current">
+          <div class="title"><a href="../../en/index.html">Cluster API</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../v0.27/en/index.html">v0.27-dev</a>
+            </li>
+            <li class="version is-current is-latest">
+              <a href="../../en/index.html">v0.26</a>
+            </li>
+            <li class="version">
+              <a href="../../../v0.25/en/index.html">0.25</a>
+            </li>
+            <li class="version">
+              <a href="../../../v0.24/en/index.html">0.24</a>
+            </li>
+            <li class="version">
+              <a href="../../../v0.23/en/index.html">0.23</a>
+            </li>
+            <li class="version">
+              <a href="../../../v0.22/en/index.html">0.22</a>
+            </li>
+            <li class="version">
+              <a href="../../../v0.21/en/index.html">0.21</a>
+            </li>
+            <li class="version">
+              <a href="../../../v0.20/en/index.html">0.20</a>
+            </li>
+            <li class="version">
+              <a href="../../../v0.19/en/index.html">0.19</a>
+            </li>
+            <li class="version">
+              <a href="../../../v0.18/en/index.html">0.18</a>
+            </li>
+            <li class="version">
+              <a href="../../../v0.17/en/index.html">0.17</a>
+            </li>
+            <li class="version">
+              <a href="../../../v0.16/en/index.html">0.16</a>
+            </li>
+            <li class="version">
+              <a href="../../../v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../v0.11/en/index.html">0.11</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../continuous-delivery/next/en/index.html">Continuous Delivery</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../continuous-delivery/next/en/index.html">Next</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.11/en/index.html">0.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.10/en/index.html">0.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.9/en/index.html">0.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../k3s/latest/en/introduction.html">K3s</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../k3s/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../os-manager/1.9/en/index.html">OS Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../os-manager/1.10/en/index.html">1.10-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../os-manager/1.9/en/index.html">1.9</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.8/en/index.html">1.8</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.7/en/index.html">1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.6/en/index.html">1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.5/en/index.html">1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-ai/latest/en/introduction.html">Rancher AI</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-ai/latest/en/introduction.html">latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rke2/latest/en/introduction.html">RKE2</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rke2/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-observability/latest/en/classic.html">SUSE Observability</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../suse-observability/latest/en/classic.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">SUSE Rancher Developer Access</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">SUSE® Rancher for AWS</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-manager/v2.13/en/about-rancher/what-is-rancher.html">SUSE® Rancher Manager</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-manager/v2.13/en/about-rancher/what-is-rancher.html">v2.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.12/en/about-rancher/what-is-rancher.html">v2.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.11/en/about-rancher/what-is-rancher.html">v2.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.10/en/about-rancher/what-is-rancher.html">v2.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.9/en/about-rancher/what-is-rancher.html">v2.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../security/5.5/en/overview.html">SUSE® Security</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../security/5.5/en/overview.html">5.5</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.4/en/overview.html">5.4</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.3/en/overview.html">5.3</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../storage/1.11/en/longhorn-documentation.html">SUSE® Storage</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../storage/1.12/en/longhorn-documentation.html">1.12 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../storage/1.11/en/longhorn-documentation.html">1.11 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../storage/1.10/en/longhorn-documentation.html">1.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../storage/1.9/en/longhorn-documentation.html">1.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-virtual-clusters/1.0.2/en/release-notes/version-1.0.2.html">SUSE® Virtual Clusters</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">v1.1.0 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../suse-virtual-clusters/1.0.2/en/release-notes/version-1.0.2.html">v1.0.2-latest</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.1/en/introduction.html">v1.0.1</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.0/en/introduction.html">v1.0.0</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../virtualization/v1.7/en/introduction/overview.html">SUSE® Virtualization</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../virtualization/v1.8/en/introduction/overview.html">v1.8 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../virtualization/v1.7/en/introduction/overview.html">v1.7 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../virtualization/v1.6/en/introduction/overview.html">v1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../virtualization/v1.5/en/introduction/overview.html">v1.5</a>
+            </li>
+          </ul>
+        </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+<ul>
+    <li>
+      <a class="home-link-dsc" href="https://documentation.suse.com/" title="documentation.suse.com" aria-label="SUSE Documentation Home"></a>
+    </li>
+    <li>
+      <a href="https://documentation.suse.com/cloudnative/cluster-api" title="Cluster API" aria-label="SUSE Documentation - Cluster API">
+        Cluster API
+      </a>
+    </li>
+      <li>
+          チュートリアル
+      </li>
+  </ul>
+</nav><div class="page-versions">
+  <button class="version-menu-toggle" title="Show other versions of page">v0.26</button>
+  <div class="version-menu">
+    <a class="version is-missing" href="../../../v0.27/en/index.html">v0.27-dev</a>
+    <a class="version is-current" href="capi-v1beta2.html">v0.26</a>
+    <a class="version is-missing" href="../../../v0.25/en/index.html">0.25</a>
+    <a class="version is-missing" href="../../../v0.24/en/index.html">0.24</a>
+    <a class="version is-missing" href="../../../v0.23/en/index.html">0.23</a>
+    <a class="version is-missing" href="../../../v0.22/en/index.html">0.22</a>
+    <a class="version is-missing" href="../../../v0.21/en/index.html">0.21</a>
+    <a class="version is-missing" href="../../../v0.20/en/index.html">0.20</a>
+    <a class="version is-missing" href="../../../v0.19/en/index.html">0.19</a>
+    <a class="version is-missing" href="../../../v0.18/en/index.html">0.18</a>
+    <a class="version is-missing" href="../../../v0.17/en/index.html">0.17</a>
+    <a class="version is-missing" href="../../../v0.16/en/index.html">0.16</a>
+    <a class="version is-missing" href="../../../v0.15/en/index.html">0.15</a>
+    <a class="version is-missing" href="../../../v0.14/en/index.html">0.14</a>
+    <a class="version is-missing" href="../../../v0.13/en/index.html">0.13</a>
+    <a class="version is-missing" href="../../../v0.12/en/index.html">0.12</a>
+    <a class="version is-missing" href="../../../v0.11/en/index.html">0.11</a>
+  </div>
+</div>
+      <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <label class="visual-search-label-bc" for="search-input">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+          <input label="Search" aria-label="Search" id="search-input" type="text" placeholder="ドキュメントを検索" >
+          <label class="filter checkbox" style="display: none">
+            <input type="checkbox" data-facet-filter="component:cluster-api" checked> Only this project
+          </label>
+        </div>
+      </div>
+</div>
+  <div class="content">
+<aside
+  class="toc sidebar"
+  data-title="このページで" data-levels="2">
+  <div class="toc-menu">
+    <!-- start qualtrics -->
+    <div id='ZN_8qZUmklKYbBqAYe'><!--DO NOT REMOVE-CONTENTS PLACED HERE--></div>
+    <div id="qualtrics_container"></div>
+    <!-- end qualtrics -->
+  </div>
+</aside><article class="doc">
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="注記"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>
+
+この文書は自動機械翻訳技術を使用して翻訳されています。
+正確な翻訳を提供するように努めておりますが、翻訳された内容の完全性、正確性、信頼性については一切保証いたしません。
+相違がある場合は、元の英語版
+<a href="https://documentation.suse.com/cloudnative/cluster-api/v0.26/en/tutorials/capi-v1beta2.html">
+英語
+</a>
+が優先され、正式なテキストとなります。
+
+</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<h1 class="page">CAPI v1beta2へのアップグレード</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Rancher Turtlesのリリース`v0.26.0`は、CAPIコアv1.12.2を伴うCAPI `v1beta2`契約を採用しています。CAPIベースのプロビジョニングを使用している場合、アップグレード前に確認すべきいくつかの事項があります。</p>
+</div>
+<div class="paragraph">
+<p>変更は三つの領域に分かれています：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#_clusterclass">リソース`ClusterClass`の構造</a>。</p>
+</li>
+<li>
+<p><a href="#_cluster">トポロジーが`Cluster`そのクラスを参照する方法</a>。</p>
+</li>
+<li>
+<p><a href="#_rke2_provider_caprke2">RKE2プロバイダーでの変更点</a>。</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>変更を加える前に、あなたのセットアップに適用されるセクションを読み通してください。</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_後方互換性に関する注意事項"><a class="anchor" href="#_後方互換性に関する注意事項"></a>後方互換性に関する注意事項</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>CAPI v1.12は、<code>v1beta1`リソースを`v1beta2`と共に提供し続けます。クラスター上の既存のリソースは、APIサーバーが二つのバージョン間を透過的に変換するため、即時の移行なしに機能し続けます。とはいえ、あなたが書く新しいマニフェストは`v1beta2`を対象とすべきであり、既存のものを時間をかけて移行する計画を立てるべきです。`v1beta1</code> APIは、エコシステムが`v1beta2`に落ち着くまでの時間を考慮して、将来のCAPIリリース（2026年8月）で削除される予定です。</p>
+</div>
+<div class="paragraph">
+<p><strong>推奨事項</strong>：まず、`v1beta2`を採用する準備ができているかどうかを評価し、それに応じて行動してください。すぐに移行しないことを選択した場合は、将来の混乱を避けるために新しいAPIを使用するための切り替え計画を作成してください。</p>
+</div>
+<div class="paragraph">
+<p>さらに、アップストリームコミュニティは公式の移行ガイドを提供しています：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://cluster-api.sigs.k8s.io/developer/providers/migrations/v1.10-to-v1.11">CAPI v1.10からv1.11への移行</a>：これはコアCAPIにおける`v1beta1`から`v1beta2`へのすべての変更をカバーしています。</p>
+</li>
+<li>
+<p><a href="https://cluster-api.sigs.k8s.io/developer/providers/migrations/v1.11-to-v1.12">CAPI v1.11からv1.12への移行</a>：CAPI v1.12の変更のほとんどは軽微なものと見なすことができます。</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_clusterclass"><a class="anchor" href="#_clusterclass"></a>ClusterClass</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_テンプレート参照"><a class="anchor" href="#_テンプレート参照"></a>テンプレート参照</h3>
+<div class="paragraph">
+<p><code>v1beta1`では、`ClusterClass`テンプレートオブジェクトを指すフィールドは`ref`と呼ばれていました。`v1beta2`では、`templateRef`と呼ばれています。これは、`spec.infrastructure</code>、<code>spec.controlPlane</code>、および`spec.controlPlane.machineInfrastructure`に適用されます。</p>
+</div>
+<div class="paragraph">
+<p>変更前:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">spec:
+  infrastructure:
+    ref:
+      apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+      kind: DockerClusterTemplate
+      name: my-cluster-template</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>～日後</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">spec:
+  infrastructure:
+    templateRef:
+      apiVersion: infrastructure.cluster.x-k8s.io/v1beta2
+      kind: DockerClusterTemplate
+      name: my-cluster-template</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_ワーカーセクション"><a class="anchor" href="#_ワーカーセクション"></a>ワーカーセクション</h3>
+<div class="paragraph">
+<p>`v1beta1`では、マシンデプロイメントのための起動およびインフラストラクチャの参照が`template`フィールドの下にネストされていました。このルートキーは`v1beta2`で消失しました。`bootstrap`と`infrastructure`は、現在マシンデプロイメントエントリの直接の子です。</p>
+</div>
+<div class="paragraph">
+<p>変更前:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">workers:
+  machineDeployments:
+    - class: default-worker
+      template:
+        bootstrap:
+          ref:
+            apiVersion: bootstrap.cluster.x-k8s.io/v1beta1
+            kind: KubeadmConfigTemplate
+            name: my-bootstrap-template
+        infrastructure:
+          ref:
+            apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+            kind: DockerMachineTemplate
+            name: my-worker-template</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>～日後</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">workers:
+  machineDeployments:
+    - class: default-worker
+      bootstrap:
+        templateRef:
+          apiVersion: bootstrap.cluster.x-k8s.io/v1beta2
+          kind: KubeadmConfigTemplate
+          name: my-bootstrap-template
+      infrastructure:
+        templateRef:
+          apiVersion: infrastructure.cluster.x-k8s.io/v1beta2
+          kind: DockerMachineTemplate
+          name: my-worker-template</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_cluster"><a class="anchor" href="#_cluster"></a>クラスタ</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>`Cluster`リソースは、インライン文字列ではなく構造化されたオブジェクトを介してその`ClusterClass`を参照するようになりました。`v1beta1`では、クラス名とネームスペースが`spec.topology.class`と`spec.topology.classNamespace`として指定されました。`v1beta2`では、両方のフィールドが単一の`spec.topology.classRef`オブジェクトに置き換えられます。</p>
+</div>
+<div class="paragraph">
+<p>変更前:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: cluster.x-k8s.io/v1beta1
+kind: Cluster
+spec:
+  topology:
+    class: my-clusterclass
+    classNamespace: capi-system</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>～日後</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: cluster.x-k8s.io/v1beta2
+kind: Cluster
+spec:
+  topology:
+    classRef:
+      name: my-clusterclass
+      namespace: capi-system</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>Cluster`仕様の残り（ネットワーク設定、`controlPlane.replicas</code>、<code>workers.machineDeployments</code>、<code>variables</code>、`version`など）は変更されていません。</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_rke2_provider_caprke2"><a class="anchor" href="#_rke2_provider_caprke2"></a>RKE2プロバイダー（CAPRKE2）</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>このリリースでは、CAPRKE2 v0.23.1（従来のv0.22.1から）が提供されます。RKE2ブートストラップおよびコントロールプレーンリソースのための`v1beta2` APIは、CAPI v1.11のサポートと共にv0.22.0で導入され、v0.23.0ではCAPI v1.12.2にアップグレードすることでその作業が完了しました。v0.22.1とv0.23.1は、それぞれのマイナーバージョンの上にあるパッチリリースです。</p>
+</div>
+<div class="paragraph">
+<p><strong>注意</strong>: <a href="https://caprke2.docs.rancher.com/05_reference/01_api_versions.html#v1beta1-to-v1beta2">CAPIプロバイダーRKE2ブック</a>からのAPI変更に関するプロバイダーのドキュメントをお読みください。</p>
+</div>
+<div class="sect2">
+<h3 id="_新しいv1beta2_api"><a class="anchor" href="#_新しいv1beta2_api"></a>新しいv1beta2 API</h3>
+<div class="paragraph">
+<p>CAPRKE2は、<code>RKE2ControlPlane</code>、<code>RKE2ControlPlaneTemplate</code>、および`RKE2Config`/<code>RKE2ConfigTemplate`のために独自の`v1beta2</code> APIを提供します。<code>v1beta1</code> APIは引き続き利用可能ですが、`v1beta1`で非推奨とマークされていたいくつかのフィールドは`v1beta2`で削除されました。</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_rke2controlplaneで削除されたフィールド"><a class="anchor" href="#_rke2controlplaneで削除されたフィールド"></a>RKE2ControlPlaneで削除されたフィールド</h3>
+<div class="paragraph">
+<p>以下のフィールドは、`RKE2ControlPlane.spec`から`v1beta2`で削除されました：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>infrastructureRef</code> — 代わりに`spec.machineTemplate.spec.infrastructureRef`を使用してください。</p>
+</li>
+<li>
+<p><code>nodeDrainTimeout</code> — 代わりに`spec.machineTemplate.spec.deletion.nodeDrainTimeout`を使用してください。</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_タイムアウトフィールドの名前が変更されました"><a class="anchor" href="#_タイムアウトフィールドの名前が変更されました"></a>タイムアウトフィールドの名前が変更されました</h3>
+<div class="paragraph">
+<p>`RKE2ControlPlaneMachineTemplate`のタイムアウトフィールドは、`deletion`のサブオブジェクトの下に移動され、名前が変更されました。また、タイプが`metav1.Duration`から`int32`に変更され、値は期間文字列ではなく秒で表現されることが期待されています。</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">v1beta1</th>
+<th class="tableblock halign-left valign-top">v1beta2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>nodeDrainTimeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>deletion.nodeDrainTimeoutSeconds</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>nodeVolumeDetachTimeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>deletion.nodeVolumeDetachTimeoutSeconds</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>nodeDeletionTimeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>deletion.nodeDeletionTimeoutSeconds</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>`RKE2ControlPlaneMachineTemplate`オブジェクトは、現在`spec`フィールドも必要です。</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_v1alpha1の非推奨"><a class="anchor" href="#_v1alpha1の非推奨"></a>v1alpha1の非推奨</h3>
+<div class="paragraph">
+<p><code>v1alpha1</code> APIはCAPRKE2 v0.22.0で非推奨になりました。まだ`v1alpha1`リソースを使用している場合は、少なくとも`v1beta1`に移行する良い時期です。</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_アップグレード前に取るべき推奨手順"><a class="anchor" href="#_アップグレード前に取るべき推奨手順"></a>アップグレード前に取るべき推奨手順</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>維持している`ClusterClass`マニフェストを更新してください：`ref`を`templateRef`に名前変更し、ワーカーセクションの`template`ラッパーを削除し、コアCAPIの`apiVersion`文字列を`v1beta2`に更新してください。</p>
+</li>
+<li>
+<p>任意の`Cluster`マニフェストを更新してください：`spec.topology.class`と`spec.topology.classNamespace`を`spec.topology.classRef.name`と`spec.topology.classRef.namespace`に置き換えます。</p>
+</li>
+<li>
+<p>CAPRKE2 `v1beta2`リソースを使用している場合は、`RKE2ControlPlane.spec`から直接`infrastructureRef`または`nodeDrainTimeout`フィールドを削除し、`spec.machineTemplate.spec`に移動してください。</p>
+</li>
+<li>
+<p>各認定CAPIプロバイダーごとに、完全かつ動作するマニフェストの更新された例を`examples/clusterclasses/`で確認してください。</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="rancher.html">Rancher のセットアップ</a></span>
+  <span class="next"><a href="../reference/capiprovider.html">CAPIProvider</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<script src="../../../../_/js/site.js"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+<script src="../../../../_/js/vendor/lunr.js"></script>
+<script src="../../../../_/js/search-ui.js" id="search-ui-script" data-site-root-path="../../../.." data-snippet-length="100" data-stylesheet="../../../../_/css/search.css"></script>
+<script async src="../../../../search-index.js"></script>
+<script src="../../../../_/js/vendor/langSelection.js"></script>
+<script async src="../../../../_/js/vendor/tabs.js"></script>
+
+
+<script src="../../../../_/js/CNLanguageSwitcher.js"></script>
+  </body>
+</html>

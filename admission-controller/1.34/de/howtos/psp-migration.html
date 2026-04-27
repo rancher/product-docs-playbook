@@ -1,0 +1,2041 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PodSecurityPolicy-Migration | Admission Controller  1.34-dev</title>
+    <link rel="prev" href="policy-groups.html">
+    <link rel="next" href="vap-migration.html">
+    <meta name="description" content="Konfigurieren Sie SUSE Security Admission Controller Richtlinien in Ihren Kubernetes-Clustern, um eine granulare Kontrolle über die Richtlinienkonfiguration zu erreichen und die PodSecurityPolicy (PSP) zu ersetzen.">
+    <meta name="keywords" content="["SUSE Security Admission Controller", "kubewarden", "kubernetes", "appvia", "psp", "pod security policy"]">
+    <meta name="generator" content="Antora 3.1.10">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+<meta http-equiv="last-modified" content="2026-03-18"/>
+<link rel="stylesheet" href="../../../../_/css/search.css">
+<link rel="icon" href="../../../../_/img/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="../../../../_/css/font-styles.css">
+<link rel="stylesheet" href="../../../../_/fonts/css/all.css">
+<link rel="stylesheet" href="../../../../_/css/site-extra.css">
+<link rel="stylesheet" href="../../../../_/css/vendor/tabs.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap&family=SUSE+Mono:ital,wght@0,100..800;1,100..800" rel="stylesheet">
+<link href="https://documentation.suse.com/docserv/res/fonts/poppins/poppins.css" rel="stylesheet">
+<link rel="stylesheet" href="../../../../_/css/vendor/light.css">
+<script src="/docserv/res/lightheaded/analytics.js" type="text/javascript"></script>
+<script type="module">
+  import { defineCustomElements, setAssetPath } from 'https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/shared-header.esm.js';
+  defineCustomElements();
+  setAssetPath("https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/assets");
+</script>
+<!-- Default English link -->
+<link href="https://documentation.suse.com/cloudnative/admission-controller/1.34/en/howtos/psp-migration.html" hreflang="x-default" rel="alternate"/>
+<!-- Link for the currently processed page -->
+<link href="https://documentation.suse.com/cloudnative/admission-controller/1.34/de/howtos/psp-migration.html" hrefLang="de-DE" rel="alternate" />
+<!-- Link for the English page -->
+<link href="https://documentation.suse.com/cloudnative/admission-controller/1.34/en/howtos/psp-migration.html" hreflang="en-US" rel="alternate" />
+<!-- Link for the Japanese page -->
+<link href="https://documentation.suse.com/cloudnative/admission-controller/1.34/ja/howtos/psp-migration.html" hreflang="ja-JP" rel="alternate" />
+<!-- Link for the Chinese page -->
+<link href="https://documentation.suse.com/cloudnative/admission-controller/1.34/zh/howtos/psp-migration.html" hreflang="zh-CN" rel="alternate" />
+<!-- Link for the French page -->
+<link href="https://documentation.suse.com/cloudnative/admission-controller/1.34/fr/howtos/psp-migration.html" hreflang="fr-FR" rel="alternate" />
+<!-- Link for the Spanish page -->
+<link href="https://documentation.suse.com/cloudnative/admission-controller/1.34/es/howtos/psp-migration.html" hreflang="es-ES" rel="alternate" />
+<!-- Link for the Brazilian Portuguese page -->
+<link href="https://documentation.suse.com/cloudnative/admission-controller/1.34/pt/howtos/psp-migration.html" hreflang="pt-BR" rel="alternate" />
+
+<!-- JSON-LD for doc metadata -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "PodSecurityPolicy-Migration | SUSE Security Admission Controller 1.34",
+  "headline": "PodSecurityPolicy-Migration",
+  "description": "Konfigurieren Sie SUSE Security Admission Controller Richtlinien in Ihren Kubernetes-Clustern, um eine granulare Kontrolle über die Richtlinienkonfiguration zu erreichen und die PodSecurityPolicy (PSP) zu ersetzen.",
+  "inLanguage": "de",
+  "dateModified": "2026-03-18T00:00:00Z",
+  "author": {
+    "@type": "Organization",
+    "name": "SUSE Product & Solution Documentation Team",
+    "url": "https://documentation.suse.com"
+  },
+  "mentions": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "SUSE Security Admission Controller",
+      "softwareVersion": "1.34",
+      "applicationCategory": "Cloud Infrastructure",
+      "operatingSystem": "Linux"
+    }
+  ],
+  "publisher": {
+    "@type": "Organization",
+    "name": "SUSE",
+    "url": "https://documentation.suse.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.suse.com/assets/img/suse-white-logo-green.svg"
+    }
+  }
+}
+</script>
+<!-- end JSON-LD for doc metadata -->
+
+<!-- SUVA - Begin Ask Geeko-->
+<!--
+searchUnifyChatbot ("Ask Geeko") Copyright ©2024 Grazitti Interactive - All Rights Reserved. NOTICE: All information contained herein is, and remains the property of Grazitti Interactive and its suppliers, if any. The intellectual and technical concepts contained herein are proprietary to Grazitti Interactive and its suppliers and may be covered by India, U.S. and Foreign Patents, patents in process, and are protected by trade secret or copyright law. Dissemination of this information or reproduction of this material is strictly forbidden unless prior written permission is obtained from Grazitti Interactive.
+-->
+<meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport"/>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/Allow/an.js?c485cb3c-93d4-4942-99e8-91f3b8ca5636"></script>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/js/index.js?q=gAAAAABp3JBN9VuEJTi5tFafLIMwgMkCPdJS3Qm56lSYx93ir3Twt9hgSvd3OHEt6-nYfSbY3yHq0Zv8PRPsSy4nbqZiaJ4cZvRc6ItVZdvwz9Urf35cH6OUyPOwdA0phlS-zVIznQ2rWW438p-91NlTHuxJuOFpnA=="></script>
+<link rel="stylesheet" href="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/css/index.css">
+<div id="searchUnifyChatbot"></div>
+<!-- SUVA - End Ask Geeko-->
+<!--BEGIN QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+<script type='text/javascript' src="../../../../_/js/qualtrics.js" defer></script>
+<!--END QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<script type="module">import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs'; mermaid.initialize({"startOnLoad":true});</script><shared-header
+language="en"
+languages='{
+    "en": { "label": "English", "url": "https://documentation.suse.com/en-us/" },
+    "de": { "label": "Deutsch", "url": "https://documentation.suse.com/de-de/" },
+    "fr": { "label": "Français", "url": "https://documentation.suse.com/fr-fr/" },
+    "es": { "label": "Español", "url": "https://documentation.suse.com/es-es/" },
+    "zh_CN": { "label": "中文", "url": "https://documentation.suse.com/zh-cn/" },
+    "pt_BR": { "label": "Português Brasileiro", "url": "https://documentation.suse.com/pt-br/" }
+}'
+enable-search='false'>
+</shared-header>
+
+<!-- Leaving as a comment, I expect it will be required again next year.
+<a target=_blank"" class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_bEiGZbUNzLD8Tcy"> Documentation survey </a>
+-->
+<div class="body">
+<div class="nav-container" data-component="admission-controller" data-version="1.34">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title">Admission Controller</h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../introduction.html">Einführung</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../quick-start.html">Schnelleinführung</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Anleitungen</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../tutorials/writing-policies/index.html">Schreiben von SUSE Security Admission Controller Richtlinien</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../tutorials/writing-policies/CEL/01-intro-cel.html">Einführung in CEL</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/CEL/02-reusing-vap.html">Wiederverwendung von ValidatingAdmissionPolicies</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/CEL/03-context-aware.html">Kontextabhängige CEL-Richtlinien</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/CEL/04-example-sigstore.html">Fähigkeiten des Sigstore-Hosts</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../tutorials/writing-policies/rust/01-intro-rust.html">Rust</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/rust/02-create-policy.html">Erstellen einer Richtlinie</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/rust/03-define-policy-settings.html">Festlegung von Richtlinieneinstellungen</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/rust/04-write-validation-logic.html">Validierungslogik schreiben</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/rust/05-mutation-policy.html">Erstellen einer neuen Mutationsrichtlinie</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/rust/06-logging.html">Protokollierung</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/rust/07-build-and-distribute.html">Erstellen und Verteilen von Richtlinien</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/rust/08-raw-policies.html">Roh-Richtlinien</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../tutorials/writing-policies/go/01-intro-go.html">Richtlinien in Go schreiben</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/go/02-scaffold.html">Erstellen einer neuen Validierungsrichtlinie</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/go/03-policy-settings.html">Festlegung von Richtlinieneinstellungen</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/go/04-validation.html">Die Validierungslogik schreiben</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/go/05-e2e-tests.html">End-to-End-Tests</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/go/06-logging.html">Protokollierung</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/go/07-automate.html">Integration mit GitHub Actions</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/go/08-distribute.html">Richtlinie verteilen</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/go/09-validation-with-queries.html">Validierung mit JSON-Abfragen</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/go/10-raw-policies.html">Roh-Richtlinien schreiben</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../tutorials/writing-policies/rego/01-intro-rego.html">Rego</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/rego/02-builtin-support.html">Integrierte Unterstützung</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Open Policy Agent</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../tutorials/writing-policies/rego/open-policy-agent/01-intro.html">Einführung in den Open Policy Agent</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../tutorials/writing-policies/rego/open-policy-agent/02-create-policy.html">Eine neue Richtlinie erstellen</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../tutorials/writing-policies/rego/open-policy-agent/03-build-and-run.html">Erstellen und führen Sie eine OPA-Richtlinie für Admission Controller aus.</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../tutorials/writing-policies/rego/open-policy-agent/04-distribute.html">Verteilen einer OPA-Richtlinie mit SUSE Security Admission Controller</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../tutorials/writing-policies/rego/open-policy-agent/05-raw-policies.html">Roh-Richtlinien schreiben</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Gatekeeper</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../tutorials/writing-policies/rego/gatekeeper/01-intro.html">Gatekeeper-Unterstützung</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../tutorials/writing-policies/rego/gatekeeper/02-create-policy.html">Erstellen einer neuen Gatekeeper Rego-Richtlinie</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../tutorials/writing-policies/rego/gatekeeper/03-build-and-run.html">Erstellen und Ausführen einer Gatekeeper-Richtlinie</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../tutorials/writing-policies/rego/gatekeeper/04-distribute.html">Verteilen einer Gatekeeper-Richtlinie mit SUSE Security Admission Controller</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../tutorials/writing-policies/dotnet.html">C#</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">TypeScript</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/typescript/01-intro-typescript.html">Richtlinien in TypeScript/JavaScript schreiben</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/typescript/02-scaffold.html">Erstellen einer neuen Validierungsrichtlinie</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/typescript/03-policy-settings.html">Festlegung von Richtlinieneinstellungen</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/typescript/04-validation.html">Die Validierungslogik schreiben</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/typescript/05-e2etests.html">End-to-End-Tests</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../tutorials/writing-policies/swift.html">Swift</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../tutorials/writing-policies/other-languages.html">Andere Sprachen</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">WASI</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/wasi/01-intro-wasi.html">WASI</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/wasi/02-raw-policies.html">Roh-Richtlinien schreiben</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../tutorials/writing-policies/metadata.html">Richtlinienmetadaten</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Testen von Richtlinien</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../tutorials/testing-policies/index.html">Richtlinientests</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../tutorials/testing-policies/02-policy-authors.html">Testen für Richtlinienautoren</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../tutorials/testing-policies/03-cluster-operators.html">Tests für Cluster-Betreiber</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tutorials/verifying-kubewarden.html">Überprüfung SUSE Security Admission Controller</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tutorials/publish-policy-to-artifact-hub.html">Richtlinien im Artifact Hub veröffentlichen</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Erläuterungen</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../explanations/mutating-policies.html">Mutierende Richtlinien</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../explanations/context-aware-policies.html">Kontextabhängige Richtlinien</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../explanations/policy-groups.html">Richtliniengruppen</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../explanations/certificates.html">Zertifikatsrotation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../explanations/distributing-policies.html">Richtlinien verteilen</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Vergleiche</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../explanations/comparisons/opa-comparison.html">SUSE Security Admission Controller vs OPA Gatekeeper</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../explanations/audit-scanner/audit-scanner.html">Was ist der Kubewarden audit scanner?</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../explanations/audit-scanner/limitations.html">Audit Scanner - Einschränkungen</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../explanations/audit-scanner/policy-reports.html">Audit Scanner - Richtlinienberichte</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../explanations/architecture.html">Admission Controller Architektur</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Howtos</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="tasks.html">Häufige Tasks</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="install-kwctl.html">Installieren <code>kwctl</code></a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="production-deployments.html">Produktionsimplementierungen</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="deploy-at-scale.html">Implementierung im großen Maßstab</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="audit-scanner.html">Audit-Scanner</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="policies.html">Konfigurieren von Richtlinien</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="policies-eval-resources-in-controller-namespace.html">Erlauben von Bewertungen im Namespace des Admission Controllers</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="emergency-disable.html">Notfall-Deaktivierung</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Konfigurieren von Richtliniendiensten</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="policy-servers/01-custom-cas.html">Verwendung benutzerdefinierter CAs</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="policy-servers/02-private-registry.html">Konfigurieren von PolicyServern zur Verwendung privater Registries</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="policy-servers/03-production-deployments.html">Produktionsimplementierungen</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="policy-servers/04-using-proxies.html">Verwendung von Proxies</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="policy-servers/05-private-sigstore.html">Konfigurieren von Richtliniendiensten für private Sigstore-Instanzen</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="policy-groups.html">Richtliniengruppen</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="psp-migration.html">PSP-Migration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="vap-migration.html">Migration der ValidatingAdmissionPolicy</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="pod-security-admission-with-kubewarden.html">Pod-Sicherheitszulassung</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="custom-certificate-authorities.html">Benutzerdefinierte CA</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="proxy-configuration.html">Proxy-Konfiguration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="raw-policies.html">Roh-Richtlinien</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="argocd-installation.html">ArgoCD-Installation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="security-hardening/security-hardening.html">Sicherheit</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="security-hardening/secure-supply-chain.html">Sichere Lieferkette</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="security-hardening/webhook-mtls.html">Aktivieren Sie mutual Transport Layer Security (mTLS) mit K3s.</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Air Gap</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="airgap/01-requirements.html">Anforderungen</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="airgap/02-install.html">Installation</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="airgap/03-hauler.html">Hauler-Installation</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Telemetrie-Kurzanleitungen</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="telemetry/10-opentelemetry-qs.html">Open Telemetrie Kurzanleitung</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="telemetry/20-tracing-qs.html">Tracing-Kurzanleitung</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="telemetry/30-metrics-qs.html">Metriken Kurzanleitung</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="telemetry/40-custom-otel-collector.html">Benutzerdefinierter OpenTelemetry Collector</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="Rancher-Fleet.html">Rancher Fleet</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Rancher UI-Erweiterung</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="ui-extension/01-install.html">Quickstart</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="ui-extension/02-metrics.html">Überwachung</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="ui-extension/03-tracing.html">Verfolgung</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Rancher Anwendungssammlung</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="application-collection/01-verify-images.html">Images überprüfen</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Workarounds</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="workarounds/policy-server-certificate-expiry.html">Zertifikatsrotation, Versionen ≥ v1.16</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="contribution-guide/contribution-guide.html">Beitragsleitfaden</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="contribution-guide/contributing.html">Beitrag zur Dokumentation</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="contribution-guide/suggesting-an-improvement.html">Verbesserung der Dokumentation</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="gatekeeper-migration.html">Migration von Gatekeeper-Richtlinien zu SUSE Security Admission Controller</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Kurz nachgeschlagen</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/CRDs.html">Benutzerdefinierte Ressourcenbeschreibungen (CRD)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/dependency-matrix.html">Abhängigkeitsmatrix</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/artifacts.html">Artefakte</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/upgrade-path.html">Upgrade-Pfad</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/metrics-reference.html">Metrikreferenz</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/monitor-mode.html">Überwachungsmodus</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Richtlinenspezifikation</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reference/spec/01-intro-spec.html">Spezifikation der Richtlinienkommunikation</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reference/spec/02-settings.html">Richtlinieneinstellungen</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reference/spec/03-validating-policies.html">Richtlinien validieren</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reference/spec/04-mutating-policies.html">Mutierende Richtlinien</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reference/spec/05-context-aware-policies.html">Kontextabhängige Richtlinien</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Host-Funktionen</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/spec/host-capabilities/01-intro-host-capabilities.html">Spezifikation der Hostfähigkeiten</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/spec/host-capabilities/02-signature-verifier-policies.html">Signaturprüfungsrichtlinien</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/spec/host-capabilities/03-container-registry.html">Funktionen der Container-Registry</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/spec/host-capabilities/04-net.html">Netzwerkfähigkeiten</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/spec/host-capabilities/05-crypto.html">Kryptografische Fähigkeiten</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/spec/host-capabilities/06-kubernetes.html">Kubernetes-Funktionen</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/oci-registries-support.html">OCI-Registry-Support für Admission Controller</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Sicherheit</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reference/security-hardening/webhooks-hardening.html">Webhooks</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/threat-model.html">Bedrohungsmodell</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/policy-evaluation-timeout.html">Schutz vor Zeitüberschreitung bei der Richtlinienbewertung</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/verification-config.html">Verifikationskonfigurationsformat</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/sources_yaml.html">Referenz für sources.yaml</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/kwctl-cli.html"><code>kwctl</code> CLI</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/policy-server-cli.html">Policy Server Kommandozeilenschnittstelle</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../personas.html">Für wen?</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../use-cases.html">Einsatzbereiche</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../organization.html">Organisation</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../enterprise.html">Enterprise</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../glossary.html">Glossar</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../disclosure.html">Sicherheitsoffenlegung</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Admission Controller</span>
+    <span class="version">1.34-dev</span>
+  </div>
+  <ul class="components">
+        <li class="component is-current">
+          <div class="title"><a href="../../../1.33-latest/en/introduction.html">Admission Controller</a></div>
+          <ul class="versions">
+            <li class="version is-current">
+              <a href="../../en/introduction.html">1.34-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../1.33-latest/en/introduction.html">1.33-latest</a>
+            </li>
+            <li class="version">
+              <a href="../../../1.32/en/introduction.html">1.32</a>
+            </li>
+            <li class="version">
+              <a href="../../../1.31/en/introduction.html">1.31</a>
+            </li>
+            <li class="version">
+              <a href="../../../1.30/en/introduction.html">1.30</a>
+            </li>
+            <li class="version">
+              <a href="../../../1.29/en/introduction.html">1.29</a>
+            </li>
+            <li class="version">
+              <a href="../../../1.28/en/introduction.html">1.28</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../cluster-api/v0.26/en/index.html">Cluster API</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../cluster-api/v0.27/en/index.html">v0.27-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../cluster-api/v0.26/en/index.html">v0.26</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.25/en/index.html">0.25</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.24/en/index.html">0.24</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.23/en/index.html">0.23</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.22/en/index.html">0.22</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.21/en/index.html">0.21</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.20/en/index.html">0.20</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.19/en/index.html">0.19</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.18/en/index.html">0.18</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.17/en/index.html">0.17</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.16/en/index.html">0.16</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.11/en/index.html">0.11</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../continuous-delivery/next/en/index.html">Continuous Delivery</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../continuous-delivery/next/en/index.html">Next</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.11/en/index.html">0.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.10/en/index.html">0.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.9/en/index.html">0.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../k3s/latest/en/introduction.html">K3s</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../k3s/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../os-manager/1.9/en/index.html">OS Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../os-manager/1.10/en/index.html">1.10-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../os-manager/1.9/en/index.html">1.9</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.8/en/index.html">1.8</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.7/en/index.html">1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.6/en/index.html">1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.5/en/index.html">1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-ai/latest/en/introduction.html">Rancher AI</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-ai/latest/en/introduction.html">latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rke2/latest/en/introduction.html">RKE2</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rke2/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-observability/latest/en/classic.html">SUSE Observability</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../suse-observability/latest/en/classic.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">SUSE Rancher Developer Access</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">SUSE® Rancher for AWS</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-manager/v2.13/en/about-rancher/what-is-rancher.html">SUSE® Rancher Manager</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-manager/v2.13/en/about-rancher/what-is-rancher.html">v2.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.12/en/about-rancher/what-is-rancher.html">v2.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.11/en/about-rancher/what-is-rancher.html">v2.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.10/en/about-rancher/what-is-rancher.html">v2.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.9/en/about-rancher/what-is-rancher.html">v2.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../security/5.5/en/overview.html">SUSE® Security</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../security/5.5/en/overview.html">5.5</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.4/en/overview.html">5.4</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.3/en/overview.html">5.3</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../storage/1.11/en/longhorn-documentation.html">SUSE® Storage</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../storage/1.12/en/longhorn-documentation.html">1.12 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../storage/1.11/en/longhorn-documentation.html">1.11 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../storage/1.10/en/longhorn-documentation.html">1.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../storage/1.9/en/longhorn-documentation.html">1.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-virtual-clusters/1.0.2/en/release-notes/version-1.0.2.html">SUSE® Virtual Clusters</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">v1.1.0 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../suse-virtual-clusters/1.0.2/en/release-notes/version-1.0.2.html">v1.0.2-latest</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.1/en/introduction.html">v1.0.1</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.0/en/introduction.html">v1.0.0</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../virtualization/v1.7/en/introduction/overview.html">SUSE® Virtualization</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../virtualization/v1.8/en/introduction/overview.html">v1.8 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../virtualization/v1.7/en/introduction/overview.html">v1.7 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../virtualization/v1.6/en/introduction/overview.html">v1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../virtualization/v1.5/en/introduction/overview.html">v1.5</a>
+            </li>
+          </ul>
+        </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+<ul>
+    <li>
+      <a class="home-link-dsc" href="https://documentation.suse.com/" title="documentation.suse.com" aria-label="SUSE Documentation Home"></a>
+    </li>
+    <li>
+      <a href="https://documentation.suse.com/cloudnative/admission-controller" title="Admission Controller" aria-label="SUSE Documentation - Admission Controller">
+        Admission Controller
+      </a>
+    </li>
+      <li>
+          Howtos
+      </li>
+  </ul>
+</nav><div class="page-versions">
+  <button class="version-menu-toggle" title="Show other versions of page">1.34-dev</button>
+  <div class="version-menu">
+    <a class="version is-current" href="psp-migration.html">1.34-dev</a>
+    <a class="version is-missing" href="../../../1.33-latest/en/introduction.html">1.33-latest</a>
+    <a class="version is-missing" href="../../../1.32/en/introduction.html">1.32</a>
+    <a class="version is-missing" href="../../../1.31/en/introduction.html">1.31</a>
+    <a class="version is-missing" href="../../../1.30/en/introduction.html">1.30</a>
+    <a class="version is-missing" href="../../../1.29/en/introduction.html">1.29</a>
+    <a class="version is-missing" href="../../../1.28/en/introduction.html">1.28</a>
+  </div>
+</div>
+      <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <label class="visual-search-label-bc" for="search-input">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+          <input label="Search" aria-label="Search" id="search-input" type="text" placeholder="Dokumentation durchsuchen" >
+          <label class="filter checkbox" style="display: none">
+            <input type="checkbox" data-facet-filter="component:admission-controller" checked> Only this project
+          </label>
+        </div>
+      </div>
+</div>
+  <div class="content">
+<aside
+  class="toc sidebar"
+  data-title="Auf dieser Seite" data-levels="2">
+  <div class="toc-menu">
+    <!-- start qualtrics -->
+    <div id='ZN_8qZUmklKYbBqAYe'><!--DO NOT REMOVE-CONTENTS PLACED HERE--></div>
+    <div id="qualtrics_container"></div>
+    <!-- end qualtrics -->
+  </div>
+</aside><article class="doc">
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Anmerkung"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>
+
+Dieses Dokument wurde mithilfe automatisierter maschineller Übersetzungstechnologie übersetzt.
+Wir bemühen uns um korrekte Übersetzungen, übernehmen jedoch keine Gewähr für die Vollständigkeit, Richtigkeit oder Zuverlässigkeit der übersetzten Inhalte.
+Im Falle von Abweichungen ist die
+<a href="https://documentation.suse.com/cloudnative/admission-controller/1.34/en/howtos/psp-migration.html">
+englische
+</a> Originalversion maßgebend und stellt den verbindlichen Text dar.
+
+</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+        <div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warnung"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Dies ist eine unveröffentlichte Dokumentation für Admission Controller 1.34-dev.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+                    <h1 class="page">PodSecurityPolicy-Migration</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Für Kubernetes ≥ v1.25.
+<a href="https://kubernetes.io/docs/concepts/security/pod-security-policy/">PodSecurityPolicy</a>
+(PSP) wurde entfernt. Jetzt können Sie SUSE Security Admission Controller für die Zulassungskontrolle in Ihren Kubernetes-Clustern verwenden.</p>
+</div>
+<div class="paragraph">
+<p>Admission Controller hat separate Richtlinien, um dasselbe Ziel wie eine monolithische PSP-Konfiguration zu erreichen. Jede Admission Controller Richtliniendefinition fungiert als ein anderer Konfigurationsabschnitt in der Spezifikation einer PSP. Die Zuordnung der PSP-Konfigurationsfelder zu ihren jeweiligen Admission Controller Richtlinien befindet sich in der <a href="#_mapping_kubewarden_policies_to_psp_fields">Mapping-Tabelle</a> unten.</p>
+</div>
+<div class="paragraph">
+<p>Mit Admission Controller haben Betreiber eine granulare Kontrolle über die Richtlinienkonfiguration in ihren Clustern.</p>
+</div>
+<div class="paragraph">
+<p>Mit einer Admission Controller Instanz können Sie Richtlinien bereitstellen, um das <code>PodSecurityPolicy</code> Objekt zu ersetzen. Wir betrachten diese Regeln in diesem Beispiel:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>eine PSP, die die privilegierte Eskalation deaktiviert</p>
+</li>
+<li>
+<p>privilegierte Container</p>
+</li>
+<li>
+<p>Blockieren von Pods, die als Root ausgeführt werden</p>
+</li>
+<li>
+<p>eine bestimmte Benutzergruppe erzwingen</p>
+</li>
+<li>
+<p>Blockieren von Host-Namespaces</p>
+</li>
+<li>
+<p>Erlauben eines Pods, nur Port 443 zu verwenden</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Die YAML-Definition dieses PSP lautet:</p>
+</div>
+<details>
+<summary class="title">PSP YAML-Definition</summary>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: restricted
+spec:
+  allowPrivilegeEscalation: false
+  runAsUser:
+    rule: MustRunAsNonRoot
+  supplementalGroups:
+    rule: MustRunAs
+    ranges:
+      - min: 1000
+        max: 65535
+  privileged: false
+  hostNetwork: false
+  hostIPC: false
+  hostPID: false
+  hostPorts:
+    - min: 443
+      max: 443</code></pre>
+</div>
+</div>
+</div>
+</details>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_admission_controller_ersetzungen_für_psp"><a class="anchor" href="#_admission_controller_ersetzungen_für_psp"></a>Admission Controller Ersetzungen für PSP</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Jetzt werden wir Admission Controller Richtlinien erstellen, um dasselbe Ziel zu erreichen.
+Sie setzen jede Regel mit einer separaten Admission Controller Richtlinie durch.
+In diesem Beispiel benötigen Sie eine separate Richtlinie für die Durchsetzung von jedem der folgenden Punkte:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>privilegierte Eskalation</p>
+</li>
+<li>
+<p>Benutzer- und Gruppenkonfiguration</p>
+</li>
+<li>
+<p>Host-Namensräume</p>
+</li>
+<li>
+<p>Konfiguration privilegierter Container.</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="_blockieren_der_privilegierten_eskalation_von_containern"><a class="anchor" href="#_blockieren_der_privilegierten_eskalation_von_containern"></a>Blockieren der privilegierten Eskalation von Containern</h3>
+<div class="paragraph">
+<p>Sie können eine Richtlinie wie unten gezeigt bereitstellen:</p>
+</div>
+<details>
+<summary class="title">kubectl-Befehl zur Bereitstellung der Richtlinie</summary>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">$ kubectl apply -f - &lt;&lt;EOF
+apiVersion: policies.kubewarden.io/v1
+kind: ClusterAdmissionPolicy
+metadata:
+  name: psp-allow-privilege-escalation
+spec:
+  module: ghcr.io/kubewarden/policies/allow-privilege-escalation-psp:v0.2.6
+  rules:
+    - apiGroups:
+        - ""
+      apiVersions:
+        - v1
+      resources:
+        - pods
+      operations:
+        - CREATE
+        - UPDATE
+  mutating: false
+  settings:
+    default_allow_privilege_escalation: false
+EOF</code></pre>
+</div>
+</div>
+</div>
+</details>
+<div class="paragraph">
+<p>In diesem Befehl haben wir <code>default_allow_privilege_escalation</code> als <code>false</code> festgelegt. Diese Richtlinie schränkt Pods ein, die versuchen, mit mehr Rechten als der übergeordnete Container ausgeführt zu werden.</p>
+</div>
+<details>
+<summary class="title">Ausgabe von kubectl, die versucht, Privilegien zu erhöhen</summary>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">$ kubectl apply -f - &lt;&lt;EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    securityContext:
+      allowPrivilegeEscalation: true
+  - name: sidecar
+    image: sidecar
+EOF
+Error from server: error when creating "STDIN": admission webhook "clusterwide-psp-allow-privilege-escalation.kubewarden.admission" denied the request: one of the containers has privilege escalation enabled</code></pre>
+</div>
+</div>
+</div>
+</details>
+</div>
+<div class="sect2">
+<h3 id="_benutzer_und_gruppenkonfiguration"><a class="anchor" href="#_benutzer_und_gruppenkonfiguration"></a>Benutzer- und Gruppenkonfiguration</h3>
+<div class="paragraph">
+<p>Um die Benutzer- und Gruppenkonfiguration durchzusetzen, können Sie die <a href="https://github.com/kubewarden/user-group-psp-policy">user-group-psp-Richtlinie</a> verwenden.</p>
+</div>
+<details>
+<summary class="title"><code>kubectl</code> Befehl zur Verwendung der Benutzergruppen-PSP-Richtlinie</summary>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">$ kubectl apply -f - &lt;&lt;EOF
+apiVersion: policies.kubewarden.io/v1
+kind: ClusterAdmissionPolicy
+metadata:
+  name: psp-user-group
+spec:
+  module: ghcr.io/kubewarden/policies/user-group-psp:v0.4.9
+  rules:
+    - apiGroups:
+        - ""
+      apiVersions:
+        - v1
+      resources:
+        - pods
+      operations:
+        - CREATE
+        - UPDATE
+  mutating: true
+  settings:
+    run_as_user:
+      rule: MustRunAsNonRoot
+    supplemental_groups:
+      rule: MustRunAs
+      ranges:
+        - min: 1000
+          max: 65535
+EOF</code></pre>
+</div>
+</div>
+</div>
+</details>
+<div class="paragraph">
+<p>Sie sollten die Richtlinie mit <code>mutation: true</code> konfigurieren. Es ist erforderlich, da die Richtlinie <a href="https://kubernetes.io/docs/concepts/security/pod-security-policy/#users-and-groups">supplementalGroups</a> hinzufügt, wenn der Benutzer sie nicht definiert.</p>
+</div>
+<div class="paragraph">
+<p>Jetzt können Benutzer keine Pods mehr als Root bereitstellen:</p>
+</div>
+<details>
+<summary class="title">Beispielausgabe, bei der runAsNonRoot: false ist</summary>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">$ kubectl apply -f - &lt;&lt;EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    securityContext:
+      runAsNonRoot: false
+      runAsUser: 0
+EOF
+Error from server: error when creating "STDIN": admission webhook "clusterwide-psp-user-group-fb836.kubewarden.admission" denied the request: RunAsNonRoot should be set to true</code></pre>
+</div>
+</div>
+</div>
+</details>
+<details>
+<summary class="title">Beispielausgabe, bei der runAsUser: 0</summary>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">kubectl apply -f - &lt;&lt;EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    securityContext:
+      runAsNonRoot: true
+      runAsUser: 0
+EOF
+Error from server: error when creating "STDIN": admission webhook "clusterwide-psp-user-group-fb836.kubewarden.admission" denied the request: Invalid user ID: cannot run container with root ID (0)</code></pre>
+</div>
+</div>
+</div>
+</details>
+<div class="paragraph">
+<p>Dieses Beispiel zeigt die Hinzufügung einer <a href="https://kubernetes.io/docs/concepts/security/pod-security-policy/#users-and-groups">zusätzlichen Gruppe</a>, obwohl sie von uns nicht definiert wurde.</p>
+</div>
+<details>
+<summary class="title">Beispiel für die Hinzufügung einer zusätzlichen Gruppe</summary>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">kubectl apply -f - &lt;&lt;EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+EOF
+pod/nginx created
+$ kubectl get pods -o json nginx | jq ".spec.securityContext"
+{
+  "supplementalGroups": [
+    10000
+  ]
+}</code></pre>
+</div>
+</div>
+</div>
+</details>
+</div>
+<div class="sect2">
+<h3 id="_konfiguration_des_privilegierten_containers"><a class="anchor" href="#_konfiguration_des_privilegierten_containers"></a>Konfiguration des privilegierten Containers</h3>
+<div class="paragraph">
+<p>Sie müssen die ältere PSP-Konfiguration ersetzen, die privilegierte Container blockiert. Es ist notwendig, die <a href="https://github.com/kubewarden/pod-privileged-policy">pod-privileged-Richtlinie</a> bereitzustellen. Diese Richtlinie benötigt keine Einstellungen. Sobald sie läuft, wird sie privilegierte Pods blockieren.</p>
+</div>
+<details>
+<summary class="title">Anwendung der pod-privileged-Richtlinie</summary>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">$ kubectl apply -f - &lt;&lt;EOF
+apiVersion: policies.kubewarden.io/v1
+kind: ClusterAdmissionPolicy
+metadata:
+  name: psp-privileged
+spec:
+  module: ghcr.io/kubewarden/policies/pod-privileged:v0.2.7
+  rules:
+    - apiGroups:
+        - ""
+      apiVersions:
+        - v1
+      resources:
+        - pods
+      operations:
+        - CREATE
+        - UPDATE
+  mutating: false
+  settings: null
+EOF</code></pre>
+</div>
+</div>
+</div>
+</details>
+<div class="paragraph">
+<p>Um die Richtlinie zu testen, können wir versuchen, einen Pod mit aktivierter privilegierter Konfiguration auszuführen:</p>
+</div>
+<details>
+<summary class="title">Pod mit aktivierter privilegierter Konfiguration</summary>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">$ kubectl apply -f - &lt;&lt;EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    imagePullPolicy: IfNotPresent
+    securityContext:
+      privileged: true
+  - name: sleeping-sidecar
+    image: alpine
+    command: ["sleep", "1h"]
+EOF
+Error from server: error when creating "STDIN": admission webhook "clusterwide-psp-privileged.kubewarden.admission" denied the request: Privileged container is not allowed</code></pre>
+</div>
+</div>
+</div>
+</details>
+</div>
+<div class="sect2">
+<h3 id="_konfiguration_des_host_namespaces"><a class="anchor" href="#_konfiguration_des_host_namespaces"></a>Konfiguration des Host-Namespaces</h3>
+<div class="paragraph">
+<p>Um die PSP-Migrationsübung abzuschließen, müssen Sie die gemeinsame Nutzung des Host-Namespaces deaktivieren. Dafür verwenden wir die <a href="https://github.com/kubewarden/host-namespaces-psp-policy"><code>host-namespace-psp</code> Richtlinie</a>. Sie ermöglicht es dem Clusteradministrator, IPC-, PID- und Netzwerk-Namespaces einzeln zu blockieren. Es legt auch die Ports fest, auf denen die Pods auf der Host-IP geöffnet werden können.</p>
+</div>
+<details>
+<summary class="title">Deaktivierung des Namespace-Sharings und Festlegung der Ports</summary>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">$ kubectl apply -f - &lt;&lt;EOF
+apiVersion: policies.kubewarden.io/v1
+kind: ClusterAdmissionPolicy
+metadata:
+  name: psp-hostnamespaces
+spec:
+  module: ghcr.io/kubewarden/policies/host-namespaces-psp:v0.1.6
+  rules:
+    - apiGroups:
+        - ""
+      apiVersions:
+        - v1
+      resources:
+        - pods
+      operations:
+        - CREATE
+        - UPDATE
+  mutating: false
+  settings:
+    allow_host_ipc: false
+    allow_host_pid: false
+    allow_host_ports:
+      - min: 443
+        max: 443
+    allow_host_network: false
+EOF</code></pre>
+</div>
+</div>
+</div>
+</details>
+<div class="paragraph">
+<p>Wir können die Richtlinie validieren.
+Der Pod sollte nicht in der Lage sein, Host-Namespaces zu teilen:</p>
+</div>
+<details>
+<summary class="title">Beispiel für das Blockieren von Namespaces</summary>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">$ kubectl apply -f - &lt;&lt;EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  hostIPC: true
+  hostNetwork: false
+  hostPID: false
+  containers:
+  - name: nginx
+    image: nginx
+    imagePullPolicy: IfNotPresent
+  - name: sleeping-sidecar
+    image: alpine
+    command: ["sleep", "1h"]
+EOF
+
+Error from server: error when creating "STDIN": admission webhook "clusterwide-psp-hostnamespaces.kubewarden.admission" denied the request: Pod has IPC enabled, but this is not allowed</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">$ kubectl apply -f - &lt;&lt;EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  hostIPC: false
+  hostNetwork: true
+  hostPID: false
+  containers:
+  - name: nginx
+    image: nginx
+    imagePullPolicy: IfNotPresent
+  - name: sleeping-sidecar
+    image: alpine
+    command: ["sleep", "1h"]
+EOF
+Error from server: error when creating "STDIN": admission webhook "clusterwide-psp-hostnamespaces.kubewarden.admission" denied the request: Pod has host network enabled, but this is not allowed</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">$ kubectl apply -f - &lt;&lt;EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  hostIPC: false
+  hostNetwork: false
+  hostPID: true
+  containers:
+  - name: nginx
+    image: nginx
+    imagePullPolicy: IfNotPresent
+  - name: sleeping-sidecar
+    image: alpine
+    command: ["sleep", "1h"]
+EOF
+Error from server: error when creating "STDIN": admission webhook "clusterwide-psp-hostnamespaces.kubewarden.admission" denied the request: Pod has host PID enabled, but this is not allowed</code></pre>
+</div>
+</div>
+</div>
+</details>
+<div class="paragraph">
+<p>In diesem letzten Beispiel sollte der Pod nur in der Lage sein, Port 443 freizugeben.
+Wenn andere Ports in <code>hostPorts</code> konfiguriert sind, sollte ein Fehler auftreten.</p>
+</div>
+<details>
+<summary class="title">Versuch, Port 80 in hostPorts zu verwenden</summary>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">$ kubectl apply -f - &lt;&lt;EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    imagePullPolicy: IfNotPresent
+    ports:
+      - containerPort: 80
+        hostPort: 80
+  - name: sleeping-sidecar
+    image: alpine
+    command: ["sleep", "1h"]
+EOF
+Error from server: error when creating "STDIN": admission webhook "clusterwide-psp-hostnamespaces.kubewarden.admission" denied the request: Pod is using unallowed host ports in containers</code></pre>
+</div>
+</div>
+</div>
+</details>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_zuordnung_von_admission_controller_richtlinien_zu_psp_feldern"><a class="anchor" href="#_zuordnung_von_admission_controller_richtlinien_zu_psp_feldern"></a>Zuordnung von Admission Controller Richtlinien zu PSP-Feldern</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Diese Tabelle ordnet die PSP-Konfigurationsfelder den entsprechenden Admission Controller Richtlinien zu.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">PSP-Feld</th>
+<th class="tableblock halign-left valign-top">Admission Controller äquivalente Richtlinie</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://kubernetes.io/docs/concepts/security/pod-security-policy/#privileged">privilegiert</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/kubewarden/pod-privileged-policy">pod-privilegierte-Richtlinie</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://kubernetes.io/docs/concepts/security/pod-security-policy/#host-namespaces">hostPID</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/kubewarden/host-namespaces-psp-policy">host-namespaces-psp-Richtlinie</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://kubernetes.io/docs/concepts/security/pod-security-policy/#host-namespaces">hostIPC</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/kubewarden/host-namespaces-psp-policy">host-namespaces-psp-Richtlinie</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://kubernetes.io/docs/concepts/security/pod-security-policy/#host-namespaces">hostNetwork</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/kubewarden/host-namespaces-psp-policy">host-namespaces-psp-polic</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://kubernetes.io/docs/concepts/security/pod-security-policy/#host-namespaces">hostPorts</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/kubewarden/host-namespaces-psp-policy">host-namespaces-psp-Richtlinie</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://kubernetes.io/docs/concepts/security/pod-security-policy/#volumes-and-file-systems">Volumes</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/kubewarden/volumes-psp-policy">Volumes-PSP-Richtlinie</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://kubernetes.io/docs/concepts/security/pod-security-policy/#volumes-and-file-systems">allowedHostPaths</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/kubewarden/hostpaths-psp-policy">Hostpfade-PSP-Richtlinie</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://kubernetes.io/docs/concepts/security/pod-security-policy/#volumes-and-file-systems">readOnlyRootFilesystem</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/kubewarden/readonly-root-filesystem-psp-policy">schreibgeschütztes Wurzel-Dateisystem-PSP-Richtlinie</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://kubernetes.io/docs/concepts/security/pod-security-policy/#volumes-and-file-systems">fsgroup</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/kubewarden/allowed-fsgroups-psp-policy">erlaubteFsgroups-PSP-Richtlinie</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://kubernetes.io/docs/concepts/security/pod-security-policy/#flexvolume-drivers">allowedFlexVolumes</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/kubewarden/flexvolume-drivers-psp-policy">flexvolume-drivers-psp-policy</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://kubernetes.io/docs/concepts/security/pod-security-policy/#users-and-groups">runAsUser</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/kubewarden/user-group-psp-policy">user-group-psp-policy</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://kubernetes.io/docs/concepts/security/pod-security-policy/#users-and-groups">runAsGroup</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/kubewarden/user-group-psp-policy">user-group-psp-policy</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://kubernetes.io/docs/concepts/security/pod-security-policy/#users-and-groups">zusätzlicheGruppen</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/kubewarden/user-group-psp-policy">user-group-psp-policy</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://kubernetes.io/docs/concepts/security/pod-security-policy/#privilege-escalation">allowPrivilegeEscalation</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/kubewarden/allow-privilege-escalation-psp-policy">allow-privilege-escalation-psp-policy</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://kubernetes.io/docs/concepts/security/pod-security-policy/#privilege-escalation">defaultAllowPrivilegeEscalation</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/kubewarden/allow-privilege-escalation-psp-policy">allow-privilege-escalation-psp-policy</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://kubernetes.io/docs/concepts/security/pod-security-policy/#capabilities">allowedCapabilities</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/kubewarden/capabilities-psp-policy">capabilities-psp-policy</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://kubernetes.io/docs/concepts/security/pod-security-policy/#capabilities">defaultAddCapabilities</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/kubewarden/capabilities-psp-policy">capabilities-psp-policy</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://kubernetes.io/docs/concepts/security/pod-security-policy/#capabilities">requiredDropCapabilities</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/kubewarden/capabilities-psp-policy">capabilities-psp-policy</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://kubernetes.io/docs/concepts/security/pod-security-policy/#selinux">seLinux</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/kubewarden/selinux-psp-policy">selinux-psp-policy</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://kubernetes.io/docs/concepts/security/pod-security-policy/#allowedprocmounttypes">allowedProcMountTypes</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/kubewarden/allowed-proc-mount-types-psp-policy">allowed-proc-mount-types-psp-policy</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://kubernetes.io/docs/concepts/security/pod-security-policy/#apparmor">apparmor</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/kubewarden/apparmor-psp-policy">apparmor-psp-policy</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://kubernetes.io/docs/concepts/security/pod-security-policy/#apparmor">seccomp</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/kubewarden/seccomp-psp-policy">seccomp-psp-policy</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://kubernetes.io/docs/concepts/security/pod-security-policy/#apparmor">forbiddenSysctls</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/kubewarden/sysctl-psp-policy">sysctl-psp-policy</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://kubernetes.io/docs/concepts/security/pod-security-policy/#apparmor">allowedUnsafeSysctls</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/kubewarden/sysctl-psp-policy">sysctl-psp-policy</a></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_psp_migrationsskript"><a class="anchor" href="#_psp_migrationsskript"></a>PSP-Migrationsskript</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Das Admission Controller Team hat ein Skript für die PSP-Migration entwickelt. Es verwendet das Migrationswerkzeug von <a href="https://github.com/appvia/psp-migration">AppVia</a>. Das AppVia-Werkzeug liest eine PSP-YAML-Konfiguration. Anschließend generiert es die entsprechenden Richtlinien. Dies geschieht für Admission Controller und andere Richtlinien-Engines.</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Achtung"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Das AppVia-Migrationswerkzeug liegt außerhalb der Kontrolle der Kuberwarden-Maintainer.
+Das bedeutet, dass es möglich ist, dass es veraltete Admission Controller Richtlinien generiert. Mit Vorsicht verwenden. Wir benötigen einen Pull-Request für AppVia, an dem derzeit gearbeitet wird.
+Kontaktieren Sie uns für weitere Informationen, falls Sie dies benötigen.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Das Skript ist im Admission Controller <a href="https://github.com/kubewarden/utils/blob/main/scripts/psp-to-kubewarden">utils</a> Repository verfügbar. Es lädt das AppVia-Migrationswerkzeug in das Arbeitsverzeichnis herunter, um es zu verwenden. Es verarbeitet die in dem <code>kubectl</code> Standardkontext definierten PSPs. Dann gibt es die Kuberwarden-Richtliniendefinitionen auf der Standardausgabe aus. Benutzer können den Inhalt entweder in eine Datei oder direkt nach <code>kubectl</code> umleiten.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Anmerkung"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Dieses Skript funktioniert nur auf Linux x86_64 Maschinen.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Lassen Sie uns ein Beispiel betrachten. In einem Cluster mit dem PSP:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Zugriff auf Host-Namespaces blockieren</p>
+</li>
+<li>
+<p>privilegierte Container blockieren</p>
+</li>
+<li>
+<p>Keine Privilegieneskalation zulassen</p>
+</li>
+<li>
+<p>Container-Fähigkeiten entziehen</p>
+</li>
+<li>
+<p>Die erlaubten Volumentypen auflisten</p>
+</li>
+<li>
+<p>Die erlaubten Benutzer und Gruppen definieren, die verwendet werden dürfen</p>
+</li>
+<li>
+<p>Die ergänzende Gruppe steuern, die auf Volumes angewendet wird</p>
+</li>
+<li>
+<p>Container zwingen, in einem schreibgeschützten Root-Dateisystem zu laufen.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Die folgende YAML könnte verwendet werden.</p>
+</div>
+<details>
+<summary class="title">Die PSP-Konfiguration</summary>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: restricted
+spec:
+  hostNetwork: false
+  hostIPC: false
+  hostPID: false
+  hostPorts:
+    - min: 80
+      max: 8080
+  privileged: false
+  # Required to prevent escalations to root.
+  allowPrivilegeEscalation: false
+  requiredDropCapabilities:
+    - ALL
+  # Allow core volume types.
+  volumes:
+    - "configMap"
+    - "emptyDir"
+    - "projected"
+    - "secret"
+    - "downwardAPI"
+    # Assume that ephemeral CSI drivers &amp; persistentVolumes set up by the cluster admin are safe to use.
+    - "csi"
+    - "persistentVolumeClaim"
+    - "ephemeral"
+  runAsUser:
+    # Require the container to run without root privileges.
+    rule: "MustRunAsNonRoot"
+  seLinux:
+    # This policy assumes the nodes are using AppArmor rather than SELinux.
+    rule: "RunAsAny"
+  supplementalGroups:
+    rule: "MustRunAs"
+    ranges:
+      # Forbid adding the root group.
+      - min: 1
+        max: 65535
+  fsGroup:
+    rule: "MustRunAs"
+    ranges:
+      # Forbid adding the root group.
+      - min: 1
+        max: 65535
+  readOnlyRootFilesystem: true</code></pre>
+</div>
+</div>
+</div>
+</details>
+<div class="paragraph">
+<p>Admission Controller Richtlinien können direkt auf einen Cluster mit dem folgenden Befehl angewendet werden:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">$ ./psp-to-kubewarden | kubectl apply -f -
+Warning: policy/v1beta1 PodSecurityPolicy is deprecated in v1.21+, unavailable in v1.25+
+Warning: policy/v1beta1 PodSecurityPolicy is deprecated in v1.21+, unavailable in v1.25+
+clusteradmissionpolicy.policies.kubewarden.io/psp-privileged-82bf2 created
+clusteradmissionpolicy.policies.kubewarden.io/psp-readonlyrootfilesystem-b4a55 created
+clusteradmissionpolicy.policies.kubewarden.io/psp-hostnamespaces-a25a2 created
+clusteradmissionpolicy.policies.kubewarden.io/psp-volumes-cee05 created
+clusteradmissionpolicy.policies.kubewarden.io/psp-capabilities-34d8e created
+clusteradmissionpolicy.policies.kubewarden.io/psp-usergroup-878b0 created
+clusteradmissionpolicy.policies.kubewarden.io/psp-fsgroup-3b08e created
+clusteradmissionpolicy.policies.kubewarden.io/psp-defaultallowprivilegeescalation-b7e87 created</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Wenn Benutzer die Richtlinien vor der Anwendung überprüfen möchten, ist es möglich, den Inhalt in eine Datei umzuleiten oder ihn direkt in der Konsole zu überprüfen.</p>
+</div>
+<div class="paragraph">
+<p>Um die generierten Richtlinien zu speichern und sie anzuzeigen:</p>
+</div>
+<details>
+<summary class="title"><code>./psp-to-kubewarden &gt; policies.yaml &amp;&amp; cat policies.yaml</code></summary>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">$ ./psp-to-kubewarden &gt; policies.yaml
+$ cat policies.yaml
+---
+apiVersion: policies.kubewarden.io/v1
+kind: ClusterAdmissionPolicy
+metadata:
+  name: psp-privileged-eebb9
+spec:
+  module: registry://ghcr.io/kubewarden/policies/pod-privileged:v0.2.7
+  rules:
+    - apiGroups:
+        - ""
+      apiVersions:
+        - v1
+      resources:
+        - pods
+      operations:
+        - CREATE
+        - UPDATE
+  mutating: false
+  settings: null
+
+---
+apiVersion: policies.kubewarden.io/v1
+kind: ClusterAdmissionPolicy
+metadata:
+  name: psp-readonlyrootfilesystem-34d7c
+spec:
+  module: registry://ghcr.io/kubewarden/policies/readonly-root-filesystem-psp:v0.1.6
+  rules:
+    - apiGroups:
+        - ""
+      apiVersions:
+        - v1
+      resources:
+        - pods
+      operations:
+        - CREATE
+        - UPDATE
+  mutating: false
+  settings: null
+
+---
+apiVersion: policies.kubewarden.io/v1
+kind: ClusterAdmissionPolicy
+metadata:
+  name: psp-hostnamespaces-41314
+spec:
+  module: registry://ghcr.io/kubewarden/policies/host-namespaces-psp:v0.1.6
+  rules:
+    - apiGroups:
+        - ""
+      apiVersions:
+        - v1
+      resources:
+        - pods
+      operations:
+        - CREATE
+        - UPDATE
+  mutating: false
+  settings:
+    allow_host_ipc: false
+    allow_host_pid: false
+    allow_host_ports:
+      - max: 8080
+        min: 80
+    allow_host_network: false
+
+---
+apiVersion: policies.kubewarden.io/v1
+kind: ClusterAdmissionPolicy
+metadata:
+  name: psp-volumes-2fd34
+spec:
+  module: registry://ghcr.io/kubewarden/policies/volumes-psp:v0.1.11
+  rules:
+    - apiGroups:
+        - ""
+      apiVersions:
+        - v1
+      resources:
+        - pods
+      operations:
+        - CREATE
+        - UPDATE
+  mutating: false
+  settings:
+    allowedTypes:
+      - configMap
+      - emptyDir
+      - projected
+      - secret
+      - downwardAPI
+      - csi
+      - persistentVolumeClaim
+      - ephemeral
+
+---
+apiVersion: policies.kubewarden.io/v1
+kind: ClusterAdmissionPolicy
+metadata:
+  name: psp-capabilities-340fe
+spec:
+  module: registry://ghcr.io/kubewarden/policies/capabilities-psp:v0.1.13
+  rules:
+    - apiGroups:
+        - ""
+      apiVersions:
+        - v1
+      resources:
+        - pods
+      operations:
+        - CREATE
+        - UPDATE
+  mutating: false
+  settings:
+    allowed_capabilities: []
+    required_drop_capabilities:
+      - ALL
+
+---
+apiVersion: policies.kubewarden.io/v1
+kind: ClusterAdmissionPolicy
+metadata:
+  name: psp-usergroup-19f7a
+spec:
+  module: registry://ghcr.io/kubewarden/policies/user-group-psp:v0.4.9
+  rules:
+    - apiGroups:
+        - ""
+      apiVersions:
+        - v1
+      resources:
+        - pods
+      operations:
+        - CREATE
+        - UPDATE
+  mutating: false
+  settings:
+    run_as_user:
+      rule: MustRunAsNonRoot
+    supplemental_groups:
+      ranges:
+        - max: 65535
+          min: 1
+      rule: MustRunAs
+
+---
+apiVersion: policies.kubewarden.io/v1
+kind: ClusterAdmissionPolicy
+metadata:
+  name: psp-fsgroup-52337
+spec:
+  module: registry://ghcr.io/kubewarden/policies/allowed-fsgroups-psp:v0.1.10
+  rules:
+    - apiGroups:
+        - ""
+      apiVersions:
+        - v1
+      resources:
+        - pods
+      operations:
+        - CREATE
+        - UPDATE
+  mutating: false
+  settings:
+    ranges:
+      - max: 65535
+        min: 1
+    rule: MustRunAs
+
+---
+apiVersion: policies.kubewarden.io/v1
+kind: ClusterAdmissionPolicy
+metadata:
+  name: psp-defaultallowprivilegeescalation-6f11b
+spec:
+  module: registry://ghcr.io/kubewarden/policies/allow-privilege-escalation-psp:v0.2.6
+  rules:
+    - apiGroups:
+        - ""
+      apiVersions:
+        - v1
+      resources:
+        - pods
+      operations:
+        - CREATE
+        - UPDATE
+  mutating: false
+  settings:
+    default_allow_privilege_escalation: false</code></pre>
+</div>
+</div>
+</div>
+</details>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tipp"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Die Richtliniennamen werden vom PSP-Migrationstool generiert.
+Sie möchten den Namen möglicherweise in etwas Bedeutsameres ändern.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="policy-groups.html">Richtliniengruppen</a></span>
+  <span class="next"><a href="vap-migration.html">Migration der ValidatingAdmissionPolicy</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<script src="../../../../_/js/site.js"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+<script src="../../../../_/js/vendor/lunr.js"></script>
+<script src="../../../../_/js/search-ui.js" id="search-ui-script" data-site-root-path="../../../.." data-snippet-length="100" data-stylesheet="../../../../_/css/search.css"></script>
+<script async src="../../../../search-index.js"></script>
+<script src="../../../../_/js/vendor/langSelection.js"></script>
+<script async src="../../../../_/js/vendor/tabs.js"></script>
+
+
+<script src="../../../../_/js/CNLanguageSwitcher.js"></script>
+  </body>
+</html>

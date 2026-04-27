@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Base de données externe à haute disponibilité | K3s  Latest</title>
+    <link rel="canonical" href="https://documentation.suse.com/cloudnative/k3s/latest/fr/datastore/ha.html">
+    <link rel="prev" href="ha-embedded.html">
+    <link rel="next" href="cluster-loadbalancer.html">
+    <meta name="generator" content="Antora 3.1.10">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+<meta http-equiv="last-modified" content="2026-03-03"/>
+<link rel="stylesheet" href="../../../../_/css/search.css">
+<link rel="icon" href="../../../../_/img/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="../../../../_/css/font-styles.css">
+<link rel="stylesheet" href="../../../../_/fonts/css/all.css">
+<link rel="stylesheet" href="../../../../_/css/site-extra.css">
+<link rel="stylesheet" href="../../../../_/css/vendor/tabs.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap&family=SUSE+Mono:ital,wght@0,100..800;1,100..800" rel="stylesheet">
+<link href="https://documentation.suse.com/docserv/res/fonts/poppins/poppins.css" rel="stylesheet">
+<link rel="stylesheet" href="../../../../_/css/vendor/light.css">
+<script src="/docserv/res/lightheaded/analytics.js" type="text/javascript"></script>
+<script type="module">
+  import { defineCustomElements, setAssetPath } from 'https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/shared-header.esm.js';
+  defineCustomElements();
+  setAssetPath("https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/assets");
+</script>
+<!-- Default English link -->
+<link href="https://documentation.suse.com/cloudnative/k3s/latest/en/datastore/ha.html" hreflang="x-default" rel="alternate"/>
+<!-- Link for the currently processed page -->
+<link href="https://documentation.suse.com/cloudnative/k3s/latest/fr/datastore/ha.html" hrefLang="fr-FR" rel="alternate" />
+<!-- Link for the English page -->
+<link href="https://documentation.suse.com/cloudnative/k3s/latest/en/datastore/ha.html" hreflang="en-US" rel="alternate" />
+<!-- Link for the Japanese page -->
+<link href="https://documentation.suse.com/cloudnative/k3s/latest/ja/datastore/ha.html" hreflang="ja-JP" rel="alternate" />
+<!-- Link for the Chinese page -->
+<link href="https://documentation.suse.com/cloudnative/k3s/latest/zh/datastore/ha.html" hreflang="zh-CN" rel="alternate" />
+<!-- Link for the German page -->
+<link href="https://documentation.suse.com/cloudnative/k3s/latest/de/datastore/ha.html" hreflang="de-DE" rel="alternate" />
+<!-- Link for the Spanish page -->
+<link href="https://documentation.suse.com/cloudnative/k3s/latest/es/datastore/ha.html" hreflang="es-ES" rel="alternate" />
+<!-- Link for the Brazilian Portuguese page -->
+<link href="https://documentation.suse.com/cloudnative/k3s/latest/pt/datastore/ha.html" hreflang="pt-BR" rel="alternate" />
+
+<!-- JSON-LD for doc metadata -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Base de données externe à haute disponibilité | SUSE Rancher Prime: K3s latest",
+  "headline": "Base de données externe à haute disponibilité",
+  "description": "Base de données externe à haute disponibilité",
+  "inLanguage": "fr",
+  "dateModified": "2026-03-03T00:00:00Z",
+  "author": {
+    "@type": "Organization",
+    "name": "SUSE Product & Solution Documentation Team",
+    "url": "https://documentation.suse.com"
+  },
+  "mentions": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "SUSE Rancher Prime: K3s",
+      "softwareVersion": "latest",
+      "applicationCategory": "Cloud Infrastructure",
+      "operatingSystem": "Linux"
+    }
+  ],
+  "publisher": {
+    "@type": "Organization",
+    "name": "SUSE",
+    "url": "https://documentation.suse.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.suse.com/assets/img/suse-white-logo-green.svg"
+    }
+  }
+}
+</script>
+<!-- end JSON-LD for doc metadata -->
+
+<!-- SUVA - Begin Ask Geeko-->
+<!--
+searchUnifyChatbot ("Ask Geeko") Copyright ©2024 Grazitti Interactive - All Rights Reserved. NOTICE: All information contained herein is, and remains the property of Grazitti Interactive and its suppliers, if any. The intellectual and technical concepts contained herein are proprietary to Grazitti Interactive and its suppliers and may be covered by India, U.S. and Foreign Patents, patents in process, and are protected by trade secret or copyright law. Dissemination of this information or reproduction of this material is strictly forbidden unless prior written permission is obtained from Grazitti Interactive.
+-->
+<meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport"/>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/Allow/an.js?c485cb3c-93d4-4942-99e8-91f3b8ca5636"></script>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/js/index.js?q=gAAAAABp3JBN9VuEJTi5tFafLIMwgMkCPdJS3Qm56lSYx93ir3Twt9hgSvd3OHEt6-nYfSbY3yHq0Zv8PRPsSy4nbqZiaJ4cZvRc6ItVZdvwz9Urf35cH6OUyPOwdA0phlS-zVIznQ2rWW438p-91NlTHuxJuOFpnA=="></script>
+<link rel="stylesheet" href="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/css/index.css">
+<div id="searchUnifyChatbot"></div>
+<!-- SUVA - End Ask Geeko-->
+<!--BEGIN QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+<script type='text/javascript' src="../../../../_/js/qualtrics.js" defer></script>
+<!--END QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<script type="module">import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs'; mermaid.initialize({"startOnLoad":true});</script><shared-header
+language="en"
+languages='{
+    "en": { "label": "English", "url": "https://documentation.suse.com/en-us/" },
+    "de": { "label": "Deutsch", "url": "https://documentation.suse.com/de-de/" },
+    "fr": { "label": "Français", "url": "https://documentation.suse.com/fr-fr/" },
+    "es": { "label": "Español", "url": "https://documentation.suse.com/es-es/" },
+    "zh_CN": { "label": "中文", "url": "https://documentation.suse.com/zh-cn/" },
+    "pt_BR": { "label": "Português Brasileiro", "url": "https://documentation.suse.com/pt-br/" }
+}'
+enable-search='false'>
+</shared-header>
+
+<!-- Leaving as a comment, I expect it will be required again next year.
+<a target=_blank"" class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_bEiGZbUNzLD8Tcy"> Documentation survey </a>
+-->
+<div class="body">
+<div class="nav-container" data-component="k3s" data-version="latest">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title">K3s</h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../introduction.html">Introduction</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../quick-start.html">Guide de démarrage rapide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../installation/installation.html">Installation</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation/requirements.html">Configuration requise</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation/configuration.html">Options de configuration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation/private-registry.html">Configuration du registre privé</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation/registry-mirror.html">Miroir de registre intégré</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation/airgap.html">Installation en isolation physique</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation/server-roles.html">Gestion des rôles de serveur</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation/packaged-components.html">Gestion des composants en paquet</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation/uninstall.html">Désinstallation de K3s</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="datastore.html">Datastore de cluster</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="backup-restore.html">Sauvegarde et restauration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="ha-embedded.html">Haute disponibilité d’etcd embarqué</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="ha.html">Base de données externe à haute disponibilité</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="cluster-loadbalancer.html">Équilibreur de charge de cluster</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../upgrades/upgrades.html">Mises à niveau</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/killall.html">Arrêt de K3s</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/manual.html">Mises à niveau manuelles</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/automated.html">Mises à niveau automatisées</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/roll-back.html">Retour à l&#8217;état initial de K3s</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../security/security.html">Sécurité</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../security/secrets-encryption.html">Configuration du chiffrement des secrets</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../security/hardening-guide.html">Guide de renforcement de la sécurité CIS</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../security/self-assessment-1.11.html">CIS 1.11 Guide d&#8217;auto-évaluation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../security/self-assessment-1.10.html">CIS 1.10 Guide d&#8217;auto-évaluation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../security/self-assessment-1.9.html">CIS 1.9 Guide d&#8217;auto-évaluation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../security/self-assessment-1.8.html">CIS 1.8 Guide d&#8217;auto-évaluation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../security/self-assessment-1.7.html">CIS 1.7 Guide d&#8217;auto-évaluation</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../cli/cli.html">Outils en ligne de commande (CLI)</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../cli/server.html">serveur</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../cli/agent.html">agent</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../cli/certificate.html">certificate</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../cli/etcd-snapshot.html">etcd-snapshot</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../cli/secrets-encrypt.html">secrets-encrypt</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../cli/token.html">token</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../architecture.html">Architecture</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../cluster-access.html">Accès au cluster</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Ajouts</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/helm.html">Helm</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/import-images.html">Importer des images</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/storage.html">Volumes et stockage</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../networking/networking.html">Réseautique</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/basic-network-options.html">Options réseau de base</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/distributed-multicloud.html">Cluster hybride distribué ou multicloud</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/multus-ipams.html">Les plugins Multus et IPAM</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/networking-services.html">Services de réseau</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../advanced.html">Options avancées / Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Référence</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/env-variables.html">Variables d&#8217;environnement</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/flag-deprecation.html">Cesser la prise en charge des indicateurs</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/metrics.html">Métriques</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/resource-profiling.html">Profilage des ressources</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">notes de version</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../release-notes/v1.34.X.html">v1.34.X</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../release-notes/v1.33.X.html">v1.33.X</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../release-notes/v1.32.X.html">v1.32.X</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../release-notes-old/v1.31.X.html">v1.31.X</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Plus ancien&#8230;&#8203;</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../release-notes-old/v1.30.X.html">v1.30.X</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../release-notes-old/v1.29.X.html">v1.29.X</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../release-notes-old/v1.28.X.html">v1.28.X</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../release-notes-old/v1.27.X.html">v1.27.X</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../release-notes-old/v1.26.X.html">v1.26.X</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../release-notes-old/v1.25.X.html">v1.25.X</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../release-notes-old/v1.24.X.html">v1.24.X</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../related-projects.html">Projets connexes</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../known-issues.html">Problèmes connus</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../faq.html">FAQ</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">K3s</span>
+    <span class="version">Latest</span>
+  </div>
+  <ul class="components">
+        <li class="component">
+          <div class="title"><a href="../../../../admission-controller/1.33-latest/en/introduction.html">Admission Controller</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../admission-controller/1.34/en/introduction.html">1.34-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../admission-controller/1.33-latest/en/introduction.html">1.33-latest</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.32/en/introduction.html">1.32</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.31/en/introduction.html">1.31</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.30/en/introduction.html">1.30</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.29/en/introduction.html">1.29</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.28/en/introduction.html">1.28</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../cluster-api/v0.26/en/index.html">Cluster API</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../cluster-api/v0.27/en/index.html">v0.27-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../cluster-api/v0.26/en/index.html">v0.26</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.25/en/index.html">0.25</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.24/en/index.html">0.24</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.23/en/index.html">0.23</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.22/en/index.html">0.22</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.21/en/index.html">0.21</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.20/en/index.html">0.20</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.19/en/index.html">0.19</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.18/en/index.html">0.18</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.17/en/index.html">0.17</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.16/en/index.html">0.16</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.11/en/index.html">0.11</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../continuous-delivery/next/en/index.html">Continuous Delivery</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../continuous-delivery/next/en/index.html">Next</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.11/en/index.html">0.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.10/en/index.html">0.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.9/en/index.html">0.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component is-current">
+          <div class="title"><a href="../../en/introduction.html">K3s</a></div>
+          <ul class="versions">
+            <li class="version is-current is-latest">
+              <a href="../../en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../os-manager/1.9/en/index.html">OS Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../os-manager/1.10/en/index.html">1.10-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../os-manager/1.9/en/index.html">1.9</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.8/en/index.html">1.8</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.7/en/index.html">1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.6/en/index.html">1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.5/en/index.html">1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-ai/latest/en/introduction.html">Rancher AI</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-ai/latest/en/introduction.html">latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rke2/latest/en/introduction.html">RKE2</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rke2/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-observability/latest/en/classic.html">SUSE Observability</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../suse-observability/latest/en/classic.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">SUSE Rancher Developer Access</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">SUSE® Rancher for AWS</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-manager/v2.13/en/about-rancher/what-is-rancher.html">SUSE® Rancher Manager</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-manager/v2.13/en/about-rancher/what-is-rancher.html">v2.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.12/en/about-rancher/what-is-rancher.html">v2.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.11/en/about-rancher/what-is-rancher.html">v2.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.10/en/about-rancher/what-is-rancher.html">v2.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.9/en/about-rancher/what-is-rancher.html">v2.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../security/5.5/en/overview.html">SUSE® Security</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../security/5.5/en/overview.html">5.5</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.4/en/overview.html">5.4</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.3/en/overview.html">5.3</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../storage/1.11/en/longhorn-documentation.html">SUSE® Storage</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../storage/1.12/en/longhorn-documentation.html">1.12 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../storage/1.11/en/longhorn-documentation.html">1.11 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../storage/1.10/en/longhorn-documentation.html">1.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../storage/1.9/en/longhorn-documentation.html">1.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-virtual-clusters/1.0.2/en/release-notes/version-1.0.2.html">SUSE® Virtual Clusters</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">v1.1.0 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../suse-virtual-clusters/1.0.2/en/release-notes/version-1.0.2.html">v1.0.2-latest</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.1/en/introduction.html">v1.0.1</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.0/en/introduction.html">v1.0.0</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../virtualization/v1.7/en/introduction/overview.html">SUSE® Virtualization</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../virtualization/v1.8/en/introduction/overview.html">v1.8 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../virtualization/v1.7/en/introduction/overview.html">v1.7 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../virtualization/v1.6/en/introduction/overview.html">v1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../virtualization/v1.5/en/introduction/overview.html">v1.5</a>
+            </li>
+          </ul>
+        </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+<ul>
+    <li>
+      <a class="home-link-dsc" href="https://documentation.suse.com/" title="documentation.suse.com" aria-label="SUSE Documentation Home"></a>
+    </li>
+    <li>
+      <a href="https://documentation.suse.com/cloudnative/k3s" title="K3s" aria-label="SUSE Documentation - K3s">
+        K3s
+      </a>
+    </li>
+      <li>
+          <a href="datastore.html" title="Datastore de cluster" aria-label="Datastore de cluster">Datastore de cluster</a>
+      </li>
+  </ul>
+</nav>      <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <label class="visual-search-label-bc" for="search-input">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+          <input label="Search" aria-label="Search" id="search-input" type="text" placeholder="Searchercher dans les documents" >
+          <label class="filter checkbox" style="display: none">
+            <input type="checkbox" data-facet-filter="component:k3s" checked> Only this project
+          </label>
+        </div>
+      </div>
+</div>
+  <div class="content">
+<aside
+  class="toc sidebar"
+  data-title="Sur cette page" data-levels="2">
+  <div class="toc-menu">
+    <!-- start qualtrics -->
+    <div id='ZN_8qZUmklKYbBqAYe'><!--DO NOT REMOVE-CONTENTS PLACED HERE--></div>
+    <div id="qualtrics_container"></div>
+    <!-- end qualtrics -->
+  </div>
+</aside><article class="doc">
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>
+
+Ce document a été traduit à l'aide d'une technologie de traduction automatique.
+Bien que nous nous efforcions de fournir des traductions exactes,
+nous ne fournissons aucune garantie quant à l'exhaustivité, l'exactitude ou la
+fiabilité du contenu traduit. En cas de divergence, la version originale
+<a href="https://documentation.suse.com/cloudnative/k3s/latest/en/datastore/ha.html">
+anglaise
+</a>
+prévaut et fait foi.
+
+</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<h1 class="page">Base de données externe à haute disponibilité</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Cette section décrit comment installer un cluster SUSE® Rancher Prime: K3s à haute disponibilité avec une base de données externe.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Pour déployer rapidement de grands clusters HA, voir <a href="../related-projects.html" class="xref page">Projets connexes</a></p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Les clusters à serveur unique peuvent répondre à une variété de cas d&#8217;utilisation, mais pour les environnements où la disponibilité du plan de contrôle Kubernetes est critique, vous pouvez exécuter K3s dans une configuration HA. Un cluster K3s HA est composé de :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Deux ou plusieurs <strong>nœuds serveurs</strong> qui serviront l&#8217;API Kubernetes et exécuteront d&#8217;autres services du plan de contrôle</p>
+</li>
+<li>
+<p>Un <strong>magasin de données externe</strong> (par opposition au stockage SQLite intégré utilisé dans les configurations à serveur unique)</p>
+</li>
+<li>
+<p>Facultatives : Zéro ou plusieurs <strong>nœuds agents</strong> désignés pour exécuter vos applications et services</p>
+</li>
+<li>
+<p>Facultatives : Une <strong>adresse d&#8217;enregistrement fixe</strong> pour que les nœuds agents s&#8217;enregistrent auprès du cluster</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Pour plus de détails sur le fonctionnement de ces composants ensemble, reportez-vous à la <a href="../architecture.html#_high_availability_k3s" class="xref page">section architecture.</a></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_aperçu_de_linstallation"><a class="anchor" href="#_aperçu_de_linstallation"></a>Aperçu de l&#8217;installation</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>La configuration d&#8217;un cluster HA nécessite les étapes suivantes :</p>
+</div>
+<div class="sect2">
+<h3 id="_1_créer_un_magasin_de_données_externe"><a class="anchor" href="#_1_créer_un_magasin_de_données_externe"></a>1. Créer un magasin de données externe</h3>
+<div class="paragraph">
+<p>Vous devrez d&#8217;abord créer un magasin de données externe pour le cluster. Voir la documentation sur les <a href="datastore.html" class="xref page">options de magasin de données du cluster</a> pour plus de détails.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_2_lancer_les_nœuds_serveurs"><a class="anchor" href="#_2_lancer_les_nœuds_serveurs"></a>2. Lancer les nœuds serveurs</h3>
+<div class="paragraph">
+<p>SUSE® Rancher Prime: K3s nécessite deux ou plusieurs nœuds serveurs pour cette configuration HA. Voir le guide des <a href="../installation/requirements.html" class="xref page">exigences</a> pour les exigences minimales des machines.</p>
+</div>
+<div class="paragraph">
+<p>Lors de l&#8217;exécution de la commande <code>k3s server</code> sur ces nœuds, vous devez définir le paramètre <code>datastore-endpoint</code> afin que K3s sache comment se connecter au stockage externe. Le paramètre <code>token</code> peut également être utilisé pour définir un token déterministe lors de l&#8217;ajout de nœuds. Lorsqu&#8217;il est vide, ce token sera généré automatiquement pour une utilisation ultérieure.</p>
+</div>
+<div class="paragraph">
+<p>Par exemple, une commande comme celle-ci pourrait être utilisée pour installer le serveur K3s avec une base de données MySQL comme magasin de données externe et <a href="../cli/server.html#_cluster_options" class="xref page">définir un token</a> :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -sfL https://get.k3s.io | INSTALL_K3S_ARTIFACT_URL=&lt;PRIME-ARTIFACTS-URL&gt;/k3s sh -s - server \
+  --token=SECRET \
+  --datastore-endpoint="mysql://username:password@tcp(hostname:3306)/database-name" \
+  --tls-san=&lt;FIXED_IP&gt; # Optional, needed if using a fixed registration address</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Où <code>INSTALL_K3S_ARTIFACT_URL</code> est l&#8217;<a href="https://scc.suse.com/rancher-docs/rancherprime/latest/en/reference-guide.html#prime-artifacts-url">URL des artefacts principaux</a></p>
+</div>
+<div class="paragraph">
+<p>Le format du point de terminaison du magasin de données diffère en fonction du type de base de données. Pour plus de détails, reportez-vous à la section sur <a href="datastore.html#_datastore_endpoint_format_and_functionality" class="xref page">les formats de point de terminaison du magasin de données.</a></p>
+</div>
+<div class="paragraph">
+<p>Pour configurer les certificats TLS lors du lancement des nœuds de serveur, reportez-vous au <a href="datastore.html#_external_datastore_configuration_parameters" class="xref page">guide de configuration du magasin de données.</a></p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Les mêmes options d&#8217;installation disponibles pour les installations à serveur unique sont également disponibles pour les installations à haute disponibilité. Pour plus de détails, consultez la documentation sur <a href="../installation/configuration.html" class="xref page">les options de configuration</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Par défaut, les nœuds de serveur seront programmables et donc vos charges de travail pourront être lancées sur eux. Si vous souhaitez avoir un plan de contrôle dédié où aucune charge de travail utilisateur ne s&#8217;exécutera, vous pouvez utiliser des taints. Le paramètre <code>node-taint</code> vous permettra de configurer des nœuds avec des taints, par exemple <code>--node-taint CriticalAddonsOnly=true:NoExecute</code>.</p>
+</div>
+<div class="paragraph">
+<p>Une fois que vous avez lancé le processus <code>k3s server</code> sur tous les nœuds de serveur, assurez-vous que le cluster a démarré correctement avec <code>k3s kubectl get nodes</code>. Vous devriez voir vos nœuds de serveur dans l&#8217;état Prêt.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_3_facultatives_rejoindre_des_nœuds_de_serveur_supplémentaires"><a class="anchor" href="#_3_facultatives_rejoindre_des_nœuds_de_serveur_supplémentaires"></a>3. Facultatives : Rejoindre des nœuds de serveur supplémentaires</h3>
+<div class="paragraph">
+<p>La même commande d&#8217;exemple de l&#8217;étape 2 peut être utilisée pour rejoindre des nœuds de serveur supplémentaires, où le jeton du premier nœud doit être utilisé :</p>
+</div>
+<div class="paragraph">
+<p>Si le premier nœud de serveur a été démarré sans le drapeau CLI <code>--token</code> ou la variable <code>K3S_TOKEN</code>, la valeur du jeton peut être récupérée à partir de tout serveur déjà rejoint au cluster :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cat /var/lib/rancher/k3s/server/token</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Des nœuds de serveur supplémentaires peuvent ensuite être ajoutés <a href="../cli/server.html#_cluster_options" class="xref page">en utilisant le jeton</a>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -sfL https://get.k3s.io | INSTALL_K3S_ARTIFACT_URL=&lt;PRIME-ARTIFACTS-URL&gt;/k3s sh -s - server \
+  --token=SECRET \
+  --datastore-endpoint="mysql://username:password@tcp(hostname:3306)/database-name"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Il y a quelques drapeaux de configuration qui doivent être les mêmes dans tous les nœuds de serveur:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Drapeaux liés au réseau: <code>--cluster-dns</code>, <code>--cluster-domain</code>, <code>--cluster-cidr</code>, <code>--service-cidr</code></p>
+</li>
+<li>
+<p>Drapeaux contrôlant le déploiement de certains composants: <code>--disable-helm-controller</code>, <code>--disable-kube-proxy</code>, <code>--disable-network-policy</code> et tout composant passé à <code>--disable</code></p>
+</li>
+<li>
+<p>Drapeaux liés aux fonctionnalités: <code>--secrets-encryption</code></p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Assurez-vous de conserver une copie de ce jeton, car il est requis lors de la restauration à partir d&#8217;une sauvegarde et de l&#8217;ajout de nœuds. Auparavant, K3s n&#8217;imposait pas l&#8217;utilisation d&#8217;un jeton lors de l&#8217;utilisation de bases de données SQL externes.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_4_facultatives_configurer_une_adresse_denregistrement_fixe"><a class="anchor" href="#_4_facultatives_configurer_une_adresse_denregistrement_fixe"></a>4. Facultatives : Configurer une adresse d&#8217;enregistrement fixe</h3>
+<div class="paragraph">
+<p>Les nœuds agents ont besoin d&#8217;une URL pour s&#8217;enregistrer. Cela peut être l&#8217;adresse IP ou le nom d&#8217;hôte de n&#8217;importe quel nœud serveur, mais dans de nombreux cas, ceux-ci peuvent changer au fil du temps. Par exemple, si vous exécutez votre cluster dans un cloud qui prend en charge les groupes de mise à l&#8217;échelle, des nœuds peuvent être créés et détruits au fil du temps, changeant d&#8217;adresses IP par rapport à l&#8217;ensemble initial de nœuds serveur. Il serait préférable d&#8217;avoir un point de terminaison stable devant les nœuds serveur qui ne changera pas au fil du temps. Ce point de terminaison peut être configuré en utilisant un certain nombre d&#8217;approches, telles que  :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Un équilibreur de charge de couche 4 (TCP)</p>
+</li>
+<li>
+<p>DNS en round-robin</p>
+</li>
+<li>
+<p>Adresses IP virtuelles ou élastiques</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Voir <a href="cluster-loadbalancer.html" class="xref page">Cluster Loadbalancer</a> pour des configurations d&#8217;exemple.</p>
+</div>
+<div class="paragraph">
+<p>Ce point de terminaison peut également être utilisé pour accéder à l&#8217;API Kubernetes. Vous pouvez donc, par exemple, modifier votre fichier <a href="https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/">kubeconfig</a> pour pointer vers celui-ci au lieu d&#8217;un nœud spécifique.</p>
+</div>
+<div class="paragraph">
+<p>Pour éviter les erreurs de certificat dans une telle configuration, vous devez configurer le serveur avec l&#8217;option <code>--tls-san=YOUR_IP_OR_HOSTNAME_HERE</code>. Cette option ajoute un nom d&#8217;hôte ou une IP supplémentaire en tant que nom alternatif du sujet dans le certificat TLS, et elle peut être spécifiée plusieurs fois si vous souhaitez accéder à la fois via l&#8217;IP et le nom d&#8217;hôte.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_5_facultatives_rejoindre_les_nœuds_agents"><a class="anchor" href="#_5_facultatives_rejoindre_les_nœuds_agents"></a>5. Facultatives : Rejoindre les nœuds agents</h3>
+<div class="paragraph">
+<p>Parce que les nœuds serveur K3s sont programmables par défaut, les nœuds agents ne sont pas requis pour un cluster K3s HA. Cependant, vous souhaiterez peut-être avoir des nœuds agents dédiés pour exécuter vos applications et services.</p>
+</div>
+<div class="paragraph">
+<p>Rejoindre des nœuds agents dans un cluster HA est identique à rejoindre des nœuds agents dans un cluster à serveur unique. Vous devez simplement spécifier l&#8217;URL à laquelle l&#8217;agent doit s&#8217;enregistrer (soit l&#8217;une des adresses IP du serveur, soit une adresse d&#8217;enregistrement fixe) et le token qu&#8217;il doit utiliser.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">K3S_TOKEN=SECRET k3s agent --server https://server-or-fixed-registration-address:6443</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="ha-embedded.html">Haute disponibilité d’etcd embarqué</a></span>
+  <span class="next"><a href="cluster-loadbalancer.html">Équilibreur de charge de cluster</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<script src="../../../../_/js/site.js"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+<script src="../../../../_/js/vendor/lunr.js"></script>
+<script src="../../../../_/js/search-ui.js" id="search-ui-script" data-site-root-path="../../../.." data-snippet-length="100" data-stylesheet="../../../../_/css/search.css"></script>
+<script async src="../../../../search-index.js"></script>
+<script src="../../../../_/js/vendor/langSelection.js"></script>
+<script async src="../../../../_/js/vendor/tabs.js"></script>
+
+
+<script src="../../../../_/js/CNLanguageSwitcher.js"></script>
+  </body>
+</html>

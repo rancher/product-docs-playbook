@@ -1,0 +1,1810 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Chaîne d&#8217;approvisionnement sécurisée | Admission Controller  1.34-dev</title>
+    <link rel="prev" href="security-hardening.html">
+    <link rel="next" href="webhook-mtls.html">
+    <meta name="description" content="Configurez SUSE Security Admission Controller pour valider l'intégrité des signatures des artefacts et des stratégies d'admission.">
+    <meta name="keywords" content="["SUSE Security Admission Controller", "kubewarden", "kubernetes", "chaîne d'approvisionnement sécurisée", "infrastructure"]">
+    <meta name="generator" content="Antora 3.1.10">
+    <link rel="stylesheet" href="../../../../../_/css/site.css">
+<meta http-equiv="last-modified" content="2026-03-18"/>
+<link rel="stylesheet" href="../../../../../_/css/search.css">
+<link rel="icon" href="../../../../../_/img/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="../../../../../_/css/font-styles.css">
+<link rel="stylesheet" href="../../../../../_/fonts/css/all.css">
+<link rel="stylesheet" href="../../../../../_/css/site-extra.css">
+<link rel="stylesheet" href="../../../../../_/css/vendor/tabs.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap&family=SUSE+Mono:ital,wght@0,100..800;1,100..800" rel="stylesheet">
+<link href="https://documentation.suse.com/docserv/res/fonts/poppins/poppins.css" rel="stylesheet">
+<link rel="stylesheet" href="../../../../../_/css/vendor/light.css">
+<script src="/docserv/res/lightheaded/analytics.js" type="text/javascript"></script>
+<script type="module">
+  import { defineCustomElements, setAssetPath } from 'https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/shared-header.esm.js';
+  defineCustomElements();
+  setAssetPath("https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/assets");
+</script>
+<!-- Default English link -->
+<link href="https://documentation.suse.com/cloudnative/admission-controller/1.34/en/howtos/security-hardening/secure-supply-chain.html" hreflang="x-default" rel="alternate"/>
+<!-- Link for the currently processed page -->
+<link href="https://documentation.suse.com/cloudnative/admission-controller/1.34/fr/howtos/security-hardening/secure-supply-chain.html" hrefLang="fr-FR" rel="alternate" />
+<!-- Link for the English page -->
+<link href="https://documentation.suse.com/cloudnative/admission-controller/1.34/en/howtos/security-hardening/secure-supply-chain.html" hreflang="en-US" rel="alternate" />
+<!-- Link for the Japanese page -->
+<link href="https://documentation.suse.com/cloudnative/admission-controller/1.34/ja/howtos/security-hardening/secure-supply-chain.html" hreflang="ja-JP" rel="alternate" />
+<!-- Link for the Chinese page -->
+<link href="https://documentation.suse.com/cloudnative/admission-controller/1.34/zh/howtos/security-hardening/secure-supply-chain.html" hreflang="zh-CN" rel="alternate" />
+<!-- Link for the German page -->
+<link href="https://documentation.suse.com/cloudnative/admission-controller/1.34/de/howtos/security-hardening/secure-supply-chain.html" hreflang="de-DE" rel="alternate" />
+<!-- Link for the Spanish page -->
+<link href="https://documentation.suse.com/cloudnative/admission-controller/1.34/es/howtos/security-hardening/secure-supply-chain.html" hreflang="es-ES" rel="alternate" />
+<!-- Link for the Brazilian Portuguese page -->
+<link href="https://documentation.suse.com/cloudnative/admission-controller/1.34/pt/howtos/security-hardening/secure-supply-chain.html" hreflang="pt-BR" rel="alternate" />
+
+<!-- JSON-LD for doc metadata -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Chaîne d&amp;#8217;approvisionnement sécurisée | SUSE Security Admission Controller 1.34",
+  "headline": "Chaîne d&amp;#8217;approvisionnement sécurisée",
+  "description": "Configurez SUSE Security Admission Controller pour valider l&#x27;intégrité des signatures des artefacts et des stratégies d&#x27;admission.",
+  "inLanguage": "fr",
+  "dateModified": "2026-03-18T00:00:00Z",
+  "author": {
+    "@type": "Organization",
+    "name": "SUSE Product & Solution Documentation Team",
+    "url": "https://documentation.suse.com"
+  },
+  "mentions": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "SUSE Security Admission Controller",
+      "softwareVersion": "1.34",
+      "applicationCategory": "Cloud Infrastructure",
+      "operatingSystem": "Linux"
+    }
+  ],
+  "publisher": {
+    "@type": "Organization",
+    "name": "SUSE",
+    "url": "https://documentation.suse.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.suse.com/assets/img/suse-white-logo-green.svg"
+    }
+  }
+}
+</script>
+<!-- end JSON-LD for doc metadata -->
+
+<!-- SUVA - Begin Ask Geeko-->
+<!--
+searchUnifyChatbot ("Ask Geeko") Copyright ©2024 Grazitti Interactive - All Rights Reserved. NOTICE: All information contained herein is, and remains the property of Grazitti Interactive and its suppliers, if any. The intellectual and technical concepts contained herein are proprietary to Grazitti Interactive and its suppliers and may be covered by India, U.S. and Foreign Patents, patents in process, and are protected by trade secret or copyright law. Dissemination of this information or reproduction of this material is strictly forbidden unless prior written permission is obtained from Grazitti Interactive.
+-->
+<meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport"/>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/Allow/an.js?c485cb3c-93d4-4942-99e8-91f3b8ca5636"></script>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/js/index.js?q=gAAAAABp3JBN9VuEJTi5tFafLIMwgMkCPdJS3Qm56lSYx93ir3Twt9hgSvd3OHEt6-nYfSbY3yHq0Zv8PRPsSy4nbqZiaJ4cZvRc6ItVZdvwz9Urf35cH6OUyPOwdA0phlS-zVIznQ2rWW438p-91NlTHuxJuOFpnA=="></script>
+<link rel="stylesheet" href="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/css/index.css">
+<div id="searchUnifyChatbot"></div>
+<!-- SUVA - End Ask Geeko-->
+<!--BEGIN QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+<script type='text/javascript' src="../../../../../_/js/qualtrics.js" defer></script>
+<!--END QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+    <script>var uiRootPath = '../../../../../_'</script>
+  </head>
+  <body class="article">
+<script type="module">import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs'; mermaid.initialize({"startOnLoad":true});</script><shared-header
+language="en"
+languages='{
+    "en": { "label": "English", "url": "https://documentation.suse.com/en-us/" },
+    "de": { "label": "Deutsch", "url": "https://documentation.suse.com/de-de/" },
+    "fr": { "label": "Français", "url": "https://documentation.suse.com/fr-fr/" },
+    "es": { "label": "Español", "url": "https://documentation.suse.com/es-es/" },
+    "zh_CN": { "label": "中文", "url": "https://documentation.suse.com/zh-cn/" },
+    "pt_BR": { "label": "Português Brasileiro", "url": "https://documentation.suse.com/pt-br/" }
+}'
+enable-search='false'>
+</shared-header>
+
+<!-- Leaving as a comment, I expect it will be required again next year.
+<a target=_blank"" class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_bEiGZbUNzLD8Tcy"> Documentation survey </a>
+-->
+<div class="body">
+<div class="nav-container" data-component="admission-controller" data-version="1.34">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title">Admission Controller</h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../introduction.html">Introduction</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../quick-start.html">Actions de</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Didacticiels</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../tutorials/writing-policies/index.html">Rédaction de SUSE Security Admission Controller politiques</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../tutorials/writing-policies/CEL/01-intro-cel.html">Présentation de CEL</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../tutorials/writing-policies/CEL/02-reusing-vap.html">Réutilisation des ValidatingAdmissionPolicies</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../tutorials/writing-policies/CEL/03-context-aware.html">Politiques CEL contextuelles</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../tutorials/writing-policies/CEL/04-example-sigstore.html">Capacités d&#8217;hôte de Sigstore</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../tutorials/writing-policies/rust/01-intro-rust.html">Rust</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../tutorials/writing-policies/rust/02-create-policy.html">Création d&#8217;une stratégie</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../tutorials/writing-policies/rust/03-define-policy-settings.html">Définir les paramètres de stratégie</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../tutorials/writing-policies/rust/04-write-validation-logic.html">Écriture de la logique de validation</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../tutorials/writing-policies/rust/05-mutation-policy.html">Créer une nouvelle stratégie de mutation</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../tutorials/writing-policies/rust/06-logging.html">Consignation</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../tutorials/writing-policies/rust/07-build-and-distribute.html">Créer et distribuer des stratégies</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../tutorials/writing-policies/rust/08-raw-policies.html">Stratégies brutes</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../tutorials/writing-policies/go/01-intro-go.html">Rédaction de stratégies en Go</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../tutorials/writing-policies/go/02-scaffold.html">Créer une nouvelle stratégie de validation</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../tutorials/writing-policies/go/03-policy-settings.html">Définir les paramètres de stratégie</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../tutorials/writing-policies/go/04-validation.html">Écrire la logique de validation</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../tutorials/writing-policies/go/05-e2e-tests.html">Tests de bout en bout</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../tutorials/writing-policies/go/06-logging.html">Consignation</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../tutorials/writing-policies/go/07-automate.html">Intégration avec GitHub Actions</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../tutorials/writing-policies/go/08-distribute.html">Distribution de la stratégie</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../tutorials/writing-policies/go/09-validation-with-queries.html">Validation à l&#8217;aide de requêtes JSON</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../tutorials/writing-policies/go/10-raw-policies.html">Rédaction de stratégies brutes</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../tutorials/writing-policies/rego/01-intro-rego.html">Rego</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../tutorials/writing-policies/rego/02-builtin-support.html">Support intégré</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Open Policy Agent</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../tutorials/writing-policies/rego/open-policy-agent/01-intro.html">Introduction à Open Policy Agent</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../tutorials/writing-policies/rego/open-policy-agent/02-create-policy.html">Création d&#8217;une nouvelle stratégie</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../tutorials/writing-policies/rego/open-policy-agent/03-build-and-run.html">Construisez et exécutez une stratégie OPA pour Admission Controller</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../tutorials/writing-policies/rego/open-policy-agent/04-distribute.html">Distribuer une stratégie OPA avec SUSE Security Admission Controller</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../tutorials/writing-policies/rego/open-policy-agent/05-raw-policies.html">Rédaction de stratégies brutes</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Gatekeeper</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../tutorials/writing-policies/rego/gatekeeper/01-intro.html">Support de Gatekeeper</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../tutorials/writing-policies/rego/gatekeeper/02-create-policy.html">Création d&#8217;une nouvelle stratégie Rego pour Gatekeeper</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../tutorials/writing-policies/rego/gatekeeper/03-build-and-run.html">Créez et exécutez une stratégie Gatekeeper</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../tutorials/writing-policies/rego/gatekeeper/04-distribute.html">Distribution d&#8217;une stratégie de Gatekeeper avec SUSE Security Admission Controller</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials/writing-policies/dotnet.html">C#</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">TypeScript</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../tutorials/writing-policies/typescript/01-intro-typescript.html">Écriture de stratégies en TypeScript/JavaScript</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../tutorials/writing-policies/typescript/02-scaffold.html">Créer une nouvelle stratégie de validation</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../tutorials/writing-policies/typescript/03-policy-settings.html">Définir les paramètres de stratégie</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../tutorials/writing-policies/typescript/04-validation.html">Écrire la logique de validation</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../tutorials/writing-policies/typescript/05-e2etests.html">Tests de bout en bout</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials/writing-policies/swift.html">Swift</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials/writing-policies/other-languages.html">Autres langues</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">WASI</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../tutorials/writing-policies/wasi/01-intro-wasi.html">WASI</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../tutorials/writing-policies/wasi/02-raw-policies.html">Rédaction de stratégies brutes</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials/writing-policies/metadata.html">Métadonnées de la stratégie</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Tester des stratégies</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials/testing-policies/index.html">Test des stratégies</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials/testing-policies/02-policy-authors.html">Tests pour les auteurs de stratégies</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorials/testing-policies/03-cluster-operators.html">Test des opérateurs de cluster</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../tutorials/verifying-kubewarden.html">Vérification SUSE Security Admission Controller</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../tutorials/publish-policy-to-artifact-hub.html">Publier des stratégies sur Artifact Hub</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Explications</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../explanations/mutating-policies.html">Stratégies de mutation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../explanations/context-aware-policies.html">Stratégies conscientes du contexte</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../explanations/policy-groups.html">Groupes de stratégies</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../explanations/certificates.html">Rotation des certificats</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../explanations/distributing-policies.html">Distribution des stratégies</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Comparaisons</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../explanations/comparisons/opa-comparison.html">SUSE Security Admission Controller vs OPA Gatekeeper</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../explanations/audit-scanner/audit-scanner.html">Qu&#8217;est-ce que le Kubewarden audit scanner ?</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../explanations/audit-scanner/limitations.html">Scanner d&#8217;audit - Limitations</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../explanations/audit-scanner/policy-reports.html">Scanner d&#8217;audit - Rapports de stratégie</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../explanations/architecture.html">Admission Controller architecture</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Howtos</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tasks.html">Tâches courantes</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../install-kwctl.html">Installer <code>kwctl</code></a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../production-deployments.html">Déploiements en production</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../deploy-at-scale.html">Déploiement à grande échelle</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../audit-scanner.html">Scanner d&#8217;audit</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../policies.html">Configuration des stratégies</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../policies-eval-resources-in-controller-namespace.html">Autoriser les évaluations dans l&#8217;espace de noms du contrôleur d&#8217;admission</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../emergency-disable.html">Désactivation d'urgence</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Configurer les serveurs de stratégies</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../policy-servers/01-custom-cas.html">Utiliser des CAs personnalisés</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../policy-servers/02-private-registry.html">Configuration des PolicyServers pour utiliser des registres privés</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../policy-servers/03-production-deployments.html">Déploiements en production</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../policy-servers/04-using-proxies.html">Utiliser des proxies</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../policy-servers/05-private-sigstore.html">Configurer les serveurs de stratégies pour des instances privées de Sigstore</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../policy-groups.html">Groupes de stratégies</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../psp-migration.html">Migration de PSP</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../vap-migration.html">Migration de la stratégie ValidatingAdmissionPolicy</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../pod-security-admission-with-kubewarden.html">Admission de sécurité des pods</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../custom-certificate-authorities.html">Autorités de certification personnalisées</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../proxy-configuration.html">Configuration du proxy</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../raw-policies.html">Stratégies brutes</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../argocd-installation.html">Installation d&#8217;ArgoCD</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="security-hardening.html">Sécurité</a>
+<ul class="nav-list">
+  <li class="nav-item is-current-page" data-depth="3">
+    <a class="nav-link" href="secure-supply-chain.html">Chaîne d&#8217;approvisionnement sécurisée</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="webhook-mtls.html">Activer mTLS avec K3s</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Isolation physique</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../airgap/01-requirements.html">Configuration requise</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../airgap/02-install.html">Installation</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../airgap/03-hauler.html">Installation de Hauler</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Démarrages rapides de télémétrie</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../telemetry/10-opentelemetry-qs.html">Démarrage rapide Open Telemetry</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../telemetry/20-tracing-qs.html">Démarrage rapide du traçage</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../telemetry/30-metrics-qs.html">Démarrage rapide des métriques</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../telemetry/40-custom-otel-collector.html">Collecteur OpenTelemetry personnalisé</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../Rancher-Fleet.html">Rancher Fleet</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Extension de l&#8217;interface utilisateur Rancher</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../ui-extension/01-install.html">Quickstart</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../ui-extension/02-metrics.html">Surveillance</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../ui-extension/03-tracing.html">Suivi</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Collection d&#8217;applications Rancher</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../application-collection/01-verify-images.html">Vérifier les images</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Solutions de contournement</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../workarounds/policy-server-certificate-expiry.html">Rotation des certificats, versions ≥ v1.16</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../contribution-guide/contribution-guide.html">Guide de contribution</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../contribution-guide/contributing.html">Contribuer à la documentation</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../contribution-guide/suggesting-an-improvement.html">Amélioration de la documentation</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../gatekeeper-migration.html">Migration des stratégies de Gatekeeper vers SUSE Security Admission Controller</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Référence</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../reference/CRDs.html">Définitions de ressources personnalisées (CRD)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../reference/dependency-matrix.html">Matrice des dépendances</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../reference/artifacts.html">Artefacts</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../reference/upgrade-path.html">Chemin de mise à niveau</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../reference/metrics-reference.html">Référence de métriques</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../reference/monitor-mode.html">Mode de surveillance</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Spécification de la stratégie</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../reference/spec/01-intro-spec.html">Spécification de la communication des stratégies</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../reference/spec/02-settings.html">Paramètres de la stratégie</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../reference/spec/03-validating-policies.html">Validation des stratégies</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../reference/spec/04-mutating-policies.html">Stratégies de modification</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../reference/spec/05-context-aware-policies.html">Stratégies sensibles au contexte</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Fonctions de l&#8217;hôte</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../reference/spec/host-capabilities/01-intro-host-capabilities.html">Spécification des capacités de l&#8217;hôte</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../reference/spec/host-capabilities/02-signature-verifier-policies.html">Stratégies de vérification de signature</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../reference/spec/host-capabilities/03-container-registry.html">Capacités du registre de conteneur</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../reference/spec/host-capabilities/04-net.html">Fonctionnalités réseau</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../reference/spec/host-capabilities/05-crypto.html">Capacités cryptographiques</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../reference/spec/host-capabilities/06-kubernetes.html">Fonctionnalités de Kubernetes</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../reference/oci-registries-support.html">Support du registre OCI pour Admission Controller</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Sécurité</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../reference/security-hardening/webhooks-hardening.html">Webhooks</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../reference/threat-model.html">Modèle de menace</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../reference/policy-evaluation-timeout.html">Protection contre le dépassement de délai d&#8217;évaluation des stratégies</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../reference/verification-config.html">Format de configuration de vérification</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../reference/sources_yaml.html">Référence pour sources.yaml</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../reference/kwctl-cli.html"><code>kwctl</code> CLI</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../reference/policy-server-cli.html">CLI du serveur de stratégie</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../personas.html">Pour qui ?</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../use-cases.html">Cas pratiques d&#8217;utilisation</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../organization.html">Organisation</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../enterprise.html">Entreprise</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../glossary.html">Glossaire</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../disclosure.html">Divulgation de la sécurité</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Admission Controller</span>
+    <span class="version">1.34-dev</span>
+  </div>
+  <ul class="components">
+        <li class="component is-current">
+          <div class="title"><a href="../../../../1.33-latest/en/introduction.html">Admission Controller</a></div>
+          <ul class="versions">
+            <li class="version is-current">
+              <a href="../../../en/introduction.html">1.34-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../1.33-latest/en/introduction.html">1.33-latest</a>
+            </li>
+            <li class="version">
+              <a href="../../../../1.32/en/introduction.html">1.32</a>
+            </li>
+            <li class="version">
+              <a href="../../../../1.31/en/introduction.html">1.31</a>
+            </li>
+            <li class="version">
+              <a href="../../../../1.30/en/introduction.html">1.30</a>
+            </li>
+            <li class="version">
+              <a href="../../../../1.29/en/introduction.html">1.29</a>
+            </li>
+            <li class="version">
+              <a href="../../../../1.28/en/introduction.html">1.28</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../cluster-api/v0.26/en/index.html">Cluster API</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.27/en/index.html">v0.27-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../../cluster-api/v0.26/en/index.html">v0.26</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.25/en/index.html">0.25</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.24/en/index.html">0.24</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.23/en/index.html">0.23</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.22/en/index.html">0.22</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.21/en/index.html">0.21</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.20/en/index.html">0.20</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.19/en/index.html">0.19</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.18/en/index.html">0.18</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.17/en/index.html">0.17</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.16/en/index.html">0.16</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.11/en/index.html">0.11</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../continuous-delivery/next/en/index.html">Continuous Delivery</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../continuous-delivery/next/en/index.html">Next</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../continuous-delivery/v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../continuous-delivery/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../continuous-delivery/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../continuous-delivery/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../continuous-delivery/v0.11/en/index.html">0.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../continuous-delivery/v0.10/en/index.html">0.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../continuous-delivery/v0.9/en/index.html">0.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../k3s/latest/en/introduction.html">K3s</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../k3s/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../os-manager/1.9/en/index.html">OS Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../../os-manager/1.10/en/index.html">1.10-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../../os-manager/1.9/en/index.html">1.9</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../os-manager/1.8/en/index.html">1.8</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../os-manager/1.7/en/index.html">1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../os-manager/1.6/en/index.html">1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../os-manager/1.5/en/index.html">1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../rancher-ai/latest/en/introduction.html">Rancher AI</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../rancher-ai/latest/en/introduction.html">latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../rke2/latest/en/introduction.html">RKE2</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../rke2/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../suse-observability/latest/en/classic.html">SUSE Observability</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../suse-observability/latest/en/classic.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">SUSE Rancher Developer Access</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">SUSE® Rancher for AWS</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../rancher-manager/v2.13/en/about-rancher/what-is-rancher.html">SUSE® Rancher Manager</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../rancher-manager/v2.13/en/about-rancher/what-is-rancher.html">v2.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../rancher-manager/v2.12/en/about-rancher/what-is-rancher.html">v2.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../rancher-manager/v2.11/en/about-rancher/what-is-rancher.html">v2.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../rancher-manager/v2.10/en/about-rancher/what-is-rancher.html">v2.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../rancher-manager/v2.9/en/about-rancher/what-is-rancher.html">v2.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../security/5.5/en/overview.html">SUSE® Security</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../security/5.5/en/overview.html">5.5</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../security/5.4/en/overview.html">5.4</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../security/5.3/en/overview.html">5.3</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../storage/1.11/en/longhorn-documentation.html">SUSE® Storage</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../../storage/1.12/en/longhorn-documentation.html">1.12 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../../storage/1.11/en/longhorn-documentation.html">1.11 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../storage/1.10/en/longhorn-documentation.html">1.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../storage/1.9/en/longhorn-documentation.html">1.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../suse-virtual-clusters/1.0.2/en/release-notes/version-1.0.2.html">SUSE® Virtual Clusters</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">v1.1.0 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../../suse-virtual-clusters/1.0.2/en/release-notes/version-1.0.2.html">v1.0.2-latest</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../suse-virtual-clusters/v1.0.1/en/introduction.html">v1.0.1</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../suse-virtual-clusters/v1.0.0/en/introduction.html">v1.0.0</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../virtualization/v1.7/en/introduction/overview.html">SUSE® Virtualization</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../../virtualization/v1.8/en/introduction/overview.html">v1.8 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../../virtualization/v1.7/en/introduction/overview.html">v1.7 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../virtualization/v1.6/en/introduction/overview.html">v1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../virtualization/v1.5/en/introduction/overview.html">v1.5</a>
+            </li>
+          </ul>
+        </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+<ul>
+    <li>
+      <a class="home-link-dsc" href="https://documentation.suse.com/" title="documentation.suse.com" aria-label="SUSE Documentation Home"></a>
+    </li>
+    <li>
+      <a href="https://documentation.suse.com/cloudnative/admission-controller" title="Admission Controller" aria-label="SUSE Documentation - Admission Controller">
+        Admission Controller
+      </a>
+    </li>
+      <li>
+          Howtos
+      </li>
+  </ul>
+</nav><div class="page-versions">
+  <button class="version-menu-toggle" title="Show other versions of page">1.34-dev</button>
+  <div class="version-menu">
+    <a class="version is-current" href="secure-supply-chain.html">1.34-dev</a>
+    <a class="version is-missing" href="../../../../1.33-latest/en/introduction.html">1.33-latest</a>
+    <a class="version is-missing" href="../../../../1.32/en/introduction.html">1.32</a>
+    <a class="version is-missing" href="../../../../1.31/en/introduction.html">1.31</a>
+    <a class="version is-missing" href="../../../../1.30/en/introduction.html">1.30</a>
+    <a class="version is-missing" href="../../../../1.29/en/introduction.html">1.29</a>
+    <a class="version is-missing" href="../../../../1.28/en/introduction.html">1.28</a>
+  </div>
+</div>
+      <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <label class="visual-search-label-bc" for="search-input">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+          <input label="Search" aria-label="Search" id="search-input" type="text" placeholder="Searchercher dans les documents" >
+          <label class="filter checkbox" style="display: none">
+            <input type="checkbox" data-facet-filter="component:admission-controller" checked> Only this project
+          </label>
+        </div>
+      </div>
+</div>
+  <div class="content">
+<aside
+  class="toc sidebar"
+  data-title="Sur cette page" data-levels="2">
+  <div class="toc-menu">
+    <!-- start qualtrics -->
+    <div id='ZN_8qZUmklKYbBqAYe'><!--DO NOT REMOVE-CONTENTS PLACED HERE--></div>
+    <div id="qualtrics_container"></div>
+    <!-- end qualtrics -->
+  </div>
+</aside><article class="doc">
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>
+
+Ce document a été traduit à l'aide d'une technologie de traduction automatique.
+Bien que nous nous efforcions de fournir des traductions exactes,
+nous ne fournissons aucune garantie quant à l'exhaustivité, l'exactitude ou la
+fiabilité du contenu traduit. En cas de divergence, la version originale
+<a href="https://documentation.suse.com/cloudnative/admission-controller/1.34/en/howtos/security-hardening/secure-supply-chain.html">
+anglaise
+</a>
+prévaut et fait foi.
+
+</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+                <div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Avertissement"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Il s'agit d'une documentation non publiée pour Admission Controller 1.34-dev.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+            <h1 class="page">Chaîne d&#8217;approvisionnement sécurisée</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Une infrastructure de chaîne d&#8217;approvisionnement sécurisée peut vérifier la validité de ses composants ou liens. Elle permet aux utilisateurs et aux développeurs de démontrer la traçabilité de ses composants logiciels ou artefacts. C&#8217;est une approche active pour atténuer les problèmes de sécurité.</p>
+</div>
+<div class="paragraph">
+<p>Le projet <a href="https://sigstore.dev/">Sigstore</a> fournit des outils et une infrastructure pour cela. C&#8217;est pour valider l&#8217;intégrité de la chaîne d&#8217;approvisionnement des artefacts.</p>
+</div>
+<div class="paragraph">
+<p>Admission Controller utilise <a href="https://github.com/sigstore/cosign"><code>cosign</code></a> avec l&#8217;infrastructure <a href="https://github.com/SigStore/fulcio">fulcio</a> et <a href="https://github.com/sigstore/rekor">rekor</a> offerte par le projet Sigstore.</p>
+</div>
+<div class="paragraph">
+<p>Les opérateurs de cluster peuvent configurer SUSE Security Admission Controller pour n&#8217;exécuter que des stratégies signées par des entités de confiance. Les développeurs de stratégies peuvent signer leurs stratégies et les publier dans un registre.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_conditions_préalables"><a class="anchor" href="#_conditions_préalables"></a>Conditions préalables</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Dans les sections suivantes, vous devez installer quelques outils. C&#8217;est pour que les utilisateurs puissent signer et vérifier les signatures des artefacts OCI. Les exemples montrent l&#8217;utilisation des utilitaires <a href="https://docs.sigstore.dev/quickstart/quickstart-cosign/"><code>cosign</code></a> et <a href="https://github.com/kubewarden/kwctl"><code>kwctl</code></a> pour signer et inspecter les stratégies.</p>
+</div>
+<div class="paragraph">
+<p>Pour utiliser GitHub pour signer des stratégies, vous devez installer <a href="https://docs.sigstore.dev/cosign/system_config/installation/#github-actions">actions GitHub</a>.</p>
+</div>
+<div class="paragraph">
+<p>La signature sans clé utilise les instances par défaut <a href="https://github.com/SigStore/fulcio">fulcio</a> et <a href="https://github.com/sigstore/rekor">rekor</a> fournies par le projet Sigstore. Consultez la documentation de Sigstore pour des détails sur l&#8217;utilisation de votre propre infrastructure pour cela, si nécessaire.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_signature_des_stratégies"><a class="anchor" href="#_signature_des_stratégies"></a>Signature des stratégies</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Admission Controller recommande d&#8217;utiliser l&#8217;utilitaire <a href="https://github.com/sigstore/cosign">cosign</a> de Sigstore pour signer les stratégies. Cette section montre une méthode de signature de stratégies basée sur des clés. Vous devez générer une paire de clés privée-publique pour cela. Les clés générées aident à vérifier si les artefacts signés proviennent de l&#8217;utilisateur attendu. Pour générer cette paire de clés, utilisez cette commande <code>cosign generate-key-pair</code> :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cosign generate-key-pair</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Ce qui entraîne une invite pour taper et vérifier un mot de passe :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-console hljs" data-lang="console">Enter password for private key: ●●●●●●●●
+Enter password for private key again: ●●●●●●●●
+Private key written to cosign.key
+Public key written to cosign.pub</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Vous pouvez maintenant utiliser cette clé pour signer des stratégies.</p>
+</div>
+<div class="paragraph">
+<p>Ne partagez pas le fichier de clé privée, <code>cosign.key</code>. C&#8217;est un fichier secret à utiliser uniquement par le propriétaire de la clé pour signer des stratégies.</p>
+</div>
+<div class="paragraph">
+<p>Pour signer une stratégie, vous pouvez utiliser <code>cosign sign</code> en passant l&#8217;argument de ligne de commande <code>--key</code> avec votre fichier de clé privée :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cosign sign --key cosign.key ghcr.io/kubewarden/policies/user-group-psp:latest</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Ce qui entraîne une invite pour le mot de passe, pour la clé privée spécifiée :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-console hljs" data-lang="console">an error occurred: no provider found for that key reference, will try to load key from disk...
+Enter password for private key: ●●●●●●●●
+Pushing signature to: ghcr.io/kubewarden/policies/user-group-psp</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Cette commande signe la stratégie en créant un nouvel objet de signature. L&#8217;objet de signature est ensuite téléchargé dans le registre, avec la stratégie. Maintenant, la stratégie est prête à être utilisée dans une installation Admission Controller utilisant la vérification de signature.</p>
+</div>
+<div class="paragraph">
+<p>La même stratégie peut être signée plusieurs fois, par le même utilisateur ou par des utilisateurs différents. Ces signatures sont ajoutées à l&#8217;objet de signature avec la signature originale.</p>
+</div>
+<div class="paragraph">
+<p>Pour plus d&#8217;informations sur le fonctionnement du processus de signature, consultez la documentation du projet <a href="https://docs.sigstore.dev/">Sigstore</a>.</p>
+</div>
+<div class="sect2">
+<h3 id="_signature_sans_clé"><a class="anchor" href="#_signature_sans_clé"></a>Signature sans clé</h3>
+<div class="paragraph">
+<p>Souvent, les stratégies sont automatiquement construites à l&#8217;aide de pipelines CI/CD. Cela complique le processus de génération de clés. Ce flux de travail sans clé de Sigstore est destiné à ces situations. Au lieu d&#8217;utiliser des clés de signature à long terme, le flux de travail sans clé utilise des autorités de certification (AC) et des chaînes de certificats.</p>
+</div>
+<div class="paragraph">
+<p>Vous liez la clé de certificat à durée de vie courte générée dans une chaîne de confiance. Cela se fait par un défi d&#8217;identité pour confirmer l&#8217;identité du signataire. La durée de vie de la clé de certificat est suffisamment longue pour que la signature ait lieu. Le défi d&#8217;identité se déroule en s&#8217;authentifiant auprès d&#8217;un fournisseur OpenID Connect (OIDC). L&#8217;infrastructure publique Fulcio de Sigstore fournit la chaîne de confiance.</p>
+</div>
+<div class="paragraph">
+<p>La signature utilise l&#8217;utilitaire cosign de Sigstore.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ cosign sign ghcr.io/kubewarden/policies/user-group-psp:latest</code></pre>
+</div>
+</div>
+<details>
+<summary class="title">sortie de cosign</summary>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-console hljs" data-lang="console">Generating ephemeral keys...
+Retrieving signed certificate...
+Your browser will now be opened to:
+https://oauth2.sigstore.dev/auth/auth?access_type=online&amp;client_id=sigstore&amp;code_challenge=&lt;REDACTED&gt;&amp;code_challenge_method=S256&amp;nonce=&lt;REDACTED&gt;&amp;redirect_uri=http%3A%2F%2Flocalhost%3A34021%2Fauth%2Fcallback&amp;response_type=code&amp;scope=openid+email&amp;state=&lt;REDACTED&gt;
+client.go:196: root pinning is not supported in Spec 1.0.19
+Successfully verified SCT...
+tlog entry created with index: 1819248
+Pushing signature to: ghcr.io/kubewarden/policies/user-group-psp</code></pre>
+</div>
+</div>
+</div>
+</details>
+<div class="paragraph">
+<p>Cela signe la stratégie et la pousse vers le dépôt. Aucune clé n&#8217;est générée comme sous-produit.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_comment_signer_des_artefacts_dans_les_flux_de_travail_github"><a class="anchor" href="#_comment_signer_des_artefacts_dans_les_flux_de_travail_github"></a>Comment signer des artefacts dans les flux de travail GitHub</h3>
+<div class="paragraph">
+<p>Lors de l&#8217;utilisation de la signature sans clé, dans une action GitHub, <code>cosign</code> n&#8217;a pas besoin que l&#8217;utilisateur se connecte à un fournisseur OIDC. Un jeton GitHub est disponible pendant l&#8217;exécution du flux de travail GitHub. Il est utilisé pour authentifier l&#8217;utilisateur et générer les clés éphémères. Le processus de signature est le même que celui utilisé en mode sans clé. Ceci est un exemple de la façon dont le projet Admission Controller signe ses stratégies :</p>
+</div>
+<details>
+<summary class="title">YAML décrivant la signature des stratégies Admission Controller.</summary>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml"># ... beginning of the workflow file ...
+jobs:
+  build:
+    name: Build container image
+    runs-on: ubuntu-latest
+    steps:
+      # ... other steps building the container image ...
+      -
+      name: Login to GitHub Container Registry
+      uses: docker/login-action@v1
+      with:
+        registry: ghcr.io
+        username: ${{ github.repository_owner }}
+        password: ${{ inputs.GITHUB_TOKEN }}
+      -
+      name: Publish Wasm policy artifact to OCI registry with the 'latest' tag
+      shell: bash
+      if: ${{ startsWith(github.ref, 'refs/heads/') }}
+      env:
+        COSIGN_EXPERIMENTAL: 1
+      run: |
+        set -ex
+        echo Pushing policy to OCI container registry
+        IMMUTABLE_REF=$(kwctl push -o json ${{ PATH_TO_BUILT_WASM_FILE }} ghcr.io/myorg/policies/my-great-policy:latest | jq -r .immutable_ref)
+        echo Keyless signing of policy using cosign
+        cosign sign ${IMMUTABLE_REF}
+      # ... other build steps ...
+
+# ... remainder of the workflow file ...</code></pre>
+</div>
+</div>
+</div>
+</details>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Les développeurs de stratégies peuvent utiliser les modèles de stratégies Admission Controller. Ils ont des actions GitHub pour construire, tester, signer et publier des stratégies.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_liste_des_signatures_de_stratégie"><a class="anchor" href="#_liste_des_signatures_de_stratégie"></a>Liste des signatures de stratégie</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Vous pouvez vérifier la signature dans une stratégie publiée avec <code>kwctl inspect</code>. Cela montre les informations sur la stratégie et ses signatures comme indiqué ci-dessous :</p>
+</div>
+<details>
+<summary class="title">kwctl inspect registry://ghcr.io/kubewarden/policies/us&#8230;&#8203;.</summary>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-console hljs" data-lang="console">$ kwctl inspect registry://ghcr.io/kubewarden/policies/user-group-psp:v0.2.0
+Details
+title:              psp-user-group
+description:        Short description
+author:             José Guilherme Vanz &lt;jguilhermevanz@suse.com&gt;
+url:                https://github.com/kubewarden/user-group-psp-policy
+source:             https://github.com/kubewarden/user-group-psp-policy
+license:            Apache-2.0
+mutating:           true
+context aware:      false
+execution mode:     kubewarden-wapc
+protocol version:   1
+
+Annotations
+io.kubewarden.kwctl 0.2.5-rc2
+
+Rules
+────────────────────
+---
+- apiGroups:
+    - ""
+  apiVersions:
+    - v1
+  resources:
+    - pods
+  operations:
+    - CREATE
+────────────────────
+
+Usage
+This policy enforce the user and group used in the container.
+
+Sigstore signatures
+
+Digest:                            sha256:026af67682a85d424e7d95db460171635f5c3957d67b53499bece912cc0413cc
+Media type:                        application/vnd.dev.cosign.simplesigning.v1+json
+Size:                              258
+Annotations
+dev.sigstore.cosign/certificate    -----BEGIN CERTIFICATE-----
+                                   MIIDRzCCAsygAwIBAgITbPUZlUFkkAHtbzc3rzC/3zXj1DAKBggqhkjOPQQDAzAq
+                                   MRUwEwYDVQQKEwxzaWdzdG9yZS5kZXYxETAPBgNVBAMTCHNpZ3N0b3JlMB4XDTIy
+                                   MDIyNTE2MzAwMloXDTIyMDIyNTE2NDAwMVowEzERMA8GA1UEChMIc2lnc3RvcmUw
+                                   WTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAAR/O5c6ZI5BzBweoEIam4uWu5fqzHx0
+                                   3PTCgfXyyvIjorz9wX08bsndkHdWfFObU+PztbxX78An43Yw9/fHtO93o4IB5jCC
+                                   AeIwDgYDVR0PAQH/BAQDAgeAMBMGA1UdJQQMMAoGCCsGAQUFBwMDMAwGA1UdEwEB
+                                   /wQCMAAwHQYDVR0OBBYEFCP/v7NEJQglbDmyC5VMgnvhiuBUMB8GA1UdIwQYMBaA
+                                   FFjAHl+RRaVmqXrMkKGTItAqxcX6MHgGA1UdEQRxMG+GbWh0dHBzOi8vZ2l0aHVi
+                                   LmNvbS9rdWJld2FyZGVuL2dpdGh1Yi1hY3Rpb25zLy5naXRodWIvd29ya2Zsb3dz
+                                   L3JldXNhYmxlLXJlbGVhc2UtcG9saWN5LXJ1c3QueW1sQHJlZnMvaGVhZHMvdjEw
+                                   NgYKKwYBBAGDvzABAwQoMmJiMGQ4NjZjMzFmOGMyZTQ3NDMxMDI4M2ExNmFkMWFi
+                                   NjBlZjA1YjAuBgorBgEEAYO/MAEFBCBrdWJld2FyZGVuL3VzZXItZ3JvdXAtcHNw
+                                   LXBvbGljeTAcBgorBgEEAYO/MAEEBA5SZWxlYXNlIHBvbGljeTASBgorBgEEAYO/
+                                   MAECBARwdXNoMDkGCisGAQQBg78wAQEEK2h0dHBzOi8vdG9rZW4uYWN0aW9ucy5n
+                                   aXRodWJ1c2VyY29udGVudC5jb20wHgYKKwYBBAGDvzABBgQQcmVmcy90YWdzL3Yw
+                                   LjIuMDAKBggqhkjOPQQDAwNpADBmAjEAyGQbNCkOifStO7yCCfF8yXyc144ANn2x
+                                   Ty92WYC0pTaVhviOED47fgD6TncKf+92AjEAjBfjLmCG/Mwrh8t+gfHJEAWWEc9Q
+                                   +j9NR4wF66uABS/TTh5CYlrnIuqSD+GBHGwV
+                                   -----END CERTIFICATE-----
+dev.sigstore.cosign/timestamp      {"signatures":[{"keyid":"b6710623a30c010738e64c5209d367df1c0a18cf90e6ab5292fb01680f83453d","sig":"3046022100f666a7f4b3d85d8003f2c166e27827dfa0c4ab9282e9dab19485f4e702c61700022100dfe826e0edab5f80a40f08cc87b87777a4db30775d85684fe4950e797f2f565c"}],"signed":{"_type":"timestamp","spec_version":"1.0","version":15,"expires":"2022-03-08T19:14:05Z","meta":{"snapshot.json":{"length":1655,"hashes":{"sha256":"36cf063d0717f6dc03e23027721adcd69b684d293956d3a1a7db7b0848f711d7","sha512":"f90946d0a2dc58dae4505cfb91517a40299adf9e8719f52af187e2025aad69fcdeaeded271ec25db24869841c16fbe24f3fc56f56af8fdbb8808dccec4636b64"},"version":15}}}}
+dev.sigstore.cosign/bundle         {"SignedEntryTimestamp":"MEUCIEfu4qR+HsexSDk5h2QXMduvoRCX10J+4CLQWtYw5VD6AiEAyYCEjvJdv2Sr5tZ4LApnddH/4v+CoV1QkuvbCQ3iIUM=","Payload":{"body":"eyJhcGlWZXJzaW9uIjoiMC4wLjEiLCJraW5kIjoiaGFzaGVkcmVrb3JkIiwic3BlYyI6eyJkYXRhIjp7Imhhc2giOnsiYWxnb3JpdGhtIjoic2hhMjU2IiwidmFsdWUiOiIwMjZhZjY3NjgyYTg1ZDQyNGU3ZDk1ZGI0NjAxNzE2MzVmNWMzOTU3ZDY3YjUzNDk5YmVjZTkxMmNjMDQxM2NjIn19LCJzaWduYXR1cmUiOnsiY29udGVudCI6Ik1FWUNJUUNXNWZRZ1BUUTdaTlNuRkhzbHJOTlFrS2dTSVFpOGNSMTU5UEExc0s4VGlRSWhBSndMOWJPcUJKbVduN1lLZG9Tem80c2xPZ2s4SkJCanFYZHNydDNyeVF0QiIsInB1YmxpY0tleSI6eyJjb250ZW50IjoiTFMwdExTMUNSVWRKVGlCRFJWSlVTVVpKUTBGVVJTMHRMUzB0Q2sxSlNVUlNla05EUVhONVowRjNTVUpCWjBsVVlsQlZXbXhWUm10clFVaDBZbnBqTTNKNlF5OHplbGhxTVVSQlMwSm5aM0ZvYTJwUFVGRlJSRUY2UVhFS1RWSlZkMFYzV1VSV1VWRkxSWGQ0ZW1GWFpIcGtSemw1V2xNMWExcFlXWGhGVkVGUVFtZE9Wa0pCVFZSRFNFNXdXak5PTUdJelNteE5RalJZUkZSSmVRcE5SRWw1VGxSRk1rMTZRWGROYkc5WVJGUkplVTFFU1hsT1ZFVXlUa1JCZDAxV2IzZEZla1ZTVFVFNFIwRXhWVVZEYUUxSll6SnNibU16VW5aamJWVjNDbGRVUVZSQ1oyTnhhR3RxVDFCUlNVSkNaMmR4YUd0cVQxQlJUVUpDZDA1RFFVRlNMMDgxWXpaYVNUVkNla0ozWlc5RlNXRnROSFZYZFRWbWNYcEllREFLTTFCVVEyZG1XSGw1ZGtscWIzSjZPWGRZTURoaWMyNWthMGhrVjJaR1QySlZLMUI2ZEdKNFdEYzRRVzQwTTFsM09TOW1TSFJQT1ROdk5FbENOV3BEUXdwQlpVbDNSR2RaUkZaU01GQkJVVWd2UWtGUlJFRm5aVUZOUWsxSFFURlZaRXBSVVUxTlFXOUhRME56UjBGUlZVWkNkMDFFVFVGM1IwRXhWV1JGZDBWQ0NpOTNVVU5OUVVGM1NGRlpSRlpTTUU5Q1FsbEZSa05RTDNZM1RrVktVV2RzWWtSdGVVTTFWazFuYm5ab2FYVkNWVTFDT0VkQk1WVmtTWGRSV1UxQ1lVRUtSa1pxUVVoc0sxSlNZVlp0Y1ZoeVRXdExSMVJKZEVGeGVHTllOazFJWjBkQk1WVmtSVkZTZUUxSEswZGlWMmd3WkVoQ2VrOXBPSFphTW13d1lVaFdhUXBNYlU1MllsTTVjbVJYU214a01rWjVXa2RXZFV3eVpIQmtSMmd4V1dreGFGa3pVbkJpTWpWNlRIazFibUZZVW05a1YwbDJaREk1ZVdFeVduTmlNMlI2Q2t3elNteGtXRTVvV1cxNGJFeFlTbXhpUjFab1l6SlZkR05IT1hOaFYwNDFURmhLTVdNelVYVmxWekZ6VVVoS2JGcHVUWFpoUjFab1draE5kbVJxUlhjS1RtZFpTMHQzV1VKQ1FVZEVkbnBCUWtGM1VXOU5iVXBwVFVkUk5FNXFXbXBOZWtadFQwZE5lVnBVVVROT1JFMTRUVVJKTkUweVJYaE9iVVpyVFZkR2FRcE9ha0pzV21wQk1WbHFRWFZDWjI5eVFtZEZSVUZaVHk5TlFVVkdRa05DY21SWFNteGtNa1o1V2tkV2RVd3pWbnBhV0VsMFdqTktkbVJZUVhSalNFNTNDa3hZUW5aaVIyeHFaVlJCWTBKbmIzSkNaMFZGUVZsUEwwMUJSVVZDUVRWVFdsZDRiRmxZVG14SlNFSjJZa2RzYW1WVVFWTkNaMjl5UW1kRlJVRlpUeThLVFVGRlEwSkJVbmRrV0U1dlRVUnJSME5wYzBkQlVWRkNaemM0ZDBGUlJVVkxNbWd3WkVoQ2VrOXBPSFprUnpseVdsYzBkVmxYVGpCaFZ6bDFZM2sxYmdwaFdGSnZaRmRLTVdNeVZubFpNamwxWkVkV2RXUkROV3BpTWpCM1NHZFpTMHQzV1VKQ1FVZEVkbnBCUWtKblVWRmpiVlp0WTNrNU1GbFhaSHBNTTFsM0NreHFTWFZOUkVGTFFtZG5jV2hyYWs5UVVWRkVRWGRPY0VGRVFtMUJha1ZCZVVkUllrNURhMDlwWmxOMFR6ZDVRME5tUmpoNVdIbGpNVFEwUVU1dU1uZ0tWSGs1TWxkWlF6QndWR0ZXYUhacFQwVkVORGRtWjBRMlZHNWpTMllyT1RKQmFrVkJha0ptYWt4dFEwY3ZUWGR5YURoMEsyZG1TRXBGUVZkWFJXTTVVUW9yYWpsT1VqUjNSalkyZFVGQ1V5OVVWR2cxUTFsc2NtNUpkWEZUUkN0SFFraEhkMVlLTFMwdExTMUZUa1FnUTBWU1ZFbEdTVU5CVkVVdExTMHRMUW89In19fX0=","integratedTime":1645806604,"logIndex":1506651,"logID":"c0d23d6ad406973f9559f3ba2d1ca01f84147d8ffc5b8445c224f98b9591801d"}}
+dev.sigstore.cosign/chain          -----BEGIN CERTIFICATE-----
+                                   MIIB9zCCAXygAwIBAgIUALZNAPFdxHPwjeDloDwyYChAO/4wCgYIKoZIzj0EAwMw
+                                   KjEVMBMGA1UEChMMc2lnc3RvcmUuZGV2MREwDwYDVQQDEwhzaWdzdG9yZTAeFw0y
+                                   MTEwMDcxMzU2NTlaFw0zMTEwMDUxMzU2NThaMCoxFTATBgNVBAoTDHNpZ3N0b3Jl
+                                   LmRldjERMA8GA1UEAxMIc2lnc3RvcmUwdjAQBgcqhkjOPQIBBgUrgQQAIgNiAAT7
+                                   XeFT4rb3PQGwS4IajtLk3/OlnpgangaBclYpsYBr5i+4ynB07ceb3LP0OIOZdxex
+                                   X69c5iVuyJRQ+Hz05yi+UF3uBWAlHpiS5sh0+H2GHE7SXrk1EC5m1Tr19L9gg92j
+                                   YzBhMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBRY
+                                   wB5fkUWlZql6zJChkyLQKsXF+jAfBgNVHSMEGDAWgBRYwB5fkUWlZql6zJChkyLQ
+                                   KsXF+jAKBggqhkjOPQQDAwNpADBmAjEAj1nHeXZp+13NWBNa+EDsDP8G1WWg1tCM
+                                   WP/WHPqpaVo0jhsweNFZgSs0eE7wYI4qAjEA2WB9ot98sIkoF3vZYdd3/VtWB5b9
+                                   TNMea7Ix/stJ5TfcLLeABLE4BNJOsQ4vnBHJ
+                                   -----END CERTIFICATE-----
+dev.cosignproject.cosign/signature MEYCIQCW5fQgPTQ7ZNSnFHslrNNQkKgSIQi8cR159PA1sK8TiQIhAJwL9bOqBJmWn7YKdoSzo4slOgk8JBBjqXdsrt3ryQtB</code></pre>
+</div>
+</div>
+</div>
+</details>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_vérification_des_stratégies"><a class="anchor" href="#_vérification_des_stratégies"></a>Vérification des stratégies</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Vous pouvez vérifier si une stratégie est correctement signée avec <code>cosign</code> ou <code>kwctl</code>. Ils ont des options de ligne de commande similaires pour vérifier les signatures des stratégies. Pour vérifier le binaire de signature avec une clé, utilisez <code>kwctl</code> comme ceci :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-console hljs" data-lang="console">$ kwctl verify -k cosign.pub ghcr.io/kubewarden/policies/user-group-psp:latest
+2022-03-29T14:49:31.878180Z  INFO kwctl::verify: Policy successfully verified</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Ou <code>cosign</code> :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-console hljs" data-lang="console">$ cosign verify --key cosign.pub ghcr.io/kubewarden/policies/user-group-psp:latest
+
+Verification for ghcr.io/kubewarden/policies/user-group-psp:latest --
+The following checks were performed on each of these signatures:
+  - The cosign claims were validated
+  - The signatures were verified against the specified public key
+  - Any certificates were verified against the Fulcio roots.
+
+[{"critical":{"identity":{"docker-reference":"ghcr.io/kubewarden/policies/user-group-psp"},"image":{"docker-manifest-digest":"sha256:af520a8ccee03811d426c48634b7007f1220c121cc23e14962bb64510585ce97"},"type":"cosign container image signature"},"optional":null}]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_configuration_du_serveur_de_stratégie_pour_vérifier_les_signatures_des_stratégies"><a class="anchor" href="#_configuration_du_serveur_de_stratégie_pour_vérifier_les_signatures_des_stratégies"></a>Configuration du serveur de stratégie pour vérifier les signatures des stratégies</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Vous pouvez configurer Admission Controller avec un <code>ConfigMap</code> pour n&#8217;exécuter que des stratégies de confiance. La structure <code>ConfigMap</code> est décrite dans <a href="../../reference/verification-config.html#_signature_configuration_reference" class="xref page">Référence de configuration de signature</a>. Elle est utilisée pour vérifier une stratégie en utilisant <code>kwctl</code>. Le <code>ConfigMap</code> doit définir les configurations autorisées sous le champ <code>verification-config</code>.</p>
+</div>
+<div class="paragraph">
+<p>Par exemple, vous souhaitez exécuter des stratégies signées par l&#8217;organisation GitHub Admission Controller. Alors un exemple de <code>ConfigMap</code> pour ce scénario serait :</p>
+</div>
+<details>
+<summary class="title">$ cat kubewarden_signatures.yaml</summary>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-console hljs" data-lang="console">$ cat kubewarden_signatures.yaml
+apiVersion: v1
+allOf:
+  - kind: githubAction
+    owner: kubewarden
+
+# note that the data is stored under verification-config field
+$ kubectl  create configmap my-signatures-configuration --from-file=verification-config=kubewarden_signatures.yaml
+
+$ kubectl get configmap -o yaml my-signatures-configuration
+apiVersion: v1
+data:
+  verification-config: |
+    apiVersion: v1
+    allOf:
+      - kind: githubAction
+        owner: kubewarden
+kind: ConfigMap
+metadata:
+  creationTimestamp: "2022-03-29T18:27:20Z"
+  name: my-signatures-configuration
+  namespace: default
+  resourceVersion: "10279"
+  uid: d53e1c56-1fee-45de-92f5-9bd73b8cead4</code></pre>
+</div>
+</div>
+</div>
+</details>
+<div class="paragraph">
+<p>Vous pouvez utiliser <code>kwctl scaffold verification-config</code> pour générer un fichier de configuration de vérification par défaut pour le <code>ConfigMap</code> :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-console hljs" data-lang="console">$ kwctl scaffold verification-config &gt; verification_config.yaml</code></pre>
+</div>
+</div>
+<details>
+<summary class="title">$ cat verification_config.yaml</summary>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-console hljs" data-lang="console">$ kwctl scaffold verification-config &gt; verification_config.yaml
+$ cat verification_config.yaml
+# Default Admission Controller verification config
+#
+# With this config, the only valid policies are those signed by Admission Controller
+# infrastructure.
+#
+# This config can be saved to its default location (for this OS) with:
+#   kwctl scaffold verification-config &gt; /home/kubewarden/.config/kubewarden/verification-config.yml
+#
+# Providing a config in the default location enables Sigstore verification.
+# See https://docs.kubewarden.io for more Sigstore verification options.
+---
+apiVersion: v1
+allOf:
+  - kind: githubAction
+    owner: kubewarden
+    repo: ~
+    annotations: ~
+anyOf: ~</code></pre>
+</div>
+</div>
+</div>
+</details>
+<div class="paragraph">
+<p>Vous pouvez utiliser ce <code>verification_config.yml</code> pour créer le <code>ConfigMap</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-console hljs" data-lang="console">$ kubectl create configmap my-signatures-configuration --from-file==verification_config.yaml
+configmap/my-signatures-configuration created</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Ensuite, nous pouvons inspecter avec <code>get configmap</code>.</p>
+</div>
+<details>
+<summary class="title">kubectl get configmap</summary>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-console hljs" data-lang="console">$ kubectl get configmap -o yaml my-signatures-configuration
+apiVersion: v1
+data:
+  verification-config: |+
+    # Default Admission Controller verification config
+    #
+    # With this config, the only valid policies are those signed by Admission Controller
+    # infrastructure.
+    #
+    # This config can be saved to its default location (for this OS) with:
+    #   kwctl scaffold verification-config &gt; /home/kubewarden/.config/kubewarden/verification-config.yml
+    #
+    # Providing a config in the default location enables Sigstore verification.
+    # See https://docs.kubewarden.io for more Sigstore verification options.
+    ---
+    apiVersion: v1
+    allOf:
+      - kind: githubAction
+        owner: kubewarden
+        repo: ~
+        annotations: ~
+    anyOf: ~
+
+kind: ConfigMap
+metadata:
+  creationTimestamp: "2022-04-07T11:54:27Z"
+  name: my-signatures-configuration
+  namespace: default
+  resourceVersion: "1317"
+  uid: 74dec846-7fcd-4b4b-8184-700c816f685a</code></pre>
+</div>
+</div>
+</div>
+</details>
+<div class="paragraph">
+<p>Après avoir créé le <code>ConfigMap</code> pour stocker les exigences de signature, vous pouvez configurer un serveur de stratégie. Pour commencer à valider les signatures de stratégie en définissant le nom <code>ConfigMap</code> dans le champ <code>verificationConfig</code> (marqué ➀).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: policies.kubewarden.io/v1alpha2
+kind: PolicyServer
+metadata:
+  name: default
+  finalizers:
+    - kubewarden
+spec:
+  image: ghcr.io/kubewarden/policy-server:v0.2.7
+  serviceAccountName: policy-server
+  replicas: 1
+//highlight-next-l
+  # name of the confimap with the signatures requirements
+  verificationConfig: your_configmap <i class="conum" data-value="1"></i><b>(1)</b>
+  env:
+    - name: KUBEWARDEN_ENABLE_METRICS
+      value: "1"
+    - name: KUBEWARDEN_LOG_FMT
+      value: otlp
+    - name: "KUBEWARDEN_LOG_LEVEL"
+      value: "info"</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>verificationConfig</code></td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Si vous déployez le serveur de stratégie par défaut en utilisant le chart Helm <code>kubewarden-defaults</code>, vous configurez ce champ en définissant le nom <code>ConfigMap</code> dans la valeur <code>policyServer.verificationConfig</code>.</p>
+</div>
+<div class="paragraph">
+<p>Maintenant, le serveur de stratégie rejette les AdmissionPolicies et ClusterAdmissionPolicies non fiables en refusant de démarrer. Vous devez supprimer la stratégie non fiable ou changer les exigences de signature pour un serveur de stratégie en cours d&#8217;exécution.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_référence_de_configuration_de_signature"><a class="anchor" href="#_référence_de_configuration_de_signature"></a>Référence de configuration de signature</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Vous pouvez valider les exigences de signature contenues dans un fichier. Voici un exemple :</p>
+</div>
+<details>
+<summary class="title">Un fichier d&#8217;exigences de signature</summary>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: v1
+
+allOf: <i class="conum" data-value="1"></i><b>(1)</b>
+  - kind: githubAction
+    owner: kubewarden   # mandatory
+    annotations:
+      env: prod
+
+anyOf: # at least `+anyOf.minimumMatches+` are required to match <i class="conum" data-value="2"></i><b>(2)</b>
+  minimumMatches: 2 # default is 1
+  signatures:
+  - kind: pubKey
+    owner: flavio # optional
+    key: .... # mandatory
+    annotations:  # optional
+      env: prod
+      foo: bar
+  - kind: pubKey
+    owner: victor # optional
+    key: .... # mandatory
+  - kind: genericIssuer
+    issuer: https://github.com/login/oauth
+    subject:
+      equal: alice@example.com
+  - kind: genericIssuer
+    issuer: https://token.actions.githubusercontent.com
+    subject:
+      equal: https://github.com/flavio/policy-secure-pod-images/.github/workflows/release.yml@refs/heads/main
+  - kind: genericIssuer
+    issuer: https://token.actions.githubusercontent.com
+    subject:
+      urlPrefix: https://github.com/flavio/
+  - kind: genericIssuer
+    issuer: https://token.actions.githubusercontent.com
+    subject:
+      urlPrefix: https://github.com/kubewarden # &lt;- it will be post-fixed with `+/+` for security reasons
+  - kind: githubAction
+    owner: flavio   # mandatory
+    repo: policy1 # optional
+  - kind: pubKey
+    owner: alice # optional
+    key: .... # mandatory</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>allOf</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td><code>anyOf</code></td>
+</tr>
+</table>
+</div>
+</div>
+</details>
+<div class="sect2">
+<h3 id="_validation_de_signature"><a class="anchor" href="#_validation_de_signature"></a>Validation de signature</h3>
+<div class="paragraph">
+<p>La configuration ci-dessus contient les deux sections surlignées, <code>allOf</code> et <code>anyOf</code> :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>allOf</code> : la stratégie est fiable uniquement si toutes les exigences de signature ici sont valides.</p>
+</li>
+<li>
+<p><code>anyOf</code> : la stratégie est fiable si le critère <code>minimumMatches</code> est respecté.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Ci-dessus, le champ <code>minimumMatches</code> est 2. Ainsi, au moins deux des exigences de signature doivent être respectées. La valeur par défaut pour le champ <code>minimumMatches</code> est <code>1</code>.</p>
+</div>
+<div class="paragraph">
+<p>Toutes les exigences de signature de <code>allOf</code> <strong>et</strong> le nombre minimum de <code>anyOf</code> doivent être respectées.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_validation_de_clé_publique"><a class="anchor" href="#_validation_de_clé_publique"></a>Validation de clé publique</h3>
+<div class="paragraph">
+<p>Pour vérifier qu&#8217;une stratégie est signée avec la bonne clé publique, vous spécifiez les données de la clé et le propriétaire de la clé. Dans cet exemple, vous définissez <code>kind</code>, à <code>pubKey</code> et la <code>key</code> a la clé publique. Le champ propriétaire est facultatif, mais peut être utile pour clarifier qui possède la clé.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">  - kind: pubKey
+    owner: bob # optional
+    key: |
+      -----BEGIN PUBLIC KEY-----
+      MBFKHFDGHKIJH0CAQYIKoZIzj0DAQcDQgAEX0HFTtCfTtPmkx5p1RbDE6HJSGAVD
+      BVDF6SKFSF87AASUspkQsN3FO4iyWodCy5j3o0CdIJD/KJHDJFHDFIu6sA==
+      -----END PUBLIC KEY-----</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_validation_de_signature_sans_clé"><a class="anchor" href="#_validation_de_signature_sans_clé"></a>Validation de signature sans clé</h3>
+<div class="paragraph">
+<p>Une stratégie signée en mode sans clé n&#8217;a pas de clé publique à vérifier. Vous pouvez toujours vérifier la stratégie avec les données OIDC utilisées lors du processus de signature. Pour cela, il est nécessaire de définir la validation de signature comme <code>genericIssuer</code>.</p>
+</div>
+<div class="paragraph">
+<p>Il est possible de vérifier les informations de la signature :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>issuer</code>(obligatoire) : Cela correspond à l&#8217;attribut <code>Issuer</code> dans le certificat généré par Fulcio. Cela montre l&#8217;OIDC utilisé pour signer la stratégie.</p>
+</li>
+<li>
+<p><code>subject</code> : Champ utilisé pour faire correspondre l&#8217;attribut <code>Subject</code> dans le certificat de Fulcio. Le champ <code>Subject</code> (Fulcio) contient l&#8217;utilisateur utilisé pour s&#8217;authentifier auprès du fournisseur OIDC. Le champ de vérification, <code>subject</code>, peut avoir l&#8217;un des deux sous-champs :</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>equal</code> : Le <code>Subject</code> (Fulcio) du certificat doit être égal à la valeur dans la validation de signature ;</p>
+</li>
+<li>
+<p><code>urlPrefix</code> : La valeur du champ <code>Subject</code> (Fulcio) du certificat doit être précédée de la valeur définie dans la validation de signature.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>À la fois le <code>cosign verify</code> et le <code>kwctl inspect</code> peuvent montrer des informations sur les signatures sans clé.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Par exemple, cette configuration signifie que la stratégie doit avoir une signature sans clé d&#8217;Alice utilisant l&#8217;OIDC de GitHub :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">- kind: genericIssuer
+  issuer: https://github.com/login/oauth
+  subject:
+    equal: alice@example.com</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Cette configuration nécessite que la stratégie soit signée dans les actions GitHub, à partir d&#8217;un dépôt appartenant à l&#8217;utilisateur GitHub <code>flavio</code> :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">- kind: genericIssuer
+  issuer: https://token.actions.githubusercontent.com
+  subject:
+    urlPrefix: https://github.com/flavio</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_vérification_de_la_signature_de_github_actions"><a class="anchor" href="#_vérification_de_la_signature_de_github_actions"></a>Vérification de la signature de GitHub Actions</h3>
+<div class="paragraph">
+<p>Le "type", <code>githubAction</code> sert à valider les stratégies signées dans GitHub Actions.
+Vous pouvez le faire avec le type <code>genericIssuer</code> également. Pour simplifier le processus d&#8217;exigence de signature, utilisez deux champs supplémentaires pour <code>githubAction</code> :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>owner</code> (obligatoire) : ID GitHub de l&#8217;utilisateur ou de l&#8217;organisation en qui il faut avoir confiance</p>
+</li>
+<li>
+<p><code>repo</code> : le nom du dépôt auquel il faut faire confiance</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Par exemple, le dernier extrait, utilisant <code>genericIssuer</code>, pourrait être réécrit comme suit :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">- kind: githubAction
+  owner: flavio</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_validation_des_annotations_de_signature"><a class="anchor" href="#_validation_des_annotations_de_signature"></a>Validation des annotations de signature</h3>
+<div class="paragraph">
+<p>Tous les types de signature peuvent avoir d&#8217;autres champs de validation optionnels, <code>annotations</code>.
+Ces champs sont des données clé/valeur ajoutées lors du processus de signature.</p>
+</div>
+<div class="paragraph">
+<p>Avec Admission Controller, vous pouvez vérifier que la signature de la stratégie est faite par des utilisateurs de confiance <strong>et</strong> qu&#8217;ils ont des annotations spécifiques.</p>
+</div>
+<div class="paragraph">
+<p>La prochaine validation vérifie 2 conditions pour la stratégie :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>qu&#8217;elle est signée avec une clé spécifique</p>
+</li>
+<li>
+<p>elle a une annotation d&#8217;environnement de production</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">- kind: pubKey
+  key: |
+    -----BEGIN PUBLIC KEY-----
+    MBFKHFDGHKIJH0CAQYIKoZIzj0DAQcDQgAEX0HFTtCfTtPmkx5p1RbDE6HJSGAVD
+    BVDF6SKFSF87AASUspkQsN3FO4iyWodCy5j3o0CdIJD/KJHDJFHDFIu6sA==
+    -----END PUBLIC KEY-----
+  annotations:
+    environment: production</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_utilisation_dun_fichier_de_configuration_de_vérification_de_signature_pour_vérifier_un_artefact_oci_de_stratégie"><a class="anchor" href="#_utilisation_dun_fichier_de_configuration_de_vérification_de_signature_pour_vérifier_un_artefact_oci_de_stratégie"></a>Utilisation d&#8217;un fichier de configuration de vérification de signature pour vérifier un artefact OCI de stratégie</h3>
+<div class="paragraph">
+<p>Vous pouvez tester si une stratégie passe la vérification en utilisant le fichier de configuration de vérification.
+Utilisez l&#8217;option <code>--verification-config-path</code> de la commande <code>kwctl verify</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-console hljs" data-lang="console">$ cat signatures_requirements.yaml
+apiVersion: v1
+allOf:
+  - kind: pubKey
+    key: |
+      -----BEGIN PUBLIC KEY-----
+      MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE5Q+cN1Jj2S7N05J4AXnqwP2DyzSg
+      Mc+raYce2Wthrd30MSgFtoh5ADAkCd/nML2Nx8UD9KBuASRb0gG5jXqgMQ==
+      -----END PUBLIC KEY-----
+
+$ kwctl verify --verification-config-path signatures_requirements.yaml ghcr.io/kubewarden/policies/user-group-psp:latest
+2022-03-29T17:34:37.847169Z  INFO kwctl::verify: Policy successfully verified</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Ce dernier exemple teste si une stratégie donnée provient de l&#8217;organisation Admission Controller :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-console hljs" data-lang="console">$ cat kubewarden_signatures.yaml
+apiVersion: v1
+allOf:
+  - kind: githubAction
+    owner: kubewarden
+
+$ kwctl verify --verification-config-path kubewarden_signatures.yaml ghcr.io/kubewarden/policies/user-group-psp:latest
+2022-03-29T18:07:39.062292Z  INFO kwctl::verify: Policy successfully verified</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="security-hardening.html">Sécurité</a></span>
+  <span class="next"><a href="webhook-mtls.html">Activer mTLS avec K3s</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<script src="../../../../../_/js/site.js"></script>
+<script async src="../../../../../_/js/vendor/highlight.js"></script>
+<script src="../../../../../_/js/vendor/lunr.js"></script>
+<script src="../../../../../_/js/search-ui.js" id="search-ui-script" data-site-root-path="../../../../.." data-snippet-length="100" data-stylesheet="../../../../../_/css/search.css"></script>
+<script async src="../../../../../search-index.js"></script>
+<script src="../../../../../_/js/vendor/langSelection.js"></script>
+<script async src="../../../../../_/js/vendor/tabs.js"></script>
+
+
+<script src="../../../../../_/js/CNLanguageSwitcher.js"></script>
+  </body>
+</html>

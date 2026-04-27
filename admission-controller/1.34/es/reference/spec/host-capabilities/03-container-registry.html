@@ -1,0 +1,1437 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Capacidades del registro de contenedores | Admission Controller  1.34-dev</title>
+    <link rel="prev" href="02-signature-verifier-policies.html">
+    <link rel="next" href="04-net.html">
+    <meta name="description" content="Explora las capacidades del registro de contenedores, incluyendo el cálculo de los resúmenes de manifiestos OCI y la obtención de manifiestos de objetos OCI.">
+    <meta name="keywords" content="["kubewarden", "kubernetes", "especificación de directiva", "capacidades del registro de contenedores"]">
+    <meta name="generator" content="Antora 3.1.10">
+    <link rel="stylesheet" href="../../../../../../_/css/site.css">
+<meta http-equiv="last-modified" content="2026-03-18"/>
+<link rel="stylesheet" href="../../../../../../_/css/search.css">
+<link rel="icon" href="../../../../../../_/img/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="../../../../../../_/css/font-styles.css">
+<link rel="stylesheet" href="../../../../../../_/fonts/css/all.css">
+<link rel="stylesheet" href="../../../../../../_/css/site-extra.css">
+<link rel="stylesheet" href="../../../../../../_/css/vendor/tabs.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap&family=SUSE+Mono:ital,wght@0,100..800;1,100..800" rel="stylesheet">
+<link href="https://documentation.suse.com/docserv/res/fonts/poppins/poppins.css" rel="stylesheet">
+<link rel="stylesheet" href="../../../../../../_/css/vendor/light.css">
+<script src="/docserv/res/lightheaded/analytics.js" type="text/javascript"></script>
+<script type="module">
+  import { defineCustomElements, setAssetPath } from 'https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/shared-header.esm.js';
+  defineCustomElements();
+  setAssetPath("https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/assets");
+</script>
+<!-- Default English link -->
+<link href="https://documentation.suse.com/cloudnative/admission-controller/1.34/en/reference/spec/host-capabilities/03-container-registry.html" hreflang="x-default" rel="alternate"/>
+<!-- Link for the currently processed page -->
+<link href="https://documentation.suse.com/cloudnative/admission-controller/1.34/es/reference/spec/host-capabilities/03-container-registry.html" hrefLang="es-ES" rel="alternate" />
+<!-- Link for the English page -->
+<link href="https://documentation.suse.com/cloudnative/admission-controller/1.34/en/reference/spec/host-capabilities/03-container-registry.html" hreflang="en-US" rel="alternate" />
+<!-- Link for the Japanese page -->
+<link href="https://documentation.suse.com/cloudnative/admission-controller/1.34/ja/reference/spec/host-capabilities/03-container-registry.html" hreflang="ja-JP" rel="alternate" />
+<!-- Link for the Chinese page -->
+<link href="https://documentation.suse.com/cloudnative/admission-controller/1.34/zh/reference/spec/host-capabilities/03-container-registry.html" hreflang="zh-CN" rel="alternate" />
+<!-- Link for the German page -->
+<link href="https://documentation.suse.com/cloudnative/admission-controller/1.34/de/reference/spec/host-capabilities/03-container-registry.html" hreflang="de-DE" rel="alternate" />
+<!-- Link for the French page -->
+<link href="https://documentation.suse.com/cloudnative/admission-controller/1.34/fr/reference/spec/host-capabilities/03-container-registry.html" hreflang="fr-FR" rel="alternate" />
+<!-- Link for the Brazilian Portuguese page -->
+<link href="https://documentation.suse.com/cloudnative/admission-controller/1.34/pt/reference/spec/host-capabilities/03-container-registry.html" hreflang="pt-BR" rel="alternate" />
+
+<!-- JSON-LD for doc metadata -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Capacidades del registro de contenedores | SUSE Security Admission Controller 1.34",
+  "headline": "Capacidades del registro de contenedores",
+  "description": "Explora las capacidades del registro de contenedores, incluyendo el cálculo de los resúmenes de manifiestos OCI y la obtención de manifiestos de objetos OCI.",
+  "inLanguage": "es",
+  "dateModified": "2026-03-18T00:00:00Z",
+  "author": {
+    "@type": "Organization",
+    "name": "SUSE Product & Solution Documentation Team",
+    "url": "https://documentation.suse.com"
+  },
+  "mentions": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "SUSE Security Admission Controller",
+      "softwareVersion": "1.34",
+      "applicationCategory": "Cloud Infrastructure",
+      "operatingSystem": "Linux"
+    }
+  ],
+  "publisher": {
+    "@type": "Organization",
+    "name": "SUSE",
+    "url": "https://documentation.suse.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.suse.com/assets/img/suse-white-logo-green.svg"
+    }
+  }
+}
+</script>
+<!-- end JSON-LD for doc metadata -->
+
+<!-- SUVA - Begin Ask Geeko-->
+<!--
+searchUnifyChatbot ("Ask Geeko") Copyright ©2024 Grazitti Interactive - All Rights Reserved. NOTICE: All information contained herein is, and remains the property of Grazitti Interactive and its suppliers, if any. The intellectual and technical concepts contained herein are proprietary to Grazitti Interactive and its suppliers and may be covered by India, U.S. and Foreign Patents, patents in process, and are protected by trade secret or copyright law. Dissemination of this information or reproduction of this material is strictly forbidden unless prior written permission is obtained from Grazitti Interactive.
+-->
+<meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport"/>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/Allow/an.js?c485cb3c-93d4-4942-99e8-91f3b8ca5636"></script>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/js/index.js?q=gAAAAABp3JBN9VuEJTi5tFafLIMwgMkCPdJS3Qm56lSYx93ir3Twt9hgSvd3OHEt6-nYfSbY3yHq0Zv8PRPsSy4nbqZiaJ4cZvRc6ItVZdvwz9Urf35cH6OUyPOwdA0phlS-zVIznQ2rWW438p-91NlTHuxJuOFpnA=="></script>
+<link rel="stylesheet" href="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/css/index.css">
+<div id="searchUnifyChatbot"></div>
+<!-- SUVA - End Ask Geeko-->
+<!--BEGIN QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+<script type='text/javascript' src="../../../../../../_/js/qualtrics.js" defer></script>
+<!--END QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+    <script>var uiRootPath = '../../../../../../_'</script>
+  </head>
+  <body class="article">
+<script type="module">import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs'; mermaid.initialize({"startOnLoad":true});</script><shared-header
+language="en"
+languages='{
+    "en": { "label": "English", "url": "https://documentation.suse.com/en-us/" },
+    "de": { "label": "Deutsch", "url": "https://documentation.suse.com/de-de/" },
+    "fr": { "label": "Français", "url": "https://documentation.suse.com/fr-fr/" },
+    "es": { "label": "Español", "url": "https://documentation.suse.com/es-es/" },
+    "zh_CN": { "label": "中文", "url": "https://documentation.suse.com/zh-cn/" },
+    "pt_BR": { "label": "Português Brasileiro", "url": "https://documentation.suse.com/pt-br/" }
+}'
+enable-search='false'>
+</shared-header>
+
+<!-- Leaving as a comment, I expect it will be required again next year.
+<a target=_blank"" class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_bEiGZbUNzLD8Tcy"> Documentation survey </a>
+-->
+<div class="body">
+<div class="nav-container" data-component="admission-controller" data-version="1.34">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title">Admission Controller</h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../../introduction.html">Introducción</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../../quick-start.html">Inicio rápido</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Tutoriales</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../tutorials/writing-policies/index.html">Escribiendo SUSE Security Admission Controller políticas</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../tutorials/writing-policies/CEL/01-intro-cel.html">Introducción a CEL</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../tutorials/writing-policies/CEL/02-reusing-vap.html">Reusing ValidatingAdmissionPolicies</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../tutorials/writing-policies/CEL/03-context-aware.html">Políticas CEL conscientes del contexto</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../tutorials/writing-policies/CEL/04-example-sigstore.html">Capacidades del host de Sigstore</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../tutorials/writing-policies/rust/01-intro-rust.html">Rust</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../tutorials/writing-policies/rust/02-create-policy.html">Creación de una directiva</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../tutorials/writing-policies/rust/03-define-policy-settings.html">Definiendo ajustes de la directiva</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../tutorials/writing-policies/rust/04-write-validation-logic.html">Escribiendo lógica de validación</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../tutorials/writing-policies/rust/05-mutation-policy.html">Creando una nueva política de mutación</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../tutorials/writing-policies/rust/06-logging.html">Registro</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../tutorials/writing-policies/rust/07-build-and-distribute.html">Construcción y distribución de directivas</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../tutorials/writing-policies/rust/08-raw-policies.html">Directivas en bruto</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../tutorials/writing-policies/go/01-intro-go.html">Escribir directivas en Go</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../tutorials/writing-policies/go/02-scaffold.html">Creando una nueva política de validación</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../tutorials/writing-policies/go/03-policy-settings.html">Definiendo ajustes de la directiva</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../tutorials/writing-policies/go/04-validation.html">Escribiendo la lógica de validación</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../tutorials/writing-policies/go/05-e2e-tests.html">Pruebas de extremo a extremo</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../tutorials/writing-policies/go/06-logging.html">Registro</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../tutorials/writing-policies/go/07-automate.html">Integración con GitHub Actions</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../tutorials/writing-policies/go/08-distribute.html">Distribuir directiva</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../tutorials/writing-policies/go/09-validation-with-queries.html">Validación utilizando consultas JSON</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../tutorials/writing-policies/go/10-raw-policies.html">Escribiendo directivas en bruto</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../tutorials/writing-policies/rego/01-intro-rego.html">Rego</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../tutorials/writing-policies/rego/02-builtin-support.html">Soporte integrado</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Open Policy Agent</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../../tutorials/writing-policies/rego/open-policy-agent/01-intro.html">Introducción al Open Policy Agent</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../../tutorials/writing-policies/rego/open-policy-agent/02-create-policy.html">Creación de una nueva directiva</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../../tutorials/writing-policies/rego/open-policy-agent/03-build-and-run.html">Construir y ejecutar una política OPA para Admission Controller</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../../tutorials/writing-policies/rego/open-policy-agent/04-distribute.html">Distribuyendo una política de OPA con SUSE Security Admission Controller</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../../tutorials/writing-policies/rego/open-policy-agent/05-raw-policies.html">Escribiendo directivas en bruto</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Gatekeeper</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../../tutorials/writing-policies/rego/gatekeeper/01-intro.html">Soporte de Gatekeeper</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../../tutorials/writing-policies/rego/gatekeeper/02-create-policy.html">Creando una nueva política de Rego de Gatekeeper</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../../tutorials/writing-policies/rego/gatekeeper/03-build-and-run.html">Crea y ejecuta una directiva de Gatekeeper</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../../tutorials/writing-policies/rego/gatekeeper/04-distribute.html">Distribuyendo una directiva de Gatekeeper con SUSE Security Admission Controller</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../tutorials/writing-policies/dotnet.html">C#</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">TypeScript</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../tutorials/writing-policies/typescript/01-intro-typescript.html">Escribir directivas en TypeScript/JavaScript</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../tutorials/writing-policies/typescript/02-scaffold.html">Creando una nueva directiva de validación</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../tutorials/writing-policies/typescript/03-policy-settings.html">Definiendo ajustes de directiva</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../tutorials/writing-policies/typescript/04-validation.html">Escribiendo la lógica de validación</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../tutorials/writing-policies/typescript/05-e2etests.html">Pruebas de extremo a extremo</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../tutorials/writing-policies/swift.html">Swift</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../tutorials/writing-policies/other-languages.html">Otros idiomas</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">WASI</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../tutorials/writing-policies/wasi/01-intro-wasi.html">WASI</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../tutorials/writing-policies/wasi/02-raw-policies.html">Escribiendo directivas en bruto</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../tutorials/writing-policies/metadata.html">Metadatos de la directiva</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Pruebas de directivas</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../tutorials/testing-policies/index.html">Pruebas de directivas</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../tutorials/testing-policies/02-policy-authors.html">Pruebas para autores de directivas</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../tutorials/testing-policies/03-cluster-operators.html">Pruebas para operadores de clúster</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../tutorials/verifying-kubewarden.html">Verificando SUSE Security Admission Controller</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../tutorials/publish-policy-to-artifact-hub.html">Publicar directivas en Artifact Hub</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Explicaciones</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../explanations/mutating-policies.html">Directivas de mutación</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../explanations/context-aware-policies.html">Políticas conscientes del contexto</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../explanations/policy-groups.html">Grupos de directivas</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../explanations/certificates.html">Rotación de certificados</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../explanations/distributing-policies.html">Distribuyendo directivas</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Comparaciones</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../explanations/comparisons/opa-comparison.html">SUSE Security Admission Controller vs OPA Gatekeeper</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../explanations/audit-scanner/audit-scanner.html">¿Qué es el Audit Scanner?</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../explanations/audit-scanner/limitations.html">Escáner de Auditoría - Limitaciones</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../explanations/audit-scanner/policy-reports.html">Escáner de Auditoría - InformesDeDirectiva</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../explanations/architecture.html">Admission Controller arquitectura</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Howtos</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../howtos/tasks.html">Tareas habituales</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../howtos/install-kwctl.html">Instalar <code>kwctl</code></a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../howtos/production-deployments.html">Despliegues de producción</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../howtos/deploy-at-scale.html">Ampliación a gran escala</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../howtos/audit-scanner.html">Escáner de Auditoría</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../howtos/policies.html">Configurando directivas</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../howtos/policies-eval-resources-in-controller-namespace.html">Permitir evaluaciones en el espacio de nombres del Controlador de Admisión</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../howtos/emergency-disable.html">Desactivación de emergencia</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Configuración de Servidores de Directivas</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../howtos/policy-servers/01-custom-cas.html">Uso de CAs personalizadas</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../howtos/policy-servers/02-private-registry.html">Configurando PolicyServers para utilizar registros privados</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../howtos/policy-servers/03-production-deployments.html">Despliegues de producción</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../howtos/policy-servers/04-using-proxies.html">Uso de proxies</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../howtos/policy-servers/05-private-sigstore.html">Configuración de Servidores de Directivas para instancias privadas de Sigstore</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../howtos/policy-groups.html">Grupos de directivas</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../howtos/psp-migration.html">Migración de PSP</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../howtos/vap-migration.html">Migración de ValidatingAdmissionPolicy</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../howtos/pod-security-admission-with-kubewarden.html">Admisión de Seguridad de Pods</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../howtos/custom-certificate-authorities.html">Autoridades de Certificación Personalizadas</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../howtos/proxy-configuration.html">Configuración de proxy:</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../howtos/raw-policies.html">Directivas en bruto</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../howtos/argocd-installation.html">Instalación de ArgoCD</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../howtos/security-hardening/security-hardening.html">Seguridad</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../howtos/security-hardening/secure-supply-chain.html">Sistema de suministro seguro</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../howtos/security-hardening/webhook-mtls.html">Habilitar mTLS con K3s</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Entorno aislado</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../howtos/airgap/01-requirements.html">Requisitos</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../howtos/airgap/02-install.html">Instalación</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../howtos/airgap/03-hauler.html">Instalación de Hauler</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Inicios rápidos de telemetría</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../howtos/telemetry/10-opentelemetry-qs.html">Inicio rápido de Open Telemetry</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../howtos/telemetry/20-tracing-qs.html">Inicio rápido de trazado</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../howtos/telemetry/30-metrics-qs.html">Inicio rápido de métricas</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../howtos/telemetry/40-custom-otel-collector.html">Recolector de OpenTelemetry personalizado</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../howtos/Rancher-Fleet.html">Fleet con Rancher</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Extensión de la interfaz de usuario de Rancher</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../howtos/ui-extension/01-install.html">Quickstart</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../howtos/ui-extension/02-metrics.html">Monitorización</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../howtos/ui-extension/03-tracing.html">Seguimiento</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Colección de aplicaciones de Rancher</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../howtos/application-collection/01-verify-images.html">Verificar imágenes</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Soluciones</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../howtos/workarounds/policy-server-certificate-expiry.html">Rotación de certificados, versiones ≥ v1.16</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../howtos/contribution-guide/contribution-guide.html">Guía de contribuciones</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../howtos/contribution-guide/contributing.html">Contribuyendo a la documentación</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../howtos/contribution-guide/suggesting-an-improvement.html">Mejorando la documentación</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../howtos/gatekeeper-migration.html">Migrando directivas de Gatekeeper a SUSE Security Admission Controller</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Referencia</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../CRDs.html">Definiciones de recursos personalizadas (CRD)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../dependency-matrix.html">Matriz de dependencias</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../artifacts.html">Artefactos</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../upgrade-path.html">Vía de actualizar versión</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../metrics-reference.html">Referencia de métricas</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../monitor-mode.html">Modo monitor</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Especificación de directivas</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../01-intro-spec.html">Especificación de comunicación de directivas</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../02-settings.html">Configuración de la directiva</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../03-validating-policies.html">Validando directivas</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../04-mutating-policies.html">Directivas de mutación</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../05-context-aware-policies.html">Políticas conscientes del contexto</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Capacidades del host</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="01-intro-host-capabilities.html">Especificación de capacidades del host</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="02-signature-verifier-policies.html">Directivas de verificación de firmas</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="4">
+    <a class="nav-link" href="03-container-registry.html">Capacidades del registro de contenedores</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="04-net.html">Capacidades de red</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="05-crypto.html">Capacidades criptográficas</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="06-kubernetes.html">Kubernetes capabilities</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../oci-registries-support.html">Soporte de registro OCI para Admission Controller</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Seguridad</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../security-hardening/webhooks-hardening.html">Webhooks</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../threat-model.html">Modelo de Amenaza</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../policy-evaluation-timeout.html">Protección contra el tiempo de espera de evaluación de directivas</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../verification-config.html">Formato de configuración de verificación</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../sources_yaml.html">Referencia para sources.yaml</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../kwctl-cli.html"><code>kwctl</code> CLI</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../policy-server-cli.html">CLI del Policy Server</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../../personas.html">¿Para quién?</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../../use-cases.html">Casos de uso</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../../organization.html">Organización</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../../enterprise.html">Empresa</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../../glossary.html">Glosario</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../../disclosure.html">Divulgación de seguridad</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Admission Controller</span>
+    <span class="version">1.34-dev</span>
+  </div>
+  <ul class="components">
+        <li class="component is-current">
+          <div class="title"><a href="../../../../../1.33-latest/en/introduction.html">Admission Controller</a></div>
+          <ul class="versions">
+            <li class="version is-current">
+              <a href="../../../../en/introduction.html">1.34-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../../1.33-latest/en/introduction.html">1.33-latest</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../1.32/en/introduction.html">1.32</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../1.31/en/introduction.html">1.31</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../1.30/en/introduction.html">1.30</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../1.29/en/introduction.html">1.29</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../1.28/en/introduction.html">1.28</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../../cluster-api/v0.26/en/index.html">Cluster API</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.27/en/index.html">v0.27-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../../../cluster-api/v0.26/en/index.html">v0.26</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.25/en/index.html">0.25</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.24/en/index.html">0.24</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.23/en/index.html">0.23</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.22/en/index.html">0.22</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.21/en/index.html">0.21</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.20/en/index.html">0.20</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.19/en/index.html">0.19</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.18/en/index.html">0.18</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.17/en/index.html">0.17</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.16/en/index.html">0.16</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.11/en/index.html">0.11</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../../continuous-delivery/next/en/index.html">Continuous Delivery</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../../continuous-delivery/next/en/index.html">Next</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../continuous-delivery/v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../continuous-delivery/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../continuous-delivery/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../continuous-delivery/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../continuous-delivery/v0.11/en/index.html">0.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../continuous-delivery/v0.10/en/index.html">0.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../continuous-delivery/v0.9/en/index.html">0.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../../k3s/latest/en/introduction.html">K3s</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../../k3s/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../../os-manager/1.9/en/index.html">OS Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../../../os-manager/1.10/en/index.html">1.10-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../../../os-manager/1.9/en/index.html">1.9</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../os-manager/1.8/en/index.html">1.8</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../os-manager/1.7/en/index.html">1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../os-manager/1.6/en/index.html">1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../os-manager/1.5/en/index.html">1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../../rancher-ai/latest/en/introduction.html">Rancher AI</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../../rancher-ai/latest/en/introduction.html">latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../../rke2/latest/en/introduction.html">RKE2</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../../rke2/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../../suse-observability/latest/en/classic.html">SUSE Observability</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../../suse-observability/latest/en/classic.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">SUSE Rancher Developer Access</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">SUSE® Rancher for AWS</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../../rancher-manager/v2.13/en/about-rancher/what-is-rancher.html">SUSE® Rancher Manager</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../../rancher-manager/v2.13/en/about-rancher/what-is-rancher.html">v2.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../rancher-manager/v2.12/en/about-rancher/what-is-rancher.html">v2.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../rancher-manager/v2.11/en/about-rancher/what-is-rancher.html">v2.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../rancher-manager/v2.10/en/about-rancher/what-is-rancher.html">v2.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../rancher-manager/v2.9/en/about-rancher/what-is-rancher.html">v2.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../../security/5.5/en/overview.html">SUSE® Security</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../../security/5.5/en/overview.html">5.5</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../security/5.4/en/overview.html">5.4</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../security/5.3/en/overview.html">5.3</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../../storage/1.11/en/longhorn-documentation.html">SUSE® Storage</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../../../storage/1.12/en/longhorn-documentation.html">1.12 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../../../storage/1.11/en/longhorn-documentation.html">1.11 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../storage/1.10/en/longhorn-documentation.html">1.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../storage/1.9/en/longhorn-documentation.html">1.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../../suse-virtual-clusters/1.0.2/en/release-notes/version-1.0.2.html">SUSE® Virtual Clusters</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">v1.1.0 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../../../suse-virtual-clusters/1.0.2/en/release-notes/version-1.0.2.html">v1.0.2-latest</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../suse-virtual-clusters/v1.0.1/en/introduction.html">v1.0.1</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../suse-virtual-clusters/v1.0.0/en/introduction.html">v1.0.0</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../../virtualization/v1.7/en/introduction/overview.html">SUSE® Virtualization</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../../../virtualization/v1.8/en/introduction/overview.html">v1.8 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../../../virtualization/v1.7/en/introduction/overview.html">v1.7 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../virtualization/v1.6/en/introduction/overview.html">v1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../virtualization/v1.5/en/introduction/overview.html">v1.5</a>
+            </li>
+          </ul>
+        </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+<ul>
+    <li>
+      <a class="home-link-dsc" href="https://documentation.suse.com/" title="documentation.suse.com" aria-label="SUSE Documentation Home"></a>
+    </li>
+    <li>
+      <a href="https://documentation.suse.com/cloudnative/admission-controller" title="Admission Controller" aria-label="SUSE Documentation - Admission Controller">
+        Admission Controller
+      </a>
+    </li>
+      <li>
+          Referencia
+      </li>
+  </ul>
+</nav><div class="page-versions">
+  <button class="version-menu-toggle" title="Show other versions of page">1.34-dev</button>
+  <div class="version-menu">
+    <a class="version is-current" href="03-container-registry.html">1.34-dev</a>
+    <a class="version is-missing" href="../../../../../1.33-latest/en/introduction.html">1.33-latest</a>
+    <a class="version is-missing" href="../../../../../1.32/en/introduction.html">1.32</a>
+    <a class="version is-missing" href="../../../../../1.31/en/introduction.html">1.31</a>
+    <a class="version is-missing" href="../../../../../1.30/en/introduction.html">1.30</a>
+    <a class="version is-missing" href="../../../../../1.29/en/introduction.html">1.29</a>
+    <a class="version is-missing" href="../../../../../1.28/en/introduction.html">1.28</a>
+  </div>
+</div>
+      <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <label class="visual-search-label-bc" for="search-input">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+          <input label="Search" aria-label="Search" id="search-input" type="text" placeholder="Buscar en los documentos" >
+          <label class="filter checkbox" style="display: none">
+            <input type="checkbox" data-facet-filter="component:admission-controller" checked> Only this project
+          </label>
+        </div>
+      </div>
+</div>
+  <div class="content">
+<aside
+  class="toc sidebar"
+  data-title="En esta página" data-levels="2">
+  <div class="toc-menu">
+    <!-- start qualtrics -->
+    <div id='ZN_8qZUmklKYbBqAYe'><!--DO NOT REMOVE-CONTENTS PLACED HERE--></div>
+    <div id="qualtrics_container"></div>
+    <!-- end qualtrics -->
+  </div>
+</aside><article class="doc">
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Nota"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>
+
+Este documento ha sido traducido utilizando tecnología de traducción automática.
+Si bien nos esforzamos por proporcionar traducciones precisas,
+no ofrecemos garantías sobre la integridad, precisión o confiabilidad del contenido traducido.
+En caso de discrepancia, la versión original en
+<a href="https://documentation.suse.com/cloudnative/admission-controller/1.34/en/reference/spec/host-capabilities/03-container-registry.html">
+inglés
+</a>
+prevalecerá y constituirá el texto autorizado.
+
+</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+            <div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Aviso"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Esta es documentación inédita para Admission Controller 1.34-dev.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+                <h1 class="page">Capacidades del registro de contenedores</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Los registros de contenedores se pueden utilizar para distribuir muchos tipos de objetos OCI.
+Desde imágenes de contenedores bien conocidas hasta artefactos OCI genéricos.
+Los artefactos OCI se utilizan para almacenar objetos como SUSE Security Admission Controller directivas, gráficos de Helm y más.</p>
+</div>
+<div class="paragraph">
+<p>Estas son las capacidades expuestas por el Admission Controller anfitrión, para interactuar con los registros de contenedores.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_obtener_el_resumen_del_manifiesto_oci"><a class="anchor" href="#_obtener_el_resumen_del_manifiesto_oci"></a>Obtener el resumen del manifiesto OCI</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Esta devolución de llamada calcula el resumen de un manifiesto OCI. El resumen se puede utilizar para identificar un objeto almacenado en un registro OCI. Este es un método inmutable, a diferencia de <code>tags</code> que son mutables.</p>
+</div>
+<div class="sect2">
+<h3 id="_almacenamiento_en_el_caché"><a class="anchor" href="#_almacenamiento_en_el_caché"></a>Almacenamiento en el caché.</h3>
+<div class="paragraph">
+<p>Calcular el resumen implica una serie de solicitudes de red entre el Admission Controller anfitrión de directivas y el registro remoto.
+Estas operaciones pueden ser costosas en tiempo, por lo que los resultados se almacenan en caché durante 1 minuto.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_autenticación"><a class="anchor" href="#_autenticación"></a>Autenticación</h3>
+<div class="paragraph">
+<p>Las interacciones con registros privados requieren que el Admission Controller anfitrión de directivas se autentique contra el registro remoto.</p>
+</div>
+<div class="paragraph">
+<p>El anfitrión de directivas utilizará el mismo conjunto de credenciales que se usaron para obtener directivas del registro remoto.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_protocolo_de_comunicación"><a class="anchor" href="#_protocolo_de_comunicación"></a>Protocolo de comunicación</h3>
+<div class="paragraph">
+<p>Esta es la descripción del protocolo waPC utilizado para exponer esta capacidad:</p>
+</div>
+<div class="sect3">
+<h4 id="_función_wapc_v1manifest_digest_entrada"><a class="anchor" href="#_función_wapc_v1manifest_digest_entrada"></a>Función waPC - <code>v1/manifest_digest</code> entrada</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-hcl hljs" data-lang="hcl"># OCI URI - JSON encoded string
+string</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_función_wapc_v1manifest_digest_salida"><a class="anchor" href="#_función_wapc_v1manifest_digest_salida"></a>Función waPC - <code>v1/manifest_digest</code> salida</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-hcl hljs" data-lang="hcl">{
+  # digest of the OCI object
+  "digest": string
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Por ejemplo, al solicitar el resumen del manifiesto de la <code>busybox:latest</code> imagen, la carga útil sería:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Carga útil de entrada: <code>"busybox:latest"</code></p>
+</li>
+<li>
+<p>Carga útil de salida: <code>{ "digest": "sha256:69e70a79f2d41ab5d637de98c1e0b055206ba40a8145e7bddb55ccc04e13cf8f"}</code></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_manifiesto_oci"><a class="anchor" href="#_manifiesto_oci"></a>Manifiesto OCI</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Esta llamada obtiene el manifiesto de los objetos OCI. Cuando esté disponible, esta información puede utilizarse para identificar manifiestos de imágenes específicas, para una o más plataformas. O un único manifiesto de imagen para la imagen.</p>
+</div>
+<div class="sect2">
+<h3 id="_almacenamiento_en_el_caché_2"><a class="anchor" href="#_almacenamiento_en_el_caché_2"></a>Almacenamiento en el caché.</h3>
+<div class="paragraph">
+<p>Obtener esta información implica solicitudes de red entre el Admission Controller anfitrión de directivas y el registro remoto. Estas operaciones pueden ser costosas en tiempo, por lo que los resultados se almacenan en caché durante 1 minuto.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_autenticación_2"><a class="anchor" href="#_autenticación_2"></a>Autenticación</h3>
+<div class="paragraph">
+<p>Las interacciones con registros privados requieren que el Admission Controller anfitrión de directivas se autentique contra el registro remoto.</p>
+</div>
+<div class="paragraph">
+<p>El anfitrión de directivas utiliza el mismo conjunto de credenciales que se utilizó para obtener directivas del registro remoto.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_protocolo_de_comunicación_2"><a class="anchor" href="#_protocolo_de_comunicación_2"></a>Protocolo de comunicación</h3>
+<div class="paragraph">
+<p>Esta es la descripción del protocolo waPC utilizado para exponer esta capacidad:</p>
+</div>
+<div class="sect3">
+<h4 id="_función_wapc_v1oci_manifest_entrada"><a class="anchor" href="#_función_wapc_v1oci_manifest_entrada"></a>Función waPC - <code>v1/oci_manifest</code> entrada</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-hcl hljs" data-lang="hcl"># OCI URI - JSON encoded string
+string</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_función_wapc_v1oci_manifest_salida"><a class="anchor" href="#_función_wapc_v1oci_manifest_salida"></a>Función waPC - <code>v1/oci_manifest</code> salida</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-hcl hljs" data-lang="hcl">{
+    "schemaVersion": 2,
+        "mediaType": "application/vnd.oci.image.index.v1+json",
+        "manifests": [
+        {
+            "mediaType": "application/vnd.oci.image.manifest.v1+json",
+            "digest": "sha256:7d5e84b9314ba7058bfa209881919146ffc4a89c5ba14cfa8270a18c8d418c44",
+            "size": 1048,
+            "platform": {
+                "architecture": "amd64",
+                "os": "linux"
+            }
+        },
+        {
+            "mediaType": "application/vnd.oci.image.manifest.v1+json",
+            "digest": "sha256:ae1e98105555f3983496c15c70dafc87639b77830953d6470694b47e0e063e25",
+            "size": 1048,
+            "platform": {
+                "architecture": "arm64",
+                "os": "linux"
+            }
+        },
+        {
+            "mediaType": "application/vnd.oci.image.manifest.v1+json",
+            "digest": "sha256:e9fc0f86e26366abf29fd29e8c09d00df717f9038fd4298eaa39a0a2b4361fa4",
+            "size": 566,
+            "annotations": {
+                "vnd.docker.reference.digest": "sha256:7d5e84b9314ba7058bfa209881919146ffc4a89c5ba14cfa8270a18c8d418c44",
+                "vnd.docker.reference.type": "attestation-manifest"
+            },
+            "platform": {
+                "architecture": "unknown",
+                "os": "unknown"
+            }
+        },
+        {
+            "mediaType": "application/vnd.oci.image.manifest.v1+json",
+            "digest": "sha256:e8904ebb2841dc19ae458436eb01ddea3e8d6ea653c7d9476537f4029b1f45a2",
+            "size": 566,
+            "annotations": {
+                "vnd.docker.reference.digest": "sha256:ae1e98105555f3983496c15c70dafc87639b77830953d6470694b47e0e063e25",
+                "vnd.docker.reference.type": "attestation-manifest"
+            },
+            "platform": {
+                "architecture": "unknown",
+                "os": "unknown"
+            }
+        }
+    ]
+}
+
+OR
+
+{
+    "schemaVersion": 2,
+        "mediaType": "application/vnd.oci.image.manifest.v1+json",
+        "config": {
+            "mediaType": "application/vnd.oci.image.config.v1+json",
+            "digest": "sha256:61dc3269b9e8faeea32128560cdbd355e8c1dff31e32abc0223be039c5cc5e2d",
+            "size": 1775
+        },
+        "layers": [
+        {
+            "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+            "digest": "sha256:67d998e418791ec2955ec99753eb55f03ca96538976e5ccebfec08eae20056b5",
+            "size": 57033795
+        },
+        {
+            "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+            "digest": "sha256:be6185edcab66334dd5c7c2273fd6254100ece960e087541f3dba0616c440038",
+            "size": 188411978
+        },
+        {
+            "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+            "digest": "sha256:58a13f6770904193ca67beb50d424e69a39579e1581dbf8e02e1751f3b75f932",
+            "size": 70078992
+        }
+        ],
+        "annotations": {
+            "org.opencontainers.image.base.digest": "sha256:67a7c41ccd5dfcb08face86546f0d25c0740f0d0225e39fecb8bbae8b95b847a",
+            "org.opencontainers.image.base.name": "docker.io/library/debian:latest"
+        }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Por ejemplo, al solicitar el manifiesto de la <code>ghcr.io/kubewarden/policy-server:v1.10.0</code> imagen, la carga útil sería:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Carga útil de entrada: <code>"ghcr.io/kubewarden/policy-server:v1.10.0"</code></p>
+</li>
+<li>
+<p>Carga útil de salida: el cuerpo de la respuesta exitosa obtenida del registro.
+Puede ser un <a href="https://github.com/opencontainers/image-spec/blob/main/image-index.md">imagen de índice OCI</a> o un <a href="https://github.com/opencontainers/image-spec/blob/main/manifest.md">manifiesto de imagen OCI</a>.
+Los detalles pueden cambiar dependiendo del registro y la imagen.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_manifiesto_oci_y_configuración"><a class="anchor" href="#_manifiesto_oci_y_configuración"></a>Manifiesto OCI y configuración</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Esta llamada obtiene el manifiesto de imágenes OCI y su configuración. Esta información puede utilizarse para obtener el manifiesto de la imagen del contenedor y la información de configuración utilizada por el entorno de ejecución de contenedor para ejecutarlo.</p>
+</div>
+<div class="sect2">
+<h3 id="_almacenamiento_en_el_caché_3"><a class="anchor" href="#_almacenamiento_en_el_caché_3"></a>Almacenamiento en el caché.</h3>
+<div class="paragraph">
+<p>Obtener esta información implica solicitudes de red entre el Admission Controller anfitrión de directivas y el registro remoto. Estas operaciones pueden ser costosas en tiempo, por lo que los resultados se almacenan en caché durante 1 minuto.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_autenticación_3"><a class="anchor" href="#_autenticación_3"></a>Autenticación</h3>
+<div class="paragraph">
+<p>Las interacciones con registros privados requieren que el Admission Controller anfitrión de directivas se autentique contra el registro remoto.</p>
+</div>
+<div class="paragraph">
+<p>El anfitrión de directivas utiliza el mismo conjunto de credenciales que se utilizó para obtener directivas del registro remoto.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_protocolo_de_comunicación_3"><a class="anchor" href="#_protocolo_de_comunicación_3"></a>Protocolo de comunicación</h3>
+<div class="paragraph">
+<p>Esta es la descripción del protocolo waPC utilizado para exponer esta capacidad:</p>
+</div>
+<div class="sect3">
+<h4 id="_función_wapc_v1oci_manifest_config_entrada"><a class="anchor" href="#_función_wapc_v1oci_manifest_config_entrada"></a>Función waPC - <code>v1/oci_manifest_config</code> entrada</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-hcl hljs" data-lang="hcl"># OCI URI - JSON encoded string
+string</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_función_wapc_v1oci_manifest_config_salida"><a class="anchor" href="#_función_wapc_v1oci_manifest_config_salida"></a>Función waPC - <code>v1/oci_manifest_config</code> salida</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-hcl hljs" data-lang="hcl">{
+  "manifest": {
+    "schemaVersion": 2,
+    "mediaType": "application/vnd.oci.image.manifest.v1+json",
+    "config": {
+      "mediaType": "application/vnd.oci.image.config.v1+json",
+      "digest": "sha256:bc3511804cb29da6333f0187a333eba13a43a3a0a1737e9b50227a5cf057af74",
+      "size": 1592
+    },
+    "layers": [
+      {
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "digest": "sha256:294efa324e89a020b06df261f77903fb9f46fdee79c54e4f6589f786f6c31bec",
+        "size": 428
+      },
+      {
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "digest": "sha256:f0936413f7d0757b41777a624e5be83da28789d0c4b8b3f46853ca9c3bb6300f",
+        "size": 422
+      },
+      {
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "digest": "sha256:cd2adfe5e808335e0c30eff616a9852a94cfbf8ecd455d1b893e1c858ddc3aeb",
+        "size": 22357278
+      },
+      {
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "digest": "sha256:6c7ec51ccec3d4438c94e697258085ddf825c1e711df4d923b1794794196cf06",
+        "size": 37415
+      }
+    ]
+  },
+  "digest": "sha256:6ebc3e17a9804a8d385fee819554ad95a05072d022c5bd2dd27556a5752d47f5",
+  "config": {
+    "created": "2024-06-05T13:48:01.671482413Z",
+    "architecture": "amd64",
+    "os": "linux",
+    "config": {
+      "User": "65533:65533",
+      "ExposedPorts": {
+        "3000/tcp": {}
+      },
+      "Env": [
+        "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+      ],
+      "Entrypoint": [
+        "/policy-server"
+      ],
+      "WorkingDir": "/"
+    },
+    "rootfs": {
+      "type": "layers",
+      "diff_ids": [
+        "sha256:79f61adc25589b7b467a6becca5756f3b722ab7f9d0c18c205e89c08fdc8d45d",
+        "sha256:2a5e7791442784b3614921dcb51afdbe94ae9bfd3752e22e5eb81ce731f5bfbf",
+        "sha256:0d893e5416389fd105bc81d3694a5d5dbffc41237291df0aaa4efbc26632e91c",
+        "sha256:018ce7bd6fd46306e129aca44c1c103675dbe29e3aa842a0b7fb01507e8d02d2"
+      ]
+    },
+    "history": [
+      {
+        "created": "2024-06-05T13:48:00.432722149Z",
+        "created_by": "COPY /etc/passwd /etc/passwd # buildkit",
+        "comment": "buildkit.dockerfile.v0"
+      },
+      {
+        "created": "2024-06-05T13:48:00.469118621Z",
+        "created_by": "COPY /etc/group /etc/group # buildkit",
+        "comment": "buildkit.dockerfile.v0"
+      },
+      {
+        "created": "2024-06-05T13:48:01.653480931Z",
+        "created_by": "COPY --chmod=0755 policy-server-x86_64 /policy-server # buildkit",
+        "comment": "buildkit.dockerfile.v0"
+      },
+      {
+        "created": "2024-06-05T13:48:01.671482413Z",
+        "created_by": "ADD Cargo.lock /Cargo.lock # buildkit",
+        "comment": "buildkit.dockerfile.v0"
+      },
+      {
+        "created": "2024-06-05T13:48:01.671482413Z",
+        "created_by": "USER 65533:65533",
+        "comment": "buildkit.dockerfile.v0",
+        "empty_layer": true
+      },
+      {
+        "created": "2024-06-05T13:48:01.671482413Z",
+        "created_by": "EXPOSE map[3000/tcp:{}]",
+        "comment": "buildkit.dockerfile.v0",
+        "empty_layer": true
+      },
+      {
+        "created": "2024-06-05T13:48:01.671482413Z",
+        "created_by": "ENTRYPOINT [\"/policy-server\"]",
+        "comment": "buildkit.dockerfile.v0",
+        "empty_layer": true
+      }
+    ]
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Por ejemplo, al solicitar el manifiesto de la imagen y la configuración de la <code>ghcr.io/kubewarden/policy-server:v1.13.0</code> imagen, la carga útil sería:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Carga útil de entrada: <code>"ghcr.io/kubewarden/policy-server:v1.13.0"</code></p>
+</li>
+<li>
+<p>Carga útil de salida: el cuerpo de la respuesta exitosa obtenida del registro. Contendrá el <a href="https://github.com/opencontainers/image-spec/blob/main/manifest.md">manifiesto de imagen OCI</a>, el resumen de la imagen y la <a href="https://github.com/opencontainers/image-spec/blob/main/config.md">configuración de imagen OCI</a>.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="02-signature-verifier-policies.html">Directivas de verificación de firmas</a></span>
+  <span class="next"><a href="04-net.html">Capacidades de red</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<script src="../../../../../../_/js/site.js"></script>
+<script async src="../../../../../../_/js/vendor/highlight.js"></script>
+<script src="../../../../../../_/js/vendor/lunr.js"></script>
+<script src="../../../../../../_/js/search-ui.js" id="search-ui-script" data-site-root-path="../../../../../.." data-snippet-length="100" data-stylesheet="../../../../../../_/css/search.css"></script>
+<script async src="../../../../../../search-index.js"></script>
+<script src="../../../../../../_/js/vendor/langSelection.js"></script>
+<script async src="../../../../../../_/js/vendor/tabs.js"></script>
+
+
+<script src="../../../../../../_/js/CNLanguageSwitcher.js"></script>
+  </body>
+</html>

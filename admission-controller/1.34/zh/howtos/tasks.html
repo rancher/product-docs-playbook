@@ -1,0 +1,1473 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+<title>常用任务 | Admission Controller  1.34-dev</title>
+    <link rel="prev" href="../explanations/architecture.html">
+    <link rel="next" href="install-kwctl.html">
+    <meta name="description" content="使用 SUSE Security Admission Controller 和 kwctl CLI 工具管理 Kubernetes 集群中的策略。">
+    <meta name="keywords" content="["SUSE Security Admission Controller", "kubewarden", "kubernetes", "kwctl", "policy", "policyserver", "clusteradmissionpolicy", "admissionpolicy"]">
+    <meta name="generator" content="Antora 3.1.10">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+<meta http-equiv="last-modified" content="2026-03-18"/>
+<link rel="stylesheet" href="../../../../_/css/search.css">
+<link rel="icon" href="../../../../_/img/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="../../../../_/css/font-styles.css">
+<link rel="stylesheet" href="../../../../_/fonts/css/all.css">
+<link rel="stylesheet" href="../../../../_/css/site-extra.css">
+<link rel="stylesheet" href="../../../../_/css/vendor/tabs.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap&family=SUSE+Mono:ital,wght@0,100..800;1,100..800" rel="stylesheet">
+<link href="https://documentation.suse.com/docserv/res/fonts/poppins/poppins.css" rel="stylesheet">
+<link rel="stylesheet" href="../../../../_/css/vendor/light.css">
+<script src="/docserv/res/lightheaded/analytics.js" type="text/javascript"></script>
+<script type="module">
+  import { defineCustomElements, setAssetPath } from 'https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/shared-header.esm.js';
+  defineCustomElements();
+  setAssetPath("https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/assets");
+</script>
+<!-- Default English link -->
+<link href="https://documentation.suse.com/cloudnative/admission-controller/1.34/en/howtos/tasks.html" hreflang="x-default" rel="alternate"/>
+<!-- Link for the currently processed page -->
+<link href="https://documentation.suse.com/cloudnative/admission-controller/1.34/zh/howtos/tasks.html" hrefLang="zh-CN" rel="alternate" />
+<!-- Link for the English page -->
+<link href="https://documentation.suse.com/cloudnative/admission-controller/1.34/en/howtos/tasks.html" hreflang="en-US" rel="alternate" />
+<!-- Link for the Japanese page -->
+<link href="https://documentation.suse.com/cloudnative/admission-controller/1.34/ja/howtos/tasks.html" hreflang="ja-JP" rel="alternate" />
+<!-- Link for the German page -->
+<link href="https://documentation.suse.com/cloudnative/admission-controller/1.34/de/howtos/tasks.html" hreflang="de-DE" rel="alternate" />
+<!-- Link for the French page -->
+<link href="https://documentation.suse.com/cloudnative/admission-controller/1.34/fr/howtos/tasks.html" hreflang="fr-FR" rel="alternate" />
+<!-- Link for the Spanish page -->
+<link href="https://documentation.suse.com/cloudnative/admission-controller/1.34/es/howtos/tasks.html" hreflang="es-ES" rel="alternate" />
+<!-- Link for the Brazilian Portuguese page -->
+<link href="https://documentation.suse.com/cloudnative/admission-controller/1.34/pt/howtos/tasks.html" hreflang="pt-BR" rel="alternate" />
+
+<!-- JSON-LD for doc metadata -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "常用任务 | SUSE Security Admission Controller 1.34",
+  "headline": "常用任务",
+  "description": "使用 SUSE Security Admission Controller 和 kwctl CLI 工具管理 Kubernetes 集群中的策略。",
+  "inLanguage": "zh_CN",
+  "dateModified": "2026-03-18T00:00:00Z",
+  "author": {
+    "@type": "Organization",
+    "name": "SUSE Product & Solution Documentation Team",
+    "url": "https://documentation.suse.com"
+  },
+  "mentions": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "SUSE Security Admission Controller",
+      "softwareVersion": "1.34",
+      "applicationCategory": "Cloud Infrastructure",
+      "operatingSystem": "Linux"
+    }
+  ],
+  "publisher": {
+    "@type": "Organization",
+    "name": "SUSE",
+    "url": "https://documentation.suse.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.suse.com/assets/img/suse-white-logo-green.svg"
+    }
+  }
+}
+</script>
+<!-- end JSON-LD for doc metadata -->
+
+<!-- SUVA - Begin Ask Geeko-->
+<!--
+searchUnifyChatbot ("Ask Geeko") Copyright ©2024 Grazitti Interactive - All Rights Reserved. NOTICE: All information contained herein is, and remains the property of Grazitti Interactive and its suppliers, if any. The intellectual and technical concepts contained herein are proprietary to Grazitti Interactive and its suppliers and may be covered by India, U.S. and Foreign Patents, patents in process, and are protected by trade secret or copyright law. Dissemination of this information or reproduction of this material is strictly forbidden unless prior written permission is obtained from Grazitti Interactive.
+-->
+<meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport"/>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/Allow/an.js?c485cb3c-93d4-4942-99e8-91f3b8ca5636"></script>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/js/index.js?q=gAAAAABp3JBN9VuEJTi5tFafLIMwgMkCPdJS3Qm56lSYx93ir3Twt9hgSvd3OHEt6-nYfSbY3yHq0Zv8PRPsSy4nbqZiaJ4cZvRc6ItVZdvwz9Urf35cH6OUyPOwdA0phlS-zVIznQ2rWW438p-91NlTHuxJuOFpnA=="></script>
+<link rel="stylesheet" href="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/css/index.css">
+<div id="searchUnifyChatbot"></div>
+<!-- SUVA - End Ask Geeko-->
+<!--BEGIN QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+<script type='text/javascript' src="../../../../_/js/qualtrics.js" defer></script>
+<!--END QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<script type="module">import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs'; mermaid.initialize({"startOnLoad":true});</script><shared-header
+language="en"
+languages='{
+    "en": { "label": "English", "url": "https://documentation.suse.com/en-us/" },
+    "de": { "label": "Deutsch", "url": "https://documentation.suse.com/de-de/" },
+    "fr": { "label": "Français", "url": "https://documentation.suse.com/fr-fr/" },
+    "es": { "label": "Español", "url": "https://documentation.suse.com/es-es/" },
+    "zh_CN": { "label": "中文", "url": "https://documentation.suse.com/zh-cn/" },
+    "pt_BR": { "label": "Português Brasileiro", "url": "https://documentation.suse.com/pt-br/" }
+}'
+enable-search='false'>
+</shared-header>
+
+<!-- Leaving as a comment, I expect it will be required again next year.
+<a target=_blank"" class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_bEiGZbUNzLD8Tcy"> Documentation survey </a>
+-->
+<div class="body">
+<div class="nav-container" data-component="admission-controller" data-version="1.34">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title">Admission Controller</h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../introduction.html">简介</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../quick-start.html">快速入门</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">教程</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../tutorials/writing-policies/index.html">编写SUSE Security Admission Controller策略</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../tutorials/writing-policies/CEL/01-intro-cel.html">CEL 简介</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/CEL/02-reusing-vap.html">重用验证准入策略</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/CEL/03-context-aware.html">上下文感知CEL策略</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/CEL/04-example-sigstore.html">Sigstore 主机能力</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../tutorials/writing-policies/rust/01-intro-rust.html">Rust</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/rust/02-create-policy.html">创建策略</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/rust/03-define-policy-settings.html">定义策略设置</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/rust/04-write-validation-logic.html">编写验证逻辑</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/rust/05-mutation-policy.html">创建新的变异策略</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/rust/06-logging.html">日志记录</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/rust/07-build-and-distribute.html">构建和分发策略</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/rust/08-raw-policies.html">原始策略</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../tutorials/writing-policies/go/01-intro-go.html">在 Go 中编写策略</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/go/02-scaffold.html">创建新的验证策略</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/go/03-policy-settings.html">定义策略设置</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/go/04-validation.html">编写验证逻辑</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/go/05-e2e-tests.html">端到端测试</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/go/06-logging.html">日志记录</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/go/07-automate.html">与 GitHub Actions 集成</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/go/08-distribute.html">分发策略</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/go/09-validation-with-queries.html">使用 JSON 查询进行验证</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/go/10-raw-policies.html">编写原始策略</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../tutorials/writing-policies/rego/01-intro-rego.html">Rego</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/rego/02-builtin-support.html">内置支持</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">开放策略代理</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../tutorials/writing-policies/rego/open-policy-agent/01-intro.html">Open Policy Agent简介</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../tutorials/writing-policies/rego/open-policy-agent/02-create-policy.html">创建新策略</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../tutorials/writing-policies/rego/open-policy-agent/03-build-and-run.html">构建并运行 Admission Controller 的 OPA 策略</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../tutorials/writing-policies/rego/open-policy-agent/04-distribute.html">分发一个 OPA 策略，使用 SUSE Security Admission Controller</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../tutorials/writing-policies/rego/open-policy-agent/05-raw-policies.html">编写原始策略</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">守门人</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../tutorials/writing-policies/rego/gatekeeper/01-intro.html">Gatekeeper 支持</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../tutorials/writing-policies/rego/gatekeeper/02-create-policy.html">创建新的 Gatekeeper Rego 策略</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../tutorials/writing-policies/rego/gatekeeper/03-build-and-run.html">构建并运行 Gatekeeper 策略</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../tutorials/writing-policies/rego/gatekeeper/04-distribute.html">分发带有SUSE Security Admission Controller的Gatekeeper策略</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../tutorials/writing-policies/dotnet.html">C#</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">TypeScript</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/typescript/01-intro-typescript.html">在 TypeScript/JavaScript 中编写策略</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/typescript/02-scaffold.html">创建新的验证策略</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/typescript/03-policy-settings.html">定义策略设置</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/typescript/04-validation.html">编写验证逻辑</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/typescript/05-e2etests.html">端到端测试</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../tutorials/writing-policies/swift.html">Swift</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../tutorials/writing-policies/other-languages.html">其他语言</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">WASI</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/wasi/01-intro-wasi.html">WASI</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/wasi/02-raw-policies.html">编写原始策略</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../tutorials/writing-policies/metadata.html">策略元数据</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">测试策略</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../tutorials/testing-policies/index.html">策略测试</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../tutorials/testing-policies/02-policy-authors.html">针对策略作者的测试</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../tutorials/testing-policies/03-cluster-operators.html">测试集群操作符</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tutorials/verifying-kubewarden.html">验证 SUSE Security Admission Controller</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tutorials/publish-policy-to-artifact-hub.html">将策略发布到 Artifact Hub</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">原理说明</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../explanations/mutating-policies.html">变更策略</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../explanations/context-aware-policies.html">上下文感知策略</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../explanations/policy-groups.html">策略组</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../explanations/certificates.html">证书轮换</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../explanations/distributing-policies.html">分发策略</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">比较</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../explanations/comparisons/opa-comparison.html">SUSE Security Admission Controller 与 OPA Gatekeeper</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../explanations/audit-scanner/audit-scanner.html">审计扫描器是什么？</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../explanations/audit-scanner/limitations.html">审计扫描器 - 限制</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../explanations/audit-scanner/policy-reports.html">审计扫描器 - 策略报告</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../explanations/architecture.html">Admission Controller 体系结构</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Howto</span>
+<ul class="nav-list">
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="tasks.html">常用任务</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="install-kwctl.html">安装 <code>kwctl</code></a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="production-deployments.html">生产部署</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="deploy-at-scale.html">大规模部署</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="audit-scanner.html">审计扫描器</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="policies.html">配置策略</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="policies-eval-resources-in-controller-namespace.html">允许在 Admission Controller 名称空间中进行评估</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="emergency-disable.html">紧急禁用</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">配置策略服务器</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="policy-servers/01-custom-cas.html">使用自定义 CA</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="policy-servers/02-private-registry.html">配置 PolicyServer 以使用私有仓库</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="policy-servers/03-production-deployments.html">生产部署</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="policy-servers/04-using-proxies.html">使用代理</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="policy-servers/05-private-sigstore.html">为私有 Sigstore 实例配置策略服务器</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="policy-groups.html">策略组</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="psp-migration.html">PSP 迁移</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="vap-migration.html">ValidatingAdmissionPolicy 迁移</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="pod-security-admission-with-kubewarden.html">Pod 安全准入</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="custom-certificate-authorities.html">自定义证书颁发机构</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="proxy-configuration.html">代理配置</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="raw-policies.html">原始策略</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="argocd-installation.html">ArgoCD 安装</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="security-hardening/security-hardening.html">安全性</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="security-hardening/secure-supply-chain.html">安全供应链</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="security-hardening/webhook-mtls.html">在 K3s 中启用 mTLS</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">隔离</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="airgap/01-requirements.html">要求</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="airgap/02-install.html">安装</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="airgap/03-hauler.html">Hauler 安装</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">遥测快速入门</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="telemetry/10-opentelemetry-qs.html">OpenTelemetry 快速入门</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="telemetry/20-tracing-qs.html">跟踪快速入门</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="telemetry/30-metrics-qs.html">指标快速入门</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="telemetry/40-custom-otel-collector.html">自定义 OpenTelemetry Collector</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="Rancher-Fleet.html">Rancher Fleet</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Rancher UI 扩展</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="ui-extension/01-install.html">快速入门</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="ui-extension/02-metrics.html">监控</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="ui-extension/03-tracing.html">跟踪</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Rancher 应用程序集合</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="application-collection/01-verify-images.html">验证镜像</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">解决方案</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="workarounds/policy-server-certificate-expiry.html">证书轮换，版本 ≥ v1.16</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="contribution-guide/contribution-guide.html">贡献指南</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="contribution-guide/contributing.html">贡献文档</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="contribution-guide/suggesting-an-improvement.html">改进文档</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="gatekeeper-migration.html">将Gatekeeper策略迁移到SUSE Security Admission Controller</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">参考手册</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/CRDs.html">自定义资源定义 (CRD)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/dependency-matrix.html">依赖矩阵</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/artifacts.html">工件</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/upgrade-path.html">升级路径</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/metrics-reference.html">指标参考</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/monitor-mode.html">监控模式</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">策略规范</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reference/spec/01-intro-spec.html">策略沟通规范</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reference/spec/02-settings.html">策略设置</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reference/spec/03-validating-policies.html">验证策略</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reference/spec/04-mutating-policies.html">变更策略</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reference/spec/05-context-aware-policies.html">上下文感知策略</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">主机能力</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/spec/host-capabilities/01-intro-host-capabilities.html">主机能力规范</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/spec/host-capabilities/02-signature-verifier-policies.html">签名验证器策略</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/spec/host-capabilities/03-container-registry.html">容器注册表功能</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/spec/host-capabilities/04-net.html">网络能力</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/spec/host-capabilities/05-crypto.html">加密能力</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/spec/host-capabilities/06-kubernetes.html">Kubernetes 功能</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/oci-registries-support.html">OCI 注册表支持 Admission Controller</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">安全性</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reference/security-hardening/webhooks-hardening.html">网络钩子</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/threat-model.html">威胁模型</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/policy-evaluation-timeout.html">策略评估超时保护</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/verification-config.html">验证配置格式</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/sources_yaml.html">sources.yaml的参考</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/kwctl-cli.html"><code>kwctl</code> CLI</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/policy-server-cli.html">策略服务器 CLI</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../personas.html">适用于谁？</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../use-cases.html">使用案例</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../organization.html">公司</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../enterprise.html">Enterprise</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../glossary.html">词汇表</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../disclosure.html">安全披露</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Admission Controller</span>
+    <span class="version">1.34-dev</span>
+  </div>
+  <ul class="components">
+        <li class="component is-current">
+          <div class="title"><a href="../../../1.33-latest/en/introduction.html">Admission Controller</a></div>
+          <ul class="versions">
+            <li class="version is-current">
+              <a href="../../en/introduction.html">1.34-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../1.33-latest/en/introduction.html">1.33-latest</a>
+            </li>
+            <li class="version">
+              <a href="../../../1.32/en/introduction.html">1.32</a>
+            </li>
+            <li class="version">
+              <a href="../../../1.31/en/introduction.html">1.31</a>
+            </li>
+            <li class="version">
+              <a href="../../../1.30/en/introduction.html">1.30</a>
+            </li>
+            <li class="version">
+              <a href="../../../1.29/en/introduction.html">1.29</a>
+            </li>
+            <li class="version">
+              <a href="../../../1.28/en/introduction.html">1.28</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../cluster-api/v0.26/en/index.html">Cluster API</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../cluster-api/v0.27/en/index.html">v0.27-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../cluster-api/v0.26/en/index.html">v0.26</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.25/en/index.html">0.25</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.24/en/index.html">0.24</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.23/en/index.html">0.23</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.22/en/index.html">0.22</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.21/en/index.html">0.21</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.20/en/index.html">0.20</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.19/en/index.html">0.19</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.18/en/index.html">0.18</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.17/en/index.html">0.17</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.16/en/index.html">0.16</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.11/en/index.html">0.11</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../continuous-delivery/next/en/index.html">Continuous Delivery</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../continuous-delivery/next/en/index.html">Next</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.11/en/index.html">0.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.10/en/index.html">0.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.9/en/index.html">0.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../k3s/latest/en/introduction.html">K3s</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../k3s/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../os-manager/1.9/en/index.html">OS Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../os-manager/1.10/en/index.html">1.10-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../os-manager/1.9/en/index.html">1.9</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.8/en/index.html">1.8</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.7/en/index.html">1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.6/en/index.html">1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.5/en/index.html">1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-ai/latest/en/introduction.html">Rancher AI</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-ai/latest/en/introduction.html">latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rke2/latest/en/introduction.html">RKE2</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rke2/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-observability/latest/en/classic.html">SUSE Observability</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../suse-observability/latest/en/classic.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">SUSE Rancher Developer Access</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">SUSE® Rancher for AWS</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-manager/v2.13/en/about-rancher/what-is-rancher.html">SUSE® Rancher Manager</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-manager/v2.13/en/about-rancher/what-is-rancher.html">v2.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.12/en/about-rancher/what-is-rancher.html">v2.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.11/en/about-rancher/what-is-rancher.html">v2.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.10/en/about-rancher/what-is-rancher.html">v2.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.9/en/about-rancher/what-is-rancher.html">v2.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../security/5.5/en/overview.html">SUSE® Security</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../security/5.5/en/overview.html">5.5</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.4/en/overview.html">5.4</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.3/en/overview.html">5.3</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../storage/1.11/en/longhorn-documentation.html">SUSE® Storage</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../storage/1.12/en/longhorn-documentation.html">1.12 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../storage/1.11/en/longhorn-documentation.html">1.11 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../storage/1.10/en/longhorn-documentation.html">1.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../storage/1.9/en/longhorn-documentation.html">1.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-virtual-clusters/1.0.2/en/release-notes/version-1.0.2.html">SUSE® Virtual Clusters</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">v1.1.0 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../suse-virtual-clusters/1.0.2/en/release-notes/version-1.0.2.html">v1.0.2-latest</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.1/en/introduction.html">v1.0.1</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.0/en/introduction.html">v1.0.0</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../virtualization/v1.7/en/introduction/overview.html">SUSE® Virtualization</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../virtualization/v1.8/en/introduction/overview.html">v1.8 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../virtualization/v1.7/en/introduction/overview.html">v1.7 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../virtualization/v1.6/en/introduction/overview.html">v1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../virtualization/v1.5/en/introduction/overview.html">v1.5</a>
+            </li>
+          </ul>
+        </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+<ul>
+    <li>
+      <a class="home-link-dsc" href="https://documentation.suse.com/" title="documentation.suse.com" aria-label="SUSE Documentation Home"></a>
+    </li>
+    <li>
+      <a href="https://documentation.suse.com/cloudnative/admission-controller" title="Admission Controller" aria-label="SUSE Documentation - Admission Controller">
+        Admission Controller
+      </a>
+    </li>
+      <li>
+          Howto
+      </li>
+  </ul>
+</nav><div class="page-versions">
+  <button class="version-menu-toggle" title="Show other versions of page">1.34-dev</button>
+  <div class="version-menu">
+    <a class="version is-current" href="tasks.html">1.34-dev</a>
+    <a class="version is-missing" href="../../../1.33-latest/en/introduction.html">1.33-latest</a>
+    <a class="version is-missing" href="../../../1.32/en/introduction.html">1.32</a>
+    <a class="version is-missing" href="../../../1.31/en/introduction.html">1.31</a>
+    <a class="version is-missing" href="../../../1.30/en/introduction.html">1.30</a>
+    <a class="version is-missing" href="../../../1.29/en/introduction.html">1.29</a>
+    <a class="version is-missing" href="../../../1.28/en/introduction.html">1.28</a>
+  </div>
+</div>
+      <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <label class="visual-search-label-bc" for="search-input">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+          <input label="Search" aria-label="Search" id="search-input" type="text" placeholder="搜索文档" >
+          <label class="filter checkbox" style="display: none">
+            <input type="checkbox" data-facet-filter="component:admission-controller" checked> Only this project
+          </label>
+        </div>
+      </div>
+</div>
+  <div class="content">
+<aside
+  class="toc sidebar"
+  data-title="在此页面上" data-levels="2">
+  <div class="toc-menu">
+    <!-- start qualtrics -->
+    <div id='ZN_8qZUmklKYbBqAYe'><!--DO NOT REMOVE-CONTENTS PLACED HERE--></div>
+    <div id="qualtrics_container"></div>
+    <!-- end qualtrics -->
+  </div>
+</aside><article class="doc">
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="注意"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>
+
+本文档采用自动化机器翻译技术翻译。
+尽管我们力求提供准确的译文，但不对翻译内容的完整性、准确性或可靠性作出任何保证。
+若出现任何内容不一致情况，请以原始
+<a href="https://documentation.suse.com/cloudnative/admission-controller/1.34/en/howtos/tasks.html">
+英文
+</a>
+版本为准，且原始英文版本为权威文本。
+
+</p>
+
+</div>
+</td>
+</tr>
+</table>
+</div>
+                            <div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="警告"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>这是尚未发布的文档。 Admission Controller 1.34-dev.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<h1 class="page">常用任务</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>这描述了在您 <a href="../quick-start.html#installation" class="xref page">安装 SUSE Security Admission Controller</a> 后在 Kubernetes 集群中常见的任务。</p>
+</div>
+<div class="paragraph">
+<p>这些单独的任务是按逻辑顺序排列的。</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_测试策略"><a class="anchor" href="#_测试策略"></a>测试策略</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Admission Controller 使用两个工具来帮助您查找策略并在本地测试它们：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://artifacthub.io/packages/search?kind=13&amp;sort=relevance&amp;page=1">Artifact Hub</a>，使用他们针对 Admission Controller 策略的软件包过滤器</p>
+</li>
+<li>
+<p><a href="https://github.com/kubewarden/kwctl"><code>kwctl</code></a>，一个 CLI 工具</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="_artifact_hub"><a class="anchor" href="#_artifact_hub"></a>Artifact hub</h3>
+<div class="paragraph">
+<p>Artifact hub 托管社区贡献的策略。例如，您可以找到由 Admission Controller 开发者创建的 <a href="https://kubernetes.io/blog/2021/04/06/podsecuritypolicy-deprecation-past-present-and-future/">已弃用的 Kubernetes Pod 安全策略</a> 的替代品。</p>
+</div>
+<div class="paragraph">
+<p>如下面的截图所示，一旦您找到感兴趣的策略，选择 <code>Install</code> 按钮并使用 <code>kwctl</code> 获取您集群的策略。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/tasks-artifact-hub.png" alt="Artifact Hub">
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="注意"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>以前，Admission Controller 策略可以在 <a href="https://hub.kubewarden.io">Admission Controller 策略中心</a> 找到。这已经被 <a href="https://www.kubewarden.io/blog/2022/07/artifact-hub-supports-kubewarden/">退役</a>。
+现在可以从 <a href="https://artifacthub.io/packages/search?kind=13&amp;sort=relevance&amp;page=1">https://artifacthub.io</a> 获取策略。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_kwctl_cli_工具"><a class="anchor" href="#_kwctl_cli_工具"></a><code>kwctl</code> CLI 工具</h3>
+<div class="paragraph">
+<p><code>kwctl</code> 是 Admission Controller 的 CLI 工具，供策略作者和集群管理员在应用于 Kubernetes 集群之前测试策略。</p>
+</div>
+<div class="paragraph">
+<p>该工具的界面与 <code>docker</code> CLI 工具类似。</p>
+</div>
+<div class="sect3">
+<h4 id="_使用案例"><a class="anchor" href="#_使用案例"></a>使用案例</h4>
+<div class="paragraph">
+<p>您可以使用 <code>kwctl</code> 来帮助处理这些场景：</p>
+</div>
+<div class="paragraph">
+<p><em>作为策略作者</em></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>对您的策略进行端到端测试</em>：测试您的策略以应对精心设计的Kubernetes请求，并确保您的策略按预期行为运行。您甚至可以测试需要访问正在运行的集群的上下文感知策略。</p>
+</li>
+<li>
+<p><em>在您的Wasm模块中嵌入元数据</em>：二进制文件包含其执行所需权限的注释。您可以使用`kwctl`检查和修改这些注释。</p>
+</li>
+<li>
+<p><em>将策略发布到OCI注册表</em>：该二进制文件是完全合规的OCI对象，可以存储在OCI注册表中。</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><em>作为集群管理员</em></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>检查远程策略</em>：给定在OCI注册表或HTTP服务器中的策略，显示该策略的所有静态信息。</p>
+</li>
+<li>
+<p><em>在您的集群中进行策略的试运行</em>：测试该策略以应对精心设计的Kubernetes请求，并确保该策略在您提供的输入数据下按预期行为运行。您还可以在试运行模式下测试需要访问正在运行的集群的上下文感知策略。</p>
+</li>
+<li>
+<p><em>为您的策略生成初始 <code>ClusterAdmissionPolicy</code> 脚手架</em>：
+生成一个 <code>YAML</code> 文件，包含所有必需的设置，可以使用 <code>kubectl</code> 应用到您的 Kubernetes 集群。</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_安装"><a class="anchor" href="#_安装"></a>安装</h4>
+<div class="paragraph">
+<p><code>kwctl</code> 稳定版本的二进制文件可从 <a href="https://github.com/kubewarden/kwctl/releases">GitHub 储存库</a> 获取。要从 GitHub <code>kwctl</code> <a href="https://github.com/kubewarden/kwctl">储存库</a> 构建，您需要一个 <a href="https://www.rust-lang.org/tools/install">Rust</a> 开发环境。</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_用法"><a class="anchor" href="#_用法"></a>用法</h4>
+<div class="paragraph">
+<p>您可以通过运行以下命令列出所有的 <code>kwctl</code> 选项和子命令：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">$ kwctl --help
+kwctl 0.2.5
+Admission Controller Developers &lt;cncf-kubewarden-maintainers@lists.cncf.io&gt;
+Tool to manage Admission Controller policies
+
+USAGE:
+    kwctl [OPTIONS] &lt;SUBCOMMAND&gt;
+
+OPTIONS:
+    -h, --help       Print help information
+    -v               Increase verbosity
+    -V, --version    Print version information
+
+SUBCOMMANDS:
+    annotate       Add Admission Controller metadata to a WebAssembly module
+    completions    Generate shell completions
+    digest         Fetch the digest of its OCI manifest
+    help           Print this message or the help of the given subcommand(s)
+    inspect        Inspect Admission Controller policy
+    policies       Lists all downloaded policies
+    pull           Pulls a Admission Controller policy from a given URI
+    push           Pushes a Admission Controller policy to an OCI registry
+    rm             Removes a Admission Controller policy from the store
+    run            Runs a Admission Controller policy from a given URI
+    scaffold       Scaffold a Kubernetes resource or configuration file
+    verify         Verify a Admission Controller policy from a given URI using Sigstore</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>以下是一些命令使用示例：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>列出策略</em>：列出存储在本地 <code>kwctl</code> 注册表中的所有策略</p>
+<div class="ulist">
+<ul>
+<li>
+<p>命令：<code>kwctl policies</code></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><em>获取策略</em>：下载并将策略存储在本地 <code>kwctl</code> 存储中</p>
+<div class="ulist">
+<ul>
+<li>
+<p>命令：<code>kwctl pull &lt;policy URI&gt;</code></p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">$ kwctl pull registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.9
+
+$ kwctl policies
++--------------------------------------------------------------+----------+---------------+--------------+----------+
+| Policy                                                       | Mutating | Context aware | SHA-256      | Size     |
++--------------------------------------------------------------+----------+---------------+--------------+----------+
+| registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.9 | no       | no            | 59e34f482b40 | 21.86 kB |
++--------------------------------------------------------------+----------+---------------+--------------+----------+</code></pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><em>了解策略的工作原理</em>：检查策略元数据</p>
+<div class="ulist">
+<ul>
+<li>
+<p>命令：<code>kwctl inspect &lt;policy URI&gt;</code></p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">  $ kwctl inspect registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.9
+  Details
+  title:              pod-privileged
+  description:        Limit the ability to create privileged containers
+  author:             Flavio Castelli
+  url:                https://github.com/kubewarden/pod-privileged-policy
+  source:             https://github.com/kubewarden/pod-privileged-policy
+  license:            Apache-2.0
+  mutating:           false
+  context aware:      false
+  execution mode:     kubewarden-wapc
+  protocol version:   1
+
+  Annotations
+  io.kubewarden.kwctl 0.1.9
+
+  Rules
+  ────────────────────
+  ---
+  - apiGroups:
+      - ""
+    apiVersions:
+      - v1
+    resources:
+      - pods
+    operations:
+      - CREATE
+  ────────────────────
+
+  Usage
+  This policy doesn't have a configuration. Once enforced, it will reject
+  the creation of Pods that have at least a privileged container defined.</code></pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><em>评估策略</em>：评估策略，并在可用时找到匹配您要求的正确配置值。</p>
+<div class="paragraph">
+<p>您需要对 <a href="https://kubernetes.io/docs/reference/">Kubernetes REST APIs</a> 有一定的了解。</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>命令：<code>kwctl run -r &lt;"Kubernetes Admission request" file path&gt; -s &lt;"JSON document" file path&gt; &lt;policy URI&gt;</code></p>
+</li>
+<li>
+<p>方案 1:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>请求评估：创建一个没有 'privileged' 容器的 pod</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">$ kwctl run registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.9 -r unprivileged-pod-request.json
+{"uid":"C6E115F4-A789-49F8-B0C9-7F84C5961FDE","allowed":true,"status":{"message":""}}</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>下载策略二进制文件的等效命令：</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">`$ kwctl run file://$PWD/pod-privileged-policy.wasm -r unprivileged-pod-request.json
+{"uid":"C6E115F4-A789-49F8-B0C9-7F84C5961FDE","allowed":true,"status":{"message":""}}</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>结果：该策略允许请求</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>方案 2:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>请求评估：创建一个至少包含一个 'privileged' 容器的 pod</p>
+</li>
+<li>
+<p>命令：</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">kwctl run registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.9 -r privileged-pod-request.json</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>下载策略二进制文件的等效命令：<code>kwctl run <a href="file://$PWD/pod-privileged-policy.wasm" class="bare">file://$PWD/pod-privileged-policy.wasm</a> -r privileged-pod-request.json</code></p>
+</li>
+<li>
+<p>输出：</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "uid": "8EE6AF8C-C8C8-45B0-9A86-CB52A70EC50D",
+  "allowed": false,
+  "status": { "message": "User 'kubernetes-admin' cannot schedule privileged containers" }
+}</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>结果：该策略拒绝请求</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>有关更复杂的示例，请参阅博客文章 <a href="https://www.kubewarden.io/blog/2021/06/kwctl-intro-for-kubernetes-administrators/">向 Kubernetes 管理员介绍 <code>kwctl</code></a>。</p>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_实施策略"><a class="anchor" href="#_实施策略"></a>实施策略</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>您通过定义一个 <code>ClusterAdmissionPolicy</code> 来实施策略，然后使用 <code>kubectl</code> 将其部署到您的集群中。</p>
+</div>
+<div class="paragraph">
+<p><code>kwctl</code> 帮助从您想要实施的策略生成一个 <code>ClusterAdmissionPolicy</code>。</p>
+</div>
+<div class="paragraph">
+<p>在您生成了 <code>ClusterAdmissionPolicy</code> 并将其应用到您的集群后，您可以按照下面的 <a href="../quick-start.html#_example_enforce_your_first_policy" class="xref page">快速入门</a> 中描述的步骤进行操作：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>从策略 <code>ClusterAdmissionPolicy</code> 生成 <code>manifest</code> 并将其保存到文件中</p>
+<div class="ulist">
+<ul>
+<li>
+<p>命令：<code>kwctl scaffold manifest -t ClusterAdmissionPolicy &lt;policy URI&gt; &gt; &lt;"policy name".yaml&gt;</code></p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">$ kwctl scaffold manifest -t ClusterAdmissionPolicy registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.9
+---
+apiVersion: policies.kubewarden.io/v1alpha2
+kind: ClusterAdmissionPolicy
+metadata:
+  name: privileged-pods
+spec:
+  module: "registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.9"
+  settings: {}
+  rules:
+    - apiGroups:
+        - ""
+      apiVersions:
+        - v1
+      resources:
+        - pods
+      operations:
+        - CREATE
+  mutating: false</code></pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="提示"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>默认情况下，<code>name</code> 的值设置为 <code>generated-policy</code>。
+您可能希望在部署 <code>ClusterAdmissionPolicy</code> 之前编辑它。
+前一个示例中的名称设置为 <code>privileged-pods</code>。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>将 <code>ClusterAdmissionPolicy</code> 部署到您的 Kubernetes 集群中</p>
+<div class="ulist">
+<ul>
+<li>
+<p>命令：<code>kubectl apply -f &lt;"policy name".yaml&gt;</code></p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">$ kubectl apply -f pod-privileged-policy.yaml
+clusteradmissionpolicy.policies.kubewarden.io/privileged-pods created</code></pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>在部署 <code>ClusterAdmissionPolicy</code> 后，发送到您的集群的所有请求都会根据策略进行评估，前提是它们在策略范围内。</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_后续步骤"><a class="anchor" href="#_后续步骤"></a>后续步骤</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="../tutorials/writing-policies/index.html" class="xref page">编写策略</a> 解释了如何用不同的语言编写策略并生成 WebAssembly 二进制文件，以便它们可以被 Admission Controller 使用。</p>
+</li>
+<li>
+<p><a href="../explanations/distributing-policies.html" class="xref page">分发策略</a> 解释了如何将策略发布到 <a href="https://github.com/opencontainers/distribution-spec/blob/main/spec.md">OCI 注册表</a>。</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="../explanations/architecture.html">Admission Controller 体系结构</a></span>
+  <span class="next"><a href="install-kwctl.html">安装 <code>kwctl</code></a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<script src="../../../../_/js/site.js"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+<script src="../../../../_/js/vendor/lunr.js"></script>
+<script src="../../../../_/js/search-ui.js" id="search-ui-script" data-site-root-path="../../../.." data-snippet-length="100" data-stylesheet="../../../../_/css/search.css"></script>
+<script async src="../../../../search-index.js"></script>
+<script src="../../../../_/js/vendor/langSelection.js"></script>
+<script async src="../../../../_/js/vendor/tabs.js"></script>
+
+
+<script src="../../../../_/js/CNLanguageSwitcher.js"></script>
+  </body>
+</html>

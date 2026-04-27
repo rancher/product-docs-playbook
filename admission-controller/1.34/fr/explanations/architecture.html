@@ -1,0 +1,1383 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SUSE Security Admission Controller architecture | Admission Controller  1.34-dev</title>
+    <link rel="prev" href="audit-scanner/policy-reports.html">
+    <link rel="next" href="../howtos/tasks.html">
+    <meta name="description" content="Découvrez comment SUSE Security Admission Controller utilise les fonctionnalités de noyau de Kubernetes pour s'intégrer parfaitement dans votre cluster.">
+    <meta name="keywords" content="["SUSE Security Admission Controller", "kubewarden", "kubernetes", "architecture"]">
+    <meta name="generator" content="Antora 3.1.10">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+<meta http-equiv="last-modified" content="2026-03-18"/>
+<link rel="stylesheet" href="../../../../_/css/search.css">
+<link rel="icon" href="../../../../_/img/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="../../../../_/css/font-styles.css">
+<link rel="stylesheet" href="../../../../_/fonts/css/all.css">
+<link rel="stylesheet" href="../../../../_/css/site-extra.css">
+<link rel="stylesheet" href="../../../../_/css/vendor/tabs.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap&family=SUSE+Mono:ital,wght@0,100..800;1,100..800" rel="stylesheet">
+<link href="https://documentation.suse.com/docserv/res/fonts/poppins/poppins.css" rel="stylesheet">
+<link rel="stylesheet" href="../../../../_/css/vendor/light.css">
+<script src="/docserv/res/lightheaded/analytics.js" type="text/javascript"></script>
+<script type="module">
+  import { defineCustomElements, setAssetPath } from 'https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/shared-header.esm.js';
+  defineCustomElements();
+  setAssetPath("https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/assets");
+</script>
+<!-- Default English link -->
+<link href="https://documentation.suse.com/cloudnative/admission-controller/1.34/en/explanations/architecture.html" hreflang="x-default" rel="alternate"/>
+<!-- Link for the currently processed page -->
+<link href="https://documentation.suse.com/cloudnative/admission-controller/1.34/fr/explanations/architecture.html" hrefLang="fr-FR" rel="alternate" />
+<!-- Link for the English page -->
+<link href="https://documentation.suse.com/cloudnative/admission-controller/1.34/en/explanations/architecture.html" hreflang="en-US" rel="alternate" />
+<!-- Link for the Japanese page -->
+<link href="https://documentation.suse.com/cloudnative/admission-controller/1.34/ja/explanations/architecture.html" hreflang="ja-JP" rel="alternate" />
+<!-- Link for the Chinese page -->
+<link href="https://documentation.suse.com/cloudnative/admission-controller/1.34/zh/explanations/architecture.html" hreflang="zh-CN" rel="alternate" />
+<!-- Link for the German page -->
+<link href="https://documentation.suse.com/cloudnative/admission-controller/1.34/de/explanations/architecture.html" hreflang="de-DE" rel="alternate" />
+<!-- Link for the Spanish page -->
+<link href="https://documentation.suse.com/cloudnative/admission-controller/1.34/es/explanations/architecture.html" hreflang="es-ES" rel="alternate" />
+<!-- Link for the Brazilian Portuguese page -->
+<link href="https://documentation.suse.com/cloudnative/admission-controller/1.34/pt/explanations/architecture.html" hreflang="pt-BR" rel="alternate" />
+
+<!-- JSON-LD for doc metadata -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "SUSE Security Admission Controller architecture | SUSE Security Admission Controller 1.34",
+  "headline": "SUSE Security Admission Controller architecture",
+  "description": "Découvrez comment SUSE Security Admission Controller utilise les fonctionnalités de noyau de Kubernetes pour s&#x27;intégrer parfaitement dans votre cluster.",
+  "inLanguage": "fr",
+  "dateModified": "2026-03-18T00:00:00Z",
+  "author": {
+    "@type": "Organization",
+    "name": "SUSE Product & Solution Documentation Team",
+    "url": "https://documentation.suse.com"
+  },
+  "mentions": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "SUSE Security Admission Controller",
+      "softwareVersion": "1.34",
+      "applicationCategory": "Cloud Infrastructure",
+      "operatingSystem": "Linux"
+    }
+  ],
+  "publisher": {
+    "@type": "Organization",
+    "name": "SUSE",
+    "url": "https://documentation.suse.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.suse.com/assets/img/suse-white-logo-green.svg"
+    }
+  }
+}
+</script>
+<!-- end JSON-LD for doc metadata -->
+
+<!-- SUVA - Begin Ask Geeko-->
+<!--
+searchUnifyChatbot ("Ask Geeko") Copyright ©2024 Grazitti Interactive - All Rights Reserved. NOTICE: All information contained herein is, and remains the property of Grazitti Interactive and its suppliers, if any. The intellectual and technical concepts contained herein are proprietary to Grazitti Interactive and its suppliers and may be covered by India, U.S. and Foreign Patents, patents in process, and are protected by trade secret or copyright law. Dissemination of this information or reproduction of this material is strictly forbidden unless prior written permission is obtained from Grazitti Interactive.
+-->
+<meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport"/>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/Allow/an.js?c485cb3c-93d4-4942-99e8-91f3b8ca5636"></script>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/js/index.js?q=gAAAAABp3JBN9VuEJTi5tFafLIMwgMkCPdJS3Qm56lSYx93ir3Twt9hgSvd3OHEt6-nYfSbY3yHq0Zv8PRPsSy4nbqZiaJ4cZvRc6ItVZdvwz9Urf35cH6OUyPOwdA0phlS-zVIznQ2rWW438p-91NlTHuxJuOFpnA=="></script>
+<link rel="stylesheet" href="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/css/index.css">
+<div id="searchUnifyChatbot"></div>
+<!-- SUVA - End Ask Geeko-->
+<!--BEGIN QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+<script type='text/javascript' src="../../../../_/js/qualtrics.js" defer></script>
+<!--END QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<script type="module">import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs'; mermaid.initialize({"startOnLoad":true});</script><shared-header
+language="en"
+languages='{
+    "en": { "label": "English", "url": "https://documentation.suse.com/en-us/" },
+    "de": { "label": "Deutsch", "url": "https://documentation.suse.com/de-de/" },
+    "fr": { "label": "Français", "url": "https://documentation.suse.com/fr-fr/" },
+    "es": { "label": "Español", "url": "https://documentation.suse.com/es-es/" },
+    "zh_CN": { "label": "中文", "url": "https://documentation.suse.com/zh-cn/" },
+    "pt_BR": { "label": "Português Brasileiro", "url": "https://documentation.suse.com/pt-br/" }
+}'
+enable-search='false'>
+</shared-header>
+
+<!-- Leaving as a comment, I expect it will be required again next year.
+<a target=_blank"" class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_bEiGZbUNzLD8Tcy"> Documentation survey </a>
+-->
+<div class="body">
+<div class="nav-container" data-component="admission-controller" data-version="1.34">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title">Admission Controller</h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../introduction.html">Introduction</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../quick-start.html">Actions de</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Didacticiels</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../tutorials/writing-policies/index.html">Rédaction de SUSE Security Admission Controller politiques</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../tutorials/writing-policies/CEL/01-intro-cel.html">Présentation de CEL</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/CEL/02-reusing-vap.html">Réutilisation des ValidatingAdmissionPolicies</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/CEL/03-context-aware.html">Politiques CEL contextuelles</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/CEL/04-example-sigstore.html">Capacités d&#8217;hôte de Sigstore</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../tutorials/writing-policies/rust/01-intro-rust.html">Rust</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/rust/02-create-policy.html">Création d&#8217;une stratégie</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/rust/03-define-policy-settings.html">Définir les paramètres de stratégie</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/rust/04-write-validation-logic.html">Écriture de la logique de validation</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/rust/05-mutation-policy.html">Créer une nouvelle stratégie de mutation</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/rust/06-logging.html">Consignation</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/rust/07-build-and-distribute.html">Créer et distribuer des stratégies</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/rust/08-raw-policies.html">Stratégies brutes</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../tutorials/writing-policies/go/01-intro-go.html">Rédaction de stratégies en Go</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/go/02-scaffold.html">Créer une nouvelle stratégie de validation</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/go/03-policy-settings.html">Définir les paramètres de stratégie</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/go/04-validation.html">Écrire la logique de validation</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/go/05-e2e-tests.html">Tests de bout en bout</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/go/06-logging.html">Consignation</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/go/07-automate.html">Intégration avec GitHub Actions</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/go/08-distribute.html">Distribution de la stratégie</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/go/09-validation-with-queries.html">Validation à l&#8217;aide de requêtes JSON</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/go/10-raw-policies.html">Rédaction de stratégies brutes</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../tutorials/writing-policies/rego/01-intro-rego.html">Rego</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/rego/02-builtin-support.html">Support intégré</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Open Policy Agent</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../tutorials/writing-policies/rego/open-policy-agent/01-intro.html">Introduction à Open Policy Agent</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../tutorials/writing-policies/rego/open-policy-agent/02-create-policy.html">Création d&#8217;une nouvelle stratégie</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../tutorials/writing-policies/rego/open-policy-agent/03-build-and-run.html">Construisez et exécutez une stratégie OPA pour Admission Controller</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../tutorials/writing-policies/rego/open-policy-agent/04-distribute.html">Distribuer une stratégie OPA avec SUSE Security Admission Controller</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../tutorials/writing-policies/rego/open-policy-agent/05-raw-policies.html">Rédaction de stratégies brutes</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Gatekeeper</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../tutorials/writing-policies/rego/gatekeeper/01-intro.html">Support de Gatekeeper</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../tutorials/writing-policies/rego/gatekeeper/02-create-policy.html">Création d&#8217;une nouvelle stratégie Rego pour Gatekeeper</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../tutorials/writing-policies/rego/gatekeeper/03-build-and-run.html">Créez et exécutez une stratégie Gatekeeper</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../tutorials/writing-policies/rego/gatekeeper/04-distribute.html">Distribution d&#8217;une stratégie de Gatekeeper avec SUSE Security Admission Controller</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../tutorials/writing-policies/dotnet.html">C#</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">TypeScript</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/typescript/01-intro-typescript.html">Écriture de stratégies en TypeScript/JavaScript</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/typescript/02-scaffold.html">Créer une nouvelle stratégie de validation</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/typescript/03-policy-settings.html">Définir les paramètres de stratégie</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/typescript/04-validation.html">Écrire la logique de validation</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/typescript/05-e2etests.html">Tests de bout en bout</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../tutorials/writing-policies/swift.html">Swift</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../tutorials/writing-policies/other-languages.html">Autres langues</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">WASI</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/wasi/01-intro-wasi.html">WASI</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../tutorials/writing-policies/wasi/02-raw-policies.html">Rédaction de stratégies brutes</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../tutorials/writing-policies/metadata.html">Métadonnées de la stratégie</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Tester des stratégies</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../tutorials/testing-policies/index.html">Test des stratégies</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../tutorials/testing-policies/02-policy-authors.html">Tests pour les auteurs de stratégies</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../tutorials/testing-policies/03-cluster-operators.html">Test des opérateurs de cluster</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tutorials/verifying-kubewarden.html">Vérification SUSE Security Admission Controller</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tutorials/publish-policy-to-artifact-hub.html">Publier des stratégies sur Artifact Hub</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Explications</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="mutating-policies.html">Stratégies de mutation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="context-aware-policies.html">Stratégies conscientes du contexte</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="policy-groups.html">Groupes de stratégies</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="certificates.html">Rotation des certificats</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="distributing-policies.html">Distribution des stratégies</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Comparaisons</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="comparisons/opa-comparison.html">SUSE Security Admission Controller vs OPA Gatekeeper</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="audit-scanner/audit-scanner.html">Qu&#8217;est-ce que le Kubewarden audit scanner ?</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="audit-scanner/limitations.html">Scanner d&#8217;audit - Limitations</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="audit-scanner/policy-reports.html">Scanner d&#8217;audit - Rapports de stratégie</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="architecture.html">Admission Controller architecture</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Howtos</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../howtos/tasks.html">Tâches courantes</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../howtos/install-kwctl.html">Installer <code>kwctl</code></a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../howtos/production-deployments.html">Déploiements en production</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../howtos/deploy-at-scale.html">Déploiement à grande échelle</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../howtos/audit-scanner.html">Scanner d&#8217;audit</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../howtos/policies.html">Configuration des stratégies</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../howtos/policies-eval-resources-in-controller-namespace.html">Autoriser les évaluations dans l&#8217;espace de noms du contrôleur d&#8217;admission</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../howtos/emergency-disable.html">Désactivation d'urgence</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Configurer les serveurs de stratégies</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../howtos/policy-servers/01-custom-cas.html">Utiliser des CAs personnalisés</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../howtos/policy-servers/02-private-registry.html">Configuration des PolicyServers pour utiliser des registres privés</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../howtos/policy-servers/03-production-deployments.html">Déploiements en production</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../howtos/policy-servers/04-using-proxies.html">Utiliser des proxies</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../howtos/policy-servers/05-private-sigstore.html">Configurer les serveurs de stratégies pour des instances privées de Sigstore</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../howtos/policy-groups.html">Groupes de stratégies</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../howtos/psp-migration.html">Migration de PSP</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../howtos/vap-migration.html">Migration de la stratégie ValidatingAdmissionPolicy</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../howtos/pod-security-admission-with-kubewarden.html">Admission de sécurité des pods</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../howtos/custom-certificate-authorities.html">Autorités de certification personnalisées</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../howtos/proxy-configuration.html">Configuration du proxy</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../howtos/raw-policies.html">Stratégies brutes</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../howtos/argocd-installation.html">Installation d&#8217;ArgoCD</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../howtos/security-hardening/security-hardening.html">Sécurité</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../howtos/security-hardening/secure-supply-chain.html">Chaîne d&#8217;approvisionnement sécurisée</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../howtos/security-hardening/webhook-mtls.html">Activer mTLS avec K3s</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Isolation physique</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../howtos/airgap/01-requirements.html">Configuration requise</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../howtos/airgap/02-install.html">Installation</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../howtos/airgap/03-hauler.html">Installation de Hauler</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Démarrages rapides de télémétrie</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../howtos/telemetry/10-opentelemetry-qs.html">Démarrage rapide Open Telemetry</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../howtos/telemetry/20-tracing-qs.html">Démarrage rapide du traçage</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../howtos/telemetry/30-metrics-qs.html">Démarrage rapide des métriques</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../howtos/telemetry/40-custom-otel-collector.html">Collecteur OpenTelemetry personnalisé</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../howtos/Rancher-Fleet.html">Rancher Fleet</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Extension de l&#8217;interface utilisateur Rancher</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../howtos/ui-extension/01-install.html">Quickstart</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../howtos/ui-extension/02-metrics.html">Surveillance</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../howtos/ui-extension/03-tracing.html">Suivi</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Collection d&#8217;applications Rancher</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../howtos/application-collection/01-verify-images.html">Vérifier les images</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Solutions de contournement</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../howtos/workarounds/policy-server-certificate-expiry.html">Rotation des certificats, versions ≥ v1.16</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../howtos/contribution-guide/contribution-guide.html">Guide de contribution</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../howtos/contribution-guide/contributing.html">Contribuer à la documentation</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../howtos/contribution-guide/suggesting-an-improvement.html">Amélioration de la documentation</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../howtos/gatekeeper-migration.html">Migration des stratégies de Gatekeeper vers SUSE Security Admission Controller</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Référence</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/CRDs.html">Définitions de ressources personnalisées (CRD)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/dependency-matrix.html">Matrice des dépendances</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/artifacts.html">Artefacts</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/upgrade-path.html">Chemin de mise à niveau</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/metrics-reference.html">Référence de métriques</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/monitor-mode.html">Mode de surveillance</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Spécification de la stratégie</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reference/spec/01-intro-spec.html">Spécification de la communication des stratégies</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reference/spec/02-settings.html">Paramètres de la stratégie</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reference/spec/03-validating-policies.html">Validation des stratégies</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reference/spec/04-mutating-policies.html">Stratégies de modification</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reference/spec/05-context-aware-policies.html">Stratégies sensibles au contexte</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Fonctions de l&#8217;hôte</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/spec/host-capabilities/01-intro-host-capabilities.html">Spécification des capacités de l&#8217;hôte</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/spec/host-capabilities/02-signature-verifier-policies.html">Stratégies de vérification de signature</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/spec/host-capabilities/03-container-registry.html">Capacités du registre de conteneur</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/spec/host-capabilities/04-net.html">Fonctionnalités réseau</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/spec/host-capabilities/05-crypto.html">Capacités cryptographiques</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/spec/host-capabilities/06-kubernetes.html">Fonctionnalités de Kubernetes</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/oci-registries-support.html">Support du registre OCI pour Admission Controller</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Sécurité</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reference/security-hardening/webhooks-hardening.html">Webhooks</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/threat-model.html">Modèle de menace</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/policy-evaluation-timeout.html">Protection contre le dépassement de délai d&#8217;évaluation des stratégies</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/verification-config.html">Format de configuration de vérification</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/sources_yaml.html">Référence pour sources.yaml</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/kwctl-cli.html"><code>kwctl</code> CLI</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/policy-server-cli.html">CLI du serveur de stratégie</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../personas.html">Pour qui ?</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../use-cases.html">Cas pratiques d&#8217;utilisation</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../organization.html">Organisation</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../enterprise.html">Entreprise</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../glossary.html">Glossaire</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../disclosure.html">Divulgation de la sécurité</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Admission Controller</span>
+    <span class="version">1.34-dev</span>
+  </div>
+  <ul class="components">
+        <li class="component is-current">
+          <div class="title"><a href="../../../1.33-latest/en/introduction.html">Admission Controller</a></div>
+          <ul class="versions">
+            <li class="version is-current">
+              <a href="../../en/introduction.html">1.34-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../1.33-latest/en/introduction.html">1.33-latest</a>
+            </li>
+            <li class="version">
+              <a href="../../../1.32/en/introduction.html">1.32</a>
+            </li>
+            <li class="version">
+              <a href="../../../1.31/en/introduction.html">1.31</a>
+            </li>
+            <li class="version">
+              <a href="../../../1.30/en/introduction.html">1.30</a>
+            </li>
+            <li class="version">
+              <a href="../../../1.29/en/introduction.html">1.29</a>
+            </li>
+            <li class="version">
+              <a href="../../../1.28/en/introduction.html">1.28</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../cluster-api/v0.26/en/index.html">Cluster API</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../cluster-api/v0.27/en/index.html">v0.27-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../cluster-api/v0.26/en/index.html">v0.26</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.25/en/index.html">0.25</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.24/en/index.html">0.24</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.23/en/index.html">0.23</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.22/en/index.html">0.22</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.21/en/index.html">0.21</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.20/en/index.html">0.20</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.19/en/index.html">0.19</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.18/en/index.html">0.18</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.17/en/index.html">0.17</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.16/en/index.html">0.16</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.11/en/index.html">0.11</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../continuous-delivery/next/en/index.html">Continuous Delivery</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../continuous-delivery/next/en/index.html">Next</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.11/en/index.html">0.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.10/en/index.html">0.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.9/en/index.html">0.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../k3s/latest/en/introduction.html">K3s</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../k3s/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../os-manager/1.9/en/index.html">OS Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../os-manager/1.10/en/index.html">1.10-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../os-manager/1.9/en/index.html">1.9</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.8/en/index.html">1.8</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.7/en/index.html">1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.6/en/index.html">1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.5/en/index.html">1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-ai/latest/en/introduction.html">Rancher AI</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-ai/latest/en/introduction.html">latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rke2/latest/en/introduction.html">RKE2</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rke2/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-observability/latest/en/classic.html">SUSE Observability</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../suse-observability/latest/en/classic.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">SUSE Rancher Developer Access</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">SUSE® Rancher for AWS</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-manager/v2.13/en/about-rancher/what-is-rancher.html">SUSE® Rancher Manager</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-manager/v2.13/en/about-rancher/what-is-rancher.html">v2.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.12/en/about-rancher/what-is-rancher.html">v2.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.11/en/about-rancher/what-is-rancher.html">v2.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.10/en/about-rancher/what-is-rancher.html">v2.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.9/en/about-rancher/what-is-rancher.html">v2.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../security/5.5/en/overview.html">SUSE® Security</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../security/5.5/en/overview.html">5.5</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.4/en/overview.html">5.4</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.3/en/overview.html">5.3</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../storage/1.11/en/longhorn-documentation.html">SUSE® Storage</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../storage/1.12/en/longhorn-documentation.html">1.12 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../storage/1.11/en/longhorn-documentation.html">1.11 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../storage/1.10/en/longhorn-documentation.html">1.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../storage/1.9/en/longhorn-documentation.html">1.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-virtual-clusters/1.0.2/en/release-notes/version-1.0.2.html">SUSE® Virtual Clusters</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">v1.1.0 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../suse-virtual-clusters/1.0.2/en/release-notes/version-1.0.2.html">v1.0.2-latest</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.1/en/introduction.html">v1.0.1</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.0/en/introduction.html">v1.0.0</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../virtualization/v1.7/en/introduction/overview.html">SUSE® Virtualization</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../virtualization/v1.8/en/introduction/overview.html">v1.8 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../virtualization/v1.7/en/introduction/overview.html">v1.7 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../virtualization/v1.6/en/introduction/overview.html">v1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../virtualization/v1.5/en/introduction/overview.html">v1.5</a>
+            </li>
+          </ul>
+        </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+<ul>
+    <li>
+      <a class="home-link-dsc" href="https://documentation.suse.com/" title="documentation.suse.com" aria-label="SUSE Documentation Home"></a>
+    </li>
+    <li>
+      <a href="https://documentation.suse.com/cloudnative/admission-controller" title="Admission Controller" aria-label="SUSE Documentation - Admission Controller">
+        Admission Controller
+      </a>
+    </li>
+      <li>
+          Explications
+      </li>
+  </ul>
+</nav><div class="page-versions">
+  <button class="version-menu-toggle" title="Show other versions of page">1.34-dev</button>
+  <div class="version-menu">
+    <a class="version is-current" href="architecture.html">1.34-dev</a>
+    <a class="version is-missing" href="../../../1.33-latest/en/introduction.html">1.33-latest</a>
+    <a class="version is-missing" href="../../../1.32/en/introduction.html">1.32</a>
+    <a class="version is-missing" href="../../../1.31/en/introduction.html">1.31</a>
+    <a class="version is-missing" href="../../../1.30/en/introduction.html">1.30</a>
+    <a class="version is-missing" href="../../../1.29/en/introduction.html">1.29</a>
+    <a class="version is-missing" href="../../../1.28/en/introduction.html">1.28</a>
+  </div>
+</div>
+      <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <label class="visual-search-label-bc" for="search-input">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+          <input label="Search" aria-label="Search" id="search-input" type="text" placeholder="Searchercher dans les documents" >
+          <label class="filter checkbox" style="display: none">
+            <input type="checkbox" data-facet-filter="component:admission-controller" checked> Only this project
+          </label>
+        </div>
+      </div>
+</div>
+  <div class="content">
+<aside
+  class="toc sidebar"
+  data-title="Sur cette page" data-levels="2">
+  <div class="toc-menu">
+    <!-- start qualtrics -->
+    <div id='ZN_8qZUmklKYbBqAYe'><!--DO NOT REMOVE-CONTENTS PLACED HERE--></div>
+    <div id="qualtrics_container"></div>
+    <!-- end qualtrics -->
+  </div>
+</aside><article class="doc">
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>
+
+Ce document a été traduit à l'aide d'une technologie de traduction automatique.
+Bien que nous nous efforcions de fournir des traductions exactes,
+nous ne fournissons aucune garantie quant à l'exhaustivité, l'exactitude ou la
+fiabilité du contenu traduit. En cas de divergence, la version originale
+<a href="https://documentation.suse.com/cloudnative/admission-controller/1.34/en/explanations/architecture.html">
+anglaise
+</a>
+prévaut et fait foi.
+
+</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+                <div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Avertissement"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Il s'agit d'une documentation non publiée pour Admission Controller 1.34-dev.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+            <h1 class="page">SUSE Security Admission Controller architecture</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>SUSE Security Admission Controller est un moteur de stratégies Kubernetes.
+Il utilise des stratégies écrites dans un langage de programmation de votre choix.
+Ce langage doit générer un binaire WebAssembly que SUSE Security Admission Controller peut utiliser.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_quest_ce_que_une_stratégie"><a class="anchor" href="#_quest_ce_que_une_stratégie"></a>Qu&#8217;est-ce que <em>une stratégie</em> ?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Une stratégie est un <a href="https://opencontainers.org/">Open Container Initiative</a> (OCI) artefact. Elle contient un module WebAssembly, le code de la stratégie, et les métadonnées requises par PolicyServer pour effectuer des validations et des mutations des demandes d&#8217;admission.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Comme <a href="https://kubernetes.io/docs/contribute/style/style-guide/">Kubernetes</a>, SUSE Security Admission Controller utilise le terme 'PolicyServer' lorsqu&#8217;il discute du serveur de stratégies SUSE Security Admission Controller et <code>policy-server</code> lorsqu&#8217;il parle de Pod ou de Déploiement d&#8217;un SUSE Security Admission Controller PolicyServer.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_principes_de_conception"><a class="anchor" href="#_principes_de_conception"></a>Principes de conception</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_utilisation_des_fonctionnalités_de_noyau_de_kubernetes"><a class="anchor" href="#_utilisation_des_fonctionnalités_de_noyau_de_kubernetes"></a>Utilisation des fonctionnalités de noyau de Kubernetes</h3>
+<div class="paragraph">
+<p>L&#8217;équipe a conçu SUSE Security Admission Controller pour utiliser les fonctionnalités de noyau de Kubernetes, sans réinventer la roue.
+Le projet utilise une combinaison de :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Contrôleurs Kubernetes</p>
+</li>
+<li>
+<p>Définitions de ressources personnalisées (CRDs)</p>
+</li>
+<li>
+<p>Webhooks (Validation et Mutation)</p>
+</li>
+<li>
+<p>le système de notification d&#8217;événements du Plan de Contrôle</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_utilise_efficacement_larchitecture_kubernetes"><a class="anchor" href="#_utilise_efficacement_larchitecture_kubernetes"></a>Utilise efficacement l&#8217;architecture Kubernetes</h3>
+<div class="paragraph">
+<p>SUSE Security Admission Controller fonctionne de manière transparente au sein de l&#8217;écosystème Kubernetes. Au cœur, le contrôleur SUSE Security Admission Controller est un contrôleur Kubernetes, surveillant les définitions de ressources personnalisées (CRDs) SUSE Security Admission Controller et configurant les ressources Kubernetes pour les exécuter. Cette intégration garantit que SUSE Security Admission Controller utilise les mécanismes intégrés de Kubernetes, tels que les contrôleurs et les CRDs, pour surveiller, gérer et appliquer les stratégies de sécurité de manière efficace.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_définition_de_stratégie_extensible"><a class="anchor" href="#_définition_de_stratégie_extensible"></a>Définition de stratégie extensible</h3>
+<div class="paragraph">
+<p>SUSE Security Admission Controller utilise des CRDs pour définir et gérer les ressources SUSE Security Admission Controller, qui spécifient les règles pour les validations des demandes d&#8217;admission. Ce design permet aux utilisateurs d&#8217;étendre les capacités de Kubernetes avec des contrôles d&#8217;admission personnalisés, garantissant que l&#8217;application des stratégies de sécurité et de conformité est cohérente à travers le cluster.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_contrôle_dadmission_direct"><a class="anchor" href="#_contrôle_dadmission_direct"></a>Contrôle d&#8217;admission direct</h3>
+<div class="paragraph">
+<p>Lorsqu&#8217;il est configuré par le contrôleur SUSE Security Admission Controller, le Service policy-server reçoit les demandes d&#8217;admission directement du plan de contrôle Kubernetes, en utilisant <code>ValidationWebhooks</code> et <code>MutatingWebhooks</code>. Cette interaction directe rationalise le processus de contrôle d&#8217;admission, réduisant la latence et augmentant l&#8217;efficacité de l&#8217;application des stratégies.</p>
+</div>
+<div class="paragraph">
+<p>WebAssembly offre un environnement d&#8217;exécution isolé, garantissant que les stratégies s&#8217;exécutent en isolation, améliorant ainsi la sécurité et la stabilité du mécanisme d&#8217;application des stratégies. Cette isolation empêche les stratégies d&#8217;interférer les unes avec les autres ou avec le système hôte, atténuant le risque d&#8217;exécution de code malveillant.
+WebAssembly est portable et efficace, permettant aux stratégies de s&#8217;exécuter dans différents environnements sans modification. Cette compatibilité multiplateforme garantit que les stratégies SUSE Security Admission Controller sont polyvalentes, vous permettant de les distribuer et de les exécuter sur divers clusters Kubernetes.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_artefacts_de_stratégie_basés_sur_oci"><a class="anchor" href="#_artefacts_de_stratégie_basés_sur_oci"></a>Artefacts de stratégie basés sur OCI</h3>
+<div class="paragraph">
+<p>Les stratégies dans SUSE Security Admission Controller sont des artefacts OCI (Open Container Initiative). Cette standardisation facilite la distribution et la version des stratégies. Les stratégies contiennent à la fois les modules WebAssembly pour la logique d&#8217;application et les métadonnées nécessaires au fonctionnement du PolicyServer. L&#8217;utilisation d&#8217;artefacts OCI favorise l&#8217;interopérabilité et la facilité de gestion au sein des écosystèmes cloud.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_application_de_stratégies_détaillées"><a class="anchor" href="#_application_de_stratégies_détaillées"></a>Application de stratégies détaillées</h3>
+<div class="paragraph">
+<p>SUSE Security Admission Controller associe des stratégies à son propre webhook de 'validation' ou de 'mutation', permettant une application détaillée des contrôles d&#8217;admission. Cette flexibilité permet aux administrateurs d&#8217;adapter l&#8217;application des stratégies selon des besoins spécifiques, renforçant ainsi la sécurité et la conformité du cluster Kubernetes.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_la_pile_suse_security_admission_controller"><a class="anchor" href="#_la_pile_suse_security_admission_controller"></a>La pile SUSE Security Admission Controller</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>SUSE Security Admission Controller se compose de ces composants :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Les Ressources Personnalisées SUSE Security Admission Controller sont <a href="https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/">Ressources Personnalisées Kubernetes</a> qui simplifient le processus de gestion des stratégies.</p>
+<div class="paragraph">
+<p>SUSE Security Admission Controller s&#8217;intègre à Kubernetes en utilisant <a href="https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/">Contrôle d&#8217;Admission Dynamique</a>. En particulier, SUSE Security Admission Controller fonctionne comme un Webhook d&#8217;Admission Kubernetes. Le <code>policy-server</code> est le point de terminaison Webhook appelé par le serveur API Kubernetes pour valider les demandes.</p>
+</div>
+</li>
+<li>
+<p>Le <a href="https://github.com/kubewarden/kubewarden-controller">SUSE Security Admission Controller contrôleur</a> est un contrôleur Kubernetes qui réconcilie les Ressources Personnalisées de SUSE Security Admission Controller. Ce contrôleur crée des parties de la pile SUSE Security Admission Controller.
+Il traduit également la configuration de SUSE Security Admission Controller en directives Kubernetes.</p>
+<div class="paragraph">
+<p>Le <code>kubewarden-controller</code> enregistre les objets <code>MutatingWebhookConfiguration</code> ou <code>ValidatingWebhookConfiguration</code> nécessaires auprès du serveur API Kubernetes.</p>
+</div>
+</li>
+<li>
+<p><a href="../tutorials/writing-policies/index.html" class="xref page">SUSE Security Admission Controller stratégies</a> sont des modules WebAssembly contenant la logique de validation ou de mutation. Les modules WebAssembly ont une documentation détaillée dans les sections <a href="../tutorials/writing-policies/index.html" class="xref page">écriture de stratégies</a>.</p>
+</li>
+<li>
+<p>Le <a href="https://github.com/kubewarden/policy-server">PolicyServer</a> reçoit des demandes de validation. Il valide les demandes en exécutant les stratégies SUSE Security Admission Controller.</p>
+</li>
+<li>
+<p>Le <a href="https://github.com/kubewarden/audit-scanner">scanner d&#8217;audit</a> inspecte les ressources déjà présentes dans le cluster. Il identifie celles qui violent les stratégies SUSE Security Admission Controller.</p>
+<div class="paragraph">
+<p><a href="audit-scanner/audit-scanner.html" class="xref page">Scanner d&#8217;audit</a> vérifie constamment les ressources déclarées dans le cluster, signalant celles qui ne respectent plus les stratégies SUSE Security Admission Controller déployées.</p>
+</div>
+<div class="imageblock"><div class="mermaid content" style=" ">%%{
+  init: {
+    "flowchart": {
+      "htmlLabels": false,
+    }
+  }
+}%%
+graph LR
+    accTitle: Admission Controller architecture
+    accDescr: A diagram showing the architecture of Admission Controller components.
+    subgraph " "
+      direction LR
+      subgraph " "
+        direction LR
+          k8s(("Kubernetes"))
+          registry[("OCI registry")]
+        end
+        subgraph kw["`**Admission Controller**`"]
+          controller("`**Controller**`")
+          subgraph policy-server["`**policy-server**`"]
+            direction LR
+            kw-policy-1{{"Policy 1"}}
+            kw-policy-2{{"Policy 2"}}
+            kw-policy-3{{"Policy 3"}}
+        end
+        webhooks(["ValidationWebhooks and\nMutatingWebhooks"])
+        audit-scanner["KW audit scanner"]
+      end
+    end
+    policy-server -->|"downloads\npolicies from"| registry
+    controller -->|"watches for\nevents"| k8s
+    controller -->|"creates"| webhooks
+    controller -->|"creates\npolicy-server\ninstances"| policy-server
+    k8s -. "sends admission\nrequests using" .-> webhooks
+    webhooks -. "sent admission\nrequests from K8s" .-> policy-server
+    audit-scanner -->|"sends audit\nadmission requests"| policy-server</div><div class="title">Figure 1. Architecture</div></div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_le_parcours_dune_suse_security_admission_controller_stratégie"><a class="anchor" href="#_le_parcours_dune_suse_security_admission_controller_stratégie"></a>Le parcours d&#8217;une SUSE Security Admission Controller stratégie</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_policyserver_par_défaut"><a class="anchor" href="#_policyserver_par_défaut"></a>PolicyServer par défaut</h3>
+<div class="paragraph">
+<p>Sur un nouveau cluster, les composants SUSE Security Admission Controller définis sont :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Définitions de ressources personnalisées (CRD)</p>
+</li>
+<li>
+<p>Le <code>kubewarden-controller</code> Déploiement</p>
+</li>
+<li>
+<p>Une ressource personnalisée de PolicyServer nommée <code>default</code>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Lorsque le <code>kubewarden-controller</code> remarque la ressource PolicyServer par défaut, il crée un déploiement <code>policy-server</code> du composant PolicyServer.</p>
+</div>
+<div class="paragraph">
+<p>SUSE Security Admission Controller fonctionne comme un Webhook d&#8217;admission Kubernetes. Kubernetes spécifie
+l&#8217;utilisation de <a href="https://en.wikipedia.org/wiki/Transport_Layer_Security">Transport Layer
+Security</a> (TLS) pour sécuriser tous les points de terminaison Webhook. Le <code>kubewarden-controller</code>
+met en place cette communication sécurisée en :</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Générant une autorité de certification auto-signée</p>
+</li>
+<li>
+<p>Utilisez cette CA pour générer une clé de certificat TLS pour le Service <code>policy-server</code>.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Ces objets sont tous stockés en tant que ressources <code>Secret</code> dans Kubernetes.</p>
+</div>
+<div class="paragraph">
+<p>Enfin, <code>kubewarden-controller</code> crée le déploiement <code>policy-server</code> et un service Kubernetes ClusterIP pour l&#8217;exposer à l&#8217;intérieur du réseau du cluster.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_définir_la_première_stratégie"><a class="anchor" href="#_définir_la_première_stratégie"></a>Définir la première stratégie</h3>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Une stratégie doit définir sur quel <code>policy-server</code> elle doit s&#8217;exécuter. Elle <strong>lie</strong> à une instance <code>policy-server</code>. Vous pouvez avoir différentes stratégies avec le même module Wasm et les mêmes paramètres fonctionnant dans de nombreux PolicyServers. Cependant, vous ne pouvez pas avoir une seule définition de stratégie qui fonctionne dans de nombreux PolicyServers.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Le <code>kubewarden-controller</code> remarque la nouvelle ressource <code>ClusterAdmissionPolicy</code> et réconcilie le <code>policy-server</code> lié.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_réconciliation_dun_policy_server"><a class="anchor" href="#_réconciliation_dun_policy_server"></a>Réconciliation d&#8217;un <code>policy-server</code></h3>
+<div class="paragraph">
+<p>Lors de la création, de la modification ou de la suppression d&#8217;un <code>ClusterAdmissionPolicy</code> ou <code>AdmissionPolicy</code>, une boucle de réconciliation s&#8217;active dans <code>kubewarden-controller</code>, pour le <code>policy-server</code> possédant la stratégie. Cette boucle de réconciliation crée un <code>ConfigMap</code> avec toutes les stratégies liées au <code>policy-server</code>. Ensuite, le déploiement du <code>policy-server</code> commence. Cela entraîne le démarrage de la nouvelle instance <code>policy-server</code> avec la configuration mise à jour.</p>
+</div>
+<div class="paragraph">
+<p>Au moment du démarrage, le <code>policy-server</code> lit sa configuration à partir du ConfigMap et télécharge toutes les stratégies SUSE Security Admission Controller spécifiées. Vous pouvez télécharger des stratégies SUSE Security Admission Controller à partir de serveurs HTTP distants et de registres de conteneurs.</p>
+</div>
+<div class="paragraph">
+<p>Vous utilisez des paramètres de configuration de stratégie pour ajuster le comportement des stratégies. Après le démarrage et le téléchargement des stratégies, le <code>policy-server</code> vérifie que les paramètres de stratégie fournis par l&#8217;utilisateur sont valides.</p>
+</div>
+<div class="paragraph">
+<p>Le <code>policy-server</code> valide les paramètres de stratégie en invoquant la fonction <code>validate_setting</code> exposée par chaque stratégie. Il y a une documentation supplémentaire dans la section <a href="../reference/spec/01-intro-spec.html" class="xref page">référence de spécification</a> de la documentation.</p>
+</div>
+<div class="paragraph">
+<p>Si des stratégies reçoivent de mauvais paramètres de configuration, provenant de la spécification de stratégie des utilisateurs, alors toute demande d&#8217;admission évaluée par cette stratégie renvoie une erreur.</p>
+</div>
+<div class="paragraph">
+<p>Lorsque SUSE Security Admission Controller a configuré toutes les stratégies, le <code>policy-server</code> crée un pool de threads de travail pour évaluer les demandes entrantes en utilisant les stratégies SUSE Security Admission Controller spécifiées par l&#8217;utilisateur.</p>
+</div>
+<div class="paragraph">
+<p>Enfin, le <code>policy-server</code> démarre un serveur HTTPS, écoutant les demandes de validation entrantes. SUSE Security Admission Controller utilise la clé TLS et le certificat créés par le contrôleur SUSE Security Admission Controller pour sécuriser le serveur web.</p>
+</div>
+<div class="paragraph">
+<p>Le serveur web expose chaque stratégie par un chemin dédié suivant la convention de nommage : <code>/validate/&lt;policy ID&gt;</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_rendre_kubernetes_conscient_de_la_stratégie"><a class="anchor" href="#_rendre_kubernetes_conscient_de_la_stratégie"></a>Rendre Kubernetes conscient de la stratégie</h3>
+<div class="paragraph">
+<p>Toutes les instances <code>policy-server</code> disposent d&#8217;un <a href="https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/" class="bare">https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/</a> [<code>readiness probe</code>], que <code>kubewarden-controller</code> utilise pour vérifier quand le déploiement <code>policy-server</code> est prêt à évaluer un <a href="https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#webhook-request-and-response"><code>AdmissionReview</code></a>.</p>
+</div>
+<div class="paragraph">
+<p>Une fois que SUSE Security Admission Controller marque le déploiement <code>policy-server</code> comme 'uniquement accessible' ou <code>Ready</code>, le <code>kubewarden-controller</code> rend le serveur API Kubernetes conscient de la nouvelle stratégie. Cela se fait en créant soit un objet <code>MutatingWebhookConfiguration</code> soit un objet <code>ValidatingWebhookConfiguration</code>. Dans ce contexte, 'uniquement accessible' signifie que toutes les instances de PolicyServer dans le cluster ont la dernière configuration de stratégie installée. La distinction est un point subtil, mais elle est nécessaire en raison de la manière dont le déploiement des PolicyServers fonctionne.
+Il est possible d&#8217;avoir la même stratégie sur différents PolicyServers avec des configurations différentes.</p>
+</div>
+<div class="paragraph">
+<p>Chaque stratégie a un <code>MutatingWebhookConfiguration</code> ou un <code>ValidatingWebhookConfiguration</code> dédié pointant vers le point de terminaison Webhook servi par <code>policy-server</code>. Le point de terminaison est accessible à l&#8217;URL <code>/validate/&lt;policy ID&gt;</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_stratégie_en_action"><a class="anchor" href="#_stratégie_en_action"></a>Stratégie en action</h3>
+<div class="paragraph">
+<p>Maintenant que toute la plomberie nécessaire est terminée, Kubernetes commence à envoyer des demandes de révision d&#8217;admission aux bons points de terminaison <code>policy-server</code>.</p>
+</div>
+<div class="paragraph">
+<p>Un <code>policy-server</code> reçoit l&#8217;objet de demande d&#8217;admission et, en fonction du point de terminaison qui a reçu la demande, utilise la stratégie correcte pour l&#8217;évaluer.</p>
+</div>
+<div class="paragraph">
+<p>SUSE Security Admission Controller évalue chaque stratégie dans son propre environnement WebAssembly dédié. La communication entre une instance de <code>policy-server</code> (l'"hôte") et la stratégie WebAssembly (l'"invité") utilise le protocole de communication waPC. La description du protocole fait partie de la documentation <a href="../tutorials/writing-policies/index.html" class="xref page">écriture des stratégies</a>.
+Les stratégies peuvent également utiliser les interfaces fournies par le <a href="../tutorials/writing-policies/wasi/01-intro-wasi.html" class="xref page">Web Assembly System Interface</a> (WASI).</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_comment_suse_security_admission_controller_gère_de_nombreux_policyservers_et_stratégies"><a class="anchor" href="#_comment_suse_security_admission_controller_gère_de_nombreux_policyservers_et_stratégies"></a>Comment SUSE Security Admission Controller gère de nombreux PolicyServers et stratégies</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Un cluster peut avoir de nombreux PolicyServers et des stratégies SUSE Security Admission Controller définies.
+Il y a des avantages à avoir de nombreux PolicyServers :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Vous pouvez isoler des espaces de noms ou des locataires bruyants, ou ceux générant de nombreuses évaluations de stratégies, du reste du cluster afin de ne pas affecter négativement d&#8217;autres opérations du cluster.</p>
+</li>
+<li>
+<p>Vous pouvez exécuter des stratégies critiques pour la mission dans un pool de PolicyServers dédié, rendant votre infrastructure plus résiliente.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Une ressource PolicyServer définit chaque <code>policy-server</code> et une ressource <code>ClusterAdmissionPolicy</code> ou <code>AdmissionPolicy</code> définit chaque stratégie.</p>
+</div>
+<div class="paragraph">
+<p>Un <code>ClusterAdmissionPolicy</code> et un <code>AdmissionPolicy</code> se lient à un <code>policy-server</code>.
+Tout <code>ClusterAdmissionPolicy</code> ne spécifiant pas un <code>policy-server</code> se lie au PolicyServer par défaut. Si un <code>ClusterAdmissionPolicy</code> fait référence à un <code>policy-server</code> qui n&#8217;existe pas, son état est <code>unschedulable</code>.</p>
+</div>
+<div class="paragraph">
+<p>Chaque <code>policy-server</code> définit de nombreux points de validation, un pour chaque stratégie définie dans son fichier de configuration. Vous pouvez charger la même stratégie plusieurs fois, avec différents paramètres de configuration.</p>
+</div>
+<div class="paragraph">
+<p>Les ressources <code>ValidatingWebhookConfiguration</code> et <code>MutatingWebhookConfiguration</code> rendent le serveur API Kubernetes conscient de ces stratégies. Ensuite, <code>kubewarden-controller</code> maintient le serveur API et les ressources de configuration en synchronisation.</p>
+</div>
+<div class="paragraph">
+<p>Le serveur API Kubernetes envoie les demandes d&#8217;admission entrantes au point de validation correct exposé par <code>policy-server</code>.</p>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="audit-scanner/policy-reports.html">Scanner d&#8217;audit - Rapports de stratégie</a></span>
+  <span class="next"><a href="../howtos/tasks.html">Tâches courantes</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<script src="../../../../_/js/site.js"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+<script src="../../../../_/js/vendor/lunr.js"></script>
+<script src="../../../../_/js/search-ui.js" id="search-ui-script" data-site-root-path="../../../.." data-snippet-length="100" data-stylesheet="../../../../_/css/search.css"></script>
+<script async src="../../../../search-index.js"></script>
+<script src="../../../../_/js/vendor/langSelection.js"></script>
+<script async src="../../../../_/js/vendor/tabs.js"></script>
+
+
+<script src="../../../../_/js/CNLanguageSwitcher.js"></script>
+  </body>
+</html>

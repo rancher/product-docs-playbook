@@ -1,0 +1,1244 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Rancher Turtles Fehlersuche | Cluster API  v0.26</title>
+    <link rel="canonical" href="https://documentation.suse.com/cloudnative/cluster-api/v0.26/de/troubleshooting/troubleshooting.html">
+    <link rel="prev" href="../developer/guidelines.html">
+    <link rel="next" href="../security/slsa.html">
+    <meta name="generator" content="Antora 3.1.10">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+<meta http-equiv="last-modified" content="2025-12-17"/>
+<link rel="stylesheet" href="../../../../_/css/search.css">
+<link rel="icon" href="../../../../_/img/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="../../../../_/css/font-styles.css">
+<link rel="stylesheet" href="../../../../_/fonts/css/all.css">
+<link rel="stylesheet" href="../../../../_/css/site-extra.css">
+<link rel="stylesheet" href="../../../../_/css/vendor/tabs.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap&family=SUSE+Mono:ital,wght@0,100..800;1,100..800" rel="stylesheet">
+<link href="https://documentation.suse.com/docserv/res/fonts/poppins/poppins.css" rel="stylesheet">
+<link rel="stylesheet" href="../../../../_/css/vendor/light.css">
+<script src="/docserv/res/lightheaded/analytics.js" type="text/javascript"></script>
+<script type="module">
+  import { defineCustomElements, setAssetPath } from 'https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/shared-header.esm.js';
+  defineCustomElements();
+  setAssetPath("https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/assets");
+</script>
+<!-- Default English link -->
+<link href="https://documentation.suse.com/cloudnative/cluster-api/v0.26/en/troubleshooting/troubleshooting.html" hreflang="x-default" rel="alternate"/>
+<!-- Link for the currently processed page -->
+<link href="https://documentation.suse.com/cloudnative/cluster-api/v0.26/de/troubleshooting/troubleshooting.html" hrefLang="de-DE" rel="alternate" />
+<!-- Link for the English page -->
+<link href="https://documentation.suse.com/cloudnative/cluster-api/v0.26/en/troubleshooting/troubleshooting.html" hreflang="en-US" rel="alternate" />
+<!-- Link for the Japanese page -->
+<link href="https://documentation.suse.com/cloudnative/cluster-api/v0.26/ja/troubleshooting/troubleshooting.html" hreflang="ja-JP" rel="alternate" />
+<!-- Link for the Chinese page -->
+<link href="https://documentation.suse.com/cloudnative/cluster-api/v0.26/zh/troubleshooting/troubleshooting.html" hreflang="zh-CN" rel="alternate" />
+<!-- Link for the French page -->
+<link href="https://documentation.suse.com/cloudnative/cluster-api/v0.26/fr/troubleshooting/troubleshooting.html" hreflang="fr-FR" rel="alternate" />
+<!-- Link for the Spanish page -->
+<link href="https://documentation.suse.com/cloudnative/cluster-api/v0.26/es/troubleshooting/troubleshooting.html" hreflang="es-ES" rel="alternate" />
+<!-- Link for the Brazilian Portuguese page -->
+<link href="https://documentation.suse.com/cloudnative/cluster-api/v0.26/pt/troubleshooting/troubleshooting.html" hreflang="pt-BR" rel="alternate" />
+
+<!-- JSON-LD for doc metadata -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Rancher Turtles Fehlersuche | SUSE Rancher Prime Cluster API v0.26",
+  "headline": "Rancher Turtles Fehlersuche",
+  "description": "Rancher Turtles Fehlersuche",
+  "inLanguage": "de",
+  "dateModified": "2025-12-17T00:00:00Z",
+  "author": {
+    "@type": "Organization",
+    "name": "SUSE Product & Solution Documentation Team",
+    "url": "https://documentation.suse.com"
+  },
+  "mentions": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "SUSE Rancher Prime Cluster API",
+      "softwareVersion": "v0.26",
+      "applicationCategory": "Cloud Infrastructure",
+      "operatingSystem": "Linux"
+    }
+  ],
+  "publisher": {
+    "@type": "Organization",
+    "name": "SUSE",
+    "url": "https://documentation.suse.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.suse.com/assets/img/suse-white-logo-green.svg"
+    }
+  }
+}
+</script>
+<!-- end JSON-LD for doc metadata -->
+
+<!-- SUVA - Begin Ask Geeko-->
+<!--
+searchUnifyChatbot ("Ask Geeko") Copyright ©2024 Grazitti Interactive - All Rights Reserved. NOTICE: All information contained herein is, and remains the property of Grazitti Interactive and its suppliers, if any. The intellectual and technical concepts contained herein are proprietary to Grazitti Interactive and its suppliers and may be covered by India, U.S. and Foreign Patents, patents in process, and are protected by trade secret or copyright law. Dissemination of this information or reproduction of this material is strictly forbidden unless prior written permission is obtained from Grazitti Interactive.
+-->
+<meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport"/>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/Allow/an.js?c485cb3c-93d4-4942-99e8-91f3b8ca5636"></script>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/js/index.js?q=gAAAAABp3JBN9VuEJTi5tFafLIMwgMkCPdJS3Qm56lSYx93ir3Twt9hgSvd3OHEt6-nYfSbY3yHq0Zv8PRPsSy4nbqZiaJ4cZvRc6ItVZdvwz9Urf35cH6OUyPOwdA0phlS-zVIznQ2rWW438p-91NlTHuxJuOFpnA=="></script>
+<link rel="stylesheet" href="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/css/index.css">
+<div id="searchUnifyChatbot"></div>
+<!-- SUVA - End Ask Geeko-->
+<!--BEGIN QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+<script type='text/javascript' src="../../../../_/js/qualtrics.js" defer></script>
+<!--END QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<script type="module">import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs'; mermaid.initialize({"startOnLoad":true});</script><shared-header
+language="en"
+languages='{
+    "en": { "label": "English", "url": "https://documentation.suse.com/en-us/" },
+    "de": { "label": "Deutsch", "url": "https://documentation.suse.com/de-de/" },
+    "fr": { "label": "Français", "url": "https://documentation.suse.com/fr-fr/" },
+    "es": { "label": "Español", "url": "https://documentation.suse.com/es-es/" },
+    "zh_CN": { "label": "中文", "url": "https://documentation.suse.com/zh-cn/" },
+    "pt_BR": { "label": "Português Brasileiro", "url": "https://documentation.suse.com/pt-br/" }
+}'
+enable-search='false'>
+</shared-header>
+
+<!-- Leaving as a comment, I expect it will be required again next year.
+<a target=_blank"" class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_bEiGZbUNzLD8Tcy"> Documentation survey </a>
+-->
+<div class="body">
+<div class="nav-container" data-component="cluster-api" data-version="v0.26">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title">Cluster API</h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../index.html">Übersicht</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../overview/architecture.html">Architektur</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../overview/glossary.html">Glossar</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../overview/features.html">Funktionen</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../overview/certified.html">Zertifizierte Anbieter</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Anleitungen</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tutorials/first-cluster.html">Ihr erster Cluster</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tutorials/rancher.html">Rancher Setup</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tutorials/capi-v1beta2.html">Upgrade auf CAPI v1beta2</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Kurz nachgeschlagen</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/capiprovider.html">CAPIProvider</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/clusterctlconfig.html">ClusterctlConfig</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Benutzerhandbuch</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../user/clusterclass.html">Bereitstellung eines CAPI-Clusters mit ClusterClass</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../user/fleet.html">Erstellen eines Clusters mit Fleet</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../user/rancher-cluster-registration.html">Rancher-Clusterregistrierung</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../user/caapf.html">CAPI-Addon-Anbieter Fleet</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../user/gitops.html">GitOps Best Practices für Turtles und CAPI</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../user/cluster-resource-mapping.html">Clusterressourcenbeziehungen in SUSE® Rancher Prime Cluster API</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../user/providers.html">Zertifizierte Anbieter installieren</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Bedienungsanleitung</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operator/clusterclass.html">Aktivierung von ClusterClass</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operator/certification.html">Anbieterzertifizierung</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operator/certificationsuite.html">Anbieter-Test-Suite</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operator/airgapped.html">Air-Gapped-Umgebung</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Entwicklerhandbuch</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../developer/development.html">Entwicklungsumgebung</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../developer/guidelines.html">Entwicklungsrichtlinie</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Handbücher zur Fehlersuche</span>
+<ul class="nav-list">
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="troubleshooting.html">Fehlerbehebung</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Sicherheit</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../security/slsa.html">SLSA</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../changelogs/index.html">Versionshinweise</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../changelogs/changelogs/v0.26.0.html">v0.26.0 (latest)</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Cluster API</span>
+    <span class="version">v0.26</span>
+  </div>
+  <ul class="components">
+        <li class="component">
+          <div class="title"><a href="../../../../admission-controller/1.33-latest/en/introduction.html">Admission Controller</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../admission-controller/1.34/en/introduction.html">1.34-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../admission-controller/1.33-latest/en/introduction.html">1.33-latest</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.32/en/introduction.html">1.32</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.31/en/introduction.html">1.31</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.30/en/introduction.html">1.30</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.29/en/introduction.html">1.29</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.28/en/introduction.html">1.28</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component is-current">
+          <div class="title"><a href="../../en/index.html">Cluster API</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../v0.27/en/index.html">v0.27-dev</a>
+            </li>
+            <li class="version is-current is-latest">
+              <a href="../../en/index.html">v0.26</a>
+            </li>
+            <li class="version">
+              <a href="../../../v0.25/en/index.html">0.25</a>
+            </li>
+            <li class="version">
+              <a href="../../../v0.24/en/index.html">0.24</a>
+            </li>
+            <li class="version">
+              <a href="../../../v0.23/en/index.html">0.23</a>
+            </li>
+            <li class="version">
+              <a href="../../../v0.22/en/index.html">0.22</a>
+            </li>
+            <li class="version">
+              <a href="../../../v0.21/en/index.html">0.21</a>
+            </li>
+            <li class="version">
+              <a href="../../../v0.20/en/index.html">0.20</a>
+            </li>
+            <li class="version">
+              <a href="../../../v0.19/en/index.html">0.19</a>
+            </li>
+            <li class="version">
+              <a href="../../../v0.18/en/index.html">0.18</a>
+            </li>
+            <li class="version">
+              <a href="../../../v0.17/en/index.html">0.17</a>
+            </li>
+            <li class="version">
+              <a href="../../../v0.16/en/index.html">0.16</a>
+            </li>
+            <li class="version">
+              <a href="../../../v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../v0.11/en/index.html">0.11</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../continuous-delivery/next/en/index.html">Continuous Delivery</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../continuous-delivery/next/en/index.html">Next</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.11/en/index.html">0.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.10/en/index.html">0.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.9/en/index.html">0.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../k3s/latest/en/introduction.html">K3s</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../k3s/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../os-manager/1.9/en/index.html">OS Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../os-manager/1.10/en/index.html">1.10-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../os-manager/1.9/en/index.html">1.9</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.8/en/index.html">1.8</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.7/en/index.html">1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.6/en/index.html">1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.5/en/index.html">1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-ai/latest/en/introduction.html">Rancher AI</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-ai/latest/en/introduction.html">latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rke2/latest/en/introduction.html">RKE2</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rke2/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-observability/latest/en/classic.html">SUSE Observability</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../suse-observability/latest/en/classic.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">SUSE Rancher Developer Access</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">SUSE® Rancher for AWS</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-manager/v2.13/en/about-rancher/what-is-rancher.html">SUSE® Rancher Manager</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-manager/v2.13/en/about-rancher/what-is-rancher.html">v2.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.12/en/about-rancher/what-is-rancher.html">v2.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.11/en/about-rancher/what-is-rancher.html">v2.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.10/en/about-rancher/what-is-rancher.html">v2.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.9/en/about-rancher/what-is-rancher.html">v2.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../security/5.5/en/overview.html">SUSE® Security</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../security/5.5/en/overview.html">5.5</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.4/en/overview.html">5.4</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.3/en/overview.html">5.3</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../storage/1.11/en/longhorn-documentation.html">SUSE® Storage</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../storage/1.12/en/longhorn-documentation.html">1.12 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../storage/1.11/en/longhorn-documentation.html">1.11 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../storage/1.10/en/longhorn-documentation.html">1.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../storage/1.9/en/longhorn-documentation.html">1.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-virtual-clusters/1.0.2/en/release-notes/version-1.0.2.html">SUSE® Virtual Clusters</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">v1.1.0 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../suse-virtual-clusters/1.0.2/en/release-notes/version-1.0.2.html">v1.0.2-latest</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.1/en/introduction.html">v1.0.1</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.0/en/introduction.html">v1.0.0</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../virtualization/v1.7/en/introduction/overview.html">SUSE® Virtualization</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../virtualization/v1.8/en/introduction/overview.html">v1.8 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../virtualization/v1.7/en/introduction/overview.html">v1.7 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../virtualization/v1.6/en/introduction/overview.html">v1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../virtualization/v1.5/en/introduction/overview.html">v1.5</a>
+            </li>
+          </ul>
+        </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+<ul>
+    <li>
+      <a class="home-link-dsc" href="https://documentation.suse.com/" title="documentation.suse.com" aria-label="SUSE Documentation Home"></a>
+    </li>
+    <li>
+      <a href="https://documentation.suse.com/cloudnative/cluster-api" title="Cluster API" aria-label="SUSE Documentation - Cluster API">
+        Cluster API
+      </a>
+    </li>
+      <li>
+          Handbücher zur Fehlersuche
+      </li>
+  </ul>
+</nav><div class="page-versions">
+  <button class="version-menu-toggle" title="Show other versions of page">v0.26</button>
+  <div class="version-menu">
+    <a class="version is-missing" href="../../../v0.27/en/index.html">v0.27-dev</a>
+    <a class="version is-current" href="troubleshooting.html">v0.26</a>
+    <a class="version is-missing" href="../../../v0.25/en/index.html">0.25</a>
+    <a class="version is-missing" href="../../../v0.24/en/index.html">0.24</a>
+    <a class="version is-missing" href="../../../v0.23/en/index.html">0.23</a>
+    <a class="version is-missing" href="../../../v0.22/en/index.html">0.22</a>
+    <a class="version is-missing" href="../../../v0.21/en/index.html">0.21</a>
+    <a class="version is-missing" href="../../../v0.20/en/index.html">0.20</a>
+    <a class="version is-missing" href="../../../v0.19/en/index.html">0.19</a>
+    <a class="version is-missing" href="../../../v0.18/en/index.html">0.18</a>
+    <a class="version is-missing" href="../../../v0.17/en/index.html">0.17</a>
+    <a class="version is-missing" href="../../../v0.16/en/index.html">0.16</a>
+    <a class="version is-missing" href="../../../v0.15/en/index.html">0.15</a>
+    <a class="version is-missing" href="../../../v0.14/en/index.html">0.14</a>
+    <a class="version is-missing" href="../../../v0.13/en/index.html">0.13</a>
+    <a class="version is-missing" href="../../../v0.12/en/index.html">0.12</a>
+    <a class="version is-missing" href="../../../v0.11/en/index.html">0.11</a>
+  </div>
+</div>
+      <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <label class="visual-search-label-bc" for="search-input">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+          <input label="Search" aria-label="Search" id="search-input" type="text" placeholder="Dokumentation durchsuchen" >
+          <label class="filter checkbox" style="display: none">
+            <input type="checkbox" data-facet-filter="component:cluster-api" checked> Only this project
+          </label>
+        </div>
+      </div>
+</div>
+  <div class="content">
+<aside
+  class="toc sidebar"
+  data-title="Auf dieser Seite" data-levels="2">
+  <div class="toc-menu">
+    <!-- start qualtrics -->
+    <div id='ZN_8qZUmklKYbBqAYe'><!--DO NOT REMOVE-CONTENTS PLACED HERE--></div>
+    <div id="qualtrics_container"></div>
+    <!-- end qualtrics -->
+  </div>
+</aside><article class="doc">
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Anmerkung"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>
+
+Dieses Dokument wurde mithilfe automatisierter maschineller Übersetzungstechnologie übersetzt.
+Wir bemühen uns um korrekte Übersetzungen, übernehmen jedoch keine Gewähr für die Vollständigkeit, Richtigkeit oder Zuverlässigkeit der übersetzten Inhalte.
+Im Falle von Abweichungen ist die
+<a href="https://documentation.suse.com/cloudnative/cluster-api/v0.26/en/troubleshooting/troubleshooting.html">
+englische
+</a> Originalversion maßgebend und stellt den verbindlichen Text dar.
+
+</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<h1 class="page">Rancher Turtles Fehlersuche</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Dieser Leitfaden bietet Schritte zur Fehlersuche für Rancher Turtles und Cluster-API-(CAPI)-Cluster. Er behandelt häufige Probleme und deren Lösungen, um Ihnen zu helfen, eine stabile und funktionale Umgebung aufrechtzuerhalten.</p>
+</div>
+<div class="paragraph">
+<p>Bevor Sie diesen Leitfaden lesen, können Sie zunächst die offizielle <a href="https://cluster-api.sigs.k8s.io/user/troubleshooting"><code>troubleshooting</code></a> Dokumentation für das CAPI-Projekt einsehen.</p>
+</div>
+<div class="paragraph">
+<p>Das Verständnis der Feinheiten sowohl von Rancher Turtles als auch von CAPI ist entscheidend für eine effektive Fehlersuche. Dieser Leitfaden soll Sie mit dem Wissen ausstatten, um grundlegende Probleme in Rancher Turtles und CAPI zu diagnostizieren und zu lösen.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_voraussetzungen"><a class="anchor" href="#_voraussetzungen"></a>Voraussetzungen</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Um Rancher Turtles- und CAPI-Cluster effektiv zu debuggen, benötigen Sie:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Zugriff auf ein Terminal mit kubectl, das konfiguriert ist, um auf den Rancher-Management-Cluster zuzugreifen.</p>
+</li>
+<li>
+<p>Den Krew-Plugin-Manager für kubectl installiert.</p>
+</li>
+<li>
+<p>Das Helm-CLI-Tool installiert.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Sie können Krew installieren, indem Sie die Anweisungen in der <a href="https://krew.sigs.k8s.io/docs/user-guide/setup/install/">Krew-Installationsanleitung</a> befolgen.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_protokolle_überprüfen"><a class="anchor" href="#_protokolle_überprüfen"></a>Protokolle überprüfen</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Sie können die folgenden Pods anzeigen und deren Protokolle in den folgenden Namespaces überprüfen:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Namespace</th>
+<th class="tableblock halign-left valign-top">Bereitstellung</th>
+<th class="tableblock halign-left valign-top">Beschreibung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cattle-turtles-system</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">rancher-turtles-controller-manager</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Verwaltet die Rancher-Integration und die benutzerdefinierten Ressourcen für Turtles</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">fleet-addon-system</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">caapf-controller-manager</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Steuert das Cluster API Provider Framework für benutzerdefinierte Infrastrukturprovider</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cattle-capi-system</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">capi-controller-manager</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Kern-Cluster-API-Controller, der die Hauptcluster-Ressourcen abgleicht</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">rke2-bootstrap-system</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">rke2-bootstrap-controller-manager</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Verwaltet die Bootstrap-Konfiguration für RKE2-Knoten</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">rke2-control-plane-system</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">rke2-control-plane-controller-manager</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Verwaltet die Initialisierung und Verwaltung der RKE2-Steuerungskomponenten</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">*-system</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">*-controller-manager</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Verwaltet die Initialisierung und Verwaltung der Komponenten des Infrastrukturproviders</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">$-bootstrap-system</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">$-bootstrap-controller-manager</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Verwaltet die Bootstrap-Konfiguration für benutzerdefinierte Anbieter</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">$-control-plane-system</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">$-control-plane-controller-manager</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Verwaltet die Initialisierung und Verwaltung der Steuerungskomponenten benutzerdefinierter Anbieter</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>'*' - abhängig vom verwendeten Infrastrukturprovider
+'$' - abhängig vom Steuerungs-/Bootstrap-Anbieter, z. B. kubeadm oder rke2</p>
+</div>
+<div class="paragraph">
+<p>Eine Möglichkeit, die Protokolle der Cluster-API-Steuerungspods zu überwachen, besteht darin, <code>kubectl logs</code> mit dem Label-Selector zu verwenden.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl logs -l control-plane=controller-manager -n cattle-turtles-system -f
+kubectl logs -l control-plane=controller-manager -n cattle-capi-system -f
+kubectl logs -l control-plane=controller-manager -n rke2-bootstrap-system -f
+kubectl logs -l control-plane=controller-manager -n rke2-control-plane-system -f</code></pre>
+</div>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Achtung"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Die Verwendung von <code>kubectl krew</code> zur Installation des Stern-Plugins beinhaltet Drittanbietersoftware, die Sicherheitsrisiken in Produktionsumgebungen darstellen kann. Obwohl es ein nützliches Werkzeug zur Protokollanzeige ist, sollte es hauptsächlich in Entwicklungs- oder Testumgebungen verwendet werden. Überprüfen Sie immer Drittanbieter-Plugins, bevor Sie sie in sensiblen oder Produktionsclustern installieren.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Die beste Methode zur Überwachung von Protokollen aus verschiedenen Pods besteht darin, die folgende Methode zu verwenden.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl krew install stern</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Dann können Sie Protokolle von allen Pods in Echtzeit verfolgen.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl stern . -n cattle-turtles-system -n rke2-bootstrap-system -n rke2-control-plane-system -n cattle-capi-system</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>oder</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl stern -A -l control-plane=controller-manager</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_wie_man_rancher_turtles_und_capi_ressourcen_verwaltet"><a class="anchor" href="#_wie_man_rancher_turtles_und_capi_ressourcen_verwaltet"></a>Wie man Rancher Turtles und CAPI-Ressourcen verwaltet</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><strong>Rancher- und Cluster-API-Ressourcen auflisten</strong></p>
+</div>
+<div class="paragraph">
+<p>Benutzer fragen oft, wie sie mit langen Listen verschiedener von CAPI und Rancher erstellter CRDs umgehen können. Hier sind einige Ideen, wie Sie damit umgehen können.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Listen Sie alle CAPI- und Rancher-bezogenen Anmeldeinformationen auf.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl api-resources | grep 'cattle.io\|cluster.x-k8s.io'</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Erfahren Sie mehr über die Ressource. Sie können eine vollständige Erklärung darüber erhalten, was es tut oder was die Konfigurationsoptionen sind.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl api-resources | grep clusterclass
+kubectl explain clusterclass.cluster.x-k8s.io</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Dann erhalten Sie eine Beschreibung zu jedem Feld und Konfigurationsabschnitt.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl explain clusterclass.spec
+kubectl explain clusterclass.spec.controlPlane
+kubectl explain clusterclasses.spec.controlPlane.machineInfrastructure</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p><strong>Liste der vorhandenen Rancher- und Cluster-API-Objektressourcen</strong></p>
+</div>
+<div class="paragraph">
+<p>Der häufigste Fehler besteht darin, den <code>default</code> Namespace in Kubernetes für Ihre Arbeit zu verwenden. Dies macht Ihre Konfiguration wirklich unübersichtlich und schwierig zu verwalten und zu beheben. Wir empfehlen dringend, separate Namespaces für die Bereitstellung und Erstellung von CAPI-Downstream-Clustern zu verwenden und die Verwendung von Kubernetes-Systemnamespaces wie <code>default</code> und <code>kube-*</code> zu vermeiden.</p>
+</div>
+<div class="paragraph">
+<p>Beim Anwenden von Vorlagen mit <code>kubectl</code> geben Sie immer <code>-n &lt;NAMESPACE&gt;</code> an, um Ressourcen an einem bekannten Ort bereitzustellen. Sie können zwischen Namespaces in <strong>KUBECONFIG</strong> mit diesem Befehl wechseln:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl config view
+kubectl config set-context --current --namespace &lt;NAMESPACE&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Mit separaten Namespaces können Sie Ressourcen leicht verwalten, indem Sie diese Methode befolgen.</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Achtung"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Die Verwendung von <code>kubectl krew</code> zur Installation des Lineage-Plugins umfasst Drittanbieter-Software, die Sicherheitsrisiken in Produktionsumgebungen darstellen kann. Obwohl es ein nützliches Werkzeug zur Protokollanzeige ist, sollte es hauptsächlich in Entwicklungs- oder Testumgebungen verwendet werden. Überprüfen Sie immer Drittanbieter-Plugins, bevor Sie sie in sensiblen oder Produktionsclustern installieren.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Installieren Sie die <code>get-all</code> und <code>lineage</code> Plugins mit <code>krew</code> für <code>kubectl</code></p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl krew install lineage
+kubectl krew install get-all</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Dann listen Sie alle vorhandenen Ressourcen im Namespace auf, zum Beispiel <code>capi-clusters</code>, wo Ihre Downstream-Cluster-Konfiguration bereitgestellt wird.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get-all -n capi-clusters</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Beispielausgabe:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                                                                                      NAMESPACE      AGE
+configmap/kube-root-ca.crt                                                                capi-clusters  23h
+secret/cluster1-shim                                                                     capi-clusters  32s
+serviceaccount/default                                                                    capi-clusters  23h
+rke2config.bootstrap.cluster.x-k8s.io/cluster1-mp-0-dm59p                                capi-clusters  32s
+rke2config.bootstrap.cluster.x-k8s.io/cluster1-mp-1-gv6kh                                capi-clusters  32s
+rke2configtemplate.bootstrap.cluster.x-k8s.io/cluster1-pool0                             capi-clusters  33s
+rke2configtemplate.bootstrap.cluster.x-k8s.io/cluster1-pool1                             capi-clusters  33s
+clusterclass.cluster.x-k8s.io/clusterclass1                                               capi-clusters  33s
+cluster.cluster.x-k8s.io/cluster1                                                        capi-clusters  32s
+machinepool.cluster.x-k8s.io/cluster1-mp-0-d4fdv                                         capi-clusters  32s
+machinepool.cluster.x-k8s.io/cluster1-mp-1-l86kv                                         capi-clusters  32s
+clustergroup.fleet.cattle.io/clusterclass1                                                capi-clusters  33s
+azureclusteridentity.infrastructure.cluster.x-k8s.io/cluster-identity                     capi-clusters  33s
+azuremanagedcluster.infrastructure.cluster.x-k8s.io/cluster1-l2cs6                       capi-clusters  32s
+azuremanagedclustertemplate.infrastructure.cluster.x-k8s.io/cluster                     capi-clusters  33s
+azuremanagedcontrolplane.infrastructure.cluster.x-k8s.io/cluster1-rv8v4                  capi-clusters  32s
+azuremanagedcontrolplanetemplate.infrastructure.cluster.x-k8s.io/cluster1-control-plane  capi-clusters  33s
+azuremanagedmachinepool.infrastructure.cluster.x-k8s.io/cluster1-mp-0-78tck              capi-clusters  32s
+azuremanagedmachinepool.infrastructure.cluster.x-k8s.io/cluster1-mp-1-zdscw              capi-clusters  32s
+azuremanagedmachinepooltemplate.infrastructure.cluster.x-k8s.io/cluster1-pool0           capi-clusters  33s
+azuremanagedmachinepooltemplate.infrastructure.cluster.x-k8s.io/cluster1-pool1           capi-clusters  33s</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Dann können Sie die Beziehung zwischen allen Objektressourcen überprüfen.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl lineage -n capi-clusters cluster.cluster.x-k8s.io/cluster1</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Ausgabe:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/lineage-cluster-output.png" alt="Ausgabe">
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_so_aktivieren_sie_den_debug_modus_für_suse_rancher_prime_cluster_api_und_capi_anbieter"><a class="anchor" href="#_so_aktivieren_sie_den_debug_modus_für_suse_rancher_prime_cluster_api_und_capi_anbieter"></a>So aktivieren Sie den Debug-Modus für SUSE® Rancher Prime Cluster API und CAPI-Anbieter</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>SUSE® Rancher Prime Cluster API - Um den Debug-Modus für SUSE® Rancher Prime Cluster API zu aktivieren, müssen Sie die <code>cattle-system/rancher-config</code> ConfigMap wie folgt patchen:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl patch configmap -n cattle-system rancher-config --type merge --patch '{"data":{"rancher-turtles": "managerArguments:\n  - --v=5\n"}}'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>(5 entspricht DEBUG)</p>
+</div>
+<div class="paragraph">
+<p>Dies führt dazu, dass das Turtles-Pod neu gestartet wird, um die neue Konfiguration zu verwenden.</p>
+</div>
+</li>
+<li>
+<p>Cluster-API-Anbieter - Bearbeiten Sie die CAPIProvider-Ressourcen für Anbieter, bei denen eine Erhöhung des Protokollierungsniveaus erforderlich ist. Ändern Sie auf Ihr gewünschtes Niveau:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">CAPIProvider.Spec.Manager.Verbosity=5</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>(5 entspricht DEBUG)</p>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_so_sammeln_sie_informationen_von_rancher_turtles_und_capi"><a class="anchor" href="#_so_sammeln_sie_informationen_von_rancher_turtles_und_capi"></a>So sammeln Sie Informationen von Rancher Turtles und CAPI</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><a href="https://github.com/crust-gather/crust-gather">crust-gather</a> ist ein Projekt, das von Cluster-API-Entwicklern speziell zum Sammeln von Protokollen und Ressourcenstatus aus CAPI-Umgebungen erstellt wurde. Es ist ein sicheres und offizielles Tool, das in jeder Art von Umgebung (Produktion, Test oder Entwicklung) verwendet werden kann, um umfassende Diagnosedaten für die Fehlersuche zu sammeln.</p>
+</div>
+<div class="paragraph">
+<p>Sie können es über die folgenden Anweisungen installieren:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl krew install crust-gather
+
+kubectl crust-gather --help</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Alternativ kann es eigenständig über das <strong>install.sh</strong> Skript installiert werden:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -sSfL https://github.com/crust-gather/crust-gather/raw/main/install.sh | sh
+
+crust-gather --help</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Sie können eine Liste von Filtern angeben, um Daten zu sammeln. Standardmäßig wird ein vollständiger Cluster-Snapshot erstellt. Daten werden standardmäßig im crust-gather Verzeichnis gespeichert.
+Crust-gather akzeptiert eine vordefinierte Filterkonfiguration für Rancher oder den untergeordneten Cluster. Siehe unten für Beispielkonfigurationen.</p>
+</div>
+<div class="paragraph">
+<p>Beispiel YAML-Filterkonfiguration für die <code>child-crust-gather.yaml</code> Datei:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">filters:
+  - include_kind:
+    - Node
+    - Namespace
+    - CustomResourceDefinition
+  - include_group:
+    - management.cattle.io/.*
+    - provisioning.cattle.io/.*
+  - include_namespace:
+    - cattle.*
+    - fleet.*
+    - kube-system
+settings:
+  insecure_skip_tls_verify: true
+  secrets_file: secrets.txt</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Beispiel YAML-Filterkonfiguration für die <code>rancher-crust-gather.yaml</code> Datei:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">filters:
+  - include_group:
+    - .*cluster.x-k8s.io/.*
+    - turtles-capi.cattle.io/.*
+  - include_kind:
+    - CustomResourceDefinition
+    - Node
+    - Namespace
+  - include_group:
+    - management.cattle.io/.*
+    - provisioning.cattle.io/.*
+  - include_namespace:
+    - cattle-turtles-system
+    - capi-.*
+    - cattle.*
+    - fleet.*
+    - c-.*
+    - rke2.*
+    - cert-manager
+    - kube-system
+settings:
+  insecure_skip_tls_verify: true
+  secrets_file: secrets.txt</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Stellen Sie sicher, dass die kubeconfig auf den richtigen Cluster zeigt, und führen Sie dann den folgenden Befehl aus:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl crust-gather collect-from-config -c config.yaml</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Verwendung über reguläre Flags:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl crust-gather collect --include-namespace cattle-turtles-system --include-namespace capi-* --include-namespace cattle* --include-namespace c-* --include-namespace=&lt;any-capi-cluster-namespace&gt; --kubeconfig=&lt;KUBECONFIG&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Sie können eine Datei mit Geheimnissen oder Umgebungsvariablen mit geheimen Zeichenfolgen angeben, die ausgeschlossen werden sollen.</p>
+</div>
+<div class="paragraph">
+<p>Beispiel:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl crust-gather collect -s ENV_WITH_SECRET --secrets-file=secrets.txt</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Oder schließen Sie alle geheimen Ressourcen von der Sammlung aus:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl crust-gather collect --exclude-kind Secret</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_wie_man_rancher_turtles_und_capi_ressourcen_bereinigt"><a class="anchor" href="#_wie_man_rancher_turtles_und_capi_ressourcen_bereinigt"></a>Wie man Rancher Turtles und CAPI-Ressourcen bereinigt</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Manchmal kann die Bereinigung Ihrer Infrastruktur fehlschlagen, was zu ausstehenden Ressourcen führen kann. In dieser Situation müssen Sie Ressourcen manuell entfernen.</p>
+</div>
+<div class="paragraph">
+<p>Bitte beachten Sie, dass das manuelle Entfernen von Finalisierern <strong>erfordert</strong>, dass die bereitgestellten Ressourcen durch den Infrastrukturprovider manuell bereinigt werden.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export NAMESPACE=capi-clusters
+
+for RESOURCE in `kubectl get-all -n $NAMESPACE -o name | grep 'cattle.io\|cluster.x-k8s.io'`;
+do
+        echo "Patching $RESOURCE in namespace $NAMESPACE";
+        kubectl patch $RESOURCE -n $NAMESPACE -p '{"metadata":{"finalizers":[]}}' --type=merge;
+        kubectl delete $RESOURCE -n $NAMESPACE;
+done</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_wie_man_rancher_turtles_und_das_capi_projekt_deinstalliert"><a class="anchor" href="#_wie_man_rancher_turtles_und_das_capi_projekt_deinstalliert"></a>Wie man Rancher Turtles und das CAPI-Projekt deinstalliert</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Um Rancher Turtles und CAPI-Komponenten aus Ihrem Management-Cluster zu deinstallieren, befolgen Sie diese Schritte in der angegebenen Reihenfolge:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Zuerst löschen Sie alle Downstream-Cluster, die mit CAPI erstellt wurden. Für jeden Cluster:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete -n capi-clusters cluster.cluster.x-k8s.io cluster1</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Anmerkung"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Ersetzen Sie <code>capi-clusters</code> durch den Namespace, in dem Ihre Cluster bereitgestellt sind, und <code>cluster1</code> durch den Namen Ihres Clusters. Warten Sie, bis jeder Cluster vollständig gelöscht ist, bevor Sie mit dem nächsten Schritt fortfahren.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Deinstallieren Sie das Rancher Turtles Helm-Chart:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">helm uninstall -n cattle-turtles-system rancher-turtles</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Entfernen Sie alle Webhook-Konfigurationen, die möglicherweise von CAPI-Anbietern erstellt wurden:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"># List all webhook configurations
+kubectl get validatingwebhookconfigurations.admissionregistration.k8s.io
+
+# Delete provider-specific webhooks (examples)
+kubectl delete validatingwebhookconfigurations.admissionregistration.k8s.io azureserviceoperator-validating-webhook-configuration
+kubectl delete validatingwebhookconfigurations.admissionregistration.k8s.io capz-validating-webhook-configuration
+kubectl delete validatingwebhookconfigurations.admissionregistration.k8s.io capi-validating-webhook-configuration
+kubectl delete validatingwebhookconfigurations.admissionregistration.k8s.io rke2-webhook-configuration
+
+# Also check and delete mutating webhooks if present
+kubectl get mutatingwebhookconfigurations
+kubectl delete mutatingwebhookconfigurations [webhook-name]</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Bereinigen Sie alle verbleibenden Namespaces und Ressourcen. Die folgenden Namespaces können nach der Deinstallation verbleiben:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>cattle-turtles-system</p>
+</li>
+<li>
+<p>rke2-bootstrap-system</p>
+</li>
+<li>
+<p>rke2-control-plane-system</p>
+</li>
+<li>
+<p>capi-system</p>
+</li>
+<li>
+<p>capz-system (oder andere anbieter-spezifische Namespaces wie capv-system, capa-system usw.)</p>
+</li>
+<li>
+<p>capi-clusters (oder andere Namespaces, in denen Sie Cluster bereitgestellt haben)</p>
+<div class="paragraph">
+<p>Um diese Namespaces zu entfernen:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"># First remove any finalizers that might be blocking deletion
+for NS in cattle-turtles-system rke2-bootstrap-system rke2-control-plane-system capi-system capz-system capi-clusters; do
+  kubectl get namespace $NS -o json | jq '.spec.finalizers = []' | kubectl replace --raw "/api/v1/namespaces/$NS/finalize" -f -
+done
+
+# Then delete the namespaces
+kubectl delete namespace cattle-turtles-system rke2-bootstrap-system rke2-control-plane-system capi-system capz-system capi-clusters</code></pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Entfernen Sie schließlich die CRDs, die mit Cluster API und Rancher Turtles verbunden sind:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"># Delete all Cluster API and Rancher Turtles CRDs
+kubectl get crds | grep 'cluster.x-k8s.io\|turtles-capi.cattle.io' | awk '{print $1}' | xargs kubectl delete crd
+
+# Or manually delete them one by one
+kubectl delete crd clusters.cluster.x-k8s.io
+kubectl delete crd clusterclasses.cluster.x-k8s.io
+kubectl delete crd machines.cluster.x-k8s.io
+kubectl delete crd machinepools.cluster.x-k8s.io
+kubectl delete crd providers.turtles-capi.cattle.io
+kubectl delete crd clusterconfigs.turtles-capi.cattle.io
+# ... and other related CRDs</code></pre>
+</div>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Achtung"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Stellen Sie sicher, dass alle Cluster vollständig gelöscht sind, bevor Sie diese CRDs entfernen, da Sie sonst verwaiste Cloud-Ressourcen hinterlassen könnten.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="../developer/guidelines.html">Entwicklungsrichtlinie</a></span>
+  <span class="next"><a href="../security/slsa.html">SLSA</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<script src="../../../../_/js/site.js"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+<script src="../../../../_/js/vendor/lunr.js"></script>
+<script src="../../../../_/js/search-ui.js" id="search-ui-script" data-site-root-path="../../../.." data-snippet-length="100" data-stylesheet="../../../../_/css/search.css"></script>
+<script async src="../../../../search-index.js"></script>
+<script src="../../../../_/js/vendor/langSelection.js"></script>
+<script async src="../../../../_/js/vendor/tabs.js"></script>
+
+
+<script src="../../../../_/js/CNLanguageSwitcher.js"></script>
+  </body>
+</html>
