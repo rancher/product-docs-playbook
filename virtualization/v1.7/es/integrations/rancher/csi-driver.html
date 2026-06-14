@@ -1,0 +1,1980 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Controlador CSI de Harvester | SUSE® Virtualization  v1.7 (Latest)</title>
+    <link rel="canonical" href="https://documentation.suse.com/cloudnative/virtualization/v1.7/es/integrations/rancher/csi-driver.html">
+    <link rel="prev" href="cloud-provider.html">
+    <link rel="next" href="resource-quota.html">
+    <meta name="generator" content="Antora 3.1.14">
+    <link rel="stylesheet" href="../../../../../_/css/site.css">
+<meta http-equiv="last-modified" content="2026-01-02"/>
+<link rel="stylesheet" href="../../../../../_/css/search.css">
+<link rel="icon" href="../../../../../_/img/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="../../../../../_/css/font-styles.css">
+<link rel="stylesheet" href="../../../../../_/fonts/css/all.css">
+<link rel="stylesheet" href="../../../../../_/css/site-extra.css">
+<link rel="stylesheet" href="../../../../../_/css/vendor/tabs.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap&family=SUSE+Mono:ital,wght@0,100..800;1,100..800" rel="stylesheet">
+<link href="https://documentation.suse.com/docserv/res/fonts/poppins/poppins.css" rel="stylesheet">
+<link rel="stylesheet" href="../../../../../_/css/vendor/light.css">
+<script src="/docserv/res/lightheaded/analytics.js" type="text/javascript"></script>
+<script type="module">
+  import { defineCustomElements, setAssetPath } from 'https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/shared-header.esm.js';
+  defineCustomElements();
+  setAssetPath("https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/assets");
+</script>
+<!-- Default English link -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/en/integrations/rancher/csi-driver.html" hreflang="x-default" rel="alternate"/>
+<!-- Link for the currently processed page -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/es/integrations/rancher/csi-driver.html" hrefLang="es-ES" rel="alternate" />
+<!-- Link for the English page -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/en/integrations/rancher/csi-driver.html" hreflang="en-US" rel="alternate" />
+<!-- Link for the Japanese page -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/ja/integrations/rancher/csi-driver.html" hreflang="ja-JP" rel="alternate" />
+<!-- Link for the Chinese page -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/zh/integrations/rancher/csi-driver.html" hreflang="zh-CN" rel="alternate" />
+<!-- Link for the German page -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/de/integrations/rancher/csi-driver.html" hreflang="de-DE" rel="alternate" />
+<!-- Link for the French page -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/fr/integrations/rancher/csi-driver.html" hreflang="fr-FR" rel="alternate" />
+<!-- Link for the Brazilian Portuguese page -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/pt/integrations/rancher/csi-driver.html" hreflang="pt-BR" rel="alternate" />
+
+<!-- JSON-LD for doc metadata -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Controlador CSI de Harvester | SUSE Virtualization v1.7",
+  "headline": "Controlador CSI de Harvester",
+  "description": "Controlador CSI de Harvester",
+  "inLanguage": "es",
+  "dateModified": "2026-01-02T00:00:00Z",
+  "author": {
+    "@type": "Organization",
+    "name": "SUSE Product & Solution Documentation Team",
+    "url": "https://documentation.suse.com"
+  },
+  "mentions": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "SUSE Virtualization",
+      "softwareVersion": "v1.7",
+      "applicationCategory": "Cloud Infrastructure",
+      "operatingSystem": "Linux"
+    }
+  ],
+  "publisher": {
+    "@type": "Organization",
+    "name": "SUSE",
+    "url": "https://documentation.suse.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.suse.com/assets/img/suse-white-logo-green.svg"
+    }
+  }
+}
+</script>
+<!-- end JSON-LD for doc metadata -->
+
+<!-- SUVA - Begin Ask Geeko-->
+<!--
+searchUnifyChatbot ("Ask Geeko") Copyright ©2024 Grazitti Interactive - All Rights Reserved. NOTICE: All information contained herein is, and remains the property of Grazitti Interactive and its suppliers, if any. The intellectual and technical concepts contained herein are proprietary to Grazitti Interactive and its suppliers and may be covered by India, U.S. and Foreign Patents, patents in process, and are protected by trade secret or copyright law. Dissemination of this information or reproduction of this material is strictly forbidden unless prior written permission is obtained from Grazitti Interactive.
+-->
+<meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport"/>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/Allow/an.js?c485cb3c-93d4-4942-99e8-91f3b8ca5636"></script>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/js/index.js?q=gAAAAABp3JBN9VuEJTi5tFafLIMwgMkCPdJS3Qm56lSYx93ir3Twt9hgSvd3OHEt6-nYfSbY3yHq0Zv8PRPsSy4nbqZiaJ4cZvRc6ItVZdvwz9Urf35cH6OUyPOwdA0phlS-zVIznQ2rWW438p-91NlTHuxJuOFpnA=="></script>
+<link rel="stylesheet" href="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/css/index.css">
+<div id="searchUnifyChatbot"></div>
+<!-- SUVA - End Ask Geeko-->
+<!--BEGIN QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+<script type='text/javascript' src="../../../../../_/js/qualtrics.js" defer></script>
+<!--END QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+    <script>var uiRootPath = '../../../../../_'</script>
+  </head>
+  <body class="article">
+<script type="module">import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs'; mermaid.initialize({"startOnLoad":true});</script><shared-header
+language="en"
+languages='{
+    "en": { "label": "English", "url": "https://documentation.suse.com/en-us/" },
+    "de": { "label": "Deutsch", "url": "https://documentation.suse.com/de-de/" },
+    "fr": { "label": "Français", "url": "https://documentation.suse.com/fr-fr/" },
+    "es": { "label": "Español", "url": "https://documentation.suse.com/es-es/" },
+    "zh_CN": { "label": "中文", "url": "https://documentation.suse.com/zh-cn/" },
+    "pt_BR": { "label": "Português Brasileiro", "url": "https://documentation.suse.com/pt-br/" }
+}'
+enable-search='false'>
+</shared-header>
+
+<!-- Leaving as a comment, I expect it will be required again next year.
+<a target=_blank"" class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_bEiGZbUNzLD8Tcy"> Documentation survey </a>
+-->
+<div class="body">
+<div class="nav-container" data-component="virtualization" data-version="v1.7">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title">SUSE® Virtualization</h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Introducción</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../introduction/overview.html">Descripción general</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../introduction/deploy-ha-cluster.html">Desplegar un clúster de alta disponibilidad</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../introduction/deploy-singlenode-cluster.html">Desplegar un clúster de un solo nodo</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../introduction/glossary.html">Glosario</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../introduction/document-conventions.html">Convenciones de documentos</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Instalación y configuración</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../installation-setup/requirements.html">Requisitos de hardware y red</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Medios de instalación</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../installation-setup/media/net-install.html">ISO de instalación por red</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../installation-setup/media/install-binaries-mode.html">Instalar solo binarios</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Métodos de instalación</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../installation-setup/methods/iso-install.html">Instalación de ISO</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../installation-setup/methods/usb-install.html">Instalación de USB</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../installation-setup/methods/pxe-boot-install.html">Instalación de arranque PXE</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Configuración</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../installation-setup/config/configuration-file.html">Archivo de configuración</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../installation-setup/config/update-configuration.html">Actualizar la configuración después de la instalación</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../installation-setup/config/settings.html">Settings (Configuración posterior al failback)</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../installation-setup/config/cloudinitcrd.html">CloudInit CRD</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../installation-setup/post-installation.html">Tareas posteriores a la instalación</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../installation-setup/management-address.html">Dirección de gestión</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../installation-setup/external-disk.html">Soporte para discos externos</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../installation-setup/authentication.html">Autenticación</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../installation-setup/airgap.html">Entorno aislado</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../installation-setup/single-node-clusters.html">Clústeres de un solo nodo</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Actualizaciones</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../upgrades/upgrades.html">Actualizaciones</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../upgrades/v1-1-2-to-v1-2-0.html">Actualizar versión de v1.1.2 a v1.2.0 (no recomendado)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../upgrades/v1-2-0-to-v1-2-1.html">Actualiza de v1.1.2/v1.1.3/v1.2.0 a v1.2.1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../upgrades/v1-2-1-to-v1-2-2.html">Actualizar versión de v1.2.1 a v1.2.2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../upgrades/v1-2-2-to-v1-3-1.html">Actualizar versión de v1.2.2/v1.3.0 a v1.3.1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../upgrades/v1-3-1-to-v1-3-2.html">Actualiza de v1.3.1 a v1.3.2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../upgrades/v1-3-2-to-v1-4-0.html">Actualiza de v1.3.2 a v1.4.0</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../upgrades/v1-4-0-to-v1-4-1.html">Actualiza de v1.4.0 a v1.4.1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../upgrades/v1-4-1-to-v1-4-2.html">Actualiza de v1.4.1 a v1.4.2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../upgrades/v1-4-1-to-v1-4-3.html">Actualiza de v1.4.1 o v1.4.2 a v1.4.3</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../upgrades/v1-4-2-to-v1-5-0.html">Actualiza de v1.4.2 o v1.4.3 a v1.5.0</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../upgrades/v1-4-2-to-v1-5-1.html">Actualiza de v1.4.2 o v1.4.3 a v1.5.1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../upgrades/v1-4-2-to-v1-5-2.html">Actualiza de v1.4.2 o v1.4.3 a v1.5.2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../upgrades/v1-5-0-to-v1-5-1.html">Actualiza la versión de v1.5.0 a v1.5.1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../upgrades/v1-5-0-to-v1-5-2.html">Actualiza versión de v1.5.0 o v1.5.1 a v1.5.2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../upgrades/v1-5-x-to-v1-6-x.html">Actualiza de v1.5.x a v1.6.x</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../upgrades/v1-6-x-to-v1-6-y.html">Actualiza la versión de v1.6.x a v1.6.y</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../upgrades/v1-6-x-to-v1-7-x.html">Actualiza la versión de v1.6.x a v1.7.x</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../upgrades/v1-7-x-to-v1-7-y.html">Actualiza de v1.7.x a v1.7.y</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../upgrades/troubleshooting.html">Solución de problemas</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Hosts</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../hosts/hosts.html">Gestión de hosts</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../hosts/witness-node.html">Nodo Testigo</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../hosts/vgpu-support.html">Soporte de vGPU</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Máquinas virtuales</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../virtual-machines/virtual-machines.html">Máquinas virtuales</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Imágenes de máquinas virtuales</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../virtual-machines/vm-images/upload-image.html">Subir imágenes</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../virtual-machines/vm-images/custom-suse-images.html">Imágenes de Máquina Virtual Personalizadas de SUSE</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../virtual-machines/vm-images/image-security.html">Seguridad de la Imagen</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../virtual-machines/create-vm.html">Crear una máquina virtual</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../virtual-machines/create-windows-vm.html">Crea una máquina virtual de Windows</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../virtual-machines/edit-vm.html">Editar una máquina virtual</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../virtual-machines/access-vm.html">Acceso a la Máquina Virtual</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../virtual-machines/clone-vm.html">Clonar una máquina virtual</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../virtual-machines/backup-restore.html">Copia de seguridad, instantánea y restauración de máquinas virtuales</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../virtual-machines/live-migration.html">Migración en vivo</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../virtual-machines/hotplug-volume.html">Volúmenes Hot-Plug</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../virtual-machines/resource-overcommit.html">Sobreasignación de recursos</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../virtual-machines/cpu-pinning.html">Fijación de CPU</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../virtual-machines/cpu-memory-hotplug.html">Conectar en caliente de CPU y memoria</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../virtual-machines/nic-hotplug.html">Conexión en caliente de NIC</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Almacenamiento</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Volúmenes</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../storage/volumes/create-volume.html">Crear un volumen</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../storage/volumes/edit-volume.html">Editar un volumen</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../storage/volumes/clone-volume.html">Clonar un volumen</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../storage/volumes/export-volume.html">Exportar un volumen a una imagen</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../storage/volumes/volume-snapshots.html">Instantáneas de volumen</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../storage/volumes/volume-security.html">Seguridad del volumen</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../storage/storageclass.html">StorageClass</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../storage/csidriver.html">Compatibilidad con almacenamiento de terceros</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../storage/longhorn-v2-data-engine.html">Motor de Datos Longhorn V2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../storage/storage-validator.html">Validador de almacenamiento</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Conectividad</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../networking/cluster-network.html">Red de clúster</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../networking/vm-network.html">Red de máquinas virtuales (VM)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../networking/deep-dive.html">Profundización en redes</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../networking/load-balancer.html">Balanceador de carga</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../networking/ip-pool.html">Grupo de IP</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../networking/storage-network.html">Red de Almacenamiento</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../networking/vm-migration-network.html">Red de migración de VM</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../networking/kubeovn-vpc.html">Nube Privada Virtual</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../networking/vm-isolation.html">Aislamiento de Máquinas Virtuales</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../networking/best-practices.html">Mejores Prácticas de Redes</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Observabilidad</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../observability/logging.html">Registro</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../observability/monitoring.html">Monitorización</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Complementos</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../add-ons/add-ons.html">Complementos</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../add-ons/harvester-seeder.html">Harvester Seeder</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../add-ons/kubeovn-operator.html">Operador Kube-OVN (Experimental)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../add-ons/lvm-local-storage.html">Controlador CSI LVM (Experimental)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../add-ons/nvidia-driver-toolkit.html">Kit de herramientas del controlador NVIDIA</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../add-ons/pcidevices-controller.html">Controlador de dispositivos PCI</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../add-ons/rancher-vcluster.html">Rancher vCluster (Experimental)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../add-ons/virtual-machine-auto-balance.html">Balanceo Automático de Máquinas Virtuales (Experimental)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../add-ons/vm-dhcp-controller.html">Controlador DHCP de VM (Experimental)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../add-ons/vm-import-controller.html">Controlador de Importación de VM</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Integraciones</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Integración de Rancher</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="rancher-integration.html">SUSE Rancher Prime Integración</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="virtualization-management.html">Gestión de la virtualización</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Controlador de nodo</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="node-driver/node-driver.html">Controlador de Nodo Harvester</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="node-driver/rke2-cluster.html">Creando un clúster de Kubernetes RKE2</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="node-driver/k3s-cluster.html">Creando un clúster de Kubernetes K3s</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="cloud-provider.html">Proveedor de nube Harvester</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="3">
+    <a class="nav-link" href="csi-driver.html">Controlador CSI de Harvester</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="resource-quota.html">Cuotas de Recursos</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="rancher-terraform-provider.html">Rancher Terraform</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="import-vm.html">Importar un clúster construido sobre una VM de SUSE® Virtualization</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="harvester-ui-extension.html">Extensión de Harvester UI</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../terraform/terraform-provider.html">Proveedor de Terraform</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Solución de problemas</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../troubleshooting/installation.html">Problemas de instalación</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../troubleshooting/operating-system.html">Problemas del sistema operativo</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../troubleshooting/cluster.html">Problemas de clúster</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../troubleshooting/virtual-machines.html">Problemas de máquinas virtuales</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../troubleshooting/monitoring.html">Problemas de monitorización</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../troubleshooting/logging.html">Registro de problemas</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../troubleshooting/rancher.html">Problemas de Rancher</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../troubleshooting/faq.html">Preguntas más frecuentes</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Contenido de desarrollador</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../developer/addon-development.html">Guía de desarrollo de complementos</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../api.html">API</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">SUSE® Virtualization</span>
+    <span class="version">v1.7 (Latest)</span>
+  </div>
+  <ul class="components">
+        <li class="component">
+          <div class="title"><a href="../../../../../admission-controller/1.35/en/introduction.html">Admission Controller</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../../admission-controller/1.36/en/introduction.html">1.36-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../../admission-controller/1.35/en/introduction.html">1.35-latest</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../admission-controller/1.34/en/introduction.html">1.34</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../admission-controller/1.33/en/introduction.html">1.33</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../admission-controller/1.32/en/introduction.html">1.32</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../admission-controller/1.31/en/introduction.html">1.31</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../admission-controller/1.30/en/introduction.html">1.30</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../admission-controller/1.29/en/introduction.html">1.29</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../admission-controller/1.28/en/introduction.html">1.28</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../cluster-api/v0.26/en/index.html">Cluster API</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.27/en/index.html">v0.27-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../../cluster-api/v0.26/en/index.html">v0.26</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.25/en/index.html">0.25</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.24/en/index.html">0.24</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.23/en/index.html">0.23</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.22/en/index.html">0.22</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.21/en/index.html">0.21</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.20/en/index.html">0.20</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.19/en/index.html">0.19</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.18/en/index.html">0.18</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.17/en/index.html">0.17</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.16/en/index.html">0.16</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.11/en/index.html">0.11</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../continuous-delivery/next/en/index.html">Continuous Delivery</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../continuous-delivery/next/en/index.html">Next</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../continuous-delivery/v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../continuous-delivery/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../continuous-delivery/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../continuous-delivery/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../continuous-delivery/v0.11/en/index.html">0.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../continuous-delivery/v0.10/en/index.html">0.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../continuous-delivery/v0.9/en/index.html">0.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../k3s/latest/en/introduction.html">K3s</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../k3s/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../os-manager/1.9/en/index.html">OS Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../../os-manager/1.10/en/index.html">1.10-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../../os-manager/1.9/en/index.html">1.9</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../os-manager/1.8/en/index.html">1.8</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../os-manager/1.7/en/index.html">1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../os-manager/1.6/en/index.html">1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../os-manager/1.5/en/index.html">1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../rancher-ai/latest/en/introduction.html">Rancher AI</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../rancher-ai/latest/en/introduction.html">latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../rke2/latest/en/introduction.html">RKE2</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../rke2/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../suse-observability/latest/en/classic.html">SUSE Observability</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../suse-observability/latest/en/classic.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">SUSE Rancher Developer Access</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">SUSE® Rancher for AWS</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../rancher-manager/v2.14/en/about-rancher/what-is-rancher.html">SUSE® Rancher Manager</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../rancher-manager/v2.14/en/about-rancher/what-is-rancher.html">v2.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../rancher-manager/v2.13/en/about-rancher/what-is-rancher.html">v2.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../rancher-manager/v2.12/en/about-rancher/what-is-rancher.html">v2.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../rancher-manager/v2.11/en/about-rancher/what-is-rancher.html">v2.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../rancher-manager/v2.10/en/about-rancher/what-is-rancher.html">v2.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../rancher-manager/v2.9/en/about-rancher/what-is-rancher.html">v2.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../security/5.5/en/overview.html">SUSE® Security</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../security/5.5/en/overview.html">5.5</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../security/5.4/en/overview.html">5.4</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../security/5.3/en/overview.html">5.3</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../storage/1.11/en/longhorn-documentation.html">SUSE® Storage</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../../storage/1.12/en/longhorn-documentation.html">1.12 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../../storage/1.11/en/longhorn-documentation.html">1.11 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../storage/1.10/en/longhorn-documentation.html">1.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../storage/1.9/en/longhorn-documentation.html">1.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">SUSE® Virtual Clusters</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../../suse-virtual-clusters/1.2.0/en/release-notes/version-1.2.0.html">v1.2.0 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">v1.1.0</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../suse-virtual-clusters/1.0.2/en/release-notes/version-1.0.2.html">v1.0.2</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../suse-virtual-clusters/v1.0.1/en/introduction.html">v1.0.1</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../suse-virtual-clusters/v1.0.0/en/introduction.html">v1.0.0</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component is-current">
+          <div class="title"><a href="../../../en/introduction/overview.html">SUSE® Virtualization</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../v1.8/en/introduction/overview.html">v1.8 (Dev)</a>
+            </li>
+            <li class="version is-current is-latest">
+              <a href="../../../en/introduction/overview.html">v1.7 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../v1.6/en/introduction/overview.html">v1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../v1.5/en/introduction/overview.html">v1.5</a>
+            </li>
+          </ul>
+        </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+<ul>
+    <li>
+      <a class="home-link-dsc" href="https://documentation.suse.com/" title="documentation.suse.com" aria-label="SUSE Documentation Home"></a>
+    </li>
+    <li>
+      <a href="https://documentation.suse.com/cloudnative/virtualization" title="SUSE Virtualization" aria-label="SUSE Documentation - SUSE Virtualization">
+        SUSE Virtualization
+      </a>
+    </li>
+      <li>
+          Integraciones
+      </li>
+  </ul>
+</nav><div class="page-versions">
+  <button class="version-menu-toggle" title="Show other versions of page">v1.7 (Latest)</button>
+  <div class="version-menu">
+    <a class="version is-missing" href="../../../../v1.8/en/introduction/overview.html">v1.8 (Dev)</a>
+    <a class="version is-current" href="csi-driver.html">v1.7 (Latest)</a>
+    <a class="version is-missing" href="../../../../v1.6/en/introduction/overview.html">v1.6</a>
+    <a class="version is-missing" href="../../../../v1.5/en/introduction/overview.html">v1.5</a>
+  </div>
+</div>
+      <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <label class="visual-search-label-bc" for="search-input">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+          <input label="Search" aria-label="Search" id="search-input" type="text" placeholder="Buscar en los documentos" >
+          <label class="filter checkbox" style="display: none">
+            <input type="checkbox" data-facet-filter="component:virtualization" checked> Only this project
+          </label>
+        </div>
+      </div>
+</div>
+  <div class="content">
+<aside
+  class="toc sidebar"
+  data-title="En esta página" data-levels="2">
+  <div class="toc-menu">
+    <!-- start qualtrics -->
+    <div id='ZN_8qZUmklKYbBqAYe'><!--DO NOT REMOVE-CONTENTS PLACED HERE--></div>
+    <div id="qualtrics_container"></div>
+    <!-- end qualtrics -->
+  </div>
+</aside><article class="doc">
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Nota"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>
+
+Este documento ha sido traducido utilizando tecnología de traducción automática.
+Si bien nos esforzamos por proporcionar traducciones precisas,
+no ofrecemos garantías sobre la integridad, precisión o confiabilidad del contenido traducido.
+En caso de discrepancia, la versión original en
+<a href="https://documentation.suse.com/cloudnative/virtualization/v1.7/en/integrations/rancher/csi-driver.html">
+inglés
+</a>
+prevalecerá y constituirá el texto autorizado.
+
+</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<h1 class="page">Controlador CSI de Harvester</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>El controlador de la interfaz de almacenamiento de contenedores (CSI) de Harvester proporciona una interfaz CSI estándar utilizada por los clústeres de Kubernetes invitados. Se conecta al clúster host y conecta en caliente los volúmenes del host a las máquinas virtuales para proporcionar un rendimiento de almacenamiento nativo.</p>
+</div>
+<div class="paragraph">
+<p>El controlador CSI de Harvester admite las siguientes características:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 14.2858%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Versión del controlador CSI de Harvester</th>
+<th class="tableblock halign-left valign-top">SUSE Virtualization Versión</th>
+<th class="tableblock halign-left valign-top">Jerarquización de almacenamiento</th>
+<th class="tableblock halign-left valign-top">Volúmenes RWX</th>
+<th class="tableblock halign-left valign-top">Redimensionamiento en línea</th>
+<th class="tableblock halign-left valign-top">Almacenamiento de terceros</th>
+<th class="tableblock halign-left valign-top">Instantáneas de volúmenes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.1.15</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Todas las versiones</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#10004;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#10006;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#10006;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#10006;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#10006;</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.1.20</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">v1.4 y posteriores</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#10004;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#10004;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#10006;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#10006;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#10006;</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.1.24</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">v1.6 y posteriores</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#10004;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#10004;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#10004;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#10004;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#10006;</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.1.25</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">v1.7 y posteriores</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#10004;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#10004;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#10004;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#10004;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#10004;</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Atención"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Un <a href="https://github.com/harvester/harvester/issues/6849">problema conocido</a> en v0.1.20 del controlador CSI de Harvester provoca que los volúmenes se queden atascados cuando el clúster host está ejecutando una SUSE Virtualization versión que fue lanzada antes de v1.4.0.</p>
+</div>
+<div class="paragraph">
+<p>Este problema se solucionó en v0.1.21. Si tu sistema se ve afectado, puedes seguir la <a href="https://github.com/harvester/harvester/issues/6849#issuecomment-2462545795">solución alternativa</a> sugerida.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Versión del controlador CSI de Harvester</th>
+<th class="tableblock halign-left valign-top">SUSE Virtualization Versión</th>
+<th class="tableblock halign-left valign-top">¿Afectado?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">v0.1.21 y posteriores</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Todas las versiones</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">v0.1.20</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">v1.4.0 y posteriores</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">v0.1.20</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">v1.3.2 y versiones anteriores</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sí</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">v0.1.18 y versiones anteriores</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Todas las versiones</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_desplegando"><a class="anchor" href="#_desplegando"></a>Desplegando</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_requisitos_previos"><a class="anchor" href="#_requisitos_previos"></a>Requisitos previos</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>El clúster de Kubernetes se construye sobre SUSE Virtualization máquinas virtuales.</p>
+</li>
+<li>
+<p>Las SUSE Virtualization máquinas virtuales que funcionan como nodos de Kubernetes invitados están en el mismo espacio de nombres.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Nota"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Actualmente, el controlador CSI de Harvester solo admite volúmenes de lectura-escritura (RWO) de un solo nodo. Consulta <a href="https://github.com/harvester/harvester/issues/1992">issue #1992</a> para obtener información sobre el posible soporte de volúmenes de solo lectura (ROX) y lectura-escritura (RWX) en varios nodos.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_desplegando_con_el_controlador_de_nodo_rke2_de_harvester"><a class="anchor" href="#_desplegando_con_el_controlador_de_nodo_rke2_de_harvester"></a>Desplegando con el controlador de nodo RKE2 de Harvester</h3>
+<div class="paragraph">
+<p>Al crear un clúster de Kubernetes utilizando el controlador de nodo RKE2 de Rancher, el controlador CSI de Harvester se desplegará automáticamente cuando se seleccione el proveedor de nube de Harvester.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../../_images/rancher/rke2-cloud-provider.png" alt="select-harvester-cloud-provider">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_instalar_el_controlador_csi_manualmente_en_el_clúster_rke2"><a class="anchor" href="#_instalar_el_controlador_csi_manualmente_en_el_clúster_rke2"></a>Instalar el controlador CSI manualmente en el clúster RKE2</h3>
+<div class="paragraph">
+<p>Si prefieres instalar el controlador CSI de Harvester sin habilitar el proveedor de nube de Harvester, puedes consultar los siguientes pasos:</p>
+</div>
+<div class="sect3">
+<h4 id="_requisitos_previos_de_la_instalación_manual"><a class="anchor" href="#_requisitos_previos_de_la_instalación_manual"></a>Requisitos previos de la instalación manual</h4>
+<div class="paragraph">
+<p>Asegúrate de tener los siguientes requisitos previos:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Tienes <code>kubectl</code> y <code>jq</code> instalados en tu sistema.</p>
+</li>
+<li>
+<p>Tienes el archivo <code>kubeconfig</code> para tu clúster de Harvester en equipo sin sistema operativo. Puedes encontrar el archivo <code>kubeconfig</code> en uno de los nodos de gestión de Harvester en la vía <code>/etc/rancher/rke2/rke2.yaml</code>.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">  export KUBECONFIG=/path/to/your/harvester-kubeconfig</code></pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Realiza los siguientes pasos para desplegar manualmente el controlador CSI de Harvester:</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_desplegar_el_controlador_csi_de_harvester"><a class="anchor" href="#_desplegar_el_controlador_csi_de_harvester"></a>Desplegar el controlador CSI de Harvester</h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Genera el <code>cloud-config</code>. Puedes generar el archivo <code>cloud-config</code> utilizando el script <a href="https://raw.githubusercontent.com/harvester/harvester-csi-driver/master/deploy/generate_addon_csi.sh">generate_addon_csi.sh</a>. Está disponible en el repositorio <a href="https://github.com/harvester/harvester-csi-driver">harvester/harvester-csi-driver</a>.</p>
+<div class="paragraph">
+<p><code>&lt;serviceaccount name&gt;</code> generalmente corresponde al nombre de tu clúster invitado, y <code>&lt;namespace&gt;</code> debe coincidir con el espacio de nombres del grupo de máquinas.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">./generate_addon_csi.sh &lt;serviceaccount name&gt; &lt;namespace&gt; RKE2</code></pre>
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../../_images/rancher/creating_guest_cluster.png" alt="creating guest cluster">
+</div>
+</div>
+<div class="paragraph">
+<p>La salida generada será similar a la siguiente:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell"> ########## cloud-config ############
+ apiVersion: v1
+ clusters:
+ - cluster: &lt;token&gt;
+     server: https://&lt;YOUR HOST HARVESTER VIP&gt;:6443
+   name: default
+ contexts:
+ - context:
+     cluster: default
+     namespace: default
+     user: rke2-guest-01-default-default
+   name: rke2-guest-01-default-default
+ current-context: rke2-guest-01-default-default
+ kind: Config
+ preferences: {}
+ users:
+ - name: rke2-guest-01-default-default
+   user:
+     token: &lt;token&gt;
+
+ ########## cloud-init user data ############
+ write_files:
+   - encoding: b64
+     content: YXBpVmVyc2lvbjogdjEKY2x1c3RlcnM6Ci0gY2x1c3RlcjoKICAgIGNlcnRpZmljYXRlLWF1dGhvcml0eS1kYXRhOiBMUzB0TFMxQ1JVZEpUaUJEUlZKVVNVWkpRMEZVUlMwdExTMHRDazFKU1VKbFZFTkRRVklyWjBGM1NVSkJaMGxDUVVSQlMwSm5aM0ZvYTJwUFVGRlJSRUZxUVd0TlUwbDNTVUZaUkZaUlVVUkVRbXg1WVRKVmVVeFlUbXdLWTI1YWJHTnBNV3BaVlVGNFRtcG5NVTE2VlhoT1JGRjNUVUkwV0VSVVNYcE5SRlY1VDFSQk5VMVVRVEJOUm05WVJGUk5lazFFVlhsT2FrRTFUVlJCTUFwTlJtOTNTa1JGYVUxRFFVZEJNVlZGUVhkM1dtTnRkR3hOYVRGNldsaEtNbHBZU1hSWk1rWkJUVlJaTkU1VVRURk5WRkV3VFVSQ1drMUNUVWRDZVhGSENsTk5ORGxCWjBWSFEwTnhSMU5OTkRsQmQwVklRVEJKUVVKSmQzRmFZMDVTVjBWU2FsQlVkalJsTUhFMk0ySmxTSEZEZDFWelducGtRa3BsU0VWbFpHTUtOVEJaUTNKTFNISklhbWdyTDJab2VXUklNME5ZVURNeFZXMWxTM1ZaVDBsVGRIVnZVbGx4YVdJMGFFZE5aekpxVVdwQ1FVMUJORWRCTVZWa1JIZEZRZ292ZDFGRlFYZEpRM0JFUVZCQ1owNVdTRkpOUWtGbU9FVkNWRUZFUVZGSUwwMUNNRWRCTVZWa1JHZFJWMEpDVWpaRGEzbEJOSEZqYldKSlVESlFWVW81Q2xacWJWVTNVV2R2WjJwQlMwSm5aM0ZvYTJwUFVGRlJSRUZuVGtsQlJFSkdRV2xCZUZKNU4xUTNRMVpEYVZWTVdFMDRZazVaVWtWek1HSnBZbWxVSzJzS1kwRnhlVmt5Tm5CaGMwcHpMM2RKYUVGTVNsQnFVVzVxZEcwMVptNTZWR3AxUVVsblRuTkdibFozWkZRMldXWXpieTg0ZFRsS05tMWhSR2RXQ2kwdExTMHRSVTVFSUVORlVsUkpSa2xEUVZSRkxTMHRMUzBLCiAgICBzZXJ2ZXI6IGh0dHBzOi8vMTkyLjE2OC4wLjEzMTo2NDQzCiAgbmFtZTogZGVmYXVsdApjb250ZXh0czoKLSBjb250ZXh0OgogICAgY2x1c3RlcjogZGVmYXVsdAogICAgbmFtZXNwYWNlOiBkZWZhdWx0CiAgICB1c2VyOiBya2UyLWd1ZXN0LTAxLWRlZmF1bHQtZGVmYXVsdAogIG5hbWU6IHJrZTItZ3Vlc3QtMDEtZGVmYXVsdC1kZWZhdWx0CmN1cnJlbnQtY29udGV4dDogcmtlMi1ndWVzdC0wMS1kZWZhdWx0LWRlZmF1bHQKa2luZDogQ29uZmlnCnByZWZlcmVuY2VzOiB7fQp1c2VyczoKLSBuYW1lOiBya2UyLWd1ZXN0LTAxLWRlZmF1bHQtZGVmYXVsdAogIHVzZXI6CiAgICB0b2tlbjogZXlKaGJHY2lPaUpTVXpJMU5pSXNJbXRwWkNJNklreGhUazQxUTBsMWFsTnRORE5TVFZKS00waE9UbGszTkV0amNVeEtjM1JSV1RoYVpUbGZVazA0YW1zaWZRLmV5SnBjM01pT2lKcmRXSmxjbTVsZEdWekwzTmxjblpwWTJWaFkyTnZkVzUwSWl3aWEzVmlaWEp1WlhSbGN5NXBieTl6WlhKMmFXTmxZV05qYjNWdWRDOXVZVzFsYzNCaFkyVWlPaUprWldaaGRXeDBJaXdpYTNWaVpYSnVaWFJsY3k1cGJ5OXpaWEoyYVdObFlXTmpiM1Z1ZEM5elpXTnlaWFF1Ym1GdFpTSTZJbkpyWlRJdFozVmxjM1F0TURFdGRHOXJaVzRpTENKcmRXSmxjbTVsZEdWekxtbHZMM05sY25acFkyVmhZMk52ZFc1MEwzTmxjblpwWTJVdFlXTmpiM1Z1ZEM1dVlXMWxJam9pY210bE1pMW5kV1Z6ZEMwd01TSXNJbXQxWW1WeWJtVjBaWE11YVc4dmMyVnlkbWxqWldGalkyOTFiblF2YzJWeWRtbGpaUzFoWTJOdmRXNTBMblZwWkNJNkltTXlZak5sTldGaExUWTBNMlF0TkRkbU1pMDROemt3TFRjeU5qWXpNbVl4Wm1aaU5pSXNJbk4xWWlJNkluTjVjM1JsYlRwelpYSjJhV05sWVdOamIzVnVkRHBrWldaaGRXeDBPbkpyWlRJdFozVmxjM1F0TURFaWZRLmFRZmU1d19ERFRsSWJMYnUzWUVFY3hmR29INGY1VnhVdmpaajJDaWlhcXB6VWI0dUYwLUR0cnRsa3JUM19ZemdXbENRVVVUNzNja1BuQmdTZ2FWNDhhdmlfSjJvdUFVZC04djN5d3M0eXpjLVFsTVV0MV9ScGJkUURzXzd6SDVYeUVIREJ1dVNkaTVrRWMweHk0X0tDQ2IwRHQ0OGFoSVhnNlMwRDdJUzFfVkR3MmdEa24wcDVXUnFFd0xmSjdEbHJDOFEzRkNUdGhpUkVHZkUzcmJGYUdOMjdfamR2cUo4WXlJQVd4RHAtVHVNT1pKZUNObXRtUzVvQXpIN3hOZlhRTlZ2ZU05X29tX3FaVnhuTzFEanllbWdvNG9OSEpzekp1VWliRGxxTVZiMS1oQUxYSjZXR1Z2RURxSTlna1JlSWtkX3JqS2tyY3lYaGhaN3lTZ3o3QQo=
+     owner: root:root
+     path: /var/lib/rancher/rke2/etc/config-files/cloud-provider-config
+     permissions: '0644'</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Copia y pega el contenido de <code>cloud-init user data</code> en <strong>Machine Pools</strong> &gt; <strong>Show Advanced</strong> &gt; <strong>User Data</strong>.
+<span class="image"><img src="../../_images/rancher/cloud-config-userdata.png" alt="cloud config userdata"></span></p>
+<div class="paragraph">
+<p>El archivo <code>cloud-provider-config</code> se creará después de que apliques los datos de usuario de cloud-init anteriores. Puedes encontrarlo en los nodos de Kubernetes invitados en la vía <code>/var/lib/rancher/rke2/etc/config-files/cloud-provider-config</code>.</p>
+</div>
+</li>
+<li>
+<p>Configura el <strong>Cloud Provider</strong> ya sea a <strong>Default - RKE2 Embedded</strong> o <strong>External</strong>.</p>
+<div class="imageblock">
+<div class="content">
+<img src="../../_images/rancher/non-harvester-cloud-provider.png" alt="non harvester cloud provider">
+</div>
+</div>
+</li>
+<li>
+<p>Selecciona <strong>Create</strong> para crear tu clúster RKE2.</p>
+</li>
+<li>
+<p>Una vez que el clúster RKE2 esté listo, instala el chart del <strong>Harvester CSI Driver</strong> desde el mercado de Rancher. No necesitas cambiar la ruta del <strong>cloud-config</strong> por defecto.</p>
+<div class="imageblock">
+<div class="content">
+<img src="../../_images/rancher/install_csi_rancher_marketplace.png" alt="install csi rancher marketplace">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../../_images/rancher/donot_change_cloud_config_path.png" alt="donot change cloud config path">
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Nota"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Si prefieres no instalar el controlador CSI de Harvester utilizando Rancher
+(<strong>Apps</strong> &gt; <strong>Charts</strong>), puedes usar <a href="https://helm.sh">Helm</a> en su lugar.
+El controlador CSI de Harvester está <a href="https://github.com/harvester/charts/tree/master/charts/harvester-csi-driver">empaquetado como un chart de Helm</a>.
+Para obtener más información, consulte la <a href="https://charts.harvesterhci.io" class="bare">https://charts.harvesterhci.io</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Siguiendo los pasos anteriores, deberías poder ver que esos pods del controlador CSI están en funcionamiento en el espacio de nombres <code>kube-system</code>, y puedes verificarlo aprovisionando un nuevo PVC utilizando el StorageClass por defecto <code>harvester</code> en tu clúster RKE2.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_desplegando_con_el_controlador_de_nodo_k3s_de_harvester"><a class="anchor" href="#_desplegando_con_el_controlador_de_nodo_k3s_de_harvester"></a>Desplegando con el controlador de nodo K3s de Harvester</h3>
+<div class="paragraph">
+<p>Puedes seguir los pasos <a href="#Deploy Harvester CSI driver">[Deploy Harvester CSI driver]</a> descritos en la sección de RKE2.</p>
+</div>
+<div class="paragraph">
+<p>La única diferencia está en generar la configuración de <code>cloud-init</code> donde necesitas especificar el tipo de proveedor como <code>k3s</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">./generate_addon_csi.sh &lt;serviceaccount name&gt; &lt;namespace&gt; k3s</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_personaliza_el_storageclass_predeterminado"><a class="anchor" href="#_personaliza_el_storageclass_predeterminado"></a>Personaliza el StorageClass predeterminado</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>El controlador CSI de Harvester proporciona la interfaz para definir el StorageClass predeterminado. Si no se especifica el StorageClass predeterminado, el controlador CSI de Harvester utiliza el StorageClass predeterminado del clúster Harvester anfitrión.</p>
+</div>
+<div class="paragraph">
+<p>Puedes usar el parámetro <code>host-storage-class</code> para personalizar el StorageClass predeterminado.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Crea un StorageClass para el clúster Harvester anfitrión.</p>
+<div class="paragraph">
+<p>Ejemplo:
+ <span class="image"><img src="../../_images/rancher/create-new-sc.png" alt="create new sc"></span></p>
+</div>
+</li>
+<li>
+<p>Despliega el controlador CSI con el parámetro <code>host-storage-class</code>.</p>
+<div class="paragraph">
+<p>Ejemplo:
+ <span class="image"><img src="../../_images/rancher/deploy-csi-driver-with-host-storage-class.png" alt="deploy csi driver with host storage class"></span></p>
+</div>
+</li>
+<li>
+<p>Verifica que el controlador CSI de Harvester esté listo.</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>En la pantalla <strong>PersistentVolumeClaims</strong>, crea un PVC. Selecciona <strong>Usar un Storage Class para aprovisionar un nuevo Persistent Volume</strong> y especifica el StorageClass que creaste.</p>
+<div class="paragraph">
+<p>Ejemplo:
+ <span class="image"><img src="../../_images/rancher/create-volume-with-harvester-csi-driver.png" alt="create volume with harvester csi driver"></span></p>
+</div>
+</li>
+<li>
+<p>Una vez que se crea el PVC, anota el nombre del volumen aprovisionado y verifica que el estado sea <strong>Bound</strong>.</p>
+<div class="paragraph">
+<p>Ejemplo:
+ <span class="image"><img src="../../_images/rancher/check-volume-and-pvc-name.png" alt="check volume and pvc name"></span></p>
+</div>
+</li>
+<li>
+<p>En la pantalla <strong>Volumes</strong>, verifica que el volumen fue aprovisionado utilizando el StorageClass que creaste.</p>
+<div class="paragraph">
+<p>Ejemplo:
+ <span class="image"><img src="../../_images/rancher/check-pvc-name-on-host-harvester-volume-page.png" alt="check pvc name on host harvester volume page"></span></p>
+</div>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_passthrough_custom_storageclass"><a class="anchor" href="#_passthrough_custom_storageclass"></a>Passthrough Custom StorageClass</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A partir de la versión v0.1.15 del controlador CSI de Harvester, es posible crear un PersistentVolumeClaim (PVC) utilizando un StorageClass de Harvester diferente en el clúster Kubernetes invitado.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Nota"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Un controlador CSI de Harvester compatible está integrado en cada versión de RKE2 soportada.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_requisitos_previos_2"><a class="anchor" href="#_requisitos_previos_2"></a>Requisitos previos</h3>
+<div class="paragraph">
+<p>Agrega los siguientes requisitos previos a tu clúster Harvester para asegurar que el controlador CSI de Harvester muestre los mensajes de error correctamente. Los ajustes adecuados de RBAC son esenciales para la visibilidad de los mensajes de error, especialmente al crear un PVC con un StorageClass que no existe, como se muestra en la imagen a continuación:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../../_images/rancher/error_event_csi_driver.png" alt="error event csi driver">
+</div>
+</div>
+<div class="paragraph">
+<p>Sigue estos pasos para configurar <strong>RBAC</strong> para la visibilidad de los mensajes de error:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Crea un nuevo <code>clusterrole</code> llamado <code>harvesterhci.io:csi-driver</code> utilizando el siguiente manifiesto.</p>
+<div class="listingblock">
+<div class="content">
+<pre> apiVersion: rbac.authorization.k8s.io/v1
+ kind: ClusterRole
+ metadata:
+   labels:
+     app.kubernetes.io/component: apiserver
+     app.kubernetes.io/name: harvester
+     app.kubernetes.io/part-of: harvester
+   name: harvesterhci.io:csi-driver
+ rules:
+ - apiGroups:
+   - storage.k8s.io
+   resources:
+   - storageclasses
+   verbs:
+   - get
+   - list
+   - watch</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Crea un nuevo <code>clusterrolebinding</code> asociado con el <code>clusterrole</code> anterior con el <code>serviceaccount</code> relevante utilizando el siguiente manifiesto.</p>
+<div class="listingblock">
+<div class="content">
+<pre> apiVersion: rbac.authorization.k8s.io/v1
+ kind: ClusterRoleBinding
+ metadata:
+   name: &lt;namespace&gt;-&lt;serviceaccount name&gt;
+ roleRef:
+   apiGroup: rbac.authorization.k8s.io
+   kind: ClusterRole
+   name: harvesterhci.io:csi-driver
+ subjects:
+ - kind: ServiceAccount
+   name: &lt;serviceaccount name&gt;
+   namespace: &lt;namespace&gt;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Asegúrate de que <code>serviceaccount name</code> y <code>namespace</code> coincidan con la configuración de tu proveedor de nube. Realiza los siguientes pasos para recuperar estos detalles.</p>
+</div>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Encuentra el <code>rolebinding</code> asociado con tu proveedor de nube:</p>
+<div class="listingblock">
+<div class="content">
+<pre> $ kubectl get rolebinding -A |grep harvesterhci.io:cloudprovider
+ default                                 default-rke2-guest-01                                ClusterRole/harvesterhci.io:cloudprovider             7d1h</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Extrae la información de <code>subjects</code> de este <code>rolebinding</code>:</p>
+<div class="listingblock">
+<div class="content">
+<pre> $ kubectl get rolebinding default-rke2-guest-01 -n default -o yaml |yq -e '.subjects'</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Identifica la información de <code>ServiceAccount</code>:</p>
+<div class="listingblock">
+<div class="content">
+<pre> - kind: ServiceAccount
+   name: rke2-guest-01
+   namespace: default</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_desplegando_2"><a class="anchor" href="#_desplegando_2"></a>Desplegando</h3>
+<div class="paragraph">
+<p>Ahora puedes crear un nuevo StorageClass que pretendes usar en tu clúster de Kubernetes invitado.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Para los administradores, puedes crear un <a href="../../storage/storageclass.html" class="xref page">StorageClass</a> deseado (por ejemplo, llamado <strong>replica-2</strong>) en tu clúster Harvester en equipo sin sistema operativo.</p>
+<div class="imageblock">
+<div class="content">
+<img src="../../_images/rancher/sc-replica-2.png" alt="sc replica 2">
+</div>
+</div>
+</li>
+<li>
+<p>Luego, en el clúster de Kubernetes invitado, crea un nuevo StorageClass asociado con el StorageClass llamado <strong>replica-2</strong> del clúster Harvester:</p>
+<div class="imageblock">
+<div class="content">
+<img src="../../_images/rancher/downstream-cluster-sc-creation.png" alt="downstream cluster sc creation">
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Nota"></i>
+</td>
+<td class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>Al elegir un <strong>Provisioner</strong>, selecciona <strong>Harvester (CSI)</strong>. El parámetro <strong>Host StorageClass</strong> debe coincidir con el nombre del StorageClass creado en el clúster Harvester.</p>
+</li>
+<li>
+<p>Para los propietarios de Kubernetes invitados, puedes solicitar que el administrador del clúster Harvester cree un nuevo StorageClass.</p>
+</li>
+<li>
+<p>Si dejas el campo <code>Host StorageClass</code> vacío, se utilizará el StorageClass predeterminado del clúster Harvester.</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Ahora puedes crear un PVC basado en este nuevo <strong>StorageClass</strong>, que utiliza el <strong>Host StorageClass</strong> para aprovisionar volúmenes en el clúster Harvester en equipo sin sistema operativo.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_soporte_para_volúmenes_rwx"><a class="anchor" href="#_soporte_para_volúmenes_rwx"></a>Soporte para volúmenes RWX</h2>
+<div class="sectionbody">
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Atención"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Los volúmenes RWX actualmente solo funcionan con una red de almacenamiento dedicada. <a href="https://github.com/harvester/harvester/issues/7218">Issue #7218</a> rastrea la mejora que permitirá a los volúmenes RWX usar varias VLAN en clústeres invitados.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_requisitos_previos_3"><a class="anchor" href="#_requisitos_previos_3"></a>Requisitos previos</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Harvester v1.4 o posterior está instalado en el clúster host.</p>
+</li>
+<li>
+<p>Se ha configurado una <a href="../../networking/storage-network.html" class="xref page">red de almacenamiento</a> en el clúster Harvester.</p>
+<div class="paragraph">
+<p>Usa <strong>excluir</strong> para reservar un rango de direcciones IP para las máquinas virtuales del clúster invitado.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../../_images/rancher/configure-storage-network-01.png" alt="configure storage network 01">
+</div>
+</div>
+</li>
+<li>
+<p>La configuración de <strong>Red de Almacenamiento para Volumen RWX</strong> en la interfaz de usuario de Longhorn integrada está habilitada.</p>
+<div class="paragraph">
+<p>Ve a <strong>General</strong>, y luego selecciona <strong>Red de Almacenamiento para Volumen RWX Habilitado</strong>.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../../_images/rancher/enable-rwx-storage-network-01.png" alt="enable rwx storage network 01">
+</div>
+</div>
+</li>
+<li>
+<p>Has creado una StorageClass RWX en el clúster Harvester del host.</p>
+<div class="paragraph">
+<p>En la <strong>Clase de Almacenamiento: En la pantalla de Crear</strong>, haz clic en <strong>Editar como YAML</strong> y especifica lo siguiente:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: longhorn-rwx
+provisioner: driver.longhorn.io
+allowVolumeExpansion: true
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
+parameters:
+  numberOfReplicas: "3"
+  staleReplicaTimeout: "2880"
+  fromBackup: ""
+  fsType: "ext4"
+  nfsOptions: "vers=4.2,noresvport,softerr,timeo=600,retrans=5"</code></pre>
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../../_images/rancher/create-rwx-sc-host-cluster-01.png" alt="create rwx sc host cluster 01">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../../_images/rancher/create-rwx-sc-host-cluster-02.png" alt="create rwx sc host cluster 02">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../../_images/rancher/create-rwx-sc-host-cluster-03.png" alt="create rwx sc host cluster 03">
+</div>
+</div>
+</li>
+<li>
+<p>Los ajustes de control de acceso basado en funciones (RBAC) están actualizados.</p>
+<div class="paragraph">
+<p>La <a href="https://kubernetes.io/docs/reference/access-authn-authz/rbac/">autorización RBAC</a> utiliza un grupo de API específico de Kubernetes para tomar decisiones de autorización sobre el acceso a recursos informáticos o de red.</p>
+</div>
+<div class="paragraph">
+<p>El controlador CSI de Harvester requiere los nuevos ajustes de RBAC para soportar volúmenes RWX. Para comprobar los ajustes de RBAC, ejecuta el comando <code>kubectl get clusterrole harvesterhci.io:csi-driver -o yaml</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml"># kubectl get clusterrole harvesterhci.io:csi-driver -o yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+...
+  name: harvesterhci.io:csi-driver
+...
+rules:
+- apiGroups:
+  - storage.k8s.io
+  resources:
+  - storageclasses
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - harvesterhci.io
+  resources:
+  - networkfilesystems
+  - networkfilesystems/status
+  verbs:
+  - '*'
+- apiGroups:
+  - longhorn.io
+  resources:
+  - volumes
+  - volumes/status
+  verbs:
+  - get
+  - list</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Los pods de networkfs-manager están en ejecución.</p>
+<div class="paragraph">
+<p>Para comprobar el estado de los pods de networkfs-manager, ejecuta el comando <code>kubectl get pods -n harvester-system | grep networkfs-manager</code>.</p>
+</div>
+<div class="paragraph">
+<p>Ejemplo:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml"># kubectl get pods -n harvester-system | grep networkfs-manager
+harvester-networkfs-manager-2pxhm                       1/1     Running     4 (34m ago)    3h41m
+harvester-networkfs-manager-8tst2                       1/1     Running     4 (37m ago)    3h41m
+harvester-networkfs-manager-xvkgp                       1/1     Running     4 (37m ago)    3h41m</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>La versión del controlador CSI de Harvester es v0.1.20 o posterior.</p>
+<div class="imageblock">
+<div class="content">
+<img src="../../_images/rancher/harvester-csi-driver-version.png" alt="harvester csi driver version">
+</div>
+</div>
+</li>
+<li>
+<p>La máquina virtual tiene dos interfaces de red: una interfaz de red predeterminada para comunicaciones intra-clúster y que permite el acceso desde la red de infraestructura (externa al clúster Harvester); y una red que puede conectarse a la red de almacenamiento.</p>
+<div class="paragraph">
+<p>El NAD <strong>default/vlan101</strong> se utiliza para la red de almacenamiento.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../../_images/rancher/create-guest-cluster-with-two-nics.png" alt="create guest cluster with two nics">
+</div>
+</div>
+</li>
+<li>
+<p>El cliente NFS está instalado en cada nodo del clúster invitado.</p>
+<div class="paragraph">
+<p>Ejecuta cualquiera de los siguientes comandos para instalar el cliente NFS.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Debian y Ubuntu: <code>apt-get install -y nfs-common</code></p>
+</li>
+<li>
+<p>CentOS y RHEL: <code>yum install -y nfs-utils</code></p>
+</li>
+<li>
+<p>SUSE y OpenSUSE: <code>zypper install -y nfs-client</code></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Se asigna manualmente una IP a la interfaz de red de almacenamiento.</p>
+<div class="paragraph">
+<p>Puedes asignar cualquiera de las IPs reservadas utilizando los siguientes comandos:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ ip link set &lt;storage network nic&gt; up
+$ ip a add &lt;reserved IP&gt; dev &lt;storage network nic&gt;</pre>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Importante"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Una IP que se asigna utilizando los comandos dados no persiste después de un reinicio. Para hacer que la IP sea persistente, debes añadirla al archivo de configuración de red de tu sistema operativo invitado.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_uso"><a class="anchor" href="#_uso"></a>Uso</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Crea una nueva StorageClass en el clúster invitado.</p>
+<div class="paragraph">
+<p>En el <strong>StorageClass: En la pantalla de crear</strong>, añade un parámetro <strong>Clase de Almacenamiento de Host</strong> y especifica la StorageClass RWX que creaste en el clúster Harvester del host.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../../_images/rancher/new-sc-associated-with-rwx.png" alt="new sc associated with rwx">
+</div>
+</div>
+</li>
+<li>
+<p>Crea un PersistentVolumeClaim (PVC) RWX.</p>
+<div class="paragraph">
+<p>En el <strong>PersistentVolumeClaim: En la pantalla de crear</strong>, configura los siguientes ajustes:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Pestaña <strong>Reclamación de Volumen</strong>: Especifica la nueva StorageClass.</p>
+<div class="imageblock">
+<div class="content">
+<img src="../../_images/rancher/create-rwx-pvc-01.png" alt="create rwx pvc 01">
+</div>
+</div>
+</li>
+<li>
+<p>Pestaña <strong>Personalizar</strong>: Selecciona <strong>Muchos Nodos Lectura-escritura</strong>.</p>
+<div class="imageblock">
+<div class="content">
+<img src="../../_images/rancher/create-rwx-pvc-02.png" alt="create rwx pvc 02">
+</div>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Verifica que el PVC RWX se haya creado correctamente.</p>
+<div class="imageblock">
+<div class="content">
+<img src="../../_images/rancher/check-rwx-pvc.png" alt="check rwx pvc">
+</div>
+</div>
+</li>
+<li>
+<p>Crea dos pods.</p>
+<div class="paragraph">
+<p>En el <strong>Pod: En la pantalla de crear</strong>, especifica el PVC RWX.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../../_images/rancher/create-pod-with-rwx-pvc-01.png" alt="create pod with rwx pvc 01">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../../_images/rancher/create-pod-with-rwx-pvc-02.png" alt="create pod with rwx pvc 02">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../../_images/rancher/create-pod-with-rwx-pvc-03.png" alt="create pod with rwx pvc 03">
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Nota"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Puedes seguir los mismos pasos para crear un PVC RWX en el clúster invitado y luego usarlo en pods que requieran volúmenes RWX.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_redimensionamiento_de_volúmenes_en_línea"><a class="anchor" href="#_redimensionamiento_de_volúmenes_en_línea"></a>Redimensionamiento de volúmenes en línea</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Si el proveedor de almacenamiento subyacente admite <a href="../../storage/volumes/edit-volume.html#_online_volume_expansion" class="xref page">expansión de volumen en línea</a>, puedes expandir un volumen ReadWriteOnce (RWO) en el clúster invitado incluso mientras está adjunto a una carga de trabajo en ejecución.</p>
+</div>
+<div class="sect2">
+<h3 id="_requisitos_previos_4"><a class="anchor" href="#_requisitos_previos_4"></a>Requisitos previos</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>SUSE Virtualization v1.6 o posterior</p>
+</li>
+<li>
+<p>Controlador CSI de Harvester v0.1.24 o posterior</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_instantáneas_de_volúmenes"><a class="anchor" href="#_instantáneas_de_volúmenes"></a>Instantáneas de volúmenes</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A partir de <strong>v0.1.25</strong>, el controlador CSI de Harvester admite <a href="https://kubernetes.io/docs/concepts/storage/volume-snapshots/">instantáneas de volumen</a>, proporcionando capacidades de copia de seguridad y restauración en el tiempo para cargas de trabajo que se ejecutan en clústeres de Kubernetes invitados.</p>
+</div>
+<div class="sect2">
+<h3 id="_requisitos_previos_5"><a class="anchor" href="#_requisitos_previos_5"></a>Requisitos previos</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>SUSE Virtualization v1.7 o posterior</p>
+</li>
+<li>
+<p>Controlador CSI de Harvester v0.1.25 o posterior</p>
+</li>
+<li>
+<p>El controlador de instantáneas CSI y los manifiestos requeridos están correctamente desplegados en el clúster invitado. Estos componentes se despliegan por defecto en RKE2.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_actualiza_el_controlador_csi"><a class="anchor" href="#_actualiza_el_controlador_csi"></a>Actualiza el controlador CSI</h2>
+<div class="sectionbody">
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Nota"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>El controlador CSI de Harvester admite instantáneas de volumen a partir de la versión <strong>v0.1.25</strong>. Usar esta función puede requerir pasos adicionales dependiendo de tu distribución de Kubernetes.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>RKE2 (recomendado): El controlador de instantáneas CSI se despliega por defecto.</p>
+</li>
+<li>
+<p>Otras distribuciones de Kubernetes: Debes instalar el controlador de instantáneas CSI en el clúster invitado antes de actualizar el controlador CSI de Harvester a <strong>v0.1.25</strong>. Para instrucciones de instalación, consulta la documentación de tu distribución (ejemplo: <a href="https://documentation.suse.com/cloudnative/storage/latest/en/snapshots-backups/csi-snapshots/enable-csi-snapshot-creation.html(SUSE" class="bare">https://documentation.suse.com/cloudnative/storage/latest/en/snapshots-backups/csi-snapshots/enable-csi-snapshot-creation.html(SUSE</a> Storage).</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_actualiza_rke2"><a class="anchor" href="#_actualiza_rke2"></a>Actualiza RKE2</h3>
+<div class="paragraph">
+<p>Para actualizar el controlador CSI, utiliza la interfaz de usuario de Rancher para actualizar RKE2. Asegúrate de que la nueva versión de RKE2 sea compatible/esté empaquetada con la versión actualizada del controlador CSI.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Ve a <strong>☰</strong> &gt; <strong>Gestión de Clústeres</strong>.</p>
+</li>
+<li>
+<p>Encuentra el clúster invitado que deseas actualizar y selecciona <strong>⋮</strong> &gt; <strong>Editar Configuración</strong>.</p>
+</li>
+<li>
+<p>Selecciona <strong>Versión de Kubernetes</strong>.</p>
+</li>
+<li>
+<p>Haz clic en <strong>Guardar</strong>.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_actualiza_k3s"><a class="anchor" href="#_actualiza_k3s"></a>Actualiza K3s</h3>
+<div class="paragraph">
+<p>Puedes actualizar K3s utilizando la interfaz de usuario de Rancher.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Ve a <strong>☰</strong> &gt; <strong>Clúster K3s</strong> &gt; <strong>Aplicaciones</strong> &gt; <strong>Aplicaciones instaladas</strong>.</p>
+</li>
+<li>
+<p>Encuentra el gráfico del controlador CSI y selecciona <strong>⋮</strong> &gt; <strong>Editar/Actualizar</strong>.</p>
+</li>
+<li>
+<p>Selecciona <strong>Versión</strong>.</p>
+</li>
+<li>
+<p>Selecciona <strong>Siguiente</strong> &gt; <strong>Actualizar</strong>.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="cloud-provider.html">Proveedor de nube Harvester</a></span>
+  <span class="next"><a href="resource-quota.html">Cuotas de Recursos</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<script src="../../../../../_/js/site.js"></script>
+<script async src="../../../../../_/js/vendor/highlight.js"></script>
+<script src="../../../../../_/js/vendor/lunr.js"></script>
+<script src="../../../../../_/js/vendor/lunr-languages.js"></script>
+<script src="../../../../../_/js/search-ui.js" id="search-ui-script" data-site-root-path="../../../../.." data-snippet-length="100" data-stylesheet="../../../../../_/css/search.css"></script>
+<script async src="../../../../../search-index.js"></script>
+<script src="../../../../../_/js/vendor/langSelection.js"></script>
+<script async src="../../../../../_/js/vendor/tabs.js"></script>
+
+
+<script src="../../../../../_/js/CNLanguageSwitcher.js"></script>
+  </body>
+</html>

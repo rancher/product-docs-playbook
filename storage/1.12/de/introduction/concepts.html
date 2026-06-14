@@ -1,0 +1,1219 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Architektur und Konzepte | SUSE® Storage  1.12 (Dev)</title>
+    <link rel="canonical" href="https://documentation.suse.com/cloudnative/storage/1.11/de/introduction/concepts.html">
+    <meta name="generator" content="Antora 3.1.14">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+<meta http-equiv="last-modified" content="2025-08-22"/>
+<link rel="stylesheet" href="../../../../_/css/search.css">
+<link rel="icon" href="../../../../_/img/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="../../../../_/css/font-styles.css">
+<link rel="stylesheet" href="../../../../_/fonts/css/all.css">
+<link rel="stylesheet" href="../../../../_/css/site-extra.css">
+<link rel="stylesheet" href="../../../../_/css/vendor/tabs.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap&family=SUSE+Mono:ital,wght@0,100..800;1,100..800" rel="stylesheet">
+<link href="https://documentation.suse.com/docserv/res/fonts/poppins/poppins.css" rel="stylesheet">
+<link rel="stylesheet" href="../../../../_/css/vendor/light.css">
+<script src="/docserv/res/lightheaded/analytics.js" type="text/javascript"></script>
+<script type="module">
+  import { defineCustomElements, setAssetPath } from 'https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/shared-header.esm.js';
+  defineCustomElements();
+  setAssetPath("https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/assets");
+</script>
+<!-- Default English link -->
+<link href="https://documentation.suse.com/cloudnative/storage/1.12/en/introduction/concepts.html" hreflang="x-default" rel="alternate"/>
+<!-- Link for the currently processed page -->
+<link href="https://documentation.suse.com/cloudnative/storage/1.12/de/introduction/concepts.html" hrefLang="de-DE" rel="alternate" />
+
+<!-- JSON-LD for doc metadata -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Architektur und Konzepte | SUSE Storage 1.12",
+  "headline": "Architektur und Konzepte",
+  "description": "Architektur und Konzepte",
+  "inLanguage": "de",
+  "dateModified": "2025-08-22T00:00:00Z",
+  "author": {
+    "@type": "Organization",
+    "name": "SUSE Product & Solution Documentation Team",
+    "url": "https://documentation.suse.com"
+  },
+  "mentions": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "SUSE Storage",
+      "softwareVersion": "1.12",
+      "applicationCategory": "Cloud Infrastructure",
+      "operatingSystem": "Linux"
+    }
+  ],
+  "publisher": {
+    "@type": "Organization",
+    "name": "SUSE",
+    "url": "https://documentation.suse.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.suse.com/assets/img/suse-white-logo-green.svg"
+    }
+  }
+}
+</script>
+<!-- end JSON-LD for doc metadata -->
+
+<!-- SUVA - Begin Ask Geeko-->
+<!--
+searchUnifyChatbot ("Ask Geeko") Copyright ©2024 Grazitti Interactive - All Rights Reserved. NOTICE: All information contained herein is, and remains the property of Grazitti Interactive and its suppliers, if any. The intellectual and technical concepts contained herein are proprietary to Grazitti Interactive and its suppliers and may be covered by India, U.S. and Foreign Patents, patents in process, and are protected by trade secret or copyright law. Dissemination of this information or reproduction of this material is strictly forbidden unless prior written permission is obtained from Grazitti Interactive.
+-->
+<meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport"/>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/Allow/an.js?c485cb3c-93d4-4942-99e8-91f3b8ca5636"></script>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/js/index.js?q=gAAAAABp3JBN9VuEJTi5tFafLIMwgMkCPdJS3Qm56lSYx93ir3Twt9hgSvd3OHEt6-nYfSbY3yHq0Zv8PRPsSy4nbqZiaJ4cZvRc6ItVZdvwz9Urf35cH6OUyPOwdA0phlS-zVIznQ2rWW438p-91NlTHuxJuOFpnA=="></script>
+<link rel="stylesheet" href="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/css/index.css">
+<div id="searchUnifyChatbot"></div>
+<!-- SUVA - End Ask Geeko-->
+<!--BEGIN QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+<script type='text/javascript' src="../../../../_/js/qualtrics.js" defer></script>
+<!--END QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<script type="module">import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs'; mermaid.initialize({"startOnLoad":true});</script><shared-header
+language="en"
+languages='{
+    "en": { "label": "English", "url": "https://documentation.suse.com/en-us/" },
+    "de": { "label": "Deutsch", "url": "https://documentation.suse.com/de-de/" },
+    "fr": { "label": "Français", "url": "https://documentation.suse.com/fr-fr/" },
+    "es": { "label": "Español", "url": "https://documentation.suse.com/es-es/" },
+    "zh_CN": { "label": "中文", "url": "https://documentation.suse.com/zh-cn/" },
+    "pt_BR": { "label": "Português Brasileiro", "url": "https://documentation.suse.com/pt-br/" }
+}'
+enable-search='false'>
+</shared-header>
+
+<!-- Leaving as a comment, I expect it will be required again next year.
+<a target=_blank"" class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_bEiGZbUNzLD8Tcy"> Documentation survey </a>
+-->
+<div class="body">
+<div class="nav-container" data-component="storage" data-version="1.12">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title">SUSE® Storage</h3>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">SUSE® Storage</span>
+    <span class="version">1.12 (Dev)</span>
+  </div>
+  <ul class="components">
+        <li class="component">
+          <div class="title"><a href="../../../../admission-controller/1.35/en/introduction.html">Admission Controller</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../admission-controller/1.36/en/introduction.html">1.36-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../admission-controller/1.35/en/introduction.html">1.35-latest</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.34/en/introduction.html">1.34</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.33/en/introduction.html">1.33</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.32/en/introduction.html">1.32</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.31/en/introduction.html">1.31</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.30/en/introduction.html">1.30</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.29/en/introduction.html">1.29</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.28/en/introduction.html">1.28</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../cluster-api/v0.26/en/index.html">Cluster API</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../cluster-api/v0.27/en/index.html">v0.27-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../cluster-api/v0.26/en/index.html">v0.26</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.25/en/index.html">0.25</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.24/en/index.html">0.24</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.23/en/index.html">0.23</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.22/en/index.html">0.22</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.21/en/index.html">0.21</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.20/en/index.html">0.20</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.19/en/index.html">0.19</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.18/en/index.html">0.18</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.17/en/index.html">0.17</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.16/en/index.html">0.16</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.11/en/index.html">0.11</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../continuous-delivery/next/en/index.html">Continuous Delivery</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../continuous-delivery/next/en/index.html">Next</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.11/en/index.html">0.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.10/en/index.html">0.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.9/en/index.html">0.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../k3s/latest/en/introduction.html">K3s</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../k3s/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../os-manager/1.9/en/index.html">OS Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../os-manager/1.10/en/index.html">1.10-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../os-manager/1.9/en/index.html">1.9</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.8/en/index.html">1.8</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.7/en/index.html">1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.6/en/index.html">1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.5/en/index.html">1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-ai/latest/en/introduction.html">Rancher AI</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-ai/latest/en/introduction.html">latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rke2/latest/en/introduction.html">RKE2</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rke2/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-observability/latest/en/classic.html">SUSE Observability</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../suse-observability/latest/en/classic.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">SUSE Rancher Developer Access</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">SUSE® Rancher for AWS</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-manager/v2.14/en/about-rancher/what-is-rancher.html">SUSE® Rancher Manager</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-manager/v2.14/en/about-rancher/what-is-rancher.html">v2.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.13/en/about-rancher/what-is-rancher.html">v2.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.12/en/about-rancher/what-is-rancher.html">v2.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.11/en/about-rancher/what-is-rancher.html">v2.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.10/en/about-rancher/what-is-rancher.html">v2.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.9/en/about-rancher/what-is-rancher.html">v2.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../security/5.5/en/overview.html">SUSE® Security</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../security/5.5/en/overview.html">5.5</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.4/en/overview.html">5.4</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.3/en/overview.html">5.3</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component is-current">
+          <div class="title"><a href="../../../1.11/en/longhorn-documentation.html">SUSE® Storage</a></div>
+          <ul class="versions">
+            <li class="version is-current">
+              <a href="../../en/longhorn-documentation.html">1.12 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../1.11/en/longhorn-documentation.html">1.11 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../1.10/en/longhorn-documentation.html">1.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../1.9/en/longhorn-documentation.html">1.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">SUSE® Virtual Clusters</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/1.2.0/en/release-notes/version-1.2.0.html">v1.2.0 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">v1.1.0</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/1.0.2/en/release-notes/version-1.0.2.html">v1.0.2</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.1/en/introduction.html">v1.0.1</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.0/en/introduction.html">v1.0.0</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../virtualization/v1.7/en/introduction/overview.html">SUSE® Virtualization</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../virtualization/v1.8/en/introduction/overview.html">v1.8 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../virtualization/v1.7/en/introduction/overview.html">v1.7 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../virtualization/v1.6/en/introduction/overview.html">v1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../virtualization/v1.5/en/introduction/overview.html">v1.5</a>
+            </li>
+          </ul>
+        </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+<ul>
+    <li>
+      <a class="home-link-dsc" href="https://documentation.suse.com/" title="documentation.suse.com" aria-label="SUSE Documentation Home"></a>
+    </li>
+    <li>
+      <a href="https://documentation.suse.com/cloudnative/storage" title="SUSE Storage" aria-label="SUSE Documentation - SUSE Storage">
+        SUSE Storage
+      </a>
+    </li>
+      <li>
+          <a href="concepts.html" title="Architektur und Konzepte" aria-label="Architektur und Konzepte">Architektur und Konzepte</a>
+      </li>
+  </ul>
+</nav><div class="page-versions">
+  <button class="version-menu-toggle" title="Show other versions of page">1.12 (Dev)</button>
+  <div class="version-menu">
+    <a class="version is-current" href="concepts.html">1.12 (Dev)</a>
+    <a class="version" href="../../../1.11/de/introduction/concepts.html">1.11 (Latest)</a>
+    <a class="version is-missing" href="../../../1.10/en/longhorn-documentation.html">1.10</a>
+    <a class="version is-missing" href="../../../1.9/en/longhorn-documentation.html">1.9</a>
+  </div>
+</div>
+      <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <label class="visual-search-label-bc" for="search-input">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+          <input label="Search" aria-label="Search" id="search-input" type="text" placeholder="Dokumentation durchsuchen" >
+          <label class="filter checkbox" style="display: none">
+            <input type="checkbox" data-facet-filter="component:storage" checked> Only this project
+          </label>
+        </div>
+      </div>
+</div>
+  <div class="content">
+<aside
+  class="toc sidebar"
+  data-title="Auf dieser Seite" data-levels="2">
+  <div class="toc-menu">
+    <!-- start qualtrics -->
+    <div id='ZN_8qZUmklKYbBqAYe'><!--DO NOT REMOVE-CONTENTS PLACED HERE--></div>
+    <div id="qualtrics_container"></div>
+    <!-- end qualtrics -->
+  </div>
+</aside><article class="doc">
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Anmerkung"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>
+
+Dieses Dokument wurde mithilfe automatisierter maschineller Übersetzungstechnologie übersetzt.
+Wir bemühen uns um korrekte Übersetzungen, übernehmen jedoch keine Gewähr für die Vollständigkeit, Richtigkeit oder Zuverlässigkeit der übersetzten Inhalte.
+Im Falle von Abweichungen ist die
+<a href="https://documentation.suse.com/cloudnative/storage/1.12/en/introduction/concepts.html">
+englische
+</a> Originalversion maßgebend und stellt den verbindlichen Text dar.
+
+</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+        <div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warnung"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Dies ist eine unveröffentlichte Dokumentation für SUSE® Storage 1.12 (Dev).</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+                    <h1 class="page">Architektur und Konzepte</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>SUSE Storage erstellt einen dedizierten Speicher-Controller für jedes Volume und repliziert das Volume synchron über mehrere Replikate, die auf mehreren Knoten gespeichert sind.</p>
+</div>
+<div class="paragraph">
+<p>Der Speichercontroller und die Replikate werden selbst mithilfe von Kubernetes koordiniert.</p>
+</div>
+<div class="paragraph">
+<p>Für einen Überblick über die Funktionen siehe <a href="introduction.html" class="xref page">diesen Abschnitt.</a></p>
+</div>
+<div class="paragraph">
+<p>Für die Installationsanforderungen gehen Sie zu <a href="../installation-setup/requirements.html" class="xref page">diesen Abschnitt.</a></p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>Dieser Abschnitt setzt Vertrautheit mit den Konzepten des persistenten Speichers in Kubernetes voraus. Für weitere Informationen zu diesen Konzepten siehe den <a href="#_appendix_how_persistent_storage_works_in_kubernetes">Anhang.</a> Für Hilfe mit der Terminologie auf dieser Seite siehe <a href="terminology.html" class="xref page">diesen Abschnitt.</a></p>
+</div>
+</blockquote>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_1_konzeption"><a class="anchor" href="#_1_konzeption"></a>1. Konzeption</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Das Design hat zwei Ebenen: die Datenebene und die Steuerungsebene. Die Longhorn Engine ist ein Speicher-Controller, der der Datenebene entspricht, und der Longhorn Manager entspricht der Steuerungsebene.</p>
+</div>
+<div class="sect2">
+<h3 id="_1_1_der_longhorn_manager_und_die_longhorn_engine"><a class="anchor" href="#_1_1_der_longhorn_manager_und_die_longhorn_engine"></a>1.1. Der Longhorn Manager und die Longhorn Engine</h3>
+<div class="paragraph">
+<p>Der Longhorn Manager Pod läuft auf jedem Knoten im SUSE Storage Cluster als Kubernetes <a href="https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/">DaemonSet</a>. Er erstellt und verwaltet Volumes im Kubernetes-Cluster und bearbeitet die API-Aufrufe von der SUSE Storage UI oder dem Longhorn CSI-Plugin. Er folgt dem Kubernetes-Controller-Muster, das manchmal als Operator-Muster bezeichnet wird.</p>
+</div>
+<div class="paragraph">
+<p>Der Longhorn Manager kommuniziert mit dem Kubernetes API-Server, um ein neues SUSE Storage Volume <a href="https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/">CR</a> zu erstellen. Dann überwacht der Longhorn Manager die Antwort des API-Servers, und wenn er sieht, dass der Kubernetes API-Server ein neues SUSE Storage Volume CR erstellt hat, erstellt der Longhorn Manager ein neues Volume.</p>
+</div>
+<div class="paragraph">
+<p>Wenn der Longhorn Manager aufgefordert wird, ein Volume zu erstellen, erstellt er eine Longhorn Engine-Instanz auf dem Knoten, an den das Volume angehängt ist, und er erstellt ein Replikat auf jedem Knoten, wo ein Replikat platziert wird. Replikate sollten auf separaten Hosts platziert werden, um maximale Verfügbarkeit zu gewährleisten.</p>
+</div>
+<div class="paragraph">
+<p>Die mehreren Datenpfade für Replikate gewährleisten die hohe Verfügbarkeit eines Longhorn Volumes. Wenn ein Problem mit einem Replikat oder der Engine auftritt, hat dies keine Auswirkungen auf alle Replikate oder den Zugriff des Pods auf das Volume. Der Pod wird weiterhin normal funktionieren. Für ein gegebenes Volumen mit einer Replikazahl von <code>N</code> kann das Longhorn-Volumen maximal <code>N-1</code> Replikatfehler tolerieren. Das liegt daran, dass mindestens ein gesundes Replikat erforderlich ist, damit das Volumen betriebsbereit bleibt.</p>
+</div>
+<div class="paragraph">
+<p>Die Longhorn-Engine läuft immer auf demselben Knoten wie der Pod, der das SUSE Storage Volumen verwendet. Sie repliziert das Volumen synchron über die mehreren Replikate, die auf mehreren Knoten gespeichert sind.</p>
+</div>
+<div class="paragraph">
+<p>Die Engine und die Replikate werden mit Kubernetes orchestriert.</p>
+</div>
+<div class="paragraph">
+<p>In der Abbildung unten,</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Es gibt drei Instanzen mit SUSE Storage Volumen.</p>
+</li>
+<li>
+<p>Jedes Volumen hat einen dedizierten Controller, der als Longhorn-Engine bezeichnet wird. Für V1-Volumen läuft die Engine als Linux-Prozess, während sie für V2-Volumen als SPDK RAID-Blockgerät (bdev) arbeitet.</p>
+</li>
+<li>
+<p>Jedes SUSE Storage Volumen hat zwei Replikate. In V1 laufen die Replikate als Linux-Prozesse, während sie in V2 als SPDK logische Volumen-bdevs implementiert sind.</p>
+</li>
+<li>
+<p>Die Pfeile in der Abbildung zeigen den Lese-/Schreibdatenfluss zwischen dem Volumen, der Controller-Instanz, den Replikat-Instanzen und den Festplatten an.</p>
+</li>
+<li>
+<p>Durch die Erstellung einer separaten Longhorn-Engine für jedes Volumen wird sichergestellt, dass, wenn ein Controller ausfällt, die Funktion anderer Volumen nicht beeinträchtigt wird.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Abbildung 1. Lese-/Schreibdatenfluss zwischen dem Volumen, der Longhorn-Engine, den Replikat-Instanzen und den Festplatten</strong></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/diagrams/architecture/how-longhorn-works-with-kubernetes.svg" alt="Lese-/Schreibdatenfluss zwischen dem Volumen" width="controller instance" height="replica instances">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_1_2_vorteile_eines_mikroservicesbasierten_designs"><a class="anchor" href="#_1_2_vorteile_eines_mikroservicesbasierten_designs"></a>1.2. Vorteile eines mikroservicesbasierten Designs</h3>
+<div class="paragraph">
+<p>Jede Engine muss nur ein Volumen bedienen, was das Design der Speichercontroller vereinfacht. Da der Ausfallbereich der Controller-Software auf einzelne Volumen isoliert ist, wird ein Absturz des Controllers nur ein Volumen beeinträchtigen.</p>
+</div>
+<div class="paragraph">
+<p>Die Longhorn-Engine ist einfach und leichtgewichtig, was es uns ermöglicht, Tausende von separaten Engines zu erstellen. Kubernetes plant diese separaten Engines und zieht Ressourcen aus einem gemeinsamen Satz von Festplatten, während es mit SUSE Storage arbeitet, um ein widerstandsfähiges verteiltes Blockspeichersystem zu bilden.</p>
+</div>
+<div class="paragraph">
+<p>Da jedes Volume seinen eigenen Controller hat, können der Controller und die Replikatinstanzen für jedes Volume ebenfalls aktualisiert werden, ohne dass es zu spürbaren Unterbrechungen bei den IO-Operationen kommt.</p>
+</div>
+<div class="paragraph">
+<p>SUSE Storage kann einen langlaufenden Job erstellen, um das Upgrade aller aktiven Volumes zu orchestrieren, ohne den laufenden Betrieb des Systems zu stören. Um sicherzustellen, dass ein Upgrade keine unvorhergesehenen Probleme verursacht, kann SUSE Storage wählen, eine kleine Teilmenge der Volumes zu aktualisieren und zur alten Version zurückzukehren, falls während des Upgrades etwas schiefgeht.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_1_3_csi_driver"><a class="anchor" href="#_1_3_csi_driver"></a>1.3. CSI Driver</h3>
+<div class="paragraph">
+<p>Der Longhorn CSI-Treiber nimmt das Blockgerät, formatiert es und bindet es am Knoten ein. Dann bindet der <a href="https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet/">kubelet</a> das Gerät innerhalb eines Kubernetes-Pods. Dies ermöglicht dem Pod den Zugriff auf das SUSE Storage Volume.</p>
+</div>
+<div class="paragraph">
+<p>Die erforderlichen Kubernetes CSI-Treiber-Images werden automatisch vom Longhorn-Treiber-Deploymentsystem bereitgestellt.
+Um SUSE Storage in einer Air-Gapped-Umgebung zu installieren, siehe <a href="../installation-setup/installation/airgapped-environment.html" class="xref page">dieser Abschnitt</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_1_4_csi_plugin"><a class="anchor" href="#_1_4_csi_plugin"></a>1.4. CSI Plugin</h3>
+<div class="paragraph">
+<p>SUSE Storage wird in Kubernetes über ein <a href="https://kubernetes-csi.github.io/docs/">CSI-Plugin.</a> verwaltet. Dies ermöglicht eine einfache Installation des Plugins.</p>
+</div>
+<div class="paragraph">
+<p>Das Kubernetes CSI-Plugin ruft SUSE Storage auf, um Volumes zu erstellen, die persistente Daten für eine Kubernetes-Arbeitslast erzeugen. Das CSI-Plugin gibt Ihnen die Möglichkeit, das Volume zu erstellen, zu löschen, anzuhängen, zu trennen, zu mounten und Snapshots des Volumes zu erstellen. Alle anderen Funktionen, die von SUSE Storage bereitgestellt werden, werden über die Benutzeroberfläche implementiert.</p>
+</div>
+<div class="paragraph">
+<p>Der Kubernetes-Cluster verwendet intern die CSI-Schnittstelle, um mit dem Longhorn CSI-Plugin zu kommunizieren. Und das Longhorn CSI-Plugin kommuniziert mit dem Longhorn-Manager über die Longhorn-API.</p>
+</div>
+<div class="paragraph">
+<p>Für v1-Volumes verwendet SUSE Storage iSCSI, was möglicherweise zusätzliche Konfiguration auf Ihren Knoten erfordert:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Je nach Linux-Distribution müssen Sie entweder <code>open-iscsi</code> oder <code>iscsiadm</code> installieren.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Im Gegensatz dazu kommen v2-Volumes mit unterschiedlichen Voraussetzungen, abhängig von der Konfiguration:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Kernel-Module wie <code>vfio_pci</code> und <code>uio_pci_generic</code> sind erforderlich.</p>
+</li>
+<li>
+<p>Für das NVMe-TCP-Frontend ist das Modul <code>nvme_tcp</code> notwendig.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_1_5_die_benutzeroberfläche"><a class="anchor" href="#_1_5_die_benutzeroberfläche"></a>1.5. Die Benutzeroberfläche</h3>
+<div class="paragraph">
+<p>Die Benutzeroberfläche interagiert über die Longhorn-API mit dem Longhorn-Manager und ergänzt Kubernetes. Über die Benutzeroberfläche können Sie Snapshots, Sicherungen, Knoten und Festplatten verwalten.</p>
+</div>
+<div class="paragraph">
+<p>Außerdem wird die Speichernutzung der Cluster-Arbeitsknoten erfasst und durch die Benutzeroberfläche veranschaulicht. Siehe <a href="../nodes/node-space-usage.html" class="xref page">hier</a> für Details.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_2_volumes_und_primärspeicher"><a class="anchor" href="#_2_volumes_und_primärspeicher"></a>2. Volumes und Primärspeicher</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Bei der Erstellung eines Volumes erstellt der Longhorn-Manager den Longhorn-Engine-Microservice und die Replikate für jedes Volume als Microservices. Zusammen bilden diese Microservices ein SUSE Storage Volume. Jedes Replikat sollte auf einem anderen Knoten oder auf unterschiedlichen Festplatten platziert werden.</p>
+</div>
+<div class="paragraph">
+<p>Nachdem die Longhorn-Engine vom Longhorn-Manager erstellt wurde, verbindet sie sich mit den Replikaten. Die Engine stellt ein Blockgerät auf demselben Knoten zur Verfügung, auf dem der Pod läuft.</p>
+</div>
+<div class="paragraph">
+<p>Ein SUSE Storage Volume kann mit kubectl erstellt werden.</p>
+</div>
+<h3 id="_2_1_thin_provisioning_und_volumengröße" class="discrete">2.1. Thin Provisioning und Volumengröße</h3>
+<div class="paragraph">
+<p>SUSE Storage ist ein dünn bereitgestelltes Speichersystem. Das bedeutet, dass ein SUSE Storage Volume nur den Platz benötigt, den es im Moment benötigt. Wenn Sie beispielsweise ein 20-GB-Volume zugewiesen haben, aber nur 1 GB davon verwenden, wäre die tatsächliche Datengröße auf Ihrer Festplatte 1 GB. Sie können die tatsächliche Datengröße in den Volumendetails in der Benutzeroberfläche sehen.</p>
+</div>
+<div class="paragraph">
+<p>Ein SUSE Storage Volume selbst kann nicht in der Größe schrumpfen, wenn Sie Inhalte aus Ihrem Volume entfernt haben. Wenn Sie beispielsweise ein 20-GB-Volume erstellen, 10 GB verwenden und dann 9 GB Inhalt entfernen, würde die tatsächliche Größe auf der Festplatte immer noch 10 GB betragen und nicht 1 GB. Das passiert, weil SUSE Storage auf Blockebene arbeitet und nicht auf Dateisystemebene, sodass SUSE Storage nicht weiß, ob der Inhalt von einem Benutzer entfernt wurde oder nicht. Diese Informationen werden hauptsächlich auf Dateisystemebene gespeichert.</p>
+</div>
+<div class="paragraph">
+<p>Für weitere Einführungen zu den volumenbezogenen Konzepten siehe dieses <a href="../volumes/volume-size.html" class="xref page">doc</a> für weitere Details.</p>
+</div>
+<h3 id="_2_2_volumen_im_wartungsmodus_zurücksetzen" class="discrete">2.2. Volumen im Wartungsmodus zurücksetzen</h3>
+<div class="paragraph">
+<p>Wenn ein Volumen über die Benutzeroberfläche angehängt wird, gibt es ein Kontrollkästchen für den Wartungsmodus. Es wird hauptsächlich verwendet, um ein Volumen von einem Snapshot zurückzusetzen.</p>
+</div>
+<div class="paragraph">
+<p>Die Option führt dazu, dass das Volumen angehängt wird, ohne das Frontend (Blockgerät oder iSCSI) zu aktivieren, um sicherzustellen, dass niemand auf die Volumendaten zugreifen kann, wenn das Volumen angehängt ist.</p>
+</div>
+<div class="paragraph">
+<p>Nach v0.6.0 erforderte der Snapshot-Rücksetzvorgang, dass sich das Volumen im Wartungsmodus befindet. Das liegt daran, dass, wenn der Inhalt des Blockgeräts geändert wird, während das Volumen gemountet oder verwendet wird, dies zu Dateisystembeschädigungen führen kann.</p>
+</div>
+<div class="paragraph">
+<p>Es ist auch nützlich, den Zustand des Volumens zu überprüfen, ohne sich Sorgen machen zu müssen, dass die Daten versehentlich abgerufen werden.</p>
+</div>
+<div class="sect2">
+<h3 id="_2_3_reproduktionen"><a class="anchor" href="#_2_3_reproduktionen"></a>2.3. Reproduktionen</h3>
+<div class="paragraph">
+<p>Jede Replik enthält eine Kette von Snapshots eines SUSE Storage Volumens. Ein Snapshot ist wie eine Schicht eines Bildes, wobei der älteste Snapshot als Basisschicht verwendet wird und neuere Snapshots darüber liegen. Daten werden nur in einen neuen Snapshot aufgenommen, wenn sie Daten in einem älteren Snapshot überschreiben. Zusammen zeigt eine Kette von Snapshots den aktuellen Zustand der Daten.</p>
+</div>
+<div class="paragraph">
+<p>Für jedes SUSE Storage Volumen sollten mehrere Replikate des Volumens im Kubernetes-Cluster laufen, jeweils auf einem separaten Knoten. Alle Replikate werden gleich behandelt, und die Longhorn Engine läuft immer auf demselben Knoten wie der Pod, der auch der Verbraucher des Volumens ist. Auf diese Weise stellen wir sicher, dass selbst wenn der Pod ausfällt, die Engine zu einem anderen Pod verschoben werden kann und Ihr Dienst ununterbrochen weiterläuft.</p>
+</div>
+<div class="paragraph">
+<p>Die Standardanzahl der Replikate kann in den <a href="../longhorn-system/settings.html#_default_replica_count" class="xref page">Einstellungen</a> geändert werden. Wenn ein Volumen angeschlossen ist, kann die Anzahl der Replikate für dieses Volumen in der Benutzeroberfläche geändert werden.</p>
+</div>
+<div class="paragraph">
+<p>Wenn die aktuelle gesunde Replikazahl geringer ist als die angegebene Replikazahl, wird SUSE Storage mit dem Wiederaufbau neuer Replikate beginnen.</p>
+</div>
+<div class="paragraph">
+<p>Wenn die aktuelle gesunde Replikazahl höher ist als die angegebene Replikazahl, sind die Replikat-Auto-Balance und die Datenlokalität deaktiviert, SUSE Storage wird nichts tun. In dieser Situation, wenn eine Replik ausfällt oder gelöscht wird, wird SUSE Storage nicht mit dem Wiederaufbau neuer Replikate beginnen, es sei denn, die gesunde Replikazahl fällt unter die angegebene Replikazahl. Wenn Replikat-Auto-Balance oder Datenlokalität eingestellt sind, könnte SUSE Storage eines der Replikate löschen.</p>
+</div>
+<div class="paragraph">
+<p>SUSE Storage Replikate werden mit Linux <a href="https://en.wikipedia.org/wiki/Sparse_file">sparse files,</a> erstellt, die dünne Bereitstellung unterstützen.</p>
+</div>
+<div class="sect3">
+<h4 id="_2_3_1_wie_lese_und_schreiboperationen_für_replikate_funktionieren"><a class="anchor" href="#_2_3_1_wie_lese_und_schreiboperationen_für_replikate_funktionieren"></a>2.3.1. Wie Lese- und Schreiboperationen für Replikate funktionieren</h4>
+<div class="paragraph">
+<p>Wenn Daten von einem Replikat eines Volumens gelesen werden und die Daten in den Live-Daten gefunden werden können, werden diese Daten verwendet. Wenn nicht, wird der neueste Snapshot gelesen. Wenn die Daten im neuesten Snapshot nicht gefunden werden, wird der nächstälteste Snapshot gelesen, und so weiter, bis der älteste Snapshot gelesen wird.</p>
+</div>
+<div class="paragraph">
+<p>Wenn Sie einen Snapshot erstellen, wird eine <a href="https://en.wikipedia.org/wiki/Data_differencing">differencing</a> Festplatte erstellt. Mit zunehmender Anzahl von Snapshots könnte die Kette von Differenzfestplatten (auch als Kette von Snapshots bezeichnet) ziemlich lang werden. Um die Leseleistung zu verbessern, verwaltet SUSE Storage daher einen Leseindex, der aufzeichnet, welche Differenzierungsfestplatte gültige Daten für jeden 4K-Speicherblock enthält.</p>
+</div>
+<div class="paragraph">
+<p>In der folgenden Abbildung hat das Volume acht Blöcke. Der Leseindex hat acht Einträge und wird faul gefüllt, während Leseoperationen stattfinden.</p>
+</div>
+<div class="paragraph">
+<p>Eine Schreiboperation setzt den Leseindex zurück, sodass er auf die Live-Daten zeigt. Die Live-Daten bestehen aus Daten an einigen Indizes und leerem Raum an anderen Indizes.</p>
+</div>
+<div class="paragraph">
+<p>Über den Leseindex hinaus pflegen wir derzeit keine zusätzlichen Metadaten, um anzuzeigen, welche Blöcke verwendet werden.</p>
+</div>
+<div class="paragraph">
+<p><strong>Abbildung 2. Wie der Leseindex verfolgt, welcher Snapshot die aktuellsten Daten enthält</strong></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/diagrams/architecture/read-index.png" alt="wie der Leseindex verfolgt" width="welcher Snapshot die aktuellsten Daten enthält">
+</div>
+</div>
+<div class="paragraph">
+<p>Die obige Abbildung ist farblich codiert, um zu zeigen, welche Blöcke die aktuellsten Daten gemäß dem Leseindex enthalten, und die Quelle der neuesten Daten ist ebenfalls in der Tabelle unten aufgeführt:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Leseindex</th>
+<th class="tableblock halign-left valign-top">Quelle der neuesten Daten</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Neuester Snapshot</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Live-Daten</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ältester Snapshot</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ältester Snapshot</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ältester Snapshot</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Live-Daten</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">6</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Live-Daten</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">7</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Live-Daten</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Beachten Sie, dass der grüne Pfeil in der obigen Abbildung zeigt, dass der Index 5 des Leseindex zuvor auf den zweitältesten Snapshot als Quelle der aktuellsten Daten verwies, dann änderte er sich, um auf die Live-Daten zu zeigen, als der 4K-Speicherblock bei Index 5 durch die Live-Daten überschrieben wurde.</p>
+</div>
+<div class="paragraph">
+<p>Der Leseindex wird im Speicher gehalten und verbraucht ein Byte für jeden 4K-Block. Der bytegroße Leseindex bedeutet, dass Sie bis zu 254 Snapshots für jedes Volumen erstellen können.</p>
+</div>
+<div class="paragraph">
+<p>Der Leseindex verbraucht eine bestimmte Menge an In-Memory-Datenstruktur für jedes Replikat. Ein 1 TB-Volumen verbraucht beispielsweise 256 MB des In-Memory-Leseindex.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_2_3_2_wie_neue_replikate_hinzugefügt_werden"><a class="anchor" href="#_2_3_2_wie_neue_replikate_hinzugefügt_werden"></a>2.3.2 Wie neue Replikate hinzugefügt werden</h4>
+<div class="paragraph">
+<p>Wenn ein neues Replikat hinzugefügt wird, werden die vorhandenen Replikate mit dem neuen Replikat synchronisiert. Das erste Replikat wird erstellt, indem ein neuer Snapshot aus den Live-Daten erstellt wird.</p>
+</div>
+<div class="paragraph">
+<p>Die folgenden Schritte zeigen eine detailliertere Aufschlüsselung, wie SUSE Storage neue Replikate hinzufügt:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Die Longhorn-Engine wird angehalten.</p>
+</li>
+<li>
+<p>Nehmen wir an, dass die Kette der Snapshots innerhalb des Replikats aus den Live-Daten und einem Snapshot besteht. Wenn das neue Replikat erstellt wird, werden die Live-Daten zum neuesten (zweiten) Snapshot und eine neue, leere Version der Live-Daten wird erstellt.</p>
+</li>
+<li>
+<p>Das neue Replikat wird im WO (nur schreiben) Modus erstellt.</p>
+</li>
+<li>
+<p>Die Longhorn-Engine ist nicht mehr pausiert.</p>
+</li>
+<li>
+<p>Alle Snapshots sind synchronisiert.</p>
+</li>
+<li>
+<p>Die neue Replik ist auf RW (Lese-Schreib)-Modus eingestellt.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_2_3_3_wie_fehlerhafte_replikate_wiederhergestellt_werden"><a class="anchor" href="#_2_3_3_wie_fehlerhafte_replikate_wiederhergestellt_werden"></a>2.3.3. Wie fehlerhafte Replikate wiederhergestellt werden.</h4>
+<div class="paragraph">
+<p>SUSE Storage wird immer versuchen, mindestens die angegebene Anzahl gesunder Replikate für jedes Volume aufrechtzuerhalten.</p>
+</div>
+<div class="paragraph">
+<p>Wenn der Controller Fehler in einem seiner Replikate erkennt, markiert er die Replik als fehlerhaft. Der Longhorn Manager ist verantwortlich für die Einleitung und Koordination des Prozesses zur Wiederherstellung des fehlerhaften Replikats.</p>
+</div>
+<div class="paragraph">
+<p>Um das fehlerhafte Replikat wiederherzustellen, erstellt der Longhorn Manager ein leeres Replikat und ruft die Longhorn Engine auf, um das leere Replikat in das Replikatset des Volumens hinzuzufügen.</p>
+</div>
+<div class="paragraph">
+<p>Um das leere Replikat hinzuzufügen, führt die Engine die folgenden Operationen aus:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Pausiert alle Lese- und Schreiboperationen.</p>
+</li>
+<li>
+<p>Fügt das leere Replikat im WO (nur schreiben)-Modus hinzu.</p>
+</li>
+<li>
+<p>Macht einen Snapshot aller vorhandenen Replikate, die nun an der Spitze eine leere Differencing-Festplatte haben werden.</p>
+</li>
+<li>
+<p>Setzt alle Lese- und Schreiboperationen fort. Nur Schreiboperationen werden an das neu hinzugefügte Replikat gesendet.</p>
+</li>
+<li>
+<p>Startet einen Hintergrundprozess, um alle bis auf die neueste Differencing-Festplatte von einem guten Replikat zur leeren Replikat zu synchronisieren.</p>
+</li>
+<li>
+<p>Nachdem die Synchronisierung abgeschlossen ist, haben alle Replikate nun konsistente Daten, und der Volumenmanager setzt das neue Replikat auf RW (Lese- und Schreibzugriff)-Modus.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Schließlich ruft der Longhorn Manager die Longhorn Engine auf, um das fehlerhafte Replikat aus dem Replikatset des Volumens zu entfernen.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_2_4_aufnahmen"><a class="anchor" href="#_2_4_aufnahmen"></a>2.4. Aufnahmen</h3>
+<div class="paragraph">
+<p>Die Snapshot-Funktion ermöglicht es, ein Volumen auf einen bestimmten Punkt in der Geschichte zurückzusetzen. Sicherungen im sekundären Speicher können ebenfalls aus einem Snapshot erstellt werden.</p>
+</div>
+<div class="paragraph">
+<p>Wenn ein Volume aus einem Snapshot wiederhergestellt wird, spiegelt es den Zustand des Volumes zum Zeitpunkt der Erstellung des Snapshots wider.</p>
+</div>
+<div class="paragraph">
+<p>Die Snapshot-Funktion ist auch Teil des SUSE Storage Wiederherstellungsprozesses. Jedes Mal, wenn SUSE Storage erkennt, dass ein Replikat nicht verfügbar ist, wird automatisch ein (System-)Snapshot erstellt und auf einem anderen Knoten mit dem Wiederaufbau begonnen.</p>
+</div>
+<div class="sect3">
+<h4 id="_2_4_1_wie_snapshots_funktionieren"><a class="anchor" href="#_2_4_1_wie_snapshots_funktionieren"></a>2.4.1. Wie Snapshots funktionieren</h4>
+<div class="paragraph">
+<p>Ein Snapshot ist wie eine Schicht eines Bildes, wobei der älteste Snapshot als Basisschicht verwendet wird und neuere Snapshots darüber liegen. Daten werden nur in einen neuen Snapshot aufgenommen, wenn sie Daten in einem älteren Snapshot überschreiben. Zusammen zeigt eine Kette von Snapshots den aktuellen Zustand der Daten. Für eine detailliertere Aufschlüsselung, wie Daten von einem Replikat gelesen werden, siehe den Abschnitt über <a href="#_2_3_1_how_read_and_write_operations_work_for_replicas">Lese- und Schreiboperationen für Replikate.</a></p>
+</div>
+<div class="paragraph">
+<p>Snapshots können nach ihrer Erstellung nicht mehr verändert werden, es sei denn, ein Snapshot wird gelöscht, in diesem Fall werden seine Änderungen mit dem nächstjüngsten Snapshot zusammengeführt. Neue Daten werden immer in die Live-Version geschrieben. Neue Snapshots werden immer aus Live-Daten erstellt.</p>
+</div>
+<div class="paragraph">
+<p>Um einen neuen Snapshot zu erstellen, werden die Live-Daten zum neuesten Snapshot. Dann wird eine neue, leere Version der Live-Daten erstellt, die die alten Live-Daten ersetzt.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_2_4_2_wiederkehrende_snapshots"><a class="anchor" href="#_2_4_2_wiederkehrende_snapshots"></a>2.4.2. Wiederkehrende Snapshots</h4>
+<div class="paragraph">
+<p>Um den Platz, den Snapshots einnehmen, zu reduzieren, kann der Benutzer einen wiederkehrenden Snapshot oder eine Sicherung mit einer Anzahl von zu behaltenden Snapshots planen, die automatisch einen neuen Snapshot/eine neue Sicherung nach Zeitplan erstellt und dann übermäßige Snapshots/Sicherungen bereinigt.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_2_4_3_löschen_von_snapshots"><a class="anchor" href="#_2_4_3_löschen_von_snapshots"></a>2.4.3. Löschen von Snapshots</h4>
+<div class="paragraph">
+<p>Unerwünschte Snapshots können manuell über die Benutzeroberfläche gelöscht werden. Alle systemgenerierten Snapshots werden automatisch zur Löschung markiert, wenn die Löschung eines Snapshots ausgelöst wurde.</p>
+</div>
+<div class="paragraph">
+<p>Der neueste Snapshot kann nicht gelöscht werden. Das liegt daran, dass, wann immer ein Snapshot gelöscht wird, SUSE Storage seinen Inhalt mit dem nächsten Snapshot zusammenführt, sodass der nächste und spätere Snapshot den korrekten Inhalt behält.</p>
+</div>
+<div class="paragraph">
+<p>Aber SUSE Storage kann das für den neuesten Snapshot nicht tun, da es keinen neueren Snapshot gibt, mit dem der gelöschte Snapshot zusammengeführt werden könnte. Der nächste &#8220;snapshot&#8221; des neuesten Snapshots ist das Live-Volume (Volume-Head), das gerade vom Benutzer gelesen/geschrieben wird, sodass der Zusammenführungsprozess nicht stattfinden kann.</p>
+</div>
+<div class="paragraph">
+<p>Stattdessen wird der neueste Snapshot als entfernt markiert, und er wird beim nächsten Mal, wenn möglich, bereinigt.</p>
+</div>
+<div class="paragraph">
+<p>Um den neuesten Snapshot zu bereinigen, kann ein neuer Snapshot erstellt werden, dann kann der vorherige "neueste" Snapshot entfernt werden.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_2_4_4_snapshots_speichern"><a class="anchor" href="#_2_4_4_snapshots_speichern"></a>2.4.4. Snapshots speichern</h4>
+<div class="paragraph">
+<p>Snapshots werden lokal gespeichert, als Teil jedes Replikats eines Volumes. Sie werden auf der Festplatte der Knoten innerhalb des Kubernetes-Clusters gespeichert.
+Snapshots werden am selben Ort wie die Volumendaten auf der physischen Festplatte des Hosts gespeichert.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_2_4_5_crash_konsistenz"><a class="anchor" href="#_2_4_5_crash_konsistenz"></a>2.4.5. Crash-Konsistenz</h4>
+<div class="paragraph">
+<p>SUSE Storage ist eine crash-konsistente Blockspeicherlösung.</p>
+</div>
+<div class="paragraph">
+<p>Es ist normal, dass das Betriebssystem Inhalte im Cache speichert, bevor sie in den Blockspeicher geschrieben werden. Das bedeutet, dass, wenn alle Replikate ausgefallen sind, SUSE Storage möglicherweise nicht die Änderungen enthält, die unmittelbar vor dem Herunterfahren aufgetreten sind, da der Inhalt im Cache auf Betriebssystemebene gehalten wurde und noch nicht an das SUSE Storage-System übertragen wurde.</p>
+</div>
+<div class="paragraph">
+<p>Dieses Problem ähnelt Problemen, die auftreten könnten, wenn Ihr Desktop-Computer aufgrund eines Stromausfalls heruntergefahren wird. Nach der Wiederherstellung der Stromversorgung könnten Sie einige beschädigte Dateien auf der Festplatte finden.</p>
+</div>
+<div class="paragraph">
+<p>Um die Daten zu einem beliebigen Zeitpunkt in den Blockspeicher zu schreiben, kann der Befehl "sync" manuell auf dem Knoten ausgeführt werden, oder die Festplatte kann ausgehängt werden. Das Betriebssystem würde in beiden Situationen den Inhalt aus dem Cache in den Blockspeicher schreiben.</p>
+</div>
+<div class="paragraph">
+<p>SUSE Storage führt den Befehl "sync" automatisch aus, bevor ein Snapshot erstellt wird.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_3_backups_und_sekundärspeicher"><a class="anchor" href="#_3_backups_und_sekundärspeicher"></a>3. Backups und Sekundärspeicher</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Ein Backup ist ein Objekt im Backupstore, der ein NFS- oder S3-kompatibler Objektspeicher ist, der extern zum Kubernetes-Cluster ist. Backups bieten eine Form von Sekundärspeicher, sodass selbst wenn Ihr Kubernetes-Cluster nicht verfügbar ist, Ihre Daten weiterhin abgerufen werden können.</p>
+</div>
+<div class="paragraph">
+<p>Da die Volumenreplikation synchronisiert ist und aufgrund der Netzwerklatenz ist es schwierig, eine regionsübergreifende Replikation durchzuführen. Der Backupstore wird auch als Medium verwendet, um dieses Problem zu adressieren.</p>
+</div>
+<div class="paragraph">
+<p>Wenn das Backup-Ziel in der Benutzeroberfläche konfiguriert ist (<strong>Backup und Wiederherstellung &#8594; Backup-Ziele</strong>), kann SUSE Storage eine Verbindung zum Backupstore herstellen und eine Liste der vorhandenen Backups auf dem <strong>Backup</strong>-Bildschirm anzeigen.</p>
+</div>
+<div class="paragraph">
+<p>Wenn SUSE Storage in einem zweiten Kubernetes-Cluster läuft, kann es auch Disaster-Recovery-Volumes mit den Sicherungen im Sekundärspeicher synchronisieren, sodass Ihre Daten im zweiten Kubernetes-Cluster schneller wiederhergestellt werden können.</p>
+</div>
+<div class="sect2">
+<h3 id="_3_1_wie_sicherungen_funktionieren"><a class="anchor" href="#_3_1_wie_sicherungen_funktionieren"></a>3.1. Wie Sicherungen funktionieren</h3>
+<div class="paragraph">
+<p>Eine Sicherung wird erstellt, indem ein Snapshot als Quelle verwendet wird, sodass sie den Zustand der Daten des Volumes zum Zeitpunkt der Erstellung des Snapshots widerspiegelt. Eine Sicherung wird remote außerhalb des Clusters gespeichert.</p>
+</div>
+<div class="paragraph">
+<p>Im Gegensatz zu einem Snapshot kann eine Sicherung als eine flachere Version einer Kette von Snapshots betrachtet werden. Ähnlich wie Informationen verloren gehen, wenn ein geschichtetes Bild in ein flaches Bild umgewandelt wird, gehen auch Daten verloren, wenn eine Kette von Snapshots in eine Sicherung umgewandelt wird. Bei beiden Konversionen würden alle überschriebenen Daten verloren gehen.</p>
+</div>
+<div class="paragraph">
+<p>Da Sicherungen keine Snapshots enthalten, enthalten sie nicht die Historie der Änderungen an den Volumendaten. Nachdem Sie ein Volume aus einer Sicherung wiederhergestellt haben, enthält das Volume zunächst einen Snapshot. Dieser Snapshot ist eine zusammengefasste Version aller Snapshots in der ursprünglichen Kette und spiegelt die aktuellen Daten des Volumes zum Zeitpunkt der Erstellung der Sicherung wider.</p>
+</div>
+<div class="paragraph">
+<p>Während Snapshots Hunderte von Gigabyte groß sein können, bestehen Sicherungen aus 2 MB großen Dateien.</p>
+</div>
+<div class="paragraph">
+<p>Jede neue Sicherung des gleichen ursprünglichen Volumes ist inkrementell und erkennt und überträgt die geänderten Blöcke zwischen den Snapshots. Dies ist eine relativ einfache Aufgabe, da jeder Snapshot eine <a href="https://en.wikipedia.org/wiki/Data_differencing">Differenzdatei</a> ist und nur die Änderungen vom letzten Snapshot speichert. Dieses Design bedeutet auch, dass, wenn keine Blöcke geändert wurden und eine Sicherung erstellt wird, diese Sicherung im Backupstore als 0 Bytes angezeigt wird. Wenn Sie jedoch von dieser Sicherung wiederherstellen würden, würde sie dennoch die vollständigen Volumendaten enthalten, da sie die erforderlichen Blöcke, die bereits im Sicherungsspeicher vorhanden sind und für eine Sicherung erforderlich sind, wiederherstellen würde.</p>
+</div>
+<div class="paragraph">
+<p>Um zu vermeiden, dass eine sehr große Anzahl kleiner Speicherblöcke gespeichert wird, führt SUSE Storage Sicherungsoperationen mit 2 MB großen Blöcken durch. Das bedeutet, dass, wenn ein 4K-Block innerhalb einer 2MB-Grenze geändert wird, SUSE Storage den gesamten 2MB-Block sichern wird. Dies bietet das richtige Gleichgewicht zwischen Handhabbarkeit und Effizienz.</p>
+</div>
+<div class="paragraph">
+<p><strong>Abbildung 3. Die Beziehung zwischen Sicherungen im Sekundärspeicher und Snapshots im Primärspeicher</strong></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/diagrams/concepts/longhorn-backup-creation.png" alt="die Beziehung zwischen Sicherungen im Sekundärspeicher und Snapshots im Primärspeicher">
+</div>
+</div>
+<div class="paragraph">
+<p>Die obige Abbildung beschreibt, wie Sicherungen aus Snapshots erstellt werden:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Die Primärspeicher-Seite des Diagramms zeigt ein Replikat eines SUSE Storage Volumens im Kubernetes-Cluster. Das Replikat besteht aus einer Kette von vier Snapshots. In der Reihenfolge vom neuesten zum ältesten sind die Snapshots Live Data, snap3, snap2 und snap1.</p>
+</li>
+<li>
+<p>Die Sekundärspeicher-Seite des Diagramms zeigt zwei Sicherungen in einem externen, S3-kompatiblen Objektspeicher.</p>
+</li>
+<li>
+<p>Im Sekundärspeicher zeigt die Farbkennzeichnung für backup-from-snap2, dass sie sowohl die blaue Änderung von snap1 als auch die grünen Änderungen von snap2 enthält. Keine Änderungen von snap2 haben die Daten in snap1 überschrieben, daher sind die Änderungen sowohl von snap1 als auch von snap2 in backup-from-snap2 enthalten.</p>
+</li>
+<li>
+<p>Das Backup mit dem Namen backup-from-snap3 spiegelt den Zustand der Daten des Volumens zum Zeitpunkt der Erstellung von snap3 wider. Die Farbkennzeichnung und die Pfeile zeigen an, dass backup-from-snap3 alle dunkelroten Änderungen von snap3 enthält, aber nur eine der grünen Änderungen von snap2. Das liegt daran, dass eine der roten Änderungen in snap3 eine der grünen Änderungen in snap2 überschrieben hat. Dies veranschaulicht, wie Backups nicht die vollständige Historie der Änderungen enthalten, da sie Snapshots mit den vorhergehenden Snapshots vermischen.</p>
+</li>
+<li>
+<p>Jedes Backup verwaltet seinen eigenen Satz von 2 MB Blöcken. Jeder 2 MB Block wird nur einmal gesichert. Die beiden Backups teilen sich einen grünen Block und einen blauen Block.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Wenn ein Backup aus dem Sekundärspeicher gelöscht wird, SUSE Storage löscht nicht alle Blöcke, die es verwendet. Stattdessen führt es regelmäßig eine Garbage Collection durch, um ungenutzte Blöcke aus dem Sekundärspeicher zu bereinigen.</p>
+</div>
+<div class="paragraph">
+<p>Die 2 MB Blöcke für alle Backups, die zu demselben Volumen gehören, werden unter einem gemeinsamen Verzeichnis gespeichert und können daher über mehrere Backups hinweg geteilt werden.</p>
+</div>
+<div class="paragraph">
+<p>Um Speicherplatz zu sparen, können die 2 MB Blöcke, die sich zwischen den Backups nicht geändert haben, für mehrere Backups, die dasselbe Backup-Volumen im Sekundärspeicher teilen, wiederverwendet werden. Da Prüfsummen verwendet werden, um die 2 MB Blöcke zu adressieren, erreichen wir ein gewisses Maß an Duplikatsvermeidung für die 2 MB Blöcke im selben Volumen.</p>
+</div>
+<div class="paragraph">
+<p>Metadaten auf Volumenebene werden in volume.cfg gespeichert. Die Metadatendateien für jedes Backup (z. B. snap2.cfg) sind relativ klein, da sie nur die <a href="https://en.wikipedia.org/wiki/Offset_(computer_science)">Offsets</a> und <a href="https://en.wikipedia.org/wiki/Checksum">Prüfsummen</a> aller 2 MB Blöcke im Backup enthalten.</p>
+</div>
+<div class="paragraph">
+<p>Jeder 2 MB Block (.blk-Datei) wird komprimiert.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_3_2_wiederkehrende_sicherungen"><a class="anchor" href="#_3_2_wiederkehrende_sicherungen"></a>3.2. Wiederkehrende Sicherungen</h3>
+<div class="paragraph">
+<p>Sicherungsoperationen können mit der Funktion für wiederkehrende Snapshots und Sicherungen geplant werden, sie können jedoch auch nach Bedarf durchgeführt werden.</p>
+</div>
+<div class="paragraph">
+<p>Es wird empfohlen, wiederkehrende Sicherungen für Ihre Volumes zu planen. Wenn ein Backupstore nicht verfügbar ist, wird empfohlen, stattdessen den wiederkehrenden Snapshot zu planen.</p>
+</div>
+<div class="paragraph">
+<p>Die Erstellung von Sicherungen umfasst das Kopieren der Daten über das Netzwerk, daher wird es Zeit in Anspruch nehmen.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_3_3_disaster_recovery_volumes"><a class="anchor" href="#_3_3_disaster_recovery_volumes"></a>3.3. Disaster Recovery Volumes</h3>
+<div class="paragraph">
+<p>Ein Disaster Recovery (DR) Volumen ist ein spezielles Volumen, das Daten in einem Backup-Cluster speichert, falls der gesamte Haupt-Cluster ausfällt. DR-Volumes werden verwendet, um die Widerstandsfähigkeit der SUSE Storage-Volumes zu erhöhen.</p>
+</div>
+<div class="paragraph">
+<p>Da der Hauptzweck eines DR-Volumes darin besteht, Daten aus dem Backup wiederherzustellen, unterstützt dieser Volumentyp die folgenden Aktionen nicht, bevor er aktiviert wird:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Snapshots erstellen, löschen und zurücksetzen</p>
+</li>
+<li>
+<p>Erstellen von Sicherungen</p>
+</li>
+<li>
+<p>Persistente Volumes erstellen</p>
+</li>
+<li>
+<p>Persistente Volume Claims erstellen</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Ein DR-Volumen kann aus einem Backup eines Volumens im Backupstore erstellt werden. Nachdem das DR-Volumen erstellt wurde, wird SUSE Storage sein ursprüngliches Backup-Volumen überwachen und schrittweise aus dem neuesten Backup wiederherstellen. Ein Backup-Volumen ist ein Objekt im Sicherungsspeicher, das mehrere Sicherungen desselben Volumens enthält.</p>
+</div>
+<div class="paragraph">
+<p>Wenn das ursprüngliche Volumen im Haupt-Cluster ausfällt, kann das DR-Volumen sofort im Backup-Cluster aktiviert werden, wodurch die Zeit zur Wiederherstellung der Daten vom Backup-Speicher auf das Volumen im Backup-Cluster verkürzt wird.</p>
+</div>
+<div class="paragraph">
+<p>Wenn ein DR-Volumen aktiviert wird, wird SUSE Storage das letzte Backup des ursprünglichen Volumens überprüfen. Wenn dieses Backup noch nicht wiederhergestellt wurde, wird die Wiederherstellung gestartet, und die Aktivierungsaktion schlägt fehl. Benutzer müssen warten, bis die Wiederherstellung abgeschlossen ist, bevor sie es erneut versuchen.</p>
+</div>
+<div class="paragraph">
+<p>Das Backup-Ziel in den Einstellungen kann nicht aktualisiert werden, wenn DR-Volumes vorhanden sind.</p>
+</div>
+<div class="paragraph">
+<p>Nachdem ein DR-Volumen aktiviert wurde, wird es zu einem normalen SUSE Storage Volumen und kann nicht deaktiviert werden.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_3_4_backupstore_update_intervalle_rto_und_rpo"><a class="anchor" href="#_3_4_backupstore_update_intervalle_rto_und_rpo"></a>3.4. Backupstore-Update-Intervalle, RTO und RPO</h3>
+<div class="paragraph">
+<p>Die inkrementelle Wiederherstellung wird normalerweise durch das regelmäßige Backupstore-Update ausgelöst. Sie können das Update-Intervall auf dem Bildschirm der Backup-Ziel-Einstellungen (<strong>Backup und Wiederherstellung &#8594; Backup-Ziele</strong>) festlegen.</p>
+</div>
+<div class="paragraph">
+<p>Beachten Sie, dass dieses Intervall potenziell das Recovery Time Objective (RTO) beeinflussen kann. Wenn es zu lang ist, kann es eine große Menge an Daten geben, die für das DR-Volumen wiederhergestellt werden müssen, was lange dauern wird.</p>
+</div>
+<div class="paragraph">
+<p>Was das Recovery Point Objective (RPO) betrifft, so wird es durch die wiederkehrende Backup-Planung des Backup-Volumes bestimmt. Wenn die wiederkehrende Backup-Planung für das normale Volume A jede Stunde ein Backup erstellt, beträgt das RPO eine Stunde. Hier können Sie überprüfen, wie Sie wiederkehrende Backups in SUSE Storage einrichten können.</p>
+</div>
+<div class="paragraph">
+<p>Die folgende Analyse geht davon aus, dass das Volume jede Stunde ein Backup erstellt und dass die inkrementelle Wiederherstellung von Daten aus einem Backup fünf Minuten dauert:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Wenn das Backupstore-Abfrageintervall 30 Minuten beträgt, gibt es höchstens ein Backup an Daten seit der letzten Wiederherstellung. Die Zeit für die Wiederherstellung eines Backups beträgt fünf Minuten, sodass das RTO fünf Minuten betragen würde.</p>
+</li>
+<li>
+<p>Wenn das Backupstore-Abfrageintervall 12 Stunden beträgt, gibt es höchstens 12 Backups an Daten seit der letzten Wiederherstellung. Die Zeit für die Wiederherstellung der Backups beträgt 5 * 12 = 60 Minuten, sodass das RTO 60 Minuten betragen würde.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_appendix_how_persistent_storage_works_in_kubernetes"><a class="anchor" href="#_appendix_how_persistent_storage_works_in_kubernetes"></a>Anhang: Wie persistenter Speicher in Kubernetes funktioniert</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Um persistenten Speicher in Kubernetes zu verstehen, ist es wichtig, Volumes, PersistentVolumes, PersistentVolumeClaims und StorageClasses zu verstehen und wie sie zusammenarbeiten.</p>
+</div>
+<div class="paragraph">
+<p>Eine wichtige Eigenschaft eines Kubernetes-Volumes ist, dass es den gleichen Lebenszyklus hat wie der Pod, zu dem es gehört. Das Volume geht verloren, wenn der Pod nicht mehr vorhanden ist. Im Gegensatz dazu bleibt ein PersistentVolume im System bestehen, bis Benutzer es löschen. Volumen können auch verwendet werden, um Daten zwischen Containern innerhalb desselben Pods zu teilen, aber dies ist nicht der Hauptanwendungsfall, da Benutzer normalerweise nur einen Container pro Pod haben.</p>
+</div>
+<div class="paragraph">
+<p>Ein <a href="https://kubernetes.io/docs/concepts/storage/persistent-volumes/">PersistentVolume (PV)</a> ist ein Stück persistenter Speicher im Kubernetes-Cluster, während ein <a href="https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims">PersistentVolumeClaim (PVC)</a> eine Anfrage nach Speicher ist. <a href="https://kubernetes.io/docs/concepts/storage/storage-classes/">StorageClasses</a> ermöglichen es, neuen Speicher dynamisch nach Bedarf für Arbeitslasten bereitzustellen.</p>
+</div>
+<div class="sect2">
+<h3 id="_wie_kubernetes_arbeitslasten_neuen_und_bestehenden_persistenten_speicher_nutzen"><a class="anchor" href="#_wie_kubernetes_arbeitslasten_neuen_und_bestehenden_persistenten_speicher_nutzen"></a>Wie Kubernetes-Arbeitslasten neuen und bestehenden persistenten Speicher nutzen.</h3>
+<div class="paragraph">
+<p>Im Großen und Ganzen gibt es zwei Hauptwege, um persistenten Speicher in Kubernetes zu nutzen:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Einen bestehenden persistenten Speicher verwenden.</p>
+</li>
+<li>
+<p>Neue persistente Volumen dynamisch bereitstellen.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_bestehende_speicherbereitstellung"><a class="anchor" href="#_bestehende_speicherbereitstellung"></a>Bestehende Speicherbereitstellung.</h3>
+<div class="paragraph">
+<p>Um ein bestehendes PV zu verwenden, muss Ihre Anwendung ein PVC verwenden, das an ein PV gebunden ist, und das PV sollte die minimalen Ressourcen enthalten, die das PVC benötigt.</p>
+</div>
+<div class="paragraph">
+<p>Mit anderen Worten, ein typischer Arbeitsablauf zur Einrichtung von bestehendem Speicher in Kubernetes sieht wie folgt aus:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Richten Sie persistente Speicher-Volumen ein, im Sinne von physischem oder virtuellem Speicher, auf den Sie Zugriff haben.</p>
+</li>
+<li>
+<p>Fügen Sie ein PV hinzu, das auf den persistenten Speicher verweist.</p>
+</li>
+<li>
+<p>Fügen Sie ein PVC hinzu, das auf das PV verweist.</p>
+</li>
+<li>
+<p>Binden Sie das PVC als Volumen in Ihrer Arbeitslast ein.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Wenn ein PVC ein Stück Speicher anfordert, wird der Kubernetes-API-Server versuchen, dieses PVC mit einem vorab zugewiesenen PV abzugleichen, sobald passende Volumes verfügbar sind. Wenn eine Übereinstimmung gefunden werden kann, wird das PVC an das PV gebunden, und der Benutzer beginnt, dieses vorab zugewiesene Stück Speicher zu nutzen.</p>
+</div>
+<div class="paragraph">
+<p>Wenn kein passendes Volume vorhanden ist, bleiben PersistentVolumeClaims unbegrenzt ungebunden. Zum Beispiel würde ein Cluster, das mit vielen 50 Gi PVs bereitgestellt wurde, nicht mit einem PVC übereinstimmen, das 100 Gi anfordert. Das PVC könnte gebunden werden, nachdem ein 100 Gi PV zum Cluster hinzugefügt wurde.</p>
+</div>
+<div class="paragraph">
+<p>Mit anderen Worten, Sie können unbegrenzt PVCs erstellen, aber sie werden nur an PVs gebunden, wenn der Kubernetes-Master einen ausreichenden PV finden kann, der mindestens den für das PVC erforderlichen Speicherplatz hat.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_dynamische_speicherbereitstellung"><a class="anchor" href="#_dynamische_speicherbereitstellung"></a>Dynamische Speicherbereitstellung</h3>
+<div class="paragraph">
+<p>Für die dynamische Speicherbereitstellung muss Ihre Anwendung ein PVC verwenden, das an eine StorageClass gebunden ist. Die StorageClass enthält die Berechtigung zur Bereitstellung neuer persistenter Volumen.</p>
+</div>
+<div class="paragraph">
+<p>Der gesamte Workflow zur dynamischen Bereitstellung neuer Speicherressourcen in Kubernetes umfasst eine StorageClass-Ressource:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Fügen Sie eine StorageClass hinzu und konfigurieren Sie sie so, dass sie automatisch neuen Speicher aus dem Speicher bereitstellt, auf den Sie Zugriff haben.</p>
+</li>
+<li>
+<p>Fügen Sie ein PVC hinzu, das auf die StorageClass verweist.</p>
+</li>
+<li>
+<p>Binden Sie das PVC als Volumen für Ihre Arbeitslast ein.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Kubernetes-Cluster-Administratoren können eine Kubernetes StorageClass verwenden, um die &#8220;classes&#8221; des Speichers zu beschreiben, den sie anbieten. StorageClasses können unterschiedliche Kapazitätsgrenzen, unterschiedliche IOPS oder andere Parameter haben, die der Bereitsteller unterstützt. Der spezifische Bereitsteller des Speicheranbieters wird zusammen mit der StorageClass verwendet, um PV automatisch zuzuweisen, gemäß den in dem StorageClass-Objekt festgelegten Parametern. Außerdem hat der Bereitsteller jetzt die Möglichkeit, die Ressourcenquoten und Berechtigungsanforderungen für Benutzer durchzusetzen. In diesem Design sind die Administratoren von der unnötigen Arbeit befreit, den Bedarf an PVs vorherzusagen und sie zuzuweisen.</p>
+</div>
+<div class="paragraph">
+<p>Wenn eine StorageClass verwendet wird, ist ein Kubernetes-Administrator nicht dafür verantwortlich, jedes Stück Speicher zuzuweisen. Der Administrator muss den Benutzern lediglich die Berechtigung geben, auf einen bestimmten Speicherpool zuzugreifen, und das Kontingent für den Benutzer festlegen. Dann kann der Benutzer die benötigten Teile des Speichers aus dem Speicherpool herausnehmen.</p>
+</div>
+<div class="paragraph">
+<p>StorageClasses können auch verwendet werden, ohne explizit ein StorageClass-Objekt in Kubernetes zu erstellen. Da die StorageClass auch ein Feld ist, das verwendet wird, um ein PVC mit einem PV abzugleichen, kann ein PV manuell mit einem benutzerdefinierten StorageClass-Namen erstellt werden, und dann kann ein PVC erstellt werden, das nach einem PV mit diesem StorageClass-Namen fragt. Kubernetes kann dann Ihr PVC mit dem PV mit dem angegebenen StorageClass-Namen binden, selbst wenn das StorageClass-Objekt nicht als Kubernetes-Ressource existiert.</p>
+</div>
+<div class="paragraph">
+<p>SUSE Storage führt eine StorageClass ein, damit Ihre Kubernetes-Arbeitslasten nach Bedarf Teile Ihres persistenten Speichers herausnehmen können.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_horizontale_skalierung_für_kubernetes_workloads_mit_persistentem_speicher"><a class="anchor" href="#_horizontale_skalierung_für_kubernetes_workloads_mit_persistentem_speicher"></a>Horizontale Skalierung für Kubernetes-Workloads mit persistentem Speicher</h3>
+<div class="paragraph">
+<p>Das VolumeClaimTemplate ist eine Eigenschaft der StatefulSet-Spezifikation, und es bietet eine Möglichkeit, damit die Blockspeicherlösung horizontal für einen Kubernetes-Workload skaliert.</p>
+</div>
+<div class="paragraph">
+<p>Diese Eigenschaft kann verwendet werden, um passende PVs und PVCs für Pods zu erstellen, die von einem StatefulSet erstellt wurden.</p>
+</div>
+<div class="paragraph">
+<p>Diese PVCs werden mit einer StorageClass erstellt, sodass sie automatisch eingerichtet werden können, wenn das StatefulSet hochskaliert.</p>
+</div>
+<div class="paragraph">
+<p>Wenn ein StatefulSet herunter skaliert, bleiben die zusätzlichen PVs/PVCs im Cluster und werden wiederverwendet, wenn das StatefulSet erneut hochskaliert.</p>
+</div>
+<div class="paragraph">
+<p>Das VolumeClaimTemplate ist wichtig für Blockspeicherlösungen wie EBS und SUSE Storage. Da diese Lösungen von Natur aus <a href="https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes">ReadWriteOnce,</a> sind, können sie nicht zwischen den Pods geteilt werden.</p>
+</div>
+<div class="paragraph">
+<p>Deployments funktionieren nicht gut mit persistentem Speicher, wenn mehr als ein Pod mit persistenten Daten läuft. Für mehr als einen Pod sollte ein StatefulSet verwendet werden.</p>
+</div>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<script src="../../../../_/js/site.js"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+<script src="../../../../_/js/vendor/lunr.js"></script>
+<script src="../../../../_/js/vendor/lunr-languages.js"></script>
+<script src="../../../../_/js/search-ui.js" id="search-ui-script" data-site-root-path="../../../.." data-snippet-length="100" data-stylesheet="../../../../_/css/search.css"></script>
+<script async src="../../../../search-index.js"></script>
+<script src="../../../../_/js/vendor/langSelection.js"></script>
+<script async src="../../../../_/js/vendor/tabs.js"></script>
+
+
+<script src="../../../../_/js/CNLanguageSwitcher.js"></script>
+  </body>
+</html>

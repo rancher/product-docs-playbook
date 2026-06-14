@@ -1,0 +1,1432 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Guía de Mantenimiento de Nodos y Actualización de Kubernetes | SUSE® Storage  1.11 (Latest)</title>
+    <link rel="canonical" href="https://documentation.suse.com/cloudnative/storage/1.11/es/troubleshooting-maintenance/maintenance.html">
+    <link rel="prev" href="v2-data-engine-issues.html">
+    <link rel="next" href="../glossary/glossary.html">
+    <meta name="generator" content="Antora 3.1.14">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+<meta http-equiv="last-modified" content="2025-12-22"/>
+<link rel="stylesheet" href="../../../../_/css/search.css">
+<link rel="icon" href="../../../../_/img/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="../../../../_/css/font-styles.css">
+<link rel="stylesheet" href="../../../../_/fonts/css/all.css">
+<link rel="stylesheet" href="../../../../_/css/site-extra.css">
+<link rel="stylesheet" href="../../../../_/css/vendor/tabs.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap&family=SUSE+Mono:ital,wght@0,100..800;1,100..800" rel="stylesheet">
+<link href="https://documentation.suse.com/docserv/res/fonts/poppins/poppins.css" rel="stylesheet">
+<link rel="stylesheet" href="../../../../_/css/vendor/light.css">
+<script src="/docserv/res/lightheaded/analytics.js" type="text/javascript"></script>
+<script type="module">
+  import { defineCustomElements, setAssetPath } from 'https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/shared-header.esm.js';
+  defineCustomElements();
+  setAssetPath("https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/assets");
+</script>
+<!-- Default English link -->
+<link href="https://documentation.suse.com/cloudnative/storage/1.11/en/troubleshooting-maintenance/maintenance.html" hreflang="x-default" rel="alternate"/>
+<!-- Link for the currently processed page -->
+<link href="https://documentation.suse.com/cloudnative/storage/1.11/es/troubleshooting-maintenance/maintenance.html" hrefLang="es-ES" rel="alternate" />
+
+<!-- JSON-LD for doc metadata -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Guía de Mantenimiento de Nodos y Actualización de Kubernetes | SUSE Storage 1.11",
+  "headline": "Guía de Mantenimiento de Nodos y Actualización de Kubernetes",
+  "description": "Guía de Mantenimiento de Nodos y Actualización de Kubernetes",
+  "inLanguage": "es",
+  "dateModified": "2025-12-22T00:00:00Z",
+  "author": {
+    "@type": "Organization",
+    "name": "SUSE Product & Solution Documentation Team",
+    "url": "https://documentation.suse.com"
+  },
+  "mentions": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "SUSE Storage",
+      "softwareVersion": "1.11",
+      "applicationCategory": "Cloud Infrastructure",
+      "operatingSystem": "Linux"
+    }
+  ],
+  "publisher": {
+    "@type": "Organization",
+    "name": "SUSE",
+    "url": "https://documentation.suse.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.suse.com/assets/img/suse-white-logo-green.svg"
+    }
+  }
+}
+</script>
+<!-- end JSON-LD for doc metadata -->
+
+<!-- SUVA - Begin Ask Geeko-->
+<!--
+searchUnifyChatbot ("Ask Geeko") Copyright ©2024 Grazitti Interactive - All Rights Reserved. NOTICE: All information contained herein is, and remains the property of Grazitti Interactive and its suppliers, if any. The intellectual and technical concepts contained herein are proprietary to Grazitti Interactive and its suppliers and may be covered by India, U.S. and Foreign Patents, patents in process, and are protected by trade secret or copyright law. Dissemination of this information or reproduction of this material is strictly forbidden unless prior written permission is obtained from Grazitti Interactive.
+-->
+<meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport"/>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/Allow/an.js?c485cb3c-93d4-4942-99e8-91f3b8ca5636"></script>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/js/index.js?q=gAAAAABp3JBN9VuEJTi5tFafLIMwgMkCPdJS3Qm56lSYx93ir3Twt9hgSvd3OHEt6-nYfSbY3yHq0Zv8PRPsSy4nbqZiaJ4cZvRc6ItVZdvwz9Urf35cH6OUyPOwdA0phlS-zVIznQ2rWW438p-91NlTHuxJuOFpnA=="></script>
+<link rel="stylesheet" href="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/css/index.css">
+<div id="searchUnifyChatbot"></div>
+<!-- SUVA - End Ask Geeko-->
+<!--BEGIN QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+<script type='text/javascript' src="../../../../_/js/qualtrics.js" defer></script>
+<!--END QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<script type="module">import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs'; mermaid.initialize({"startOnLoad":true});</script><shared-header
+language="en"
+languages='{
+    "en": { "label": "English", "url": "https://documentation.suse.com/en-us/" },
+    "de": { "label": "Deutsch", "url": "https://documentation.suse.com/de-de/" },
+    "fr": { "label": "Français", "url": "https://documentation.suse.com/fr-fr/" },
+    "es": { "label": "Español", "url": "https://documentation.suse.com/es-es/" },
+    "zh_CN": { "label": "中文", "url": "https://documentation.suse.com/zh-cn/" },
+    "pt_BR": { "label": "Português Brasileiro", "url": "https://documentation.suse.com/pt-br/" }
+}'
+enable-search='false'>
+</shared-header>
+
+<!-- Leaving as a comment, I expect it will be required again next year.
+<a target=_blank"" class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_bEiGZbUNzLD8Tcy"> Documentation survey </a>
+-->
+<div class="body">
+<div class="nav-container" data-component="storage" data-version="1.11">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title">SUSE® Storage</h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../longhorn-documentation.html">SUSE® Storage Descripción general</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../introduction/introduction.html">Introducción</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/concepts.html">Arquitectura y Conceptos</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/terminology.html">terminología</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/document-conventions.html">Convenciones de documentos</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../important-notes.html">Notas importantes</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Instalación y configuración</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/requirements.html">Requisitos</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/best-practices.html">Mejores prácticas</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../installation-setup/installation/installation.html">Instalación</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/installation/install-using-argocd.html">Instala SUSE Storage usando Argo CD</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/installation/install-using-fleet.html">Instalar SUSE Storage utilizando Fleet</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/installation/install-using-flux.html">Instalar SUSE® Storage utilizando Flux</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/installation/install-using-helm.html">Instalar SUSE Storage utilizando Helm</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/installation/install-using-helm-controller.html">Instalar SUSE Storage utilizando el controlador de Helm</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/installation/helm-values.html">Valores de Helm</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/installation/install-using-rancher.html">Instalar SUSE Storage utilizando Rancher</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/installation/rancher-windows-cluster.html">Rancher Clúster de Windows</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/installation/airgapped-environment.html">Instalar SUSE Storage en un entorno aislado.</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Configuración del sistema operativo y la distribución</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/os-distro/gke.html">Google Kubernetes Engine (GKE)</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/os-distro/k3s.html">K3s</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/setup-performance-scalability-sizing-guidelines.html">Configuración, Rendimiento, Escalabilidad y Directrices de Dimensionamiento</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/uninstallation.html">Desinstalación</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../upgrades/upgrades.html">Actualizaciones</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Actualizaciones de componentes</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../upgrades/longhorn-components/auto-upgrade-engine.html">Actualizar automáticamente el Longhorn Engine</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../upgrades/longhorn-components/instance-manager-pods-during-upgrade.html">Pods del gestor de instancias durante la actualización de versión</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../upgrades/longhorn-components/manually-upgrade-engine.html">Actualiza manualmente el Longhorn Engine</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../upgrades/longhorn-components/upgrade-longhorn-manager.html">Actualizar Longhorn Manager</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Actualizaciones de Kubernetes</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../upgrades/kubernetes/upgrade-k8s-on-aks.html">Actualiza la versión de Kubernetes en Azure Kubernetes Service (AKS)</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../upgrades/kubernetes/upgrade-k8s-on-eks.html">Actualiza la versión de Kubernetes en Amazon Elastic Kubernetes Service (Amazon EKS)</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../upgrades/kubernetes/upgrade-k8s-on-gke.html">Actualiza la versión de Kubernetes en Google Kubernetes Engine (GKE)</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Migración</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../migration/migration.html">Migrando a SUSE Storage</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">SUSE® Storage</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../longhorn-system/system-access/system-access.html">Acceso al sistema</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../longhorn-system/system-access/longhorn-ui.html">Accede a la interfaz de usuario</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../longhorn-system/system-access/create-ingress.html">Crea un Ingress con autenticación básica (nginx)</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../longhorn-system/system-access/longhorn-ingress-traefik.html">Crear un Ingress con Autenticación Básica (Traefik)</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../longhorn-system/system-access/longhorn-cli.html">Interfaz de línea de comandos (CLI)</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../longhorn-system/system-access/install-longhorn-cli.html">Instala la CLI</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../longhorn-system/system-access/longhorn-httproute.html">Crea un HTTPRoute con Gateway API</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../longhorn-system/system-access/longhorn-python-client.html">Cliente de Python</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../longhorn-system/networking/networking.html">Conectividad</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../longhorn-system/networking/storage-network.html">Red de Almacenamiento</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../longhorn-system/components/csi-pod-antiaffinity-preset.html">Anti-afinidad de pods del componente CSI</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../longhorn-system/mtls-support.html">Soporte de TLS mutuo (mTLS)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../longhorn-system/customize-default-settings.html">Personalizar la configuración predeterminada</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../longhorn-system/settings.html">Settings (Configuración posterior al failback)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Motor de datos V2 (Vista técnica)</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../longhorn-system/v2-data-engine/v2-data-engine.html">Motor de Datos V2 (Vista previa técnica)</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../longhorn-system/v2-data-engine/features/features.html">Características del motor de datos V2</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../longhorn-system/v2-data-engine/features/selective-engine-activation.html">Activación selectiva del motor de datos V2</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../longhorn-system/v2-data-engine/features/ublk-frontend-support.html">Soporte de UBLK front end</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../longhorn-system/v2-data-engine/features/node-disk-support.html">Soporte de Disco de Nodo</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../longhorn-system/v2-data-engine/features/replica-rebuild-qos.html">Reconstrucción de réplica QoS</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../longhorn-system/v2-data-engine/features/interrupt-mode.html">Modo de interrupción</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../longhorn-system/v2-data-engine/features/volume-expansion.html">Expansión de volumen</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../longhorn-system/v2-data-engine/features/volume-clone.html">Clonación de Volumen</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../longhorn-system/v2-data-engine/prerequisites.html">Requisitos previos</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../longhorn-system/v2-data-engine/quick-start-guide.html">Quick Start Guide (Guía de inicio rápido)</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../longhorn-system/v2-data-engine/performance.html">Rendimiento</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../longhorn-system/examples-resources.html">Ejemplos de recursos de Kubernetes que utilizan SUSE® Storage</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../longhorn-system/migrate-flexvolume.html">Migra del controlador Flexvolume a CSI</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Nodos</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../nodes/node-space-usage.html">Uso del espacio del nodo</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../nodes/default-disk-and-node-config.html">Configurar los ajustes predeterminados de nodos y discos</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../nodes/storage-tags.html">Etiquetas de almacenamiento</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../nodes/multiple-disks.html">Múltiples discos</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../nodes/disks-or-nodes-eviction.html">Desalojo de réplicas en discos o nodos deshabilitados</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../nodes/scheduling.html">Programación</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../nodes/node-conditions.html">Condiciones del nodo</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../nodes/node-selector.html">Selector de nodo</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../nodes/taints-tolerations.html">Taints y Tolerations</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../nodes/priority-class.html">Clase de Prioridad</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../nodes/topology-aware-provisioning.html">Provisionamiento consciente de la topología</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Kubernetes gestionado</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../nodes/managed-kubernetes/aks-managed-node-groups.html">Grupos de nodos gestionados en Azure Kubernetes Service (AKS)</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../nodes/managed-kubernetes/eks-managed-node-pools.html">Grupos de nodos gestionados en Amazon Elastic Kubernetes Service (Amazon EKS)</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../nodes/managed-kubernetes/gke-managed-node-pools.html">Grupos de nodos gestionados en Google Kubernetes Engine (GKE)</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Volúmenes</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/create-volumes.html">Crear volúmenes</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/pvc-ownership-and-permission.html">Propiedad y Permiso de PVC</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/rwx-volumes.html">Volúmenes ReadWriteMany (RWX)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/clone-volumes.html">Clonar volúmenes</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/containerized-data-importer.html">SUSE Storage con CDI Importaciones</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/detach-volumes.html">Desacoplar volúmenes</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/delete-volumes.html">Eliminar volúmenes</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/use-as-iscsi-target.html">Utiliza un volumen como objetivo iSCSI</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/identify-workloads.html">Identificar cargas de trabajo que utilizan un volumen</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/volume-size.html">Tamaño del volumen</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/volume-expansion.html">Expansión de volumen</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/volume-attachment.html">SUSE Storage VolumeAttachment</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/trim-filesystem.html">Recortar el sistema de archivos</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/volume-conditions.html">Condiciones del volumen</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/volume-encryption.html">Cifrado de volúmenes</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/storageclass-parameters.html">Parámetros de StorageClass</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../volumes/backing-images/backing-images.html">Imágenes de respaldo</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../volumes/backing-images/backing-image-encryption.html">Cifrado de Imagen de Respaldo</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Alta disponibilidad</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../high-availability/automatic-replica-balancing.html">Balanceo automático de réplicas</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../high-availability/replica-rebuilding.html">Replica Rebuilding</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../high-availability/fast-replica-rebuilding.html">Reconstrucción rápida de réplicas</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../high-availability/offline-replica-rebuilding.html">Reconstrucción de réplicas fuera de línea</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../high-availability/revision_counter.html">Contador de Revisión</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../high-availability/data-locality.html">Localidad de datos</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../high-availability/kubernetes-cluster-autoscaler.html">Soporte de Kubernetes Cluster Autoscaler (Experimental)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../high-availability/rwx-volume-fast-failover.html">Failover rápido de volúmenes RWX (Experimental)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../high-availability/volume-recovery.html">Recuperación de volumen</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../high-availability/node-failure.html">Gestión de fallos de nodo</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Instantáneas y copias de seguridad</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../snapshots-backups/volume-snapshots-backups/volume-snapshots-backups.html">Instantáneas y copias de seguridad de volúmenes</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/volume-snapshots-backups/create-snapshot.html">Crear una instantánea</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/volume-snapshots-backups/snapshot-space-management.html">Gestión del espacio de instantáneas</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/volume-snapshots-backups/configure-backup-target.html">Configurar un destino de copia de seguridad</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/volume-snapshots-backups/create-backup.html">Crear una copia de seguridad</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/volume-snapshots-backups/sync-backup-volumes-manually.html">Sincronizar manualmente los volúmenes de copia de seguridad</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/volume-snapshots-backups/create-recurring-backup-snapshot-job.html">Crear un trabajo de instantánea o copia de seguridad recurrente</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/volume-snapshots-backups/restore-volume-from-backup.html">Restaurar un volumen desde una copia de seguridad</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/volume-snapshots-backups/restore-recurring-job-from-backup.html">Restaurar un trabajo recurrente desde una copia de seguridad</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/volume-snapshots-backups/restore-volume-statefulset.html">Restaura un volumen para un StatefulSet de Kubernetes</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../snapshots-backups/csi-snapshots/csi-snapshots.html">Instantáneas CSI</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/csi-snapshots/csi-snapshot-longhorn-backing-image.html">Instantánea de volumen CSI asociada a una BackingImage de SUSE® Storage</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/csi-snapshots/csi-snapshot-longhorn-backup.html">Instantánea de volumen CSI asociada con una copia de seguridad de SUSE® Storage</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/csi-snapshots/csi-snapshot-longhorn-snapshot.html">Instantánea de volumen CSI asociada a una instantánea de SUSE® Storage</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/csi-snapshots/enable-csi-snapshot-creation.html">Habilitar la creación de instantáneas CSI en un clúster</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../snapshots-backups/system-backups/system-backups.html">Copias de seguridad del sistema SUSE® Storage</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/system-backups/restore-to-cluster-using-rancher-snapshot.html">Restaura el sistema SUSE® Storage en un clúster utilizando una instantánea de Rancher</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/system-backups/restore-to-new-cluster-using-velero.html">Restaura el SUSE® Storage System en un nuevo clúster utilizando Velero</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/system-backups/create-system-backup.html">Crear una SUSE Storage copia de seguridad del sistema</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/system-backups/restore-system.html">Restaura el sistema SUSE® Storage</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../snapshots-backups/backing-image-backups.html">Copia de seguridad de la imagen de respaldo</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../snapshots-backups/restore-cluster-rancher-snapshot.html">Restaurar un clúster utilizando una instantánea de Rancher</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Integridad y recuperación de datos</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../data-integrity-recovery/snapshot-data-integrity-check.html">Comprobación de la integridad de los datos de la instantánea</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../data-integrity-recovery/orphaned-data-cleanup.html">Limpieza de datos huérfanos</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../data-integrity-recovery/orphaned-instance-cleanup.html">Limpieza de instancias huérfanas</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../data-integrity-recovery/disaster-recovery-volumes.html">Volúmenes de recuperación ante desastres</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Recuperación de datos</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../data-integrity-recovery/data-recovery/identify-corrupted-replicas.html">Identificar réplicas corruptas</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../data-integrity-recovery/data-recovery/retrieve-volume-data-from-replica.html">Recuperar datos de volumen de una única réplica</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../data-integrity-recovery/data-recovery/recover-from-data-errors.html">Identificar y recuperarse de errores de datos.</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../data-integrity-recovery/data-recovery/recover-from-full-disk.html">Recuperación de un disco lleno</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../data-integrity-recovery/data-recovery/recover-without-system.html">Recuperar de una copia de seguridad de SUSE® Storage sin el sistema instalado</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Observabilidad</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../observability/configure-prometheus-grafana.html">Configurar Prometheus y Grafana para Monitorizar SUSE® Storage</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../observability/alert-rule-examples.html">Ejemplos de reglas de alerta</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../observability/longhorn-metrics.html">Métricas de SUSE® Storage para la monitorización</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../observability/disk-health.html">Monitorización de la salud del disco</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../observability/integrate-with-rancher-monitoring.html">Integra las métricas de SUSE® Storage en el sistema de monitoreo de Rancher.</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../observability/kubelet-volume-metrics.html">Métricas de volumen de Kubelet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Solución de problemas y mantenimiento</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="support-bundle.html">Paquete de soporte</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="troubleshooting.html">Solución de problemas</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="v2-data-engine-issues.html">Solución de problemas</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="maintenance.html">Guía de Mantenimiento de Nodos y Actualización de Kubernetes</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Glosario</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../glossary/glossary.html">Glossary/Terminologies</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">SUSE® Storage</span>
+    <span class="version">1.11 (Latest)</span>
+  </div>
+  <ul class="components">
+        <li class="component">
+          <div class="title"><a href="../../../../admission-controller/1.35/en/introduction.html">Admission Controller</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../admission-controller/1.36/en/introduction.html">1.36-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../admission-controller/1.35/en/introduction.html">1.35-latest</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.34/en/introduction.html">1.34</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.33/en/introduction.html">1.33</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.32/en/introduction.html">1.32</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.31/en/introduction.html">1.31</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.30/en/introduction.html">1.30</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.29/en/introduction.html">1.29</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.28/en/introduction.html">1.28</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../cluster-api/v0.26/en/index.html">Cluster API</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../cluster-api/v0.27/en/index.html">v0.27-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../cluster-api/v0.26/en/index.html">v0.26</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.25/en/index.html">0.25</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.24/en/index.html">0.24</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.23/en/index.html">0.23</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.22/en/index.html">0.22</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.21/en/index.html">0.21</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.20/en/index.html">0.20</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.19/en/index.html">0.19</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.18/en/index.html">0.18</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.17/en/index.html">0.17</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.16/en/index.html">0.16</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.11/en/index.html">0.11</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../continuous-delivery/next/en/index.html">Continuous Delivery</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../continuous-delivery/next/en/index.html">Next</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.11/en/index.html">0.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.10/en/index.html">0.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.9/en/index.html">0.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../k3s/latest/en/introduction.html">K3s</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../k3s/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../os-manager/1.9/en/index.html">OS Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../os-manager/1.10/en/index.html">1.10-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../os-manager/1.9/en/index.html">1.9</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.8/en/index.html">1.8</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.7/en/index.html">1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.6/en/index.html">1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.5/en/index.html">1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-ai/latest/en/introduction.html">Rancher AI</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-ai/latest/en/introduction.html">latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rke2/latest/en/introduction.html">RKE2</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rke2/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-observability/latest/en/classic.html">SUSE Observability</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../suse-observability/latest/en/classic.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">SUSE Rancher Developer Access</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">SUSE® Rancher for AWS</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-manager/v2.14/en/about-rancher/what-is-rancher.html">SUSE® Rancher Manager</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-manager/v2.14/en/about-rancher/what-is-rancher.html">v2.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.13/en/about-rancher/what-is-rancher.html">v2.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.12/en/about-rancher/what-is-rancher.html">v2.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.11/en/about-rancher/what-is-rancher.html">v2.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.10/en/about-rancher/what-is-rancher.html">v2.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.9/en/about-rancher/what-is-rancher.html">v2.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../security/5.5/en/overview.html">SUSE® Security</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../security/5.5/en/overview.html">5.5</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.4/en/overview.html">5.4</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.3/en/overview.html">5.3</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component is-current">
+          <div class="title"><a href="../../en/longhorn-documentation.html">SUSE® Storage</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../1.12/en/longhorn-documentation.html">1.12 (Dev)</a>
+            </li>
+            <li class="version is-current is-latest">
+              <a href="../../en/longhorn-documentation.html">1.11 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../1.10/en/longhorn-documentation.html">1.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../1.9/en/longhorn-documentation.html">1.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">SUSE® Virtual Clusters</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/1.2.0/en/release-notes/version-1.2.0.html">v1.2.0 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">v1.1.0</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/1.0.2/en/release-notes/version-1.0.2.html">v1.0.2</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.1/en/introduction.html">v1.0.1</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.0/en/introduction.html">v1.0.0</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../virtualization/v1.7/en/introduction/overview.html">SUSE® Virtualization</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../virtualization/v1.8/en/introduction/overview.html">v1.8 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../virtualization/v1.7/en/introduction/overview.html">v1.7 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../virtualization/v1.6/en/introduction/overview.html">v1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../virtualization/v1.5/en/introduction/overview.html">v1.5</a>
+            </li>
+          </ul>
+        </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+<ul>
+    <li>
+      <a class="home-link-dsc" href="https://documentation.suse.com/" title="documentation.suse.com" aria-label="SUSE Documentation Home"></a>
+    </li>
+    <li>
+      <a href="https://documentation.suse.com/cloudnative/storage" title="SUSE Storage" aria-label="SUSE Documentation - SUSE Storage">
+        SUSE Storage
+      </a>
+    </li>
+      <li>
+          Solución de problemas y mantenimiento
+      </li>
+  </ul>
+</nav><div class="page-versions">
+  <button class="version-menu-toggle" title="Show other versions of page">1.11 (Latest)</button>
+  <div class="version-menu">
+    <a class="version" href="../../../1.12/es/troubleshooting-maintenance/maintenance.html">1.12 (Dev)</a>
+    <a class="version is-current" href="maintenance.html">1.11 (Latest)</a>
+    <a class="version is-missing" href="../../../1.10/en/longhorn-documentation.html">1.10</a>
+    <a class="version is-missing" href="../../../1.9/en/longhorn-documentation.html">1.9</a>
+  </div>
+</div>
+      <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <label class="visual-search-label-bc" for="search-input">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+          <input label="Search" aria-label="Search" id="search-input" type="text" placeholder="Buscar en los documentos" >
+          <label class="filter checkbox" style="display: none">
+            <input type="checkbox" data-facet-filter="component:storage" checked> Only this project
+          </label>
+        </div>
+      </div>
+</div>
+  <div class="content">
+<aside
+  class="toc sidebar"
+  data-title="En esta página" data-levels="2">
+  <div class="toc-menu">
+    <!-- start qualtrics -->
+    <div id='ZN_8qZUmklKYbBqAYe'><!--DO NOT REMOVE-CONTENTS PLACED HERE--></div>
+    <div id="qualtrics_container"></div>
+    <!-- end qualtrics -->
+  </div>
+</aside><article class="doc">
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Nota"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>
+
+Este documento ha sido traducido utilizando tecnología de traducción automática.
+Si bien nos esforzamos por proporcionar traducciones precisas,
+no ofrecemos garantías sobre la integridad, precisión o confiabilidad del contenido traducido.
+En caso de discrepancia, la versión original en
+<a href="https://documentation.suse.com/cloudnative/storage/1.11/en/troubleshooting-maintenance/maintenance.html">
+inglés
+</a>
+prevalecerá y constituirá el texto autorizado.
+
+</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<h1 class="page">Guía de Mantenimiento de Nodos y Actualización de Kubernetes</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Sigue las instrucciones para manejar el mantenimiento planificado de nodos y actualizar la versión de Kubernetes para el clúster.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_actualizando_el_sistema_operativo_del_nodo_o_el_entorno_de_ejecución_de_contenedor"><a class="anchor" href="#_actualizando_el_sistema_operativo_del_nodo_o_el_entorno_de_ejecución_de_contenedor"></a>Actualizando el sistema operativo del nodo o el entorno de ejecución de contenedor</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Marca el nodo como no disponible. Longhorn deshabilitará automáticamente la programación del nodo cuando un nodo de Kubernetes esté marcado como no disponible.</p>
+</li>
+<li>
+<p>Drena el nodo para mover la carga de trabajo a otro lugar.</p>
+<div class="paragraph">
+<p>Es necesario usar <code>--ignore-daemonsets</code> para drenar el nodo. El <code>--ignore-daemonsets</code> es necesario porque Longhorn desplegó algunos daemonsets como <code>Longhorn manager</code>, <code>Longhorn CSI plugin</code>, <code>engine image</code>.</p>
+</div>
+<div class="paragraph">
+<p>Mientras se procede al drenaje, los procesos del motor en el nodo serán migrados junto con los pods de carga de trabajo a otros nodos.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Nota"></i>
+</td>
+<td class="content">
+Los volúmenes que no están adjuntos a través del flujo CSI en el nodo (por ejemplo, adjuntos manualmente usando la UI) no serán adjuntados automáticamente a nuevos nodos por Kubernetes durante el drenaje. Por lo tanto, Longhorn evitará que el nodo complete la operación de drenaje. El usuario necesitará desconectar estos volúmenes manualmente para desbloquear el drenaje.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Mientras se procede al drenaje, los procesos de réplica en el nodo continuarán ejecutándose o eventualmente serán expulsados y detenidos según la <a href="#_node_drain_policy_recommendations">Directiva de Drenaje de Nodos</a>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Nota"></i>
+</td>
+<td class="content">
+Por defecto, si hay una última réplica saludable para un volumen en el nodo, Longhorn evitará que el nodo complete la operación de drenaje, para proteger la última réplica y prevenir la interrupción de la carga de trabajo. Puedes controlar este comportamiento con la configuración <a href="../longhorn-system/settings.html#_node_drain_policy" class="xref page">Directiva de Drenaje de Nodos</a>, o <a href="../nodes/disks-or-nodes-eviction.html" class="xref page">expulsar la réplica a otros nodos antes de drenar</a>. Consulta <a href="#_node_drain_policy_recommendations">Recomendaciones de Directiva de Drenaje de Nodos</a> para consideraciones al seleccionar una directiva.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Después de que se complete el drenaje, no debería haber procesos de motor o de réplica ejecutándose en el nodo, ya que el pod del administrador de instancias que los estaba ejecutando será detenido. Dependiendo de la <a href="#_node_drain_policy_recommendations">Política de Drenaje de Nodos</a>, las réplicas programadas para el nodo aparecerán como <code>Failed</code> o serán eliminadas en favor de reemplazos. Las cargas de trabajo que utilizan volúmenes de Longhorn funcionarán como se espera y suficientes réplicas estarán ejecutándose en otros lugares para cumplir con los requisitos de la política.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Nota"></i>
+</td>
+<td class="content">
+Normalmente no es necesario desalojar las réplicas antes de la operación de drenaje, siempre que tengas réplicas saludables en otros nodos. Las réplicas pueden reutilizarse más tarde, una vez que el nodo esté de nuevo en línea y desbloqueado. Consulta <a href="#_node_drain_policy_recommendations">Política de Drenaje de Nodos</a> para más orientación.
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Realiza el mantenimiento necesario, incluyendo apagar o reiniciar el nodo.</p>
+</li>
+<li>
+<p>Desbloquea el nodo. Longhorn volverá a habilitar automáticamente la programación del nodo. Si hay réplicas existentes en el nodo, Longhorn podría utilizar esas réplicas para acelerar el proceso de reconstrucción. Puedes establecer la configuración <a href="../longhorn-system/settings.html#_replica_replenishment_wait_interval" class="xref page">Intervalo de Espera para Reabastecimiento de Réplicas</a> para personalizar cuánto tiempo debe esperar Longhorn para que una réplica potencialmente reutilizable esté disponible.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_eliminación_de_un_disco"><a class="anchor" href="#_eliminación_de_un_disco"></a>Eliminación de un Disco</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Para eliminar un disco:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Desactiva la programación del disco.</p>
+</li>
+<li>
+<p>Desaloja todas las réplicas en el disco.</p>
+</li>
+<li>
+<p>Elimina el disco.</p>
+</li>
+</ol>
+</div>
+<div class="sect2">
+<h3 id="_reutilizando_el_nombre_del_nodo"><a class="anchor" href="#_reutilizando_el_nombre_del_nodo"></a>Reutilizando el Nombre del Nodo</h3>
+<div class="paragraph">
+<p>Estos pasos también se aplican si has reemplazado un nodo utilizando el mismo nombre de nodo. Longhorn reconocerá que los discos son diferentes una vez que el nuevo nodo esté activo. Necesitarás eliminar primero los discos originales y volver a agregarlos para el nuevo nodo si utiliza el mismo nombre que el nodo anterior.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_eliminación_de_un_nodo"><a class="anchor" href="#_eliminación_de_un_nodo"></a>Eliminación de un Nodo</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Para eliminar un nodo:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Desactiva la programación del disco.</p>
+</li>
+<li>
+<p>Desaloja todas las réplicas en el nodo.</p>
+</li>
+<li>
+<p>Desconecta todos los volúmenes en el nodo.</p>
+<div class="paragraph">
+<p>Si el nodo ha sido drenado, todas las cargas de trabajo ya deberían haber sido migradas a otro nodo.</p>
+</div>
+<div class="paragraph">
+<p>Si hay otros volúmenes aún conectados, desconéctalos antes de continuar.</p>
+</div>
+</li>
+<li>
+<p>Elimina el nodo de Longhorn utilizando el <code>Delete</code> en la pestaña <code>Node</code>.</p>
+<div class="paragraph">
+<p>O, elimina el nodo de Kubernetes, utilizando:</p>
+</div>
+<div class="paragraph">
+<p>kubectl delete node <node-name></node-name></p>
+</div>
+</li>
+<li>
+<p>Longhorn eliminará automáticamente el nodo del clúster.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_actualizando_kubernetes"><a class="anchor" href="#_actualizando_kubernetes"></a>Actualizando Kubernetes</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_actualización_in_situ"><a class="anchor" href="#_actualización_in_situ"></a>Actualización in-situ</h3>
+<div class="paragraph">
+<p>La actualización in situ es un método de actualización en el que los nodos se actualizan sin ser eliminados del clúster. Algunas soluciones de ejemplo que utilizan este método de actualización son <a href="https://documentation.suse.com/cloudnative/k3s/latest/en/upgrades/automated.html">SUSE® Rancher Prime: K3s actualizaciones automatizadas</a>, <a href="https://documentation.suse.com/cloudnative/rancher-manager/latest/en/cluster-admin/backups-and-restore/backups-and-restore.html">SUSE Rancher Primeguía de actualización de Kubernetes de </a>, <a href="https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/">Kubeadm upgrade</a>, etc&#8230;&#8203;.</p>
+</div>
+<div class="paragraph">
+<p>Con la suposición de que el nodo y los discos no están siendo eliminados, la guía de actualización recomendada es:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Cordon y drena un nodo antes de actualizar los componentes de Kubernetes. Las instrucciones de drenaje son similares a las que se encuentran en <a href="#_updating_the_node_os_or_container_runtime">Actualizando el sistema operativo del nodo o el tiempo de ejecución del contenedor</a>.</p>
+</li>
+<li>
+<p>El drenaje <code>--timeout</code> debería ser lo suficientemente grande para que las reconstrucciones de réplicas en nodos sanos puedan finalizar entre las actualizaciones de nodos. Cuantas más réplicas de Longhorn tengas en el nodo que se está drenando, más tiempo tardará en reconstruirse las réplicas de Longhorn en otros nodos sanos. Te recomendamos que pruebes y selecciones un valor lo suficientemente grande o lo establezcas en 0 (es decir, nunca expirar).</p>
+</li>
+<li>
+<p>El número de nodos que se actualizan a la vez debería ser menor que el número de réplicas de Longhorn para cada volumen.
+Esto es para que un volumen de Longhorn en ejecución tenga al menos una réplica sana en funcionamiento a la vez.</p>
+</li>
+<li>
+<p>Considera establecer la configuración <a href="../longhorn-system/settings.html#_node_drain_policy" class="xref page">Directiva de Drenaje de Nodos</a> en <code>allow-if-replica-is-stopped</code> para que el drenaje no esté bloqueado por la última réplica sana de un volumen desconectado. Consulta <a href="#_node_drain_policy_recommendations">Recomendaciones de Directiva de Drenaje de Nodos</a> para consideraciones al seleccionar una directiva.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_kubernetes_gestionado"><a class="anchor" href="#_kubernetes_gestionado"></a>Kubernetes gestionado</h3>
+<div class="paragraph">
+<p>Consulte los siguientes temas:
+* <a href="../upgrades/kubernetes/upgrade-k8s-on-aks.html" class="xref page">Actualiza la versión de Kubernetes en Azure Kubernetes Service (AKS)</a>
+* <a href="../upgrades/kubernetes/upgrade-k8s-on-eks.html" class="xref page">Actualiza la versión de Kubernetes en Amazon Elastic Kubernetes Service (Amazon EKS)</a>
+* <a href="../upgrades/kubernetes/upgrade-k8s-on-gke.html" class="xref page">Actualiza la versión de Kubernetes en Google Kubernetes Engine (GKE)</a></p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_recomendaciones_de_directiva_de_drenaje_de_nodos"><a class="anchor" href="#_recomendaciones_de_directiva_de_drenaje_de_nodos"></a>Recomendaciones de Directiva de Drenaje de Nodos</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Actualmente hay cinco directivas de drenaje de nodos disponibles para selección. Cada una tiene sus propios beneficios e inconvenientes. Esta sección proporciona orientación general sobre cada una y sugiere situaciones en las que cada una podría ser utilizada.</p>
+</div>
+<div class="sect2">
+<h3 id="_notas_importantes"><a class="anchor" href="#_notas_importantes"></a>Notas importantes</h3>
+<div class="paragraph">
+<p>La directiva de drenaje de nodos está destinada a gobernar el comportamiento de Longhorn cuando un nodo está siendo drenado activamente. Sin embargo, no hay forma de que Longhorn determine la diferencia entre el aislamiento y el drenaje de un nodo, por lo que, dependiendo de la directiva, Longhorn puede tomar medidas en cualquier momento que un nodo esté aislado, incluso si no está siendo drenado.</p>
+</div>
+<div class="paragraph">
+<p>La directiva de drenaje de nodos trabaja para prevenir el desalojo de un pod de administrador de instancias durante un drenaje hasta que se cumplan ciertas condiciones. Si el pod de administrador de instancias no puede ser desalojado, el drenaje no puede completarse. Esto impide que un usuario (o proceso automatizado) continúe apagando o reiniciando un nodo si no es seguro hacerlo. Puede ser tentador ignorar el fallo de drenaje y proceder con las operaciones de mantenimiento si parece tardar demasiado, pero esto limita la capacidad de Longhorn para proteger los datos. Siempre consulte los eventos y/o registros para intentar determinar POR QUÉ el drenaje no está progresando y tome medidas para solucionar el problema subyacente.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_bloquear_si_contiene_la_última_réplica"><a class="anchor" href="#_bloquear_si_contiene_la_última_réplica"></a>Bloquear si contiene la última réplica</h3>
+<div class="paragraph">
+<p>Esta es la directiva por defecto. Está destinada a proporcionar un buen equilibrio entre conveniencia y protección de datos. Mientras esté en efecto, Longhorn evitará el desalojo de un pod de administrador de instancias (y la finalización de un drenaje) en un nodo marcado como no disponible que contenga la última réplica saludable de un volumen.</p>
+</div>
+<div class="paragraph">
+<p>Beneficios:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Protege los datos al evitar que la operación de drenaje se complete hasta que haya una réplica saludable disponible para cada volumen en otro nodo.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Inconvenientes:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Si solo hay una réplica para el volumen, o si sus otras réplicas están en mal estado, el usuario puede necesitar solicitar manualmente (a través de la interfaz de usuario) el desalojo de réplicas del disco o nodo.</p>
+</li>
+<li>
+<p>Los volúmenes pueden estar degradados después de que se complete el drenaje. Si el nodo se reinicia, la redundancia se reduce hasta que vuelva a estar en funcionamiento. Si se elimina el nodo, la redundancia se reduce hasta que otra réplica se reconstruya.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_permitir_si_la_última_réplica_está_detenida"><a class="anchor" href="#_permitir_si_la_última_réplica_está_detenida"></a>Permitir si la última réplica está detenida</h3>
+<div class="paragraph">
+<p>Esta directiva es similar a <code>Block If Contains Last Replica</code>. Es inherentemente menos seguro, pero puede permitir que los drenajes se completen más rápidamente. Solo impide la expulsión de un pod de administrador de instancias (y la finalización de un drenaje) en un nodo que contiene la última réplica saludable en ejecución.</p>
+</div>
+<div class="paragraph">
+<p>Beneficios:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Permite que la operación de drenaje continúe en situaciones donde se espera que el nodo drenado vuelva a estar en línea (no se perderán datos) y las réplicas almacenadas en los discos del nodo no están siendo utilizadas activamente.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Inconvenientes:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Desventajas similares a <code>Block If Contains Last Replica</code>.</p>
+</li>
+<li>
+<p>Si, por alguna razón, el nodo nunca vuelve, se pierden datos.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_permitir_siempre"><a class="anchor" href="#_permitir_siempre"></a>Permitir siempre</h3>
+<div class="paragraph">
+<p>Esta directiva no protege los datos de ninguna manera, pero permite que los drenajes se completen de inmediato. Nunca impide la expulsión de un pod de gestor de instancias (y la finalización de un drenaje). No lo utilices en un entorno de producción.</p>
+</div>
+<div class="paragraph">
+<p>Beneficios:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>La operación de drenaje se completa rápidamente sin que Longhorn se interponga.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Inconvenientes:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>No hay oportunidad para que Longhorn proteja los datos.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_bloquear_para_expulsión"><a class="anchor" href="#_bloquear_para_expulsión"></a>Bloquear para expulsión</h3>
+<div class="paragraph">
+<p>Esta directiva proporciona la máxima cantidad de protección de datos, pero puede llevar a tiempos de drenaje largos y movimiento innecesario de datos. Previene la expulsión de un pod de gestor de instancias (y la finalización de un drenaje) siempre que queden réplicas en un nodo. Además, toma medidas para expulsar automáticamente las réplicas del nodo.</p>
+</div>
+<div class="paragraph">
+<p>No se recomienda dejar esta directiva habilitada en uso normal, ya que desencadenará la expulsión de réplicas cada vez que un nodo sea cordonado. Solo habilítala durante el mantenimiento planificado.</p>
+</div>
+<div class="paragraph">
+<p>Un caso de uso principal para esta directiva es cuando se actualizan automáticamente clústeres en los que los volúmenes no tienen redundancia (<code>numberOfReplicas == 1</code>). Otras directivas evitarán el drenaje hasta que tales réplicas sean desalojadas manualmente, lo cual es inconveniente para la automatización.</p>
+</div>
+<div class="paragraph">
+<p>Beneficios:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Protege los datos al impedir que la operación de drenaje se complete hasta que todas las réplicas hayan sido reubicadas.</p>
+</li>
+<li>
+<p>Desaloja automáticamente las réplicas, por lo que el usuario no necesita hacerlo manualmente (a través de la interfaz de usuario).</p>
+</li>
+<li>
+<p>Mantiene la redundancia de las réplicas en todo momento.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Inconvenientes:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>La operación de drenaje es significativamente más lenta que para otros comportamientos. Cada réplica debe ser reconstruida en otro nodo antes de que se pueda completar. El tiempo de espera para el drenaje debe ajustarse según sea apropiado para la cantidad de datos que se moverán durante la reconstrucción.</p>
+</li>
+<li>
+<p>La operación de drenaje es intensiva en datos, especialmente cuando se habilita el Balanceo Automático de Réplicas, ya que las réplicas desalojadas pueden ser trasladadas de nuevo al nodo drenado cuando/si vuelve a estar en línea.</p>
+</li>
+<li>
+<p>Como todas estas directivas, se activa en el cordonado, no en el drenaje. Si un usuario cordona nodos regularmente sin drenarlos, las réplicas se reconstruirán sin sentido.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_bloquear_para_expulsión_si_contiene_la_última_réplica"><a class="anchor" href="#_bloquear_para_expulsión_si_contiene_la_última_réplica"></a>Bloquear para expulsión si contiene la última réplica.</h3>
+<div class="paragraph">
+<p>Esta directiva proporciona la protección de datos de la <code>Block If Contains Last Replica</code> por defecto con la comodidad añadida de la expulsión automática. Mientras esté en efecto, Longhorn evitará la expulsión de un pod de gestor de instancias (y la finalización de un drenaje) en un nodo cordonado que contenga la última réplica saludable de un volumen. Además, las réplicas que cumplan esta condición son expulsadas automáticamente del nodo.</p>
+</div>
+<div class="paragraph">
+<p>No se recomienda dejar esta directiva habilitada en uso normal, ya que puede desencadenar la expulsión de réplicas en cualquier momento que un nodo sea cordonado. Solo habilítala durante el mantenimiento planificado.</p>
+</div>
+<div class="paragraph">
+<p>Un caso de uso principal para esta directiva es cuando se actualizan automáticamente clústeres en los que los volúmenes no tienen redundancia (<code>numberOfReplicas == 1</code>). Otras directivas evitarán el drenaje hasta que tales réplicas sean expulsadas manualmente, lo cual es inconveniente para la automatización.</p>
+</div>
+<div class="paragraph">
+<p>Beneficios:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Protege los datos al evitar que la operación de drenaje se complete hasta que haya una réplica saludable disponible para cada volumen en otro nodo.</p>
+</li>
+<li>
+<p>Expulsa automáticamente las réplicas, por lo que el usuario no necesita hacerlo manualmente (a través de la interfaz de usuario).</p>
+</li>
+<li>
+<p>La operación de drenaje es solo tan lenta e intensiva en datos como sea necesario para proteger los datos.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Inconvenientes:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Los volúmenes pueden estar degradados después de que se complete el drenaje. Si el nodo se reinicia, la redundancia se reduce hasta que vuelva a estar en funcionamiento. Si se elimina el nodo, la redundancia se reduce hasta que otra réplica se reconstruya.</p>
+</li>
+<li>
+<p>Como todas estas directivas, se activa en el cordonado, no en el drenaje. Si un usuario cordona nodos regularmente sin drenarlos, las réplicas se reconstruirán sin sentido.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="v2-data-engine-issues.html">Solución de problemas</a></span>
+  <span class="next"><a href="../glossary/glossary.html">Glossary/Terminologies</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<script src="../../../../_/js/site.js"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+<script src="../../../../_/js/vendor/lunr.js"></script>
+<script src="../../../../_/js/vendor/lunr-languages.js"></script>
+<script src="../../../../_/js/search-ui.js" id="search-ui-script" data-site-root-path="../../../.." data-snippet-length="100" data-stylesheet="../../../../_/css/search.css"></script>
+<script async src="../../../../search-index.js"></script>
+<script src="../../../../_/js/vendor/langSelection.js"></script>
+<script async src="../../../../_/js/vendor/tabs.js"></script>
+
+
+<script src="../../../../_/js/CNLanguageSwitcher.js"></script>
+  </body>
+</html>

@@ -1,0 +1,1779 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+<title>アーキテクチャと概念 | SUSE® Storage  1.11 (Latest)</title>
+    <link rel="canonical" href="https://documentation.suse.com/cloudnative/storage/1.11/ja/introduction/concepts.html">
+    <link rel="prev" href="introduction.html">
+    <link rel="next" href="terminology.html">
+    <meta name="generator" content="Antora 3.1.14">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+<meta http-equiv="last-modified" content="2025-08-22"/>
+<link rel="stylesheet" href="../../../../_/css/search.css">
+<link rel="icon" href="../../../../_/img/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="../../../../_/css/font-styles.css">
+<link rel="stylesheet" href="../../../../_/fonts/css/all.css">
+<link rel="stylesheet" href="../../../../_/css/site-extra.css">
+<link rel="stylesheet" href="../../../../_/css/vendor/tabs.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap&family=SUSE+Mono:ital,wght@0,100..800;1,100..800" rel="stylesheet">
+<link href="https://documentation.suse.com/docserv/res/fonts/poppins/poppins.css" rel="stylesheet">
+<link rel="stylesheet" href="../../../../_/css/vendor/light.css">
+<script src="/docserv/res/lightheaded/analytics.js" type="text/javascript"></script>
+<script type="module">
+  import { defineCustomElements, setAssetPath } from 'https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/shared-header.esm.js';
+  defineCustomElements();
+  setAssetPath("https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/assets");
+</script>
+<!-- Default English link -->
+<link href="https://documentation.suse.com/cloudnative/storage/1.11/en/introduction/concepts.html" hreflang="x-default" rel="alternate"/>
+<!-- Link for the currently processed page -->
+<link href="https://documentation.suse.com/cloudnative/storage/1.11/ja/introduction/concepts.html" hrefLang="ja-JP" rel="alternate" />
+
+<!-- JSON-LD for doc metadata -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "アーキテクチャと概念 | SUSE Storage 1.11",
+  "headline": "アーキテクチャと概念",
+  "description": "アーキテクチャと概念",
+  "inLanguage": "ja",
+  "dateModified": "2025-08-22T00:00:00Z",
+  "author": {
+    "@type": "Organization",
+    "name": "SUSE Product & Solution Documentation Team",
+    "url": "https://documentation.suse.com"
+  },
+  "mentions": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "SUSE Storage",
+      "softwareVersion": "1.11",
+      "applicationCategory": "Cloud Infrastructure",
+      "operatingSystem": "Linux"
+    }
+  ],
+  "publisher": {
+    "@type": "Organization",
+    "name": "SUSE",
+    "url": "https://documentation.suse.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.suse.com/assets/img/suse-white-logo-green.svg"
+    }
+  }
+}
+</script>
+<!-- end JSON-LD for doc metadata -->
+
+<!-- SUVA - Begin Ask Geeko-->
+<!--
+searchUnifyChatbot ("Ask Geeko") Copyright ©2024 Grazitti Interactive - All Rights Reserved. NOTICE: All information contained herein is, and remains the property of Grazitti Interactive and its suppliers, if any. The intellectual and technical concepts contained herein are proprietary to Grazitti Interactive and its suppliers and may be covered by India, U.S. and Foreign Patents, patents in process, and are protected by trade secret or copyright law. Dissemination of this information or reproduction of this material is strictly forbidden unless prior written permission is obtained from Grazitti Interactive.
+-->
+<meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport"/>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/Allow/an.js?c485cb3c-93d4-4942-99e8-91f3b8ca5636"></script>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/js/index.js?q=gAAAAABp3JBN9VuEJTi5tFafLIMwgMkCPdJS3Qm56lSYx93ir3Twt9hgSvd3OHEt6-nYfSbY3yHq0Zv8PRPsSy4nbqZiaJ4cZvRc6ItVZdvwz9Urf35cH6OUyPOwdA0phlS-zVIznQ2rWW438p-91NlTHuxJuOFpnA=="></script>
+<link rel="stylesheet" href="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/css/index.css">
+<div id="searchUnifyChatbot"></div>
+<!-- SUVA - End Ask Geeko-->
+<!--BEGIN QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+<script type='text/javascript' src="../../../../_/js/qualtrics.js" defer></script>
+<!--END QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<script type="module">import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs'; mermaid.initialize({"startOnLoad":true});</script><shared-header
+language="en"
+languages='{
+    "en": { "label": "English", "url": "https://documentation.suse.com/en-us/" },
+    "de": { "label": "Deutsch", "url": "https://documentation.suse.com/de-de/" },
+    "fr": { "label": "Français", "url": "https://documentation.suse.com/fr-fr/" },
+    "es": { "label": "Español", "url": "https://documentation.suse.com/es-es/" },
+    "zh_CN": { "label": "中文", "url": "https://documentation.suse.com/zh-cn/" },
+    "pt_BR": { "label": "Português Brasileiro", "url": "https://documentation.suse.com/pt-br/" }
+}'
+enable-search='false'>
+</shared-header>
+
+<!-- Leaving as a comment, I expect it will be required again next year.
+<a target=_blank"" class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_bEiGZbUNzLD8Tcy"> Documentation survey </a>
+-->
+<div class="body">
+<div class="nav-container" data-component="storage" data-version="1.11">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title">SUSE® Storage</h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../longhorn-documentation.html">SUSE® Storage 概要</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="introduction.html">概要</a>
+<ul class="nav-list">
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="concepts.html">アーキテクチャと概念</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="terminology.html">用語集</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="document-conventions.html">文書規約</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../important-notes.html">重要注意事項</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">インストールおよびセットアップ</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/requirements.html">要件</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/best-practices.html">ベストプラクティス</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../installation-setup/installation/installation.html">インストール</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/installation/install-using-argocd.html">Argo CDを使用してSUSE Storageをインストールします。</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/installation/install-using-fleet.html">SUSE StorageをFleetでインストールする</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/installation/install-using-flux.html">Fluxを使用してSUSE® Storageをインストールします。</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/installation/install-using-helm.html">Helmを使用してSUSE Storageをインストールします。</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/installation/install-using-helm-controller.html">Helmコントローラーを使用してSUSE Storageをインストールする</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/installation/helm-values.html">ヘルムの値</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/installation/install-using-rancher.html">Rancherを使ったSUSE Storageのインストール</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/installation/rancher-windows-cluster.html">Rancher Windows クラスター</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/installation/airgapped-environment.html">SUSE Storageをエアギャップ環境にインストールする</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">オペレーティングシステムとディストリビューションの設定</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/os-distro/gke.html">Google Kubernetes Engine (GKE)</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/os-distro/k3s.html">K3s</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/setup-performance-scalability-sizing-guidelines.html">セットアップ、パフォーマンス、スケーラビリティ、およびサイズ設定のガイドライン</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/uninstallation.html">アンインストール</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../upgrades/upgrades.html">アップグレード</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">コンポーネントのアップグレード</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../upgrades/longhorn-components/auto-upgrade-engine.html">Longhorn Engineを自動的にアップグレードする</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../upgrades/longhorn-components/instance-manager-pods-during-upgrade.html">アップグレード時のインスタンスマネージャーポッド</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../upgrades/longhorn-components/manually-upgrade-engine.html">Longhorn Engineを手動でアップグレードする</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../upgrades/longhorn-components/upgrade-longhorn-manager.html">Longhorn Managerのアップグレード</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Kubernetesのアップグレード</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../upgrades/kubernetes/upgrade-k8s-on-aks.html">Azure Kubernetes Service (AKS) の Kubernetes をアップグレードする</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../upgrades/kubernetes/upgrade-k8s-on-eks.html">Amazon Elastic Kubernetes Service (Amazon EKS) で Kubernetes をアップグレードする</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../upgrades/kubernetes/upgrade-k8s-on-gke.html">Google Kubernetes Engine (GKE)でKubernetesをアップグレードする</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">マイグレーション</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../migration/migration.html">SUSE Storageへの移行</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">SUSE® Storageシステム</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../longhorn-system/system-access/system-access.html">システムアクセス</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../longhorn-system/system-access/longhorn-ui.html">ユーザーインターフェイスにアクセスする</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../longhorn-system/system-access/create-ingress.html">Basic Authentication（nginx）を使用してIngressを作成する</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../longhorn-system/system-access/longhorn-ingress-traefik.html">ベーシック認証付きIngressの作成（Traefik）</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../longhorn-system/system-access/longhorn-cli.html">コマンドラインインタフェース（CLI）</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../longhorn-system/system-access/install-longhorn-cli.html">CLIをインストールします</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../longhorn-system/system-access/longhorn-httproute.html">HTTPRouteをGateway APIで作成する</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../longhorn-system/system-access/longhorn-python-client.html">Pythonクライアント</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../longhorn-system/networking/networking.html">ネットワーキング</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../longhorn-system/networking/storage-network.html">ストレージネットワーク</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../longhorn-system/components/csi-pod-antiaffinity-preset.html">CSIコンポーネントポッドのアンチアフィニティ</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../longhorn-system/mtls-support.html">相互TLS（mTLS）サポート</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../longhorn-system/customize-default-settings.html">デフォルト設定のカスタマイズ</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../longhorn-system/settings.html">設定</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">V2データエンジン（技術プレビュー）</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../longhorn-system/v2-data-engine/v2-data-engine.html">V2データエンジン（テクニカルプレビュー）</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../longhorn-system/v2-data-engine/features/features.html">V2データエンジンの機能</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../longhorn-system/v2-data-engine/features/selective-engine-activation.html">選択的V2データエンジンの有効化</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../longhorn-system/v2-data-engine/features/ublk-frontend-support.html">UBLK フロントエンド サポート</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../longhorn-system/v2-data-engine/features/node-disk-support.html">ノードディスクのサポート</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../longhorn-system/v2-data-engine/features/replica-rebuild-qos.html">レプリカ再構築QoS</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../longhorn-system/v2-data-engine/features/interrupt-mode.html">割り込みモード</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../longhorn-system/v2-data-engine/features/volume-expansion.html">ボリュームの拡張</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../longhorn-system/v2-data-engine/features/volume-clone.html">ボリュームクローン</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../longhorn-system/v2-data-engine/prerequisites.html">前提条件</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../longhorn-system/v2-data-engine/quick-start-guide.html">Quick Start Guide</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../longhorn-system/v2-data-engine/performance.html">パフォーマンス</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../longhorn-system/examples-resources.html">SUSE® Storage を使用する Kubernetes リソースの例</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../longhorn-system/migrate-flexvolume.html">FlexvolumeドライバーからCSIに移行する</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">ノード</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../nodes/node-space-usage.html">ノードのスペース使用状況</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../nodes/default-disk-and-node-config.html">デフォルトのノードおよびディスクの設定</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../nodes/storage-tags.html">ストレージタグ</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../nodes/multiple-disks.html">複数のディスク</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../nodes/disks-or-nodes-eviction.html">無効化されたディスクまたはノード上のレプリカを退避する</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../nodes/scheduling.html">スケジューリング</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../nodes/node-conditions.html">ノード条件</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../nodes/node-selector.html">ノードセレクター</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../nodes/taints-tolerations.html">テイントとトレランス</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../nodes/priority-class.html">優先クラス</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../nodes/topology-aware-provisioning.html">トポロジー対応プロビジョニング</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">マネージドKubernetes</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../nodes/managed-kubernetes/aks-managed-node-groups.html">Azure Kubernetes Service (AKS) の管理ノードグループ</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../nodes/managed-kubernetes/eks-managed-node-pools.html">Amazon Elastic Kubernetes Service (Amazon EKS) の管理ノードプール</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../nodes/managed-kubernetes/gke-managed-node-pools.html">Google Kubernetes Engine (GKE) の管理ノードプール</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">ボリューム</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/create-volumes.html">ボリュームの作成</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/pvc-ownership-and-permission.html">PVCの所有権と権限</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/rwx-volumes.html">ReadWriteMany (RWX) ボリューム</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/clone-volumes.html">ボリュームのクローン作成</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/containerized-data-importer.html">SUSE Storage とCDIインポート</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/detach-volumes.html">ボリュームを切り離す</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/delete-volumes.html">ボリュームを削除する</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/use-as-iscsi-target.html">ボリュームをiSCSIターゲットとして使用する</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/identify-workloads.html">ボリュームを使用しているワークロードを特定する</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/volume-size.html">ボリュームサイズ</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/volume-expansion.html">ボリュームの拡張</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/volume-attachment.html">SUSE Storage ボリュームアタッチメント</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/trim-filesystem.html">ファイルシステムをトリムする</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/volume-conditions.html">ボリューム条件</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/volume-encryption.html">ボリューム暗号化</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/storageclass-parameters.html">ストレージクラスのパラメータ</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../volumes/backing-images/backing-images.html">バックイメージ</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../volumes/backing-images/backing-image-encryption.html">バックイメージの暗号化</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">高可用性</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../high-availability/automatic-replica-balancing.html">自動レプリカバランシング</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../high-availability/replica-rebuilding.html">レプリカ再構築</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../high-availability/fast-replica-rebuilding.html">高速レプリカ再構築</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../high-availability/offline-replica-rebuilding.html">オフラインレプリカ再構築</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../high-availability/revision_counter.html">リビジョンカウンター</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../high-availability/data-locality.html">データのローカリティ</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../high-availability/kubernetes-cluster-autoscaler.html">Kubernetesクラスターオートスケーラーサポート（実験的）</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../high-availability/rwx-volume-fast-failover.html">RWXボリュームのファストフェールオーバー（実験的）</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../high-availability/volume-recovery.html">ボリューム回復</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../high-availability/node-failure.html">ノードエラー管理</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">スナップショットとバックアップ</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../snapshots-backups/volume-snapshots-backups/volume-snapshots-backups.html">ボリュームスナップショットとバックアップ</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/volume-snapshots-backups/create-snapshot.html">スナップショットの作成</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/volume-snapshots-backups/snapshot-space-management.html">スナップショットスペース管理</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/volume-snapshots-backups/configure-backup-target.html">バックアップターゲットを設定する</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/volume-snapshots-backups/create-backup.html">バックアップを作成する</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/volume-snapshots-backups/sync-backup-volumes-manually.html">バックアップボリュームの手動同期</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/volume-snapshots-backups/create-recurring-backup-snapshot-job.html">定期スナップショットまたはバックアップジョブを作成する</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/volume-snapshots-backups/restore-volume-from-backup.html">バックアップからボリュームを復元する</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/volume-snapshots-backups/restore-recurring-job-from-backup.html">バックアップから定期ジョブを復元する</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/volume-snapshots-backups/restore-volume-statefulset.html">Kubernetes StatefulSetのボリュームを復元する</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../snapshots-backups/csi-snapshots/csi-snapshots.html">CSI Snapshots</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/csi-snapshots/csi-snapshot-longhorn-backing-image.html">SUSE® Storage のバックイメージに関連付けられた CSI スナップショット</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/csi-snapshots/csi-snapshot-longhorn-backup.html">SUSE® Storageバックアップに関連付けられたCSIボリュームスナップショット</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/csi-snapshots/csi-snapshot-longhorn-snapshot.html">SUSE® Storageスナップショットに関連付けられたCSIボリュームスナップショット</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/csi-snapshots/enable-csi-snapshot-creation.html">クラスター上でCSIスナップショットの作成を有効にします。</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../snapshots-backups/system-backups/system-backups.html">SUSE® Storageシステムのバックアップ</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/system-backups/restore-to-cluster-using-rancher-snapshot.html">Rancherスナップショットを使用して、SUSE® Storageをクラスターに復元します。</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/system-backups/restore-to-new-cluster-using-velero.html">Veleroを使用してSUSE® Storageシステムを新しいクラスターに復元する</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/system-backups/create-system-backup.html">SUSE Storage システムバックアップを作成する</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/system-backups/restore-system.html">SUSE® Storageシステムを復元する</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../snapshots-backups/backing-image-backups.html">バックアップイメージのバックアップ</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../snapshots-backups/restore-cluster-rancher-snapshot.html">Rancherスナップショットを使用してクラスターを復元する</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">データの整合性と復旧</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../data-integrity-recovery/snapshot-data-integrity-check.html">スナップショットデータの整合性チェック</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../data-integrity-recovery/orphaned-data-cleanup.html">孤立したデータのクリーンアップ</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../data-integrity-recovery/orphaned-instance-cleanup.html">孤立したインスタンスのクリーンアップ</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../data-integrity-recovery/disaster-recovery-volumes.html">障害復旧ボリューム</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">データ復旧</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../data-integrity-recovery/data-recovery/identify-corrupted-replicas.html">破損したレプリカを特定する</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../data-integrity-recovery/data-recovery/retrieve-volume-data-from-replica.html">単一のレプリカからボリュームデータを取得する</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../data-integrity-recovery/data-recovery/recover-from-data-errors.html">データエラーを特定し、回復する</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../data-integrity-recovery/data-recovery/recover-from-full-disk.html">フルディスクからの回復</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../data-integrity-recovery/data-recovery/recover-without-system.html">システムがインストールされていない状態でSUSE® Storageバックアップから復元する</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">監視</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../observability/configure-prometheus-grafana.html">SUSE® Storageを監視するためにPrometheusとGrafanaを設定する</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../observability/alert-rule-examples.html">アラートルールの例</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../observability/longhorn-metrics.html">SUSE® Storage の監視用メトリクス</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../observability/disk-health.html">ディスクヘルスモニタリング</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../observability/integrate-with-rancher-monitoring.html">Rancher監視システムにSUSE® Storage Metricsを統合します。</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../observability/kubelet-volume-metrics.html">Kubeletボリュームメトリクス</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">トラブルシューティングとメンテナンス</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting-maintenance/support-bundle.html">サポートバンドル</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting-maintenance/troubleshooting.html">トラブルシューティング</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting-maintenance/v2-data-engine-issues.html">トラブルシューティング</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting-maintenance/maintenance.html">ノードメンテナンスおよびKubernetesアップグレードガイド</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">用語集</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../glossary/glossary.html">用語集/用語</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">SUSE® Storage</span>
+    <span class="version">1.11 (Latest)</span>
+  </div>
+  <ul class="components">
+        <li class="component">
+          <div class="title"><a href="../../../../admission-controller/1.35/en/introduction.html">Admission Controller</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../admission-controller/1.36/en/introduction.html">1.36-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../admission-controller/1.35/en/introduction.html">1.35-latest</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.34/en/introduction.html">1.34</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.33/en/introduction.html">1.33</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.32/en/introduction.html">1.32</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.31/en/introduction.html">1.31</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.30/en/introduction.html">1.30</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.29/en/introduction.html">1.29</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.28/en/introduction.html">1.28</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../cluster-api/v0.26/en/index.html">Cluster API</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../cluster-api/v0.27/en/index.html">v0.27-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../cluster-api/v0.26/en/index.html">v0.26</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.25/en/index.html">0.25</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.24/en/index.html">0.24</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.23/en/index.html">0.23</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.22/en/index.html">0.22</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.21/en/index.html">0.21</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.20/en/index.html">0.20</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.19/en/index.html">0.19</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.18/en/index.html">0.18</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.17/en/index.html">0.17</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.16/en/index.html">0.16</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.11/en/index.html">0.11</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../continuous-delivery/next/en/index.html">Continuous Delivery</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../continuous-delivery/next/en/index.html">Next</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.11/en/index.html">0.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.10/en/index.html">0.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.9/en/index.html">0.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../k3s/latest/en/introduction.html">K3s</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../k3s/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../os-manager/1.9/en/index.html">OS Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../os-manager/1.10/en/index.html">1.10-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../os-manager/1.9/en/index.html">1.9</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.8/en/index.html">1.8</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.7/en/index.html">1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.6/en/index.html">1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.5/en/index.html">1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-ai/latest/en/introduction.html">Rancher AI</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-ai/latest/en/introduction.html">latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rke2/latest/en/introduction.html">RKE2</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rke2/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-observability/latest/en/classic.html">SUSE Observability</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../suse-observability/latest/en/classic.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">SUSE Rancher Developer Access</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">SUSE® Rancher for AWS</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-manager/v2.14/en/about-rancher/what-is-rancher.html">SUSE® Rancher Manager</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-manager/v2.14/en/about-rancher/what-is-rancher.html">v2.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.13/en/about-rancher/what-is-rancher.html">v2.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.12/en/about-rancher/what-is-rancher.html">v2.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.11/en/about-rancher/what-is-rancher.html">v2.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.10/en/about-rancher/what-is-rancher.html">v2.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.9/en/about-rancher/what-is-rancher.html">v2.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../security/5.5/en/overview.html">SUSE® Security</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../security/5.5/en/overview.html">5.5</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.4/en/overview.html">5.4</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.3/en/overview.html">5.3</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component is-current">
+          <div class="title"><a href="../../en/longhorn-documentation.html">SUSE® Storage</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../1.12/en/longhorn-documentation.html">1.12 (Dev)</a>
+            </li>
+            <li class="version is-current is-latest">
+              <a href="../../en/longhorn-documentation.html">1.11 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../1.10/en/longhorn-documentation.html">1.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../1.9/en/longhorn-documentation.html">1.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">SUSE® Virtual Clusters</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/1.2.0/en/release-notes/version-1.2.0.html">v1.2.0 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">v1.1.0</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/1.0.2/en/release-notes/version-1.0.2.html">v1.0.2</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.1/en/introduction.html">v1.0.1</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.0/en/introduction.html">v1.0.0</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../virtualization/v1.7/en/introduction/overview.html">SUSE® Virtualization</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../virtualization/v1.8/en/introduction/overview.html">v1.8 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../virtualization/v1.7/en/introduction/overview.html">v1.7 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../virtualization/v1.6/en/introduction/overview.html">v1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../virtualization/v1.5/en/introduction/overview.html">v1.5</a>
+            </li>
+          </ul>
+        </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+<ul>
+    <li>
+      <a class="home-link-dsc" href="https://documentation.suse.com/" title="documentation.suse.com" aria-label="SUSE Documentation Home"></a>
+    </li>
+    <li>
+      <a href="https://documentation.suse.com/cloudnative/storage" title="SUSE Storage" aria-label="SUSE Documentation - SUSE Storage">
+        SUSE Storage
+      </a>
+    </li>
+      <li>
+          <a href="introduction.html" title="概要" aria-label="概要">概要</a>
+      </li>
+  </ul>
+</nav><div class="page-versions">
+  <button class="version-menu-toggle" title="Show other versions of page">1.11 (Latest)</button>
+  <div class="version-menu">
+    <a class="version" href="../../../1.12/ja/introduction/concepts.html">1.12 (Dev)</a>
+    <a class="version is-current" href="concepts.html">1.11 (Latest)</a>
+    <a class="version is-missing" href="../../../1.10/en/longhorn-documentation.html">1.10</a>
+    <a class="version is-missing" href="../../../1.9/en/longhorn-documentation.html">1.9</a>
+  </div>
+</div>
+      <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <label class="visual-search-label-bc" for="search-input">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+          <input label="Search" aria-label="Search" id="search-input" type="text" placeholder="ドキュメントを検索" >
+          <label class="filter checkbox" style="display: none">
+            <input type="checkbox" data-facet-filter="component:storage" checked> Only this project
+          </label>
+        </div>
+      </div>
+</div>
+  <div class="content">
+<aside
+  class="toc sidebar"
+  data-title="このページで" data-levels="2">
+  <div class="toc-menu">
+    <!-- start qualtrics -->
+    <div id='ZN_8qZUmklKYbBqAYe'><!--DO NOT REMOVE-CONTENTS PLACED HERE--></div>
+    <div id="qualtrics_container"></div>
+    <!-- end qualtrics -->
+  </div>
+</aside><article class="doc">
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="注記"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>
+
+この文書は自動機械翻訳技術を使用して翻訳されています。
+正確な翻訳を提供するように努めておりますが、翻訳された内容の完全性、正確性、信頼性については一切保証いたしません。
+相違がある場合は、元の英語版
+<a href="https://documentation.suse.com/cloudnative/storage/1.11/en/introduction/concepts.html">
+英語
+</a>
+が優先され、正式なテキストとなります。
+
+</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<h1 class="page">アーキテクチャと概念</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>SUSE Storageは、各ボリュームに専用のストレージコントローラを作成し、複数のノードに保存されている複数のレプリカ間でボリュームを同期レプリケートします。</p>
+</div>
+<div class="paragraph">
+<p>ストレージコントローラとレプリカ自体はKubernetesを使用してオーケストレーションされます。</p>
+</div>
+<div class="paragraph">
+<p>機能の概要については、<a href="introduction.html" class="xref page">このセクションを参照してください。</a></p>
+</div>
+<div class="paragraph">
+<p>インストール要件については、<a href="../installation-setup/requirements.html" class="xref page">このセクションを参照してください。</a></p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>このセクションでは、Kubernetesの永続ストレージの概念に精通していることを前提としています。これらの概念に関する詳細情報については、<a href="#_appendix_how_persistent_storage_works_in_kubernetes">付録を参照してください。</a>このページで使用されている用語についてのヘルプは、<a href="terminology.html" class="xref page">このセクションを参照してください。</a></p>
+</div>
+</blockquote>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_1_設計"><a class="anchor" href="#_1_設計"></a>1.設計</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>設計には2つの階層があります：データプレーンとコントロールプレーン。Longhorn Engineはデータプレーンに対応するストレージコントローラであり、Longhorn Managerはコントロールプレーンに対応します。</p>
+</div>
+<div class="sect2">
+<h3 id="_1_1_longhorn_managerとlonghorn_engine"><a class="anchor" href="#_1_1_longhorn_managerとlonghorn_engine"></a>1.1.Longhorn ManagerとLonghorn Engine</h3>
+<div class="paragraph">
+<p>Longhorn Managerポッドは、SUSE Storageクラスター内の各ノードでKubernetesの <a href="https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/">デーモンセット</a>として実行されます。Kubernetesクラスター内でボリュームを作成および管理し、SUSE Storage UIまたはLonghorn CSIプラグインからのAPI呼び出しを処理します。Kubernetesコントローラパターンに従い、これは時折オペレータパターンと呼ばれます。</p>
+</div>
+<div class="paragraph">
+<p>Longhorn Managerは、Kubernetes APIサーバーと通信して新しいSUSE Storageボリューム <a href="https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/">CR</a>を作成します。その後、Longhorn ManagerはAPIサーバーの応答を監視し、Kubernetes APIサーバーが新しいSUSE StorageボリュームCRを作成したことを確認すると、Longhorn Managerは新しいボリュームを作成します。</p>
+</div>
+<div class="paragraph">
+<p>Longhorn Managerがボリュームの作成を求められたとき、ボリュームが接続されているノードにLonghorn Engineのインスタンスを作成し、レプリカが配置される各ノードにレプリカを作成します。レプリカは最大の可用性を確保するために、別々のホストに配置する必要があります。</p>
+</div>
+<div class="paragraph">
+<p>レプリカのための複数のデータパスは、Longhornボリュームの高可用性を確保します。レプリカまたはエンジンに問題が発生した場合、すべてのレプリカやポッドのボリュームへのアクセスに影響を与えることはありません。ポッドは通常通り機能し続けます。レプリカ数が`N`の特定のボリュームに対して、Longhornボリュームは最大`N-1`のレプリカ障害に耐えることができます。これは、ボリュームが稼働し続けるためには少なくとも1つの健康なレプリカが必要だからです。</p>
+</div>
+<div class="paragraph">
+<p>Longhorn Engineは、SUSE Storageボリュームを使用するPodと同じノードで常に実行されます。それは、複数のノードに保存された複数のレプリカ間でボリュームを同期的に複製します。</p>
+</div>
+<div class="paragraph">
+<p>エンジンとレプリカはKubernetesを使用してオーケストレーションされます。</p>
+</div>
+<div class="paragraph">
+<p>以下の図では、</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>SUSE Storageボリュームを持つ3つのインスタンスがあります。</p>
+</li>
+<li>
+<p>各ボリュームには、Longhorn Engineと呼ばれる専用のコントローラーがあります。V1ボリュームの場合、エンジンはLinuxプロセスとして実行され、V2ボリュームの場合はSPDK RAIDブロックデバイス（bdev）として動作します。</p>
+</li>
+<li>
+<p>各SUSE Storageボリュームには2つのレプリカがあります。V1では、レプリカはLinuxプロセスとして実行され、V2ではSPDK論理ボリュームbdevとして実装されています。</p>
+</li>
+<li>
+<p>図中の矢印は、ボリューム、コントローラーインスタンス、レプリカインスタンス、およびディスク間の読み取り/書き込みデータフローを示しています。</p>
+</li>
+<li>
+<p>各ボリュームのために別々のLonghornエンジンを作成することにより、1つのコントローラーが故障しても、他のボリュームの機能には影響がありません。</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>図1。ボリューム、Longhorn Engine、レプリカインスタンス、およびディスク間の読み取り/書き込みデータフロー</strong></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/diagrams/architecture/how-longhorn-works-with-kubernetes.svg" alt="ボリューム間の読み取り/書き込みデータフロー" width="controller instance" height="replica instances">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_1_2_マイクロサービスベースの設計の利点"><a class="anchor" href="#_1_2_マイクロサービスベースの設計の利点"></a>1.2.マイクロサービスベースの設計の利点</h3>
+<div class="paragraph">
+<p>各エンジンは1つのボリュームにのみサービスを提供する必要があり、ストレージコントローラーの設計が簡素化されます。コントローラーソフトウェアの障害ドメインは個々のボリュームに隔離されているため、コントローラーのクラッシュは1つのボリュームにのみ影響を与えます。</p>
+</div>
+<div class="paragraph">
+<p>Longhorn Engineはシンプルで軽量であり、数千の別々のエンジンを作成することができます。Kubernetesはこれらの別々のエンジンをスケジュールし、共有ディスクセットからリソースを引き出し、SUSE Storageと連携して回復力のある分散ブロックストレージシステムを形成します。</p>
+</div>
+<div class="paragraph">
+<p>各ボリュームには独自のコントローラーがあるため、各ボリュームのコントローラーとレプリカインスタンスは、IO操作に目立った中断を引き起こすことなくアップグレードできます。</p>
+</div>
+<div class="paragraph">
+<p>SUSE Storageは、システムの進行中の操作を中断することなく、すべてのライブボリュームのアップグレードを調整するための長時間実行されるジョブを作成できます。アップグレードが予期しない問題を引き起こさないようにするために、SUSE Storageはボリュームの小さなサブセットをアップグレードし、アップグレード中に何か問題が発生した場合には古いバージョンにロールバックすることを選択できます。</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_1_3_csiドライバー"><a class="anchor" href="#_1_3_csiドライバー"></a>1.3.CSIドライバー</h3>
+<div class="paragraph">
+<p>Longhorn CSIドライバーはブロックデバイスを取得し、フォーマットしてノードにマウントします。次に、 <a href="https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet/">kubelet</a>がKubernetes Pod内にデバイスをバインドマウントします。これにより、PodはSUSE Storageボリュームにアクセスできます。</p>
+</div>
+<div class="paragraph">
+<p>必要なKubernetes CSIドライバーイメージは、Longhornドライバーデプロイヤーによって自動的にデプロイされます。
+SUSE Storageをエアギャップ環境にインストールするには、<a href="../installation-setup/installation/airgapped-environment.html" class="xref page">このセクション</a>を参照してください。</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_1_4_csiプラグイン"><a class="anchor" href="#_1_4_csiプラグイン"></a>1.4.CSIプラグイン</h3>
+<div class="paragraph">
+<p>SUSE Storageは、 <a href="https://kubernetes-csi.github.io/docs/">CSIプラグイン。</a>を介してKubernetesで管理されます。これにより、プラグインの簡単なインストールが可能になります。</p>
+</div>
+<div class="paragraph">
+<p>Kubernetes CSIプラグインは、Kubernetesワークロードのために永続データを作成するためにボリュームを作成するためにSUSE Storageを呼び出します。CSIプラグインは、ボリュームの作成、削除、アタッチ、デタッチ、マウント、およびボリュームのスナップショットを取得する機能を提供します。SUSE Storageによって提供される他のすべての機能は、UIを通じて実装されています。</p>
+</div>
+<div class="paragraph">
+<p>Kubernetesクラスターは、内部的にCSIインターフェースを使用してLonghorn CSIプラグインと通信します。Longhorn CSIプラグインは、Longhorn APIを使用してLonghorn Managerと通信します。</p>
+</div>
+<div class="paragraph">
+<p>v1ボリュームの場合、SUSE StorageはiSCSIを使用し、ノードに追加の設定が必要な場合があります。</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Linux配布パッケージに応じて、`open-iscsi`または`iscsiadm`のいずれかをインストールする必要があります。</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>対照的に、v2ボリュームは構成に応じて異なる前提条件があります。</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>`vfio_pci`や`uio_pci_generic`のようなカーネルモジュールが必要です。</p>
+</li>
+<li>
+<p>NVMe-TCPフロントエンドには、`nvme_tcp`モジュールが必要です。</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_1_5_ui"><a class="anchor" href="#_1_5_ui"></a>1.5.UI</h3>
+<div class="paragraph">
+<p>UIはLonghorn APIを介してLonghorn Managerと対話し、Kubernetesの補完として機能します。UIを通じて、スナップショット、バックアップ、ノード、ディスクを管理できます。</p>
+</div>
+<div class="paragraph">
+<p>さらに、クラスターのワーカーノードのスペース使用量が収集され、UIによって示されます。詳しくは、<a href="../nodes/node-space-usage.html" class="xref page">こちらをご覧ください</a>。</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_2_ボリュームとプライマリストレージ"><a class="anchor" href="#_2_ボリュームとプライマリストレージ"></a>2.ボリュームとプライマリストレージ</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>ボリュームを作成する際、Longhorn ManagerはLonghorn Engineマイクロサービスと各ボリュームのレプリカをマイクロサービスとして作成します。これらのマイクロサービスは一緒にSUSE Storageボリュームを形成します。各レプリカは異なるノードまたは異なるディスクに配置する必要があります。</p>
+</div>
+<div class="paragraph">
+<p>Longhorn ManagerによってLonghorn Engineが作成された後、それはレプリカに接続します。Engineは、Podが実行されている同じノード上にブロックデバイスを公開します。</p>
+</div>
+<div class="paragraph">
+<p>SUSE Storageボリュームはkubectlを使用して作成できます。</p>
+</div>
+<h3 id="_2_1_スリムプロビジョニングとボリュームサイズ" class="discrete">2.1.スリムプロビジョニングとボリュームサイズ</h3>
+<div class="paragraph">
+<p>SUSE Storageはスリムプロビジョニングされたストレージシステムです。これは、SUSE Storageボリュームがその時点で必要なスペースのみを占有することを意味します。例えば、20 GBのボリュームを割り当てたが、そのうち1 GBしか使用していない場合、ディスク上の実際のデータサイズは1 GBになります。UIのボリューム詳細で実際のデータサイズを確認できます。</p>
+</div>
+<div class="paragraph">
+<p>SUSE Storageボリューム自体は、ボリュームからコンテンツを削除してもサイズを縮小することはできません。例えば、20 GBのボリュームを作成し、10 GBを使用し、その後9 GBのコンテンツを削除した場合、ディスク上の実際のサイズは1 GBではなく、依然として10 GBになります。これは、SUSE Storageがブロックレベルで動作し、ファイルシステムレベルではないため、SUSE Storageはユーザーによってコンテンツが削除されたかどうかを認識できないからです。その情報は主にファイルシステムレベルで保持されます。</p>
+</div>
+<div class="paragraph">
+<p>ボリュームサイズに関連する概念についての詳細は、この<a href="../volumes/volume-size.html" class="xref page">doc</a>を参照してください。</p>
+</div>
+<h3 id="_2_2_メンテナンスモードでのボリュームの復元" class="discrete">2.2.メンテナンスモードでのボリュームの復元</h3>
+<div class="paragraph">
+<p>UIからボリュームが接続されると、メンテナンスモードのチェックボックスがあります。これは主にスナップショットからボリュームを復元するために使用されます。</p>
+</div>
+<div class="paragraph">
+<p>このオプションは、ボリューム接続中に誰もデータにアクセスできないよう、フロントエンド（ブロックデバイスまたはiSCSI）を有効にせずにボリュームを接続するものです。</p>
+</div>
+<div class="paragraph">
+<p>v0.6.0以降、スナップショット復元操作にはボリュームがメンテナンスモードであることが必要です。これは、ボリュームがマウントされているか使用されている間にブロックデバイスの内容が変更されると、ファイルシステムの破損を引き起こすためです。</p>
+</div>
+<div class="paragraph">
+<p>データが誤ってアクセスされることを心配せずにボリュームの状態を検査するのにも役立ちます。</p>
+</div>
+<div class="sect2">
+<h3 id="_2_3_replicas"><a class="anchor" href="#_2_3_replicas"></a>2.3.Replicas</h3>
+<div class="paragraph">
+<p>各レプリカは、SUSE Storageボリュームのスナップショットのチェーンを含んでいます。スナップショットは画像の層のようなもので、最も古いスナップショットがベース層として使用され、新しいスナップショットがその上に重ねられます。データは、古いスナップショットのデータを上書きする場合にのみ、新しいスナップショットに含まれます。スナップショットのチェーンは、データの現在の状態を示します。</p>
+</div>
+<div class="paragraph">
+<p>各SUSE Storageボリュームについて、Kubernetesクラスター内で複数のレプリカが異なるノードで実行されるべきです。すべてのレプリカは同じように扱われ、Longhorn Engineは常にポッドと同じノードで実行され、ポッドはボリュームの消費者でもあります。そのようにして、ポッドがダウンしても、エンジンを別のポッドに移動でき、サービスは中断されずに続行されます。</p>
+</div>
+<div class="paragraph">
+<p>デフォルトのレプリカ数は、<a href="../longhorn-system/settings.html#_default_replica_count" class="xref page">設定。</a>で変更できます。ボリュームが接続されると、UIでボリュームのレプリカ数を変更できます。</p>
+</div>
+<div class="paragraph">
+<p>現在の正常なレプリカ数が指定されたレプリカ数より少ない場合、SUSE Storageは新しいレプリカの再構築を開始します。</p>
+</div>
+<div class="paragraph">
+<p>現在の正常なレプリカ数が指定されたレプリカ数より多い場合、レプリカの自動バランスとデータのローカリティは無効になり、SUSE Storageは何もしません。この状況では、レプリカが失敗したり削除された場合、正常なレプリカ数が指定されたレプリカ数を下回らない限り、SUSE Storageは新しいレプリカの再構築を開始しません。レプリカの自動バランスまたはデータのローカリティが設定されている場合、SUSE Storageはレプリカの1つを削除する可能性があります。</p>
+</div>
+<div class="paragraph">
+<p>SUSE Storageレプリカは、スリムプロビジョニングをサポートするLinux <a href="https://en.wikipedia.org/wiki/Sparse_file">スパースファイル,</a>を使用して構築されます。</p>
+</div>
+<div class="sect3">
+<h4 id="_2_3_1レプリカの読み取りおよび書き込み操作の動作"><a class="anchor" href="#_2_3_1レプリカの読み取りおよび書き込み操作の動作"></a>2.3.1。レプリカの読み取りおよび書き込み操作の動作</h4>
+<div class="paragraph">
+<p>ボリュームのレプリカからデータが読み取られるとき、ライブデータにそのデータが見つかれば、そのデータが使用されます。見つからない場合は、最新のスナップショットが読み取られます。データが最新のスナップショットに見つからない場合、次に古いスナップショットが読み取られ、最古のスナップショットが読み取られるまで続きます。</p>
+</div>
+<div class="paragraph">
+<p>スナップショットを取得すると、 <a href="https://en.wikipedia.org/wiki/Data_differencing">差分</a>ディスクが作成されます。スナップショットの数が増えるにつれて、差分ディスクチェーン（スナップショットのチェーンとも呼ばれる）はかなり長くなる可能性があります。読み取り性能を向上させるために、SUSE Storageは各4Kストレージブロックに対して有効なデータを保持する差分ディスクを記録する読み取りインデックスを維持します。</p>
+</div>
+<div class="paragraph">
+<p>次の図では、ボリュームには8つのブロックがあります。読み取りインデックスには8つのエントリがあり、読み取り操作が行われると遅延的に埋められます。</p>
+</div>
+<div class="paragraph">
+<p>書き込み操作は読み取りインデックスをリセットし、ライブデータを指すようにします。ライブデータは、いくつかのインデックスにデータがあり、他のインデックスには空きスペースがあるデータで構成されています。</p>
+</div>
+<div class="paragraph">
+<p>読み取りインデックスを超えて、現在使用されているブロックを示す追加のメタデータは維持していません。</p>
+</div>
+<div class="paragraph">
+<p><strong>図2。読み取りインデックスがどのスナップショットが最新のデータを保持しているかを追跡する方法</strong></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/diagrams/architecture/read-index.png" alt="読み取りインデックスがどのスナップショットが最新のデータを保持しているかを追跡する方法">
+</div>
+</div>
+<div class="paragraph">
+<p>上の図は、読み取りインデックスに従って最新のデータを含むブロックを示すために色分けされており、最新のデータのソースも下の表に示されています：</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">読み取りインデックス</th>
+<th class="tableblock halign-left valign-top">最新のデータのソース</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">最新のスナップショット</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ライブデータ</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">最古のスナップショット</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">最古のスナップショット</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">最古のスナップショット</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ライブデータ</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">6</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ライブデータ</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">7</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ライブデータ</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>上の図に示されている緑の矢印が示すように、読み取りインデックスのインデックス5は以前、最新のデータのソースとして2番目に古いスナップショットを指していましたが、インデックス5の4Kストレージブロックがライブデータによって上書きされたときにライブデータを指すように変更されました。</p>
+</div>
+<div class="paragraph">
+<p>読み取りインデックスはメモリに保持され、各4Kブロックに対して1バイトを消費します。バイトサイズの読み取りインデックスは、各ボリュームに対して254スナップショットまで取得できることを意味します。</p>
+</div>
+<div class="paragraph">
+<p>読み取りインデックスは、各レプリカに対して一定量のメモリ内データ構造を消費します。例えば、1 TBのボリュームは、256 MBのメモリ内読み取りインデックスを消費します。</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_2_3_2_新しいレプリカの追加方法"><a class="anchor" href="#_2_3_2_新しいレプリカの追加方法"></a>2.3.2 新しいレプリカの追加方法</h4>
+<div class="paragraph">
+<p>新しいレプリカが追加されると、既存のレプリカは新しいレプリカに同期されます。最初のレプリカは、ライブデータから新しいスナップショットを取得することによって作成されます。</p>
+</div>
+<div class="paragraph">
+<p>以下のステップは、SUSE Storageが新しいレプリカを追加する方法の詳細な内訳を示しています：</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Longhorn Engineは一時停止されます。</p>
+</li>
+<li>
+<p>レプリカ内のスナップショットのチェーンがライブデータとスナップショットで構成されていると仮定しましょう。新しいレプリカが作成されると、ライブデータは最新の（2番目の）スナップショットとなり、新しい空のライブデータのバージョンが作成されます。</p>
+</li>
+<li>
+<p>新しいレプリカはWO（書き込み専用）モードで作成されます。</p>
+</li>
+<li>
+<p>Longhorn Engineは再開されます。</p>
+</li>
+<li>
+<p>すべてのスナップショットが同期されます。</p>
+</li>
+<li>
+<p>新しいレプリカはRW（読み書き可能）モードに設定されます。</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_2_3_3_故障したレプリカの再構築方法"><a class="anchor" href="#_2_3_3_故障したレプリカの再構築方法"></a>2.3.3.故障したレプリカの再構築方法</h4>
+<div class="paragraph">
+<p>SUSE Storageは、各ボリュームに対して常に指定された数の健全なレプリカを維持しようとします。</p>
+</div>
+<div class="paragraph">
+<p>コントローラーがそのレプリカの1つで障害を検出すると、そのレプリカはエラー状態としてマークされます。Longhorn Managerは、故障したレプリカの再構築プロセスを開始し、調整する責任があります。</p>
+</div>
+<div class="paragraph">
+<p>故障したレプリカを再構築するために、Longhorn Managerは空のレプリカを作成し、Longhorn Engineに空のレプリカをボリュームのレプリカセットに追加するよう呼び出します。</p>
+</div>
+<div class="paragraph">
+<p>空のレプリカを追加するために、エンジンは以下の操作を実行します：</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>すべての読み取りおよび書き込み操作を一時停止します。</p>
+</li>
+<li>
+<p>空のレプリカをWO（書き込み専用）モードで追加します。</p>
+</li>
+<li>
+<p>すべての既存のレプリカのスナップショットを取得し、現在はその先頭に空の差分ディスクがあります。</p>
+</li>
+<li>
+<p>すべての読み取りおよび書き込み操作の一時停止を解除します。新しく追加されたレプリカには、書き込み操作のみが送信されます。</p>
+</li>
+<li>
+<p>良好なレプリカから空のレプリカに、最新の差分ディスクを除くすべてを同期するバックグラウンドプロセスを開始します。</p>
+</li>
+<li>
+<p>同期が完了すると、すべてのレプリカは一貫したデータを持ち、ボリュームマネージャーは新しいレプリカをRW（読み書き）モードに設定します。</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>最後に、Longhorn ManagerがLonghorn Engineを呼び出して、故障したレプリカをレプリカセットから削除します。</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_2_4_スナップショット"><a class="anchor" href="#_2_4_スナップショット"></a>2.4.スナップショット</h3>
+<div class="paragraph">
+<p>スナップショット機能により、ボリュームを特定の履歴の時点に戻すことができます。セカンダリストレージのバックアップもスナップショットから作成できます。</p>
+</div>
+<div class="paragraph">
+<p>ボリュームがスナップショットから復元されると、スナップショットが作成された時点でのボリュームの状態が反映されます。</p>
+</div>
+<div class="paragraph">
+<p>スナップショット機能は、SUSE Storage 再構築プロセスの一部でもあります。SUSE Storage がレプリカのダウンを検出するたびに、自動的に（システム）スナップショットを取得し、別のノードで再構築を開始します。</p>
+</div>
+<div class="sect3">
+<h4 id="_2_4_1スナップショットの仕組み"><a class="anchor" href="#_2_4_1スナップショットの仕組み"></a>2.4.1。スナップショットの仕組み</h4>
+<div class="paragraph">
+<p>スナップショットは画像の層のようなもので、最も古いスナップショットがベース層として使用され、新しいスナップショットがその上に重ねられます。データは、古いスナップショットのデータを上書きする場合にのみ、新しいスナップショットに含まれます。スナップショットのチェーンは、データの現在の状態を示します。レプリカからデータがどのように読み取られるかの詳細な内訳については、<a href="#_2_3_1_how_read_and_write_operations_work_for_replicas">レプリカの読み取りおよび書き込み操作に関するセクションを参照してください。</a></p>
+</div>
+<div class="paragraph">
+<p>スナップショットは作成後に変更できませんが、スナップショットが削除されると、その変更は次に最近のスナップショットと統合されます。新しいデータは常にライブバージョンに書き込まれます。新しいスナップショットは常にライブデータから作成されます。</p>
+</div>
+<div class="paragraph">
+<p>新しいスナップショットを作成するには、ライブデータが最新のスナップショットになります。その後、古いライブデータの代わりに新しい空のライブデータのバージョンが作成されます。</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_2_4_2定期的スナップショット"><a class="anchor" href="#_2_4_2定期的スナップショット"></a>2.4.2。定期的スナップショット</h4>
+<div class="paragraph">
+<p>スナップショットが占めるスペースを削減するために、ユーザーは保持するスナップショットの数を指定して定期的なスナップショットまたはバックアップをスケジュールすることができ、これによりスケジュールに従って新しいスナップショット/バックアップが自動的に作成され、その後、過剰なスナップショット/バックアップがクリーンアップされます。</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_2_4_3スナップショットの削除"><a class="anchor" href="#_2_4_3スナップショットの削除"></a>2.4.3。スナップショットの削除</h4>
+<div class="paragraph">
+<p>不要なスナップショットは、UIを通じて手動で削除できます。システム生成のスナップショットは、いずれかのスナップショットの削除がトリガーされた場合、自動的に削除対象としてマークされます。</p>
+</div>
+<div class="paragraph">
+<p>最新のスナップショットは削除できません。これは、スナップショットが削除されるたびに、SUSE Storageがその内容を次のスナップショットと統合するため、次のスナップショットおよびその後のスナップショットが正しい内容を保持するためです。</p>
+</div>
+<div class="paragraph">
+<p>しかし、SUSE Storageは最新のスナップショットに対してそれを行うことはできません。なぜなら、削除されたスナップショットと統合される最近のスナップショットが存在しないからです。最新のスナップショットの次の"`snapshot`"は、現在ユーザーによって読み書きされているライブボリューム（ボリュームヘッド）であるため、統合プロセスは発生できません。</p>
+</div>
+<div class="paragraph">
+<p>代わりに、最新のスナップショットは削除済みとしてマークされ、次回可能なときにクリーンアップされます。</p>
+</div>
+<div class="paragraph">
+<p>最新のスナップショットをクリーンアップするには、新しいスナップショットを作成し、その後、以前の「最新」スナップショットを削除できます。</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_2_4_4スナップショットの保存"><a class="anchor" href="#_2_4_4スナップショットの保存"></a>2.4.4。スナップショットの保存</h4>
+<div class="paragraph">
+<p>スナップショットは、各ボリュームのレプリカの一部としてローカルに保存されます。それらはKubernetesクラスター内のノードのディスクに保存されます。
+スナップショットは、ホストの物理ディスク上のボリュームデータと同じ場所に保存されます。</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_2_4_5クラッシュ整合性"><a class="anchor" href="#_2_4_5クラッシュ整合性"></a>2.4.5。クラッシュ整合性</h4>
+<div class="paragraph">
+<p>SUSE Storageはクラッシュ整合性のあるブロックストレージソリューションです。</p>
+</div>
+<div class="paragraph">
+<p>OSがブロックストレージに書き込む前にキャッシュに内容を保持するのは通常のことです。これは、すべてのレプリカがダウンしている場合、SUSE Storageがシャットダウンの直前に発生した変更を含まない可能性があることを意味します。なぜなら、内容はOSレベルのキャッシュに保持されており、まだSUSE Storageシステムに転送されていなかったからです。</p>
+</div>
+<div class="paragraph">
+<p>この問題は、デスクトップコンピュータが停電によりシャットダウンした場合に発生する可能性のある問題に似ています。電源を再開した後、ハードドライブにいくつかの破損したファイルが見つかるかもしれません。</p>
+</div>
+<div class="paragraph">
+<p>データを任意の瞬間にブロックストレージに書き込むためには、ノードで手動でsyncコマンドを実行するか、ディスクをアンマウントすることができます。いずれの状況でも、OSはキャッシュからブロックストレージに内容を書き込みます。</p>
+</div>
+<div class="paragraph">
+<p>SUSE Storageはスナップショットを作成する前に自動的にsyncコマンドを実行します。</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_3_バックアップとセカンダリストレージ"><a class="anchor" href="#_3_バックアップとセカンダリストレージ"></a>3.バックアップとセカンダリストレージ</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>バックアップは、Kubernetesクラスターの外部にあるNFSまたはS3互換のオブジェクトストアであるバックアップストア内のオブジェクトです。バックアップはセカンダリストレージの一形態を提供し、Kubernetesクラスターが利用できなくなってもデータを取得できるようにします。</p>
+</div>
+<div class="paragraph">
+<p>ボリュームのレプリケーションが同期されており、低レイテンシがあるため、クロスリージョンレプリケーションを行うのは難しいです。バックアップストアは、この問題に対処するための手段としても使用されます。</p>
+</div>
+<div class="paragraph">
+<p>バックアップターゲットがUIに設定されると（<strong>バックアップと復元 &#8594; バックアップターゲット</strong>）、SUSE Storageはバックアップストアに接続し、*バックアップ*画面に既存のバックアップのリストを表示できます。</p>
+</div>
+<div class="paragraph">
+<p>SUSE Storageが第二のKubernetesクラスターで実行されている場合、セカンダリストレージのバックアップに災害復旧ボリュームを同期することもでき、データを第二のKubernetesクラスターでより迅速に回復できます。</p>
+</div>
+<div class="sect2">
+<h3 id="_3_1_バックアップの仕組み"><a class="anchor" href="#_3_1_バックアップの仕組み"></a>3.1.バックアップの仕組み</h3>
+<div class="paragraph">
+<p>バックアップは、1つのスナップショットをソースとして使用して作成され、そのスナップショットが作成された時点でのボリュームのデータの状態を反映します。バックアップはクラスターの外部にリモートで保存されます。</p>
+</div>
+<div class="paragraph">
+<p>スナップショットとは対照的に、バックアップはスナップショットのチェーンを平坦化したバージョンと考えることができます。階層化されたイメージがフラットなイメージに変換されるときに情報が失われるのと同様に、スナップショットのチェーンがバックアップに変換されるときにもデータが失われます。両方の変換において、上書きされたデータは失われます。</p>
+</div>
+<div class="paragraph">
+<p>バックアップにはスナップショットが含まれていないため、ボリュームデータの変更履歴も含まれていません。バックアップからボリュームを復元すると、ボリュームには最初に1つのスナップショットが含まれます。このスナップショットは、元のチェーン内のすべてのスナップショットを統合したバージョンであり、バックアップが作成された時点でのボリュームのライブデータを反映しています。</p>
+</div>
+<div class="paragraph">
+<p>スナップショットは数百ギガバイトになることがありますが、バックアップは2 MBのファイルで構成されています。</p>
+</div>
+<div class="paragraph">
+<p>同じ元のボリュームの各新しいバックアップは増分であり、スナップショット間の変更されたブロックを検出して送信します。これは比較的簡単な作業です。なぜなら、各スナップショットは <a href="https://en.wikipedia.org/wiki/Data_differencing">差分</a>ファイルであり、最後のスナップショットからの変更のみを保存するからです。この設計は、ブロックが変更されていない場合にバックアップが取得されると、そのバックアップがバックアップストアで0バイトとして表示されることを意味します。しかし、そのバックアップから復元すると、バックアップストアにすでに存在する必要なブロックを復元するため、完全なボリュームデータが含まれます。</p>
+</div>
+<div class="paragraph">
+<p>非常に多くの小さなストレージブロックを保存しないようにするために、SUSE Storageは2 MBブロックを使用してバックアップ操作を実行します。これは、2 MBの境界内の任意の4Kブロックが変更された場合、SUSE Storageが全体の2 MBブロックをバックアップすることを意味します。これは、管理のしやすさと効率のバランスを提供します。</p>
+</div>
+<div class="paragraph">
+<p><strong>図3。二次ストレージのバックアップと一次ストレージのスナップショットの関係</strong></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/diagrams/concepts/longhorn-backup-creation.png" alt="二次ストレージのバックアップと一次ストレージのスナップショットの関係">
+</div>
+</div>
+<div class="paragraph">
+<p>上記の図は、スナップショットからバックアップがどのように作成されるかを示しています：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>図のプライマリストレージ側には、Kubernetesクラスター内のSUSE Storageボリュームの1つのレプリカが表示されています。レプリカは4つのスナップショットのチェーンで構成されています。最新から最古の順に、スナップショットはライブデータ、snap3、snap2、snap1です。</p>
+</li>
+<li>
+<p>図のセカンダリストレージ側には、S3などの外部オブジェクトストレージサービスに2つのバックアップが表示されています。</p>
+</li>
+<li>
+<p>セカンダリストレージでは、backup-from-snap2の色分けは、snap1からの青い変更とsnap2からの緑の変更の両方が含まれていることを示しています。snap2からの変更はsnap1のデータを上書きしなかったため、snap1とsnap2の両方の変更がbackup-from-snap2に含まれています。</p>
+</li>
+<li>
+<p>backup-from-snap3という名前のバックアップは、snap3が作成された時点でのボリュームのデータの状態を反映しています。色分けと矢印は、backup-from-snap3がsnap3からのすべての濃い赤の変更を含んでいることを示していますが、snap2からの緑の変更は1つだけです。これは、snap3の赤の変更の1つがsnap2の緑の変更の1つを上書きしたためです。これは、バックアップが変更の完全な履歴を含まないことを示しています。なぜなら、バックアップはそれ以前のスナップショットと混同されるからです。</p>
+</li>
+<li>
+<p>各バックアップは独自の2 MB ブロックのセットを保持します。各2 MB ブロックは一度だけバックアップされます。2つのバックアップは1つの緑のブロックと1つの青のブロックを共有します。</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>バックアップが二次ストレージから削除されると、SUSE Storageは使用しているすべてのブロックを削除しません。代わりに、定期的にガーベジコレクションを実行して、二次ストレージから未使用のブロックをクリーンアップします。</p>
+</div>
+<div class="paragraph">
+<p>同じボリュームに属するすべてのバックアップの2 MB ブロックは共通のディレクトリに保存されるため、複数のバックアップ間で共有できます。</p>
+</div>
+<div class="paragraph">
+<p>スペースを節約するために、バックアップ間で変更されなかった2 MB ブロックは、二次ストレージで同じバックアップボリュームを共有する複数のバックアップに再利用できます。チェックサムを使用して2 MB ブロックにアドレスを付けるため、同じボリューム内の2 MB ブロックに対してある程度の重複排除を達成します。</p>
+</div>
+<div class="paragraph">
+<p>ボリュームレベルのメタデータはvolume.cfgに保存されます。各バックアップのメタデータファイル（例：snap2.cfg）は比較的小さく、バックアップ内のすべての2 MB ブロックの <a href="https://en.wikipedia.org/wiki/Offset_(computer_science)">オフセット</a>と <a href="https://en.wikipedia.org/wiki/Checksum">チェックサム</a>のみを含んでいます。</p>
+</div>
+<div class="paragraph">
+<p>各2 MB ブロック（.blkファイル）は圧縮されています。</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_3_2_定期バックアップ"><a class="anchor" href="#_3_2_定期バックアップ"></a>3.2.定期バックアップ</h3>
+<div class="paragraph">
+<p>バックアップ操作は、定期スナップショットおよびバックアップ機能を使用してスケジュールできますが、必要に応じて実行することもできます。</p>
+</div>
+<div class="paragraph">
+<p>ボリュームの定期バックアップをスケジュールすることをお勧めします。バックアップストアが利用できない場合は、定期的なスナップショットをスケジュールすることをお勧めします。</p>
+</div>
+<div class="paragraph">
+<p>バックアップの作成は、ネットワークを通じてデータをコピーすることを含むため、時間がかかります。</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_3_3_災害復旧ボリューム"><a class="anchor" href="#_3_3_災害復旧ボリューム"></a>3.3.災害復旧ボリューム</h3>
+<div class="paragraph">
+<p>災害復旧（DR）ボリュームは、メインクラスター全体がダウンした場合に備えて、バックアップクラスターにデータを保存する特別なボリュームです。DRボリュームは、SUSE Storageボリュームのレジリエンシーを高めるために使用されます。</p>
+</div>
+<div class="paragraph">
+<p>DRボリュームの主な目的はバックアップからデータを復元することなので、このタイプのボリュームはアクティブ化される前に以下のアクションをサポートしていません：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>スナップショットの作成、削除、および復元</p>
+</li>
+<li>
+<p>バックアップの作成</p>
+</li>
+<li>
+<p>永続ボリュームの作成</p>
+</li>
+<li>
+<p>永続ボリュームクレームの作成</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>DRボリュームは、バックアップストアのボリュームのバックアップから作成できます。DRボリュームが作成された後、SUSE Storageはその元のバックアップボリュームを監視し、最新のバックアップから段階的に復元します。バックアップボリュームは、同じボリュームの複数のバックアップを含むバックアップストア内のオブジェクトです。</p>
+</div>
+<div class="paragraph">
+<p>メインクラスターの元のボリュームがダウンした場合、DRボリュームはバックアップクラスターで即座にアクティブ化でき、バックアップストアからバックアップクラスター内のボリュームへのデータ復元に必要な時間を短縮します。</p>
+</div>
+<div class="paragraph">
+<p>DRボリュームがアクティブ化されると、SUSE Storageは元のボリュームの最後のバックアップを確認します。そのバックアップがすでに復元されていない場合、復元が開始され、アクティブ化アクションは失敗します。ユーザーは復元が完了するまで待ってから再試行する必要があります。</p>
+</div>
+<div class="paragraph">
+<p>設定のバックアップターゲットは、DRボリュームが存在する場合は更新できません。</p>
+</div>
+<div class="paragraph">
+<p>DRボリュームがアクティブ化された後、それは通常のSUSE Storageボリュームになり、非アクティブ化することはできません。</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_3_4_バックアップストアの更新間隔rtoおよびrpo"><a class="anchor" href="#_3_4_バックアップストアの更新間隔rtoおよびrpo"></a>3.4.バックアップストアの更新間隔、RTO、およびRPO</h3>
+<div class="paragraph">
+<p>増分復元は通常、定期的なバックアップストアの更新によってトリガーされます。バックアップターゲット設定画面で更新間隔を設定できます（<strong>バックアップと復元 &#8594; バックアップターゲット</strong>）。</p>
+</div>
+<div class="paragraph">
+<p>この間隔は、回復時間目標（RTO）に影響を与える可能性があることに注意してください。間隔が長すぎると、災害復旧ボリュームが復元するためのデータ量が多くなり、時間がかかる可能性があります。</p>
+</div>
+<div class="paragraph">
+<p>回復ポイント目標（RPO）は、バックアップボリュームの定期的なバックアップスケジュールによって決まります。通常のボリュームAの定期的なバックアップスケジュールが毎時バックアップを作成する場合、RPOは1時間です。ここで、SUSE Storageにおける定期バックアップのハウツーを確認できます。</p>
+</div>
+<div class="paragraph">
+<p>以下の分析は、ボリュームが毎時バックアップを作成し、1つのバックアップからのデータの増分復元に5分かかると仮定しています：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>バックアップストアのポーリング間隔が30分の場合、最後の復元以降、最大で1つのバックアップ分のデータがあります。1つのバックアップを復元するのにかかる時間は5分なので、RTOは5分になります。</p>
+</li>
+<li>
+<p>バックアップストアのポーリング間隔が12時間の場合、最後の復元以降、最大で12個のバックアップ分のデータがあります。バックアップを復元するのにかかる時間は5 * 12 = 60分なので、RTOは60分になります。</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_付録kubernetesにおける永続ストレージの仕組み"><a class="anchor" href="#_付録kubernetesにおける永続ストレージの仕組み"></a>付録：Kubernetesにおける永続ストレージの仕組み</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Kubernetesにおける永続ストレージを理解するためには、ボリューム、永続ボリューム、永続ボリュームクレーム、およびストレージクラスを理解し、それらがどのように連携しているかを理解することが重要です。</p>
+</div>
+<div class="paragraph">
+<p>Kubernetesボリュームの重要な特性の1つは、それが属するポッドと同じライフサイクルを持つことです。ポッドが消えると、ボリュームも失われます。対照的に、永続ボリュームは、ユーザーが削除するまでシステム内に存在し続けます。ボリュームは、同じポッド内のコンテナ間でデータを共有するためにも使用できますが、通常、ユーザーはポッドごとに1つのコンテナしか持たないため、これが主な使用ケースではありません。</p>
+</div>
+<div class="paragraph">
+<p>Kubernetesクラスターにおける <a href="https://kubernetes.io/docs/concepts/storage/persistent-volumes/">永続ボリューム（PV）</a> は、永続的なストレージの一部であり、 <a href="https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims">永続ボリュームクレーム（PVC）</a> はストレージのリクエストです。 <a href="https://kubernetes.io/docs/concepts/storage/storage-classes/">ストレージクラス</a> は、ワークロードの要求に応じて新しいストレージを動的にプロビジョニングすることを可能にします。</p>
+</div>
+<div class="sect2">
+<h3 id="_kubernetesワークロードが新しい永続ストレージと既存の永続ストレージをどのように使用するか"><a class="anchor" href="#_kubernetesワークロードが新しい永続ストレージと既存の永続ストレージをどのように使用するか"></a>Kubernetesワークロードが新しい永続ストレージと既存の永続ストレージをどのように使用するか</h3>
+<div class="paragraph">
+<p>広く言えば、Kubernetesで永続ストレージを使用する主な方法は二つあります：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>既存の永続ボリュームを使用する</p>
+</li>
+<li>
+<p>新しい永続ボリュームを動的にプロビジョニングする</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_既存のストレージプロビジョニング"><a class="anchor" href="#_既存のストレージプロビジョニング"></a>既存のストレージプロビジョニング</h3>
+<div class="paragraph">
+<p>既存のPVを使用するには、アプリケーションがPVにバインドされたPVCを使用する必要があり、PVはPVCが要求する最小リソースを含む必要があります。</p>
+</div>
+<div class="paragraph">
+<p>言い換えれば、Kubernetesで既存のストレージを設定するための典型的なワークフローは次のようになります：</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>アクセス可能な物理的または仮想的なストレージの意味で、永続ストレージボリュームを設定します。</p>
+</li>
+<li>
+<p>永続ストレージを参照するPVを追加します。</p>
+</li>
+<li>
+<p>PVを参照するPVCを追加します。</p>
+</li>
+<li>
+<p>ワークロード内でPVCをボリュームとしてマウントします。</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>PVCがストレージの一部を要求すると、Kubernetes APIサーバーは、そのPVCを事前に割り当てられたPVと一致させようとします。一致が見つかれば、PVCはPVにバインドされ、ユーザーはその事前に割り当てられたストレージを使用し始めます。</p>
+</div>
+<div class="paragraph">
+<p>一致するボリュームが存在しない場合、PersistentVolumeClaimsは無期限にバインドされないままとなります。例えば、50 GiのPVが多数プロビジョニングされたクラスターは、100 Giを要求するPVCと一致しません。100 GiのPVがクラスターに追加されると、PVCはバインドされる可能性があります。</p>
+</div>
+<div class="paragraph">
+<p>言い換えれば、無限にPVCを作成できますが、KubernetesコントロールプレーンがPVCが要求するディスクスペース以上の十分なPVを見つけられた場合にのみ、PVにバインドされます。</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_動的ストレージプロビジョニング"><a class="anchor" href="#_動的ストレージプロビジョニング"></a>動的ストレージプロビジョニング</h3>
+<div class="paragraph">
+<p>動的ストレージプロビジョニングのために、アプリケーションはストレージクラスにバインドされたPVCを使用する必要があります。StorageClassは、新しい永続ボリュームをプロビジョニングするための権限を含んでいます。</p>
+</div>
+<div class="paragraph">
+<p>Kubernetesにおける新しいストレージを動的にプロビジョニングするための全体的なワークフローには、StorageClassリソースが含まれます。</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>StorageClassを追加し、アクセス可能なストレージから新しいストレージを自動的にプロビジョニングするように設定します。</p>
+</li>
+<li>
+<p>StorageClassを参照するPVCを追加します。</p>
+</li>
+<li>
+<p>PVCをワークロードのボリュームとしてマウントします。</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Kubernetesクラスターの管理者は、提供するストレージの"`classes`"を説明するためにKubernetes StorageClassを使用できます。StorageClassは、異なる容量制限、異なるIOPS、またはプロビジョナーがサポートする他の任意のパラメータを持つことができます。ストレージベンダー特有のプロビジョナーは、StorageClassと共に使用され、StorageClassオブジェクトに設定されたパラメータに従ってPVを自動的に割り当てます。また、プロビジョナーは、ユーザーのリソースクォータと権限要件を強制する能力を持っています。この設計では、管理者はPVの必要性を予測し、それを割り当てるという不必要な作業から解放されます。</p>
+</div>
+<div class="paragraph">
+<p>StorageClassが使用されると、Kubernetes管理者はすべてのストレージを割り当てる責任を負いません。管理者は、特定のストレージプールへのアクセス権をユーザーに与え、ユーザーのクォータを決定するだけで済みます。その後、ユーザーはストレージプールから必要なストレージの部分を切り出すことができます。</p>
+</div>
+<div class="paragraph">
+<p>StorageClassは、KubernetesでStorageClassオブジェクトを明示的に作成せずに使用することもできます。StorageClassはPVCとPVを一致させるために使用されるフィールドでもあるため、カスタムStorageClass名でPVを手動で作成し、そのStorageClass名を持つPVを要求するPVCを作成することができます。Kubernetesは、StorageClassオブジェクトがKubernetesリソースとして存在しなくても、指定されたStorageClass名でPVCをPVにバインドできます。</p>
+</div>
+<div class="paragraph">
+<p>SUSE Storageは、Kubernetesワークロードが必要に応じて永続ストレージの部分を切り出すことができるようにStorageClassを導入します。</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_永続ストレージを持つkubernetesワークロードのための水平スケーリング"><a class="anchor" href="#_永続ストレージを持つkubernetesワークロードのための水平スケーリング"></a>永続ストレージを持つKubernetesワークロードのための水平スケーリング</h3>
+<div class="paragraph">
+<p>VolumeClaimTemplateはStatefulSetの仕様プロパティであり、ブロックストレージソリューションがKubernetesワークロードのために水平にスケールする方法を提供します。</p>
+</div>
+<div class="paragraph">
+<p>このプロパティは、StatefulSetによって作成されたPodのために一致するPVとPVCを作成するために使用できます。</p>
+</div>
+<div class="paragraph">
+<p>これらのPVCはStorageClassを使用して作成されるため、StatefulSetがスケールアップすると自動的に設定されます。</p>
+</div>
+<div class="paragraph">
+<p>StatefulSetがスケールダウンすると、余分なPV/PVCはクラスターに保持され、StatefulSetが再びスケールアップする際に再利用されます。</p>
+</div>
+<div class="paragraph">
+<p>VolumeClaimTemplateは、EBSやSUSE Storageのようなブロックストレージソリューションにとって重要です。これらのソリューションは本質的に <a href="https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes">ReadWriteOnce,</a>であるため、ポッド間で共有することはできません。</p>
+</div>
+<div class="paragraph">
+<p>デプロイメントは、永続データを持つ複数のポッドが実行されている場合、永続ストレージとうまく機能しません。複数のポッドがある場合は、StatefulSetを使用する必要があります。</p>
+</div>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="introduction.html">概要</a></span>
+  <span class="next"><a href="terminology.html">用語集</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<script src="../../../../_/js/site.js"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+<script src="../../../../_/js/vendor/lunr.js"></script>
+<script src="../../../../_/js/vendor/lunr-languages.js"></script>
+<script src="../../../../_/js/search-ui.js" id="search-ui-script" data-site-root-path="../../../.." data-snippet-length="100" data-stylesheet="../../../../_/css/search.css"></script>
+<script async src="../../../../search-index.js"></script>
+<script src="../../../../_/js/vendor/langSelection.js"></script>
+<script async src="../../../../_/js/vendor/tabs.js"></script>
+
+
+<script src="../../../../_/js/CNLanguageSwitcher.js"></script>
+  </body>
+</html>

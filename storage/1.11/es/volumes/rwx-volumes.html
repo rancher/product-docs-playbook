@@ -1,0 +1,1530 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Volúmenes ReadWriteMany (RWX) | SUSE® Storage  1.11 (Latest)</title>
+    <link rel="canonical" href="https://documentation.suse.com/cloudnative/storage/1.11/es/volumes/rwx-volumes.html">
+    <link rel="prev" href="pvc-ownership-and-permission.html">
+    <link rel="next" href="clone-volumes.html">
+    <meta name="generator" content="Antora 3.1.14">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+<meta http-equiv="last-modified" content="2025-12-22"/>
+<link rel="stylesheet" href="../../../../_/css/search.css">
+<link rel="icon" href="../../../../_/img/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="../../../../_/css/font-styles.css">
+<link rel="stylesheet" href="../../../../_/fonts/css/all.css">
+<link rel="stylesheet" href="../../../../_/css/site-extra.css">
+<link rel="stylesheet" href="../../../../_/css/vendor/tabs.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap&family=SUSE+Mono:ital,wght@0,100..800;1,100..800" rel="stylesheet">
+<link href="https://documentation.suse.com/docserv/res/fonts/poppins/poppins.css" rel="stylesheet">
+<link rel="stylesheet" href="../../../../_/css/vendor/light.css">
+<script src="/docserv/res/lightheaded/analytics.js" type="text/javascript"></script>
+<script type="module">
+  import { defineCustomElements, setAssetPath } from 'https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/shared-header.esm.js';
+  defineCustomElements();
+  setAssetPath("https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/assets");
+</script>
+<!-- Default English link -->
+<link href="https://documentation.suse.com/cloudnative/storage/1.11/en/volumes/rwx-volumes.html" hreflang="x-default" rel="alternate"/>
+<!-- Link for the currently processed page -->
+<link href="https://documentation.suse.com/cloudnative/storage/1.11/es/volumes/rwx-volumes.html" hrefLang="es-ES" rel="alternate" />
+
+<!-- JSON-LD for doc metadata -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Volúmenes ReadWriteMany (RWX) | SUSE Storage 1.11",
+  "headline": "Volúmenes ReadWriteMany (RWX)",
+  "description": "Volúmenes ReadWriteMany (RWX)",
+  "inLanguage": "es",
+  "dateModified": "2025-12-22T00:00:00Z",
+  "author": {
+    "@type": "Organization",
+    "name": "SUSE Product & Solution Documentation Team",
+    "url": "https://documentation.suse.com"
+  },
+  "mentions": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "SUSE Storage",
+      "softwareVersion": "1.11",
+      "applicationCategory": "Cloud Infrastructure",
+      "operatingSystem": "Linux"
+    }
+  ],
+  "publisher": {
+    "@type": "Organization",
+    "name": "SUSE",
+    "url": "https://documentation.suse.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.suse.com/assets/img/suse-white-logo-green.svg"
+    }
+  }
+}
+</script>
+<!-- end JSON-LD for doc metadata -->
+
+<!-- SUVA - Begin Ask Geeko-->
+<!--
+searchUnifyChatbot ("Ask Geeko") Copyright ©2024 Grazitti Interactive - All Rights Reserved. NOTICE: All information contained herein is, and remains the property of Grazitti Interactive and its suppliers, if any. The intellectual and technical concepts contained herein are proprietary to Grazitti Interactive and its suppliers and may be covered by India, U.S. and Foreign Patents, patents in process, and are protected by trade secret or copyright law. Dissemination of this information or reproduction of this material is strictly forbidden unless prior written permission is obtained from Grazitti Interactive.
+-->
+<meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport"/>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/Allow/an.js?c485cb3c-93d4-4942-99e8-91f3b8ca5636"></script>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/js/index.js?q=gAAAAABp3JBN9VuEJTi5tFafLIMwgMkCPdJS3Qm56lSYx93ir3Twt9hgSvd3OHEt6-nYfSbY3yHq0Zv8PRPsSy4nbqZiaJ4cZvRc6ItVZdvwz9Urf35cH6OUyPOwdA0phlS-zVIznQ2rWW438p-91NlTHuxJuOFpnA=="></script>
+<link rel="stylesheet" href="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/css/index.css">
+<div id="searchUnifyChatbot"></div>
+<!-- SUVA - End Ask Geeko-->
+<!--BEGIN QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+<script type='text/javascript' src="../../../../_/js/qualtrics.js" defer></script>
+<!--END QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<script type="module">import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs'; mermaid.initialize({"startOnLoad":true});</script><shared-header
+language="en"
+languages='{
+    "en": { "label": "English", "url": "https://documentation.suse.com/en-us/" },
+    "de": { "label": "Deutsch", "url": "https://documentation.suse.com/de-de/" },
+    "fr": { "label": "Français", "url": "https://documentation.suse.com/fr-fr/" },
+    "es": { "label": "Español", "url": "https://documentation.suse.com/es-es/" },
+    "zh_CN": { "label": "中文", "url": "https://documentation.suse.com/zh-cn/" },
+    "pt_BR": { "label": "Português Brasileiro", "url": "https://documentation.suse.com/pt-br/" }
+}'
+enable-search='false'>
+</shared-header>
+
+<!-- Leaving as a comment, I expect it will be required again next year.
+<a target=_blank"" class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_bEiGZbUNzLD8Tcy"> Documentation survey </a>
+-->
+<div class="body">
+<div class="nav-container" data-component="storage" data-version="1.11">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title">SUSE® Storage</h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../longhorn-documentation.html">SUSE® Storage Descripción general</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../introduction/introduction.html">Introducción</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/concepts.html">Arquitectura y Conceptos</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/terminology.html">terminología</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/document-conventions.html">Convenciones de documentos</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../important-notes.html">Notas importantes</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Instalación y configuración</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/requirements.html">Requisitos</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/best-practices.html">Mejores prácticas</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../installation-setup/installation/installation.html">Instalación</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/installation/install-using-argocd.html">Instala SUSE Storage usando Argo CD</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/installation/install-using-fleet.html">Instalar SUSE Storage utilizando Fleet</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/installation/install-using-flux.html">Instalar SUSE® Storage utilizando Flux</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/installation/install-using-helm.html">Instalar SUSE Storage utilizando Helm</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/installation/install-using-helm-controller.html">Instalar SUSE Storage utilizando el controlador de Helm</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/installation/helm-values.html">Valores de Helm</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/installation/install-using-rancher.html">Instalar SUSE Storage utilizando Rancher</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/installation/rancher-windows-cluster.html">Rancher Clúster de Windows</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/installation/airgapped-environment.html">Instalar SUSE Storage en un entorno aislado.</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Configuración del sistema operativo y la distribución</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/os-distro/gke.html">Google Kubernetes Engine (GKE)</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/os-distro/k3s.html">K3s</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/setup-performance-scalability-sizing-guidelines.html">Configuración, Rendimiento, Escalabilidad y Directrices de Dimensionamiento</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/uninstallation.html">Desinstalación</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../upgrades/upgrades.html">Actualizaciones</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Actualizaciones de componentes</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../upgrades/longhorn-components/auto-upgrade-engine.html">Actualizar automáticamente el Longhorn Engine</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../upgrades/longhorn-components/instance-manager-pods-during-upgrade.html">Pods del gestor de instancias durante la actualización de versión</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../upgrades/longhorn-components/manually-upgrade-engine.html">Actualiza manualmente el Longhorn Engine</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../upgrades/longhorn-components/upgrade-longhorn-manager.html">Actualizar Longhorn Manager</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Actualizaciones de Kubernetes</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../upgrades/kubernetes/upgrade-k8s-on-aks.html">Actualiza la versión de Kubernetes en Azure Kubernetes Service (AKS)</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../upgrades/kubernetes/upgrade-k8s-on-eks.html">Actualiza la versión de Kubernetes en Amazon Elastic Kubernetes Service (Amazon EKS)</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../upgrades/kubernetes/upgrade-k8s-on-gke.html">Actualiza la versión de Kubernetes en Google Kubernetes Engine (GKE)</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Migración</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../migration/migration.html">Migrando a SUSE Storage</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">SUSE® Storage</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../longhorn-system/system-access/system-access.html">Acceso al sistema</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../longhorn-system/system-access/longhorn-ui.html">Accede a la interfaz de usuario</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../longhorn-system/system-access/create-ingress.html">Crea un Ingress con autenticación básica (nginx)</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../longhorn-system/system-access/longhorn-ingress-traefik.html">Crear un Ingress con Autenticación Básica (Traefik)</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../longhorn-system/system-access/longhorn-cli.html">Interfaz de línea de comandos (CLI)</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../longhorn-system/system-access/install-longhorn-cli.html">Instala la CLI</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../longhorn-system/system-access/longhorn-httproute.html">Crea un HTTPRoute con Gateway API</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../longhorn-system/system-access/longhorn-python-client.html">Cliente de Python</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../longhorn-system/networking/networking.html">Conectividad</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../longhorn-system/networking/storage-network.html">Red de Almacenamiento</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../longhorn-system/components/csi-pod-antiaffinity-preset.html">Anti-afinidad de pods del componente CSI</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../longhorn-system/mtls-support.html">Soporte de TLS mutuo (mTLS)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../longhorn-system/customize-default-settings.html">Personalizar la configuración predeterminada</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../longhorn-system/settings.html">Settings (Configuración posterior al failback)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Motor de datos V2 (Vista técnica)</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../longhorn-system/v2-data-engine/v2-data-engine.html">Motor de Datos V2 (Vista previa técnica)</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../longhorn-system/v2-data-engine/features/features.html">Características del motor de datos V2</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../longhorn-system/v2-data-engine/features/selective-engine-activation.html">Activación selectiva del motor de datos V2</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../longhorn-system/v2-data-engine/features/ublk-frontend-support.html">Soporte de UBLK front end</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../longhorn-system/v2-data-engine/features/node-disk-support.html">Soporte de Disco de Nodo</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../longhorn-system/v2-data-engine/features/replica-rebuild-qos.html">Reconstrucción de réplica QoS</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../longhorn-system/v2-data-engine/features/interrupt-mode.html">Modo de interrupción</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../longhorn-system/v2-data-engine/features/volume-expansion.html">Expansión de volumen</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../longhorn-system/v2-data-engine/features/volume-clone.html">Clonación de Volumen</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../longhorn-system/v2-data-engine/prerequisites.html">Requisitos previos</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../longhorn-system/v2-data-engine/quick-start-guide.html">Quick Start Guide (Guía de inicio rápido)</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../longhorn-system/v2-data-engine/performance.html">Rendimiento</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../longhorn-system/examples-resources.html">Ejemplos de recursos de Kubernetes que utilizan SUSE® Storage</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../longhorn-system/migrate-flexvolume.html">Migra del controlador Flexvolume a CSI</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Nodos</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../nodes/node-space-usage.html">Uso del espacio del nodo</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../nodes/default-disk-and-node-config.html">Configurar los ajustes predeterminados de nodos y discos</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../nodes/storage-tags.html">Etiquetas de almacenamiento</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../nodes/multiple-disks.html">Múltiples discos</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../nodes/disks-or-nodes-eviction.html">Desalojo de réplicas en discos o nodos deshabilitados</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../nodes/scheduling.html">Programación</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../nodes/node-conditions.html">Condiciones del nodo</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../nodes/node-selector.html">Selector de nodo</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../nodes/taints-tolerations.html">Taints y Tolerations</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../nodes/priority-class.html">Clase de Prioridad</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../nodes/topology-aware-provisioning.html">Provisionamiento consciente de la topología</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Kubernetes gestionado</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../nodes/managed-kubernetes/aks-managed-node-groups.html">Grupos de nodos gestionados en Azure Kubernetes Service (AKS)</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../nodes/managed-kubernetes/eks-managed-node-pools.html">Grupos de nodos gestionados en Amazon Elastic Kubernetes Service (Amazon EKS)</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../nodes/managed-kubernetes/gke-managed-node-pools.html">Grupos de nodos gestionados en Google Kubernetes Engine (GKE)</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Volúmenes</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="create-volumes.html">Crear volúmenes</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="pvc-ownership-and-permission.html">Propiedad y Permiso de PVC</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="rwx-volumes.html">Volúmenes ReadWriteMany (RWX)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="clone-volumes.html">Clonar volúmenes</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="containerized-data-importer.html">SUSE Storage con CDI Importaciones</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="detach-volumes.html">Desacoplar volúmenes</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="delete-volumes.html">Eliminar volúmenes</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="use-as-iscsi-target.html">Utiliza un volumen como objetivo iSCSI</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="identify-workloads.html">Identificar cargas de trabajo que utilizan un volumen</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="volume-size.html">Tamaño del volumen</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="volume-expansion.html">Expansión de volumen</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="volume-attachment.html">SUSE Storage VolumeAttachment</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="trim-filesystem.html">Recortar el sistema de archivos</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="volume-conditions.html">Condiciones del volumen</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="volume-encryption.html">Cifrado de volúmenes</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="storageclass-parameters.html">Parámetros de StorageClass</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="backing-images/backing-images.html">Imágenes de respaldo</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="backing-images/backing-image-encryption.html">Cifrado de Imagen de Respaldo</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Alta disponibilidad</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../high-availability/automatic-replica-balancing.html">Balanceo automático de réplicas</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../high-availability/replica-rebuilding.html">Replica Rebuilding</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../high-availability/fast-replica-rebuilding.html">Reconstrucción rápida de réplicas</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../high-availability/offline-replica-rebuilding.html">Reconstrucción de réplicas fuera de línea</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../high-availability/revision_counter.html">Contador de Revisión</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../high-availability/data-locality.html">Localidad de datos</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../high-availability/kubernetes-cluster-autoscaler.html">Soporte de Kubernetes Cluster Autoscaler (Experimental)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../high-availability/rwx-volume-fast-failover.html">Failover rápido de volúmenes RWX (Experimental)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../high-availability/volume-recovery.html">Recuperación de volumen</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../high-availability/node-failure.html">Gestión de fallos de nodo</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Instantáneas y copias de seguridad</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../snapshots-backups/volume-snapshots-backups/volume-snapshots-backups.html">Instantáneas y copias de seguridad de volúmenes</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/volume-snapshots-backups/create-snapshot.html">Crear una instantánea</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/volume-snapshots-backups/snapshot-space-management.html">Gestión del espacio de instantáneas</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/volume-snapshots-backups/configure-backup-target.html">Configurar un destino de copia de seguridad</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/volume-snapshots-backups/create-backup.html">Crear una copia de seguridad</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/volume-snapshots-backups/sync-backup-volumes-manually.html">Sincronizar manualmente los volúmenes de copia de seguridad</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/volume-snapshots-backups/create-recurring-backup-snapshot-job.html">Crear un trabajo de instantánea o copia de seguridad recurrente</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/volume-snapshots-backups/restore-volume-from-backup.html">Restaurar un volumen desde una copia de seguridad</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/volume-snapshots-backups/restore-recurring-job-from-backup.html">Restaurar un trabajo recurrente desde una copia de seguridad</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/volume-snapshots-backups/restore-volume-statefulset.html">Restaura un volumen para un StatefulSet de Kubernetes</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../snapshots-backups/csi-snapshots/csi-snapshots.html">Instantáneas CSI</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/csi-snapshots/csi-snapshot-longhorn-backing-image.html">Instantánea de volumen CSI asociada a una BackingImage de SUSE® Storage</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/csi-snapshots/csi-snapshot-longhorn-backup.html">Instantánea de volumen CSI asociada con una copia de seguridad de SUSE® Storage</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/csi-snapshots/csi-snapshot-longhorn-snapshot.html">Instantánea de volumen CSI asociada a una instantánea de SUSE® Storage</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/csi-snapshots/enable-csi-snapshot-creation.html">Habilitar la creación de instantáneas CSI en un clúster</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../snapshots-backups/system-backups/system-backups.html">Copias de seguridad del sistema SUSE® Storage</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/system-backups/restore-to-cluster-using-rancher-snapshot.html">Restaura el sistema SUSE® Storage en un clúster utilizando una instantánea de Rancher</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/system-backups/restore-to-new-cluster-using-velero.html">Restaura el SUSE® Storage System en un nuevo clúster utilizando Velero</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/system-backups/create-system-backup.html">Crear una SUSE Storage copia de seguridad del sistema</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/system-backups/restore-system.html">Restaura el sistema SUSE® Storage</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../snapshots-backups/backing-image-backups.html">Copia de seguridad de la imagen de respaldo</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../snapshots-backups/restore-cluster-rancher-snapshot.html">Restaurar un clúster utilizando una instantánea de Rancher</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Integridad y recuperación de datos</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../data-integrity-recovery/snapshot-data-integrity-check.html">Comprobación de la integridad de los datos de la instantánea</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../data-integrity-recovery/orphaned-data-cleanup.html">Limpieza de datos huérfanos</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../data-integrity-recovery/orphaned-instance-cleanup.html">Limpieza de instancias huérfanas</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../data-integrity-recovery/disaster-recovery-volumes.html">Volúmenes de recuperación ante desastres</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Recuperación de datos</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../data-integrity-recovery/data-recovery/identify-corrupted-replicas.html">Identificar réplicas corruptas</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../data-integrity-recovery/data-recovery/retrieve-volume-data-from-replica.html">Recuperar datos de volumen de una única réplica</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../data-integrity-recovery/data-recovery/recover-from-data-errors.html">Identificar y recuperarse de errores de datos.</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../data-integrity-recovery/data-recovery/recover-from-full-disk.html">Recuperación de un disco lleno</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../data-integrity-recovery/data-recovery/recover-without-system.html">Recuperar de una copia de seguridad de SUSE® Storage sin el sistema instalado</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Observabilidad</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../observability/configure-prometheus-grafana.html">Configurar Prometheus y Grafana para Monitorizar SUSE® Storage</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../observability/alert-rule-examples.html">Ejemplos de reglas de alerta</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../observability/longhorn-metrics.html">Métricas de SUSE® Storage para la monitorización</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../observability/disk-health.html">Monitorización de la salud del disco</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../observability/integrate-with-rancher-monitoring.html">Integra las métricas de SUSE® Storage en el sistema de monitoreo de Rancher.</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../observability/kubelet-volume-metrics.html">Métricas de volumen de Kubelet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Solución de problemas y mantenimiento</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting-maintenance/support-bundle.html">Paquete de soporte</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting-maintenance/troubleshooting.html">Solución de problemas</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting-maintenance/v2-data-engine-issues.html">Solución de problemas</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting-maintenance/maintenance.html">Guía de Mantenimiento de Nodos y Actualización de Kubernetes</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Glosario</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../glossary/glossary.html">Glossary/Terminologies</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">SUSE® Storage</span>
+    <span class="version">1.11 (Latest)</span>
+  </div>
+  <ul class="components">
+        <li class="component">
+          <div class="title"><a href="../../../../admission-controller/1.35/en/introduction.html">Admission Controller</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../admission-controller/1.36/en/introduction.html">1.36-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../admission-controller/1.35/en/introduction.html">1.35-latest</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.34/en/introduction.html">1.34</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.33/en/introduction.html">1.33</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.32/en/introduction.html">1.32</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.31/en/introduction.html">1.31</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.30/en/introduction.html">1.30</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.29/en/introduction.html">1.29</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.28/en/introduction.html">1.28</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../cluster-api/v0.26/en/index.html">Cluster API</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../cluster-api/v0.27/en/index.html">v0.27-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../cluster-api/v0.26/en/index.html">v0.26</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.25/en/index.html">0.25</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.24/en/index.html">0.24</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.23/en/index.html">0.23</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.22/en/index.html">0.22</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.21/en/index.html">0.21</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.20/en/index.html">0.20</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.19/en/index.html">0.19</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.18/en/index.html">0.18</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.17/en/index.html">0.17</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.16/en/index.html">0.16</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.11/en/index.html">0.11</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../continuous-delivery/next/en/index.html">Continuous Delivery</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../continuous-delivery/next/en/index.html">Next</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.11/en/index.html">0.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.10/en/index.html">0.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.9/en/index.html">0.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../k3s/latest/en/introduction.html">K3s</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../k3s/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../os-manager/1.9/en/index.html">OS Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../os-manager/1.10/en/index.html">1.10-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../os-manager/1.9/en/index.html">1.9</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.8/en/index.html">1.8</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.7/en/index.html">1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.6/en/index.html">1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.5/en/index.html">1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-ai/latest/en/introduction.html">Rancher AI</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-ai/latest/en/introduction.html">latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rke2/latest/en/introduction.html">RKE2</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rke2/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-observability/latest/en/classic.html">SUSE Observability</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../suse-observability/latest/en/classic.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">SUSE Rancher Developer Access</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">SUSE® Rancher for AWS</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-manager/v2.14/en/about-rancher/what-is-rancher.html">SUSE® Rancher Manager</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-manager/v2.14/en/about-rancher/what-is-rancher.html">v2.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.13/en/about-rancher/what-is-rancher.html">v2.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.12/en/about-rancher/what-is-rancher.html">v2.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.11/en/about-rancher/what-is-rancher.html">v2.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.10/en/about-rancher/what-is-rancher.html">v2.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.9/en/about-rancher/what-is-rancher.html">v2.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../security/5.5/en/overview.html">SUSE® Security</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../security/5.5/en/overview.html">5.5</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.4/en/overview.html">5.4</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.3/en/overview.html">5.3</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component is-current">
+          <div class="title"><a href="../../en/longhorn-documentation.html">SUSE® Storage</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../1.12/en/longhorn-documentation.html">1.12 (Dev)</a>
+            </li>
+            <li class="version is-current is-latest">
+              <a href="../../en/longhorn-documentation.html">1.11 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../1.10/en/longhorn-documentation.html">1.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../1.9/en/longhorn-documentation.html">1.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">SUSE® Virtual Clusters</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/1.2.0/en/release-notes/version-1.2.0.html">v1.2.0 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">v1.1.0</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/1.0.2/en/release-notes/version-1.0.2.html">v1.0.2</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.1/en/introduction.html">v1.0.1</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.0/en/introduction.html">v1.0.0</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../virtualization/v1.7/en/introduction/overview.html">SUSE® Virtualization</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../virtualization/v1.8/en/introduction/overview.html">v1.8 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../virtualization/v1.7/en/introduction/overview.html">v1.7 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../virtualization/v1.6/en/introduction/overview.html">v1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../virtualization/v1.5/en/introduction/overview.html">v1.5</a>
+            </li>
+          </ul>
+        </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+<ul>
+    <li>
+      <a class="home-link-dsc" href="https://documentation.suse.com/" title="documentation.suse.com" aria-label="SUSE Documentation Home"></a>
+    </li>
+    <li>
+      <a href="https://documentation.suse.com/cloudnative/storage" title="SUSE Storage" aria-label="SUSE Documentation - SUSE Storage">
+        SUSE Storage
+      </a>
+    </li>
+      <li>
+          Volúmenes
+      </li>
+  </ul>
+</nav><div class="page-versions">
+  <button class="version-menu-toggle" title="Show other versions of page">1.11 (Latest)</button>
+  <div class="version-menu">
+    <a class="version" href="../../../1.12/es/volumes/rwx-volumes.html">1.12 (Dev)</a>
+    <a class="version is-current" href="rwx-volumes.html">1.11 (Latest)</a>
+    <a class="version is-missing" href="../../../1.10/en/longhorn-documentation.html">1.10</a>
+    <a class="version is-missing" href="../../../1.9/en/longhorn-documentation.html">1.9</a>
+  </div>
+</div>
+      <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <label class="visual-search-label-bc" for="search-input">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+          <input label="Search" aria-label="Search" id="search-input" type="text" placeholder="Buscar en los documentos" >
+          <label class="filter checkbox" style="display: none">
+            <input type="checkbox" data-facet-filter="component:storage" checked> Only this project
+          </label>
+        </div>
+      </div>
+</div>
+  <div class="content">
+<aside
+  class="toc sidebar"
+  data-title="En esta página" data-levels="2">
+  <div class="toc-menu">
+    <!-- start qualtrics -->
+    <div id='ZN_8qZUmklKYbBqAYe'><!--DO NOT REMOVE-CONTENTS PLACED HERE--></div>
+    <div id="qualtrics_container"></div>
+    <!-- end qualtrics -->
+  </div>
+</aside><article class="doc">
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Nota"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>
+
+Este documento ha sido traducido utilizando tecnología de traducción automática.
+Si bien nos esforzamos por proporcionar traducciones precisas,
+no ofrecemos garantías sobre la integridad, precisión o confiabilidad del contenido traducido.
+En caso de discrepancia, la versión original en
+<a href="https://documentation.suse.com/cloudnative/storage/1.11/en/volumes/rwx-volumes.html">
+inglés
+</a>
+prevalecerá y constituirá el texto autorizado.
+
+</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<h1 class="page">Volúmenes ReadWriteMany (RWX)</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>SUSE Storage soporta volúmenes ReadWriteMany (RWX) exponiendo volúmenes Longhorn regulares a través de servidores NFSv4 que residen en pods de gestor de recursos compartidos.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_introducción"><a class="anchor" href="#_introducción"></a>Introducción</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>SUSE Storage proporciona dos tipos de volúmenes RWX, cada uno optimizado para diferentes requisitos de carga de trabajo:</p>
+</div>
+<div class="sect2">
+<h3 id="_volúmenes_rwx_genéricos_no_migrables"><a class="anchor" href="#_volúmenes_rwx_genéricos_no_migrables"></a>Volúmenes RWX genéricos (no migrables)</h3>
+<div class="paragraph">
+<p>Volúmenes RWX genéricos proporcionan acceso a un sistema de archivos compartido a través de múltiples nodos. Utilizan servidores NFSv4.1 dedicados que se ejecutan en Pods de <code>share-manager-&lt;volume-name&gt;</code> dentro del espacio de nombres <code>longhorn-system</code>. Cada volumen RWX está emparejado con un Servicio correspondiente que expone el punto final NFS a los clientes.</p>
+</div>
+<div class="paragraph">
+<p>Estos volúmenes son ideales para cargas de trabajo que necesitan acceso concurrente a archivos pero no soportan migración en vivo. La migración en vivo es el proceso de mover una carga de trabajo en ejecución de un host de origen a un host de destino sin interrupción del servicio. Durante la migración, los volúmenes son accesibles solo desde la carga de trabajo de origen. Una vez completada, la carga de trabajo de destino toma el control del acceso, y la carga de trabajo de origen se termina.</p>
+</div>
+<div class="sect3">
+<h4 id="_características"><a class="anchor" href="#_características"></a>Características</h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>No capaz de <a href="https://kubevirt.io/user-guide/compute/live_migration/">migración en vivo</a>.</p>
+</li>
+<li>
+<p>Utiliza NFSv4.1 para compartir mediante un sistema de archivos.</p>
+</li>
+<li>
+<p>Adecuado para almacenamiento compartido general y cargas de trabajo de acceso a archivos en múltiples nodos.</p>
+</li>
+</ol>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/diagrams/rwx/rwx-arch.png" alt="Imagen">
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Nota"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>Aviso: Actualizaciones diferidas de la imagen del Pod del gestor de recursos compartidos en volúmenes RWX activos</strong></p>
+</div>
+<div class="paragraph">
+<p>Tras una actualización del sistema Longhorn, cuando un volumen RWX genérico (no migrable) permanece adjunto, las modificaciones al <code>spec.image</code> del pod correspondiente <code>share-manager</code> no surten efecto de inmediato. La imagen actualizada se aplica solo después de que el volumen se desmonte, momento en el cual el pod se recrea con la nueva imagen del gestor de recursos compartidos. Este comportamiento asegura la estabilidad del volumen y previene la interrupción de las operaciones de E/S activas.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_volúmenes_rwx_migrables"><a class="anchor" href="#_volúmenes_rwx_migrables"></a>Volúmenes RWX migrables</h3>
+<div class="paragraph">
+<p>Los volúmenes RWX migrables están diseñados específicamente para cargas de trabajo virtualizadas como las máquinas virtuales de KubeVirt que requieren [migración en vivo](<a href="https://kubevirt.io/user-guide/compute/live_migration/" class="bare">https://kubevirt.io/user-guide/compute/live_migration/</a>) mientras mantienen las operaciones de E/S en curso. Estos volúmenes permiten el movimiento sin interrupciones de las máquinas virtuales entre nodos durante operaciones de mantenimiento, conmutación por error o reequilibrio sin interrupción del servicio.</p>
+</div>
+<div class="sect3">
+<h4 id="_características_2"><a class="anchor" href="#_características_2"></a>Características</h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Diseñados para escenarios de migración en vivo.</p>
+</li>
+<li>
+<p>Requieren <code>volumeMode: Block</code> (no se admite el modo <code>Filesystem</code>).</p>
+</li>
+<li>
+<p>Requieren el modo de acceso ReadWriteMany y una StorageClass con <code>migratable: "true"</code> (que establece <code>volume.spec.migratable=true</code> en el volumen de Longhorn).</p>
+</li>
+<li>
+<p>No están destinados a cargas de trabajo de sistemas de archivos compartidos generales.</p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Nota"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Puedes distinguir los volúmenes RWX migrables comprobando el campo <code>volume.spec.migratable</code> en la especificación del volumen. Los volúmenes no migrables carecen de este campo.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_requisitos_para_volúmenes_rwx_genéricos_no_migrables"><a class="anchor" href="#_requisitos_para_volúmenes_rwx_genéricos_no_migrables"></a>Requisitos para volúmenes RWX genéricos (no migrables)</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Cada nodo cliente NFS necesita tener un cliente NFSv4 instalado.</p>
+<div class="paragraph">
+<p>Por favor, consulta <a href="../installation-setup/requirements.html#_installing_nfsv4_client" class="xref page">Instalación del cliente NFSv4</a> para más detalles sobre la instalación.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Nota"></i>
+</td>
+<td class="content">
+<div class="title">Solución de problemas:</div>
+<div class="paragraph">
+<p>Si el cliente NFSv4 no está disponible en el nodo, intentar montar el volumen resulta en un mensaje de error que incluye el siguiente texto:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>for several filesystems (e.g. nfs, cifs) you might need a /sbin/mount.&lt;type&gt; helper program.</pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>El nombre de host de cada nodo es único en el clúster de Kubernetes.</p>
+<div class="paragraph">
+<p>Hay un servicio de recuperación backend dedicado para servidores NFS en el sistema Longhorn. Cuando un cliente se conecta a un servidor NFS, la información del cliente, incluido su nombre de host, se almacenará en el backend de recuperación. Cuando un Pod del gestor de recursos compartidos o un servidor NFS se termina de manera anormal, SUSE Storage creará uno nuevo. Dentro del período de gracia de 90 segundos, los clientes recuperarán los bloqueos utilizando la información del cliente almacenada en el backend de recuperación.</p>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_creación_y_uso_de_volúmenes_rwx_genéricos_no_migrables"><a class="anchor" href="#_creación_y_uso_de_volúmenes_rwx_genéricos_no_migrables"></a>Creación y uso de volúmenes RWX genéricos (no migrables)</h2>
+<div class="sectionbody">
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Nota"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Un volumen RWX debe tener el modo de acceso configurado en <code>ReadWriteMany</code> y la bandera de "migrable" desactivada (<em>parameters.migratable: `false`</em>).</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Para los volúmenes Longhorn provisionados dinámicamente, el modo de acceso se basa en el modo de acceso del PVC.</p>
+</li>
+<li>
+<p>Para los volúmenes Longhorn creados manualmente (restaurar, volumen de DR), el modo de acceso se puede especificar durante la creación en la SUSE Storage interfaz de usuario.</p>
+</li>
+<li>
+<p>Al crear un PV/PVC para un volumen Longhorn a través de la interfaz de usuario, el modo de acceso del PV/PVC se basará en el modo de acceso del volumen.</p>
+</li>
+<li>
+<p>Se puede cambiar el modo de acceso del volumen Longhorn a través de la interfaz de usuario si el volumen no está vinculado a un PVC.</p>
+</li>
+<li>
+<p>Para un volumen Longhorn que es utilizado por un PVC RWX, el modo de acceso del volumen se cambiará a RWX.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_configuración_de_la_localidad_del_volumen_para_volúmenes_rwx_genéricos_no_migrables"><a class="anchor" href="#_configuración_de_la_localidad_del_volumen_para_volúmenes_rwx_genéricos_no_migrables"></a>Configuración de la localidad del volumen para volúmenes RWX genéricos (no migrables)</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>SUSE Storage proporciona nuevas configuraciones que te permiten controlar con precisión la localidad de datos de los volúmenes RWX (a través de la identificación de los pods del gestor de recursos compartidos asociados). Estas configuraciones granulares funcionan con configuraciones globales relacionadas para proporcionar un rendimiento óptimo, resiliencia y cumplimiento de políticas o restricciones organizativas.</p>
+</div>
+<div class="sect2">
+<h3 id="_sharemanagernodeselector"><a class="anchor" href="#_sharemanagernodeselector"></a><code>shareManagerNodeSelector</code></h3>
+<div class="paragraph">
+<p>Puedes usar el parámetro StorageClass <code>shareManagerNodeSelector</code> para especificar selectores para identificar nodos en los que se pueden programar los volúmenes RWX. Estos selectores se fusionan con las configuraciones globales <code>system-managed-components-node-selector</code> y luego se aplican a los pods del gestor de recursos compartidos de los volúmenes RWX para proporcionar un mayor control sobre la localidad del volumen.</p>
+</div>
+<div class="paragraph">
+<p>Ejemplo:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>  kind: StorageClass
+  apiVersion: storage.k8s.io/v1
+  metadata:
+    name: longhorn-rwx
+  provisioner: driver.longhorn.io
+  parameters:
+    shareManagerNodeSelector: label-key1:label-value1;label-key2:label-value2</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>En este ejemplo, los volúmenes RWX provisionados con el StorageClass especificado se programarán en nodos con las etiquetas <code>label-key1:label-value1</code> y <code>label-key2:label-value2</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_allowedtopologies"><a class="anchor" href="#_allowedtopologies"></a><code>allowedTopologies</code></h3>
+<div class="paragraph">
+<p>Longhorn convierte las configuraciones <code>storageClass.allowedTopologies</code> en reglas de afinidad para los pods del gestor de recursos compartidos de los volúmenes RWX. Esto asegura que los pods se programen en nodos que cumplan con los requisitos topológicos especificados (como regiones y zonas) y se alineen con la localidad del volumen RWX.</p>
+</div>
+<div class="paragraph">
+<p>Ejemplo:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>  kind: StorageClass
+  apiVersion: storage.k8s.io/v1
+  metadata:
+    name: longhorn-rwx
+  provisioner: driver.longhorn.io
+  allowedTopologies:
+  - matchLabelExpressions:
+    - key: topology.kubernetes.io/region
+      values:
+      - us-west-1</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>En este ejemplo, los pods del gestor de recursos compartidos y los volúmenes RWX se programarán en la <code>us-west-1</code> región.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_sharemanagertolerations"><a class="anchor" href="#_sharemanagertolerations"></a><code>shareManagerTolerations</code></h3>
+<div class="paragraph">
+<p>También puedes usar el parámetro StorageClass <code>shareManagerTolerations</code> para permitir una programación más flexible basada en los taints de los nodos. Las toleraciones definidas se fusionan con los ajustes globales <code>taint-toleration</code> y luego se aplican a los pods del gestor de recursos compartidos.</p>
+</div>
+<div class="paragraph">
+<p>Ejemplo:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>  kind: StorageClass
+  apiVersion: storage.k8s.io/v1
+  metadata:
+    name: longhorn-rwx
+  provisioner: driver.longhorn.io
+  parameters:
+    shareManagerTolerations: nodetype=storage:NoSchedule</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>En este ejemplo, los pods del gestor de recursos compartidos tolerarán el <code>nodetype=storage:NoSchedule</code> taint en los nodos, permitiendo que se programen en esos nodos.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_configurando_las_opciones_de_montaje_de_volumen_para_volúmenes_rwx_genéricos_no_migrables"><a class="anchor" href="#_configurando_las_opciones_de_montaje_de_volumen_para_volúmenes_rwx_genéricos_no_migrables"></a>Configurando las opciones de montaje de volumen para volúmenes RWX genéricos (no migrables)</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Un volumen RWX es accesible solo cuando se monta a través de NFS. Por defecto, SUSE Storage utiliza la versión 4.1 de NFS con la opción de montaje <code>softerr</code>, un valor <code>timeo</code> de "600", y un valor <code>retrans</code> de "5".</p>
+</div>
+<div class="paragraph">
+<p>Si el servidor NFS se vuelve inaccesible, las solicitudes de los clientes NFS se reintentan de acuerdo con el valor <code>retrans</code> configurado. Eventos de mayor duración, como cortes de energía y factores como particiones de red, hacen que las solicitudes eventualmente fallen. Se devuelve un error de NFS (<code>ETIMEDOUT</code> para la opción de montaje <code>softerr</code>) a la aplicación que llama y puede ocurrir pérdida de datos. Si <code>softerr</code> no es compatible, SUSE Storage utiliza automáticamente la opción de montaje <code>soft</code> en su lugar, que devuelve un <code>EIO</code> como error.</p>
+</div>
+<div class="paragraph">
+<p>Puedes utilizar opciones de montaje específicas para nuevos volúmenes. Primero, crea una StorageClass personalizada con un parámetro <code>nfsOptions</code>, y luego crea PVCs para volúmenes RWX utilizando esa StorageClass específica.</p>
+</div>
+<div class="paragraph">
+<p>Ejemplo:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">  kind: StorageClass
+  apiVersion: storage.k8s.io/v1
+  metadata:
+    name: longhorn-test
+  provisioner: driver.longhorn.io
+  allowVolumeExpansion: true
+  reclaimPolicy: Delete
+  volumeBindingMode: Immediate
+  parameters:
+    numberOfReplicas: "3"
+    staleReplicaTimeout: "2880"
+    fromBackup: ""
+    fsType: "ext4"
+    nfsOptions: "vers=4.2,noresvport,softerr,timeo=600,retrans=5"</code></pre>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Importante"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Para crear PVCs para volúmenes RWX utilizando la StorageClass de muestra, reemplaza la cadena <code>nfsOptions</code> con una lista personalizada de opciones legales separadas por comas.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_notas"><a class="anchor" href="#_notas"></a>Notas</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Debes proporcionar el conjunto completo de opciones deseadas. Cualquier opción no suministrada utilizará los valores predeterminados del lado del servidor NFS, no los propios de SUSE Storage.</p>
+</li>
+<li>
+<p>SUSE Storage no valida la cadena <code>nfsOptions</code>, por lo que los valores erróneos y los errores tipográficos no se señalan. Cuando la cadena es inválida, el montaje es rechazado por el servidor NFS y el volumen no se crea ni se adjunta.</p>
+</li>
+<li>
+<p>En SUSE Storage v1.4.0 a 1.4.3 y v1.5.0 a v1.5.1, los volúmenes dentro de un pod del gestor de recursos compartidos (específicamente, en el paso <code>NodeStageVolume</code>) se montan de forma rígida por defecto mediante el plugin Longhorn CSI. El montaje rígido permite que SUSE Storage reintente persistentemente enviar solicitudes NFS, asegurando que las IOs no fallen incluso cuando el servidor NFS se vuelve inaccesible durante algún tiempo. Las IOs se reanudan sin problemas cuando el servidor recupera la conectividad o se crea un servidor de reemplazo.</p>
+<div class="paragraph">
+<p>Este mecanismo para garantizar la integridad de los datos, sin embargo, conlleva cierto riesgo. Para mantener la estabilidad, el kernel de Linux no permite desmontar un sistema de archivos hasta que se completen todas las IOs pendientes. Esto es una preocupación porque el sistema no puede apagarse hasta que todos los sistemas de archivos estén desmontados. Si el servidor NFS no puede recuperarse, los nodos cliente deben someterse a un reinicio forzado.</p>
+</div>
+<div class="paragraph">
+<p>Para mitigar el problema, actualiza la versión a v1.4.4, v1.5.2 o una versión posterior. Después de actualizar, se aplica automáticamente <code>softerr</code> o <code>soft</code> al parámetro <code>nfsOptions</code> cada vez que se vuelven a adjuntar volúmenes RWX (si no se sobrescriben los ajustes predeterminados).</p>
+</div>
+</li>
+<li>
+<p>Aún puedes utilizar la opción de montaje <code>hard</code> (a través del mecanismo de sobrescritura <code>nfsOptions</code>), pero los volúmenes montados de forma rígida están sujetos a los riesgos descritos.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Para obtener más información, consulta <a href="https://github.com/longhorn/longhorn/issues/6655">#6655</a>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_manejo_de_fallos_para_volúmenes_rwx_genéricos_no_migrables"><a class="anchor" href="#_manejo_de_fallos_para_volúmenes_rwx_genéricos_no_migrables"></a>Manejo de fallos para volúmenes RWX genéricos (no migrables)</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>El Pod share-manager se termina de forma anormal</p>
+<div class="paragraph">
+<p>La entrada/salida del cliente estará bloqueada hasta que SUSE Storage cree un nuevo Pod share-manager y el volumen asociado. Una vez que el Pod se crea con éxito, comienza el período de gracia de 90 segundos para la recuperación de bloqueos, y los usuarios esperarían</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Antes de que finalice el período de gracia, la entrada/salida del cliente al volumen RWX seguirá estando bloqueada.</p>
+</li>
+<li>
+<p>El servidor rechaza las operaciones de LECTURA y ESCRITURA y las solicitudes de bloqueo no recuperables con un error de NFS4ERR_GRACE.</p>
+</li>
+<li>
+<p>El período de gracia puede finalizarse anticipadamente si todos los bloqueos se recuperan con éxito.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Después de salir del período de gracia, las entradas/salidas de los clientes que recuperan con éxito los bloqueos continúan sin errores de identificador de archivo obsoleto ni errores de entrada/salida. Si un bloqueo no puede recuperarse dentro del período de gracia, el bloqueo se descarta y el servidor devuelve un error de entrada/salida al cliente. El cliente restablece un nuevo bloqueo. La aplicación debe manejar el error de entrada/salida. Sin embargo, no todas las aplicaciones pueden manejar errores de entrada/salida debido a su implementación. Por lo tanto, puede resultar en el fallo de la operación de entrada/salida y la pérdida de datos. La consistencia de los datos puede ser un problema.</p>
+</div>
+<div class="paragraph">
+<p>+
+Aquí hay un ejemplo de un DaemonSet utilizando un volumen RWX.</p>
+</div>
+<div class="paragraph">
+<p>+
+Cada Pod del DaemonSet está escribiendo datos en el volumen RWX. Si el nodo donde se está ejecutando el Pod share-manager falla, se crea un nuevo Pod share-manager en otro nodo. Dado que uno de los clientes ubicados en el nodo caído ha desaparecido, el proceso de recuperación del bloqueo no puede finalizarse antes del período de gracia de 90 segundos, aunque los bloqueos de los clientes restantes se han recuperado con éxito. Las operaciones de entrada/salida de estos clientes continúan después de que el período de gracia ha expirado.</p>
+</div>
+</li>
+<li>
+<p>Si el servicio DNS de Kubernetes falla, los Pods share-manager no podrán comunicarse con longhorn-nfs-recovery-backend.</p>
+<div class="paragraph">
+<p>El servidor NFS-ganesha en un Pod share-manager se comunica con <code>longhorn-nfs-recovery-backend</code> a través de la IP del servicio <code>longhorn-recovery-backend</code>. Si el servicio DNS está fuera de servicio, la creación y eliminación de volúmenes RWX, así como la recuperación de servidores NFS, serán inoperables. Por lo tanto, se recomienda una alta disponibilidad del servicio DNS para evitar fallos en la comunicación.</p>
+</div>
+</li>
+<li>
+<p>Función de conmutación por error rápida.</p>
+<div class="paragraph">
+<p>SUSE Storage admite una función que puede mejorar la disponibilidad al acortar el tiempo que se tarda en recuperarse de un fallo del nodo en el que se está ejecutando el Pod share-manager del servidor NFS del volumen. La función utiliza una pulsación directa para supervisar el servidor. Si el servidor no responde, actúa para crear uno nuevo más rápido que la secuencia habitual. También configura el servidor NFS de manera diferente, para acortar el período de gracia de recuperación de 90 a 30 segundos.<br>
+ Más detalles están en <a href="../high-availability/rwx-volume-fast-failover.html" class="xref page">RWX Volume Fast Failover</a>.</p>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_migración_desde_el_proveedor_externo_anterior"><a class="anchor" href="#_migración_desde_el_proveedor_externo_anterior"></a>Migración desde el Proveedor Externo Anterior.</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>El PVC a continuación crea un trabajo de Kubernetes que puede copiar datos de un volumen a otro.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Reemplaza el <code>data-source-pvc</code> con el nombre del PVC RWX NFSv4 anterior que fue creado por Kubernetes.</p>
+</li>
+<li>
+<p>Reemplaza el <code>data-target-pvc</code> con el nombre del nuevo PVC RWX que deseas utilizar para tus nuevas cargas de trabajo.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Puedes crear manualmente un nuevo volumen RWX Longhorn + PVC/PV, o simplemente crear un PVC RWX y luego hacer que Longhorn aprovisione dinámicamente un volumen para ti.</p>
+</div>
+<div class="paragraph">
+<p>Ambos PVCs deben existir en el mismo espacio de nombres. Si estabas utilizando un espacio de nombres diferente al predeterminado, cambia el espacio de nombres del trabajo a continuación.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: batch/v1
+kind: Job
+metadata:
+  namespace: default  # namespace where the PVC's exist
+  name: volume-migration
+spec:
+  completions: 1
+  parallelism: 1
+  backoffLimit: 3
+  template:
+    metadata:
+      name: volume-migration
+      labels:
+        name: volume-migration
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: volume-migration
+          image: ubuntu:xenial
+          tty: true
+          command: [ "/bin/sh" ]
+          args: [ "-c", "cp -r -v /mnt/old /mnt/new" ]
+          volumeMounts:
+            - name: old-vol
+              mountPath: /mnt/old
+            - name: new-vol
+              mountPath: /mnt/new
+      volumes:
+        - name: old-vol
+          persistentVolumeClaim:
+            claimName: data-source-pvc # change to data source PVC
+        - name: new-vol
+          persistentVolumeClaim:
+            claimName: data-target-pvc # change to data target PVC</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_historial"><a class="anchor" href="#_historial"></a>Historial</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/Longhorn/Longhorn/issues/1183">Proveedor externo</a></p>
+</li>
+<li>
+<p><a href="https://github.com/Longhorn/Longhorn/issues/1470">Soporte nativo RWX</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="pvc-ownership-and-permission.html">Propiedad y Permiso de PVC</a></span>
+  <span class="next"><a href="clone-volumes.html">Clonar volúmenes</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<script src="../../../../_/js/site.js"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+<script src="../../../../_/js/vendor/lunr.js"></script>
+<script src="../../../../_/js/vendor/lunr-languages.js"></script>
+<script src="../../../../_/js/search-ui.js" id="search-ui-script" data-site-root-path="../../../.." data-snippet-length="100" data-stylesheet="../../../../_/css/search.css"></script>
+<script async src="../../../../search-index.js"></script>
+<script src="../../../../_/js/vendor/langSelection.js"></script>
+<script async src="../../../../_/js/vendor/tabs.js"></script>
+
+
+<script src="../../../../_/js/CNLanguageSwitcher.js"></script>
+  </body>
+</html>

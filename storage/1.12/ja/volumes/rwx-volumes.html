@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ReadWriteMany (RWX) ボリューム | SUSE® Storage  1.12 (Dev)</title>
+    <link rel="canonical" href="https://documentation.suse.com/cloudnative/storage/1.11/ja/volumes/rwx-volumes.html">
+    <meta name="generator" content="Antora 3.1.14">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+<meta http-equiv="last-modified" content="2025-12-22"/>
+<link rel="stylesheet" href="../../../../_/css/search.css">
+<link rel="icon" href="../../../../_/img/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="../../../../_/css/font-styles.css">
+<link rel="stylesheet" href="../../../../_/fonts/css/all.css">
+<link rel="stylesheet" href="../../../../_/css/site-extra.css">
+<link rel="stylesheet" href="../../../../_/css/vendor/tabs.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap&family=SUSE+Mono:ital,wght@0,100..800;1,100..800" rel="stylesheet">
+<link href="https://documentation.suse.com/docserv/res/fonts/poppins/poppins.css" rel="stylesheet">
+<link rel="stylesheet" href="../../../../_/css/vendor/light.css">
+<script src="/docserv/res/lightheaded/analytics.js" type="text/javascript"></script>
+<script type="module">
+  import { defineCustomElements, setAssetPath } from 'https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/shared-header.esm.js';
+  defineCustomElements();
+  setAssetPath("https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/assets");
+</script>
+<!-- Default English link -->
+<link href="https://documentation.suse.com/cloudnative/storage/1.12/en/volumes/rwx-volumes.html" hreflang="x-default" rel="alternate"/>
+<!-- Link for the currently processed page -->
+<link href="https://documentation.suse.com/cloudnative/storage/1.12/ja/volumes/rwx-volumes.html" hrefLang="ja-JP" rel="alternate" />
+
+<!-- JSON-LD for doc metadata -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "ReadWriteMany (RWX) ボリューム | SUSE Storage 1.12",
+  "headline": "ReadWriteMany (RWX) ボリューム",
+  "description": "ReadWriteMany (RWX) ボリューム",
+  "inLanguage": "ja",
+  "dateModified": "2025-12-22T00:00:00Z",
+  "author": {
+    "@type": "Organization",
+    "name": "SUSE Product & Solution Documentation Team",
+    "url": "https://documentation.suse.com"
+  },
+  "mentions": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "SUSE Storage",
+      "softwareVersion": "1.12",
+      "applicationCategory": "Cloud Infrastructure",
+      "operatingSystem": "Linux"
+    }
+  ],
+  "publisher": {
+    "@type": "Organization",
+    "name": "SUSE",
+    "url": "https://documentation.suse.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.suse.com/assets/img/suse-white-logo-green.svg"
+    }
+  }
+}
+</script>
+<!-- end JSON-LD for doc metadata -->
+
+<!-- SUVA - Begin Ask Geeko-->
+<!--
+searchUnifyChatbot ("Ask Geeko") Copyright ©2024 Grazitti Interactive - All Rights Reserved. NOTICE: All information contained herein is, and remains the property of Grazitti Interactive and its suppliers, if any. The intellectual and technical concepts contained herein are proprietary to Grazitti Interactive and its suppliers and may be covered by India, U.S. and Foreign Patents, patents in process, and are protected by trade secret or copyright law. Dissemination of this information or reproduction of this material is strictly forbidden unless prior written permission is obtained from Grazitti Interactive.
+-->
+<meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport"/>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/Allow/an.js?c485cb3c-93d4-4942-99e8-91f3b8ca5636"></script>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/js/index.js?q=gAAAAABp3JBN9VuEJTi5tFafLIMwgMkCPdJS3Qm56lSYx93ir3Twt9hgSvd3OHEt6-nYfSbY3yHq0Zv8PRPsSy4nbqZiaJ4cZvRc6ItVZdvwz9Urf35cH6OUyPOwdA0phlS-zVIznQ2rWW438p-91NlTHuxJuOFpnA=="></script>
+<link rel="stylesheet" href="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/css/index.css">
+<div id="searchUnifyChatbot"></div>
+<!-- SUVA - End Ask Geeko-->
+<!--BEGIN QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+<script type='text/javascript' src="../../../../_/js/qualtrics.js" defer></script>
+<!--END QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<script type="module">import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs'; mermaid.initialize({"startOnLoad":true});</script><shared-header
+language="en"
+languages='{
+    "en": { "label": "English", "url": "https://documentation.suse.com/en-us/" },
+    "de": { "label": "Deutsch", "url": "https://documentation.suse.com/de-de/" },
+    "fr": { "label": "Français", "url": "https://documentation.suse.com/fr-fr/" },
+    "es": { "label": "Español", "url": "https://documentation.suse.com/es-es/" },
+    "zh_CN": { "label": "中文", "url": "https://documentation.suse.com/zh-cn/" },
+    "pt_BR": { "label": "Português Brasileiro", "url": "https://documentation.suse.com/pt-br/" }
+}'
+enable-search='false'>
+</shared-header>
+
+<!-- Leaving as a comment, I expect it will be required again next year.
+<a target=_blank"" class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_bEiGZbUNzLD8Tcy"> Documentation survey </a>
+-->
+<div class="body">
+<div class="nav-container" data-component="storage" data-version="1.12">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title">SUSE® Storage</h3>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">SUSE® Storage</span>
+    <span class="version">1.12 (Dev)</span>
+  </div>
+  <ul class="components">
+        <li class="component">
+          <div class="title"><a href="../../../../admission-controller/1.35/en/introduction.html">Admission Controller</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../admission-controller/1.36/en/introduction.html">1.36-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../admission-controller/1.35/en/introduction.html">1.35-latest</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.34/en/introduction.html">1.34</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.33/en/introduction.html">1.33</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.32/en/introduction.html">1.32</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.31/en/introduction.html">1.31</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.30/en/introduction.html">1.30</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.29/en/introduction.html">1.29</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.28/en/introduction.html">1.28</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../cluster-api/v0.26/en/index.html">Cluster API</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../cluster-api/v0.27/en/index.html">v0.27-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../cluster-api/v0.26/en/index.html">v0.26</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.25/en/index.html">0.25</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.24/en/index.html">0.24</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.23/en/index.html">0.23</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.22/en/index.html">0.22</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.21/en/index.html">0.21</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.20/en/index.html">0.20</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.19/en/index.html">0.19</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.18/en/index.html">0.18</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.17/en/index.html">0.17</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.16/en/index.html">0.16</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.11/en/index.html">0.11</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../continuous-delivery/next/en/index.html">Continuous Delivery</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../continuous-delivery/next/en/index.html">Next</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.11/en/index.html">0.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.10/en/index.html">0.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.9/en/index.html">0.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../k3s/latest/en/introduction.html">K3s</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../k3s/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../os-manager/1.9/en/index.html">OS Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../os-manager/1.10/en/index.html">1.10-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../os-manager/1.9/en/index.html">1.9</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.8/en/index.html">1.8</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.7/en/index.html">1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.6/en/index.html">1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.5/en/index.html">1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-ai/latest/en/introduction.html">Rancher AI</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-ai/latest/en/introduction.html">latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rke2/latest/en/introduction.html">RKE2</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rke2/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-observability/latest/en/classic.html">SUSE Observability</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../suse-observability/latest/en/classic.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">SUSE Rancher Developer Access</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">SUSE® Rancher for AWS</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-manager/v2.14/en/about-rancher/what-is-rancher.html">SUSE® Rancher Manager</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-manager/v2.14/en/about-rancher/what-is-rancher.html">v2.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.13/en/about-rancher/what-is-rancher.html">v2.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.12/en/about-rancher/what-is-rancher.html">v2.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.11/en/about-rancher/what-is-rancher.html">v2.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.10/en/about-rancher/what-is-rancher.html">v2.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.9/en/about-rancher/what-is-rancher.html">v2.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../security/5.5/en/overview.html">SUSE® Security</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../security/5.5/en/overview.html">5.5</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.4/en/overview.html">5.4</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.3/en/overview.html">5.3</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component is-current">
+          <div class="title"><a href="../../../1.11/en/longhorn-documentation.html">SUSE® Storage</a></div>
+          <ul class="versions">
+            <li class="version is-current">
+              <a href="../../en/longhorn-documentation.html">1.12 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../1.11/en/longhorn-documentation.html">1.11 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../1.10/en/longhorn-documentation.html">1.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../1.9/en/longhorn-documentation.html">1.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">SUSE® Virtual Clusters</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/1.2.0/en/release-notes/version-1.2.0.html">v1.2.0 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">v1.1.0</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/1.0.2/en/release-notes/version-1.0.2.html">v1.0.2</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.1/en/introduction.html">v1.0.1</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.0/en/introduction.html">v1.0.0</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../virtualization/v1.7/en/introduction/overview.html">SUSE® Virtualization</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../virtualization/v1.8/en/introduction/overview.html">v1.8 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../virtualization/v1.7/en/introduction/overview.html">v1.7 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../virtualization/v1.6/en/introduction/overview.html">v1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../virtualization/v1.5/en/introduction/overview.html">v1.5</a>
+            </li>
+          </ul>
+        </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+<ul>
+    <li>
+      <a class="home-link-dsc" href="https://documentation.suse.com/" title="documentation.suse.com" aria-label="SUSE Documentation Home"></a>
+    </li>
+    <li>
+      <a href="https://documentation.suse.com/cloudnative/storage" title="SUSE Storage" aria-label="SUSE Documentation - SUSE Storage">
+        SUSE Storage
+      </a>
+    </li>
+      <li>
+          <a href="rwx-volumes.html" title="ReadWriteMany (RWX) ボリューム" aria-label="ReadWriteMany (RWX) ボリューム">ReadWriteMany (RWX) ボリューム</a>
+      </li>
+  </ul>
+</nav><div class="page-versions">
+  <button class="version-menu-toggle" title="Show other versions of page">1.12 (Dev)</button>
+  <div class="version-menu">
+    <a class="version is-current" href="rwx-volumes.html">1.12 (Dev)</a>
+    <a class="version" href="../../../1.11/ja/volumes/rwx-volumes.html">1.11 (Latest)</a>
+    <a class="version is-missing" href="../../../1.10/en/longhorn-documentation.html">1.10</a>
+    <a class="version is-missing" href="../../../1.9/en/longhorn-documentation.html">1.9</a>
+  </div>
+</div>
+      <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <label class="visual-search-label-bc" for="search-input">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+          <input label="Search" aria-label="Search" id="search-input" type="text" placeholder="ドキュメントを検索" >
+          <label class="filter checkbox" style="display: none">
+            <input type="checkbox" data-facet-filter="component:storage" checked> Only this project
+          </label>
+        </div>
+      </div>
+</div>
+  <div class="content">
+<aside
+  class="toc sidebar"
+  data-title="このページで" data-levels="2">
+  <div class="toc-menu">
+    <!-- start qualtrics -->
+    <div id='ZN_8qZUmklKYbBqAYe'><!--DO NOT REMOVE-CONTENTS PLACED HERE--></div>
+    <div id="qualtrics_container"></div>
+    <!-- end qualtrics -->
+  </div>
+</aside><article class="doc">
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="注記"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>
+
+この文書は自動機械翻訳技術を使用して翻訳されています。
+正確な翻訳を提供するように努めておりますが、翻訳された内容の完全性、正確性、信頼性については一切保証いたしません。
+相違がある場合は、元の英語版
+<a href="https://documentation.suse.com/cloudnative/storage/1.12/en/volumes/rwx-volumes.html">
+英語
+</a>
+が優先され、正式なテキストとなります。
+
+</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+                    <div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="警告"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>これは未公開の文書です SUSE® Storage 1.12 (Dev).</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+        <h1 class="page">ReadWriteMany (RWX) ボリューム</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>SUSE Storage は、共有マネージャーポッド内に存在する NFSv4 サーバーを介して、通常の Longhorn ボリュームを公開することにより、ReadWriteMany (RWX) ボリュームをサポートします。</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_概要"><a class="anchor" href="#_概要"></a>概要</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>SUSE Storage は、異なるワークロード要件に最適化された 2 種類の RWX ボリュームを提供します：</p>
+</div>
+<div class="sect2">
+<h3 id="_一般的な非移行可能rwxボリューム"><a class="anchor" href="#_一般的な非移行可能rwxボリューム"></a>一般的な（非移行可能）RWXボリューム</h3>
+<div class="paragraph">
+<p>一般的な RWX ボリュームは、複数のノード間で共有ファイルシステムアクセスを提供します。それらは、<code>longhorn-system</code> ネームスペース内の <code>share-manager-&lt;volume-name&gt;</code> ポッドで稼働する専用 NFSv4.1 サーバーを使用します。各 RWX ボリュームは、クライアントに NFS エンドポイントを公開する対応するサービスとペアになっています。</p>
+</div>
+<div class="paragraph">
+<p>これらのボリュームは、同時ファイルアクセスが必要なワークロードに最適ですが、ライブマイグレーションをサポートしていません。ライブマイグレーションは、サービスの中断なしに、実行中のワークロードをソースホストから宛先ホストに移動するプロセスです。移行中、ボリュームはソースワークロードからのみアクセス可能です。完了すると、宛先ワークロードがアクセスを引き継ぎ、ソースワークロードは終了します。</p>
+</div>
+<div class="sect3">
+<h4 id="_特性"><a class="anchor" href="#_特性"></a>特性</h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><a href="https://kubevirt.io/user-guide/compute/live_migration/">ライブマイグレーション</a> ができません。</p>
+</li>
+<li>
+<p>ファイルシステムベースの共有には NFSv4.1 を使用します。</p>
+</li>
+<li>
+<p>一般的な共有ストレージおよびマルチノードファイルアクセスワークロードに適しています。</p>
+</li>
+</ol>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/diagrams/rwx/rwx-arch.png" alt="イメージ">
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="注記"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>注意：アクティブな RWX ボリューム上の共有マネージャーポッドのイメージ更新の遅延</strong></p>
+</div>
+<div class="paragraph">
+<p>Longhorn システムのアップグレード後、一般的な（非移行可能）RWXボリュームが接続されたままの場合、対応する <code>share-manager</code> ポッドの <code>spec.image</code> への変更は即座には反映されません。更新されたイメージは、ボリュームが切り離された後にのみ適用され、その時点でポッドは新しいシェアマネージャーイメージで再作成されます。この動作はボリュームの安定性を確保し、アクティブなI/O操作の中断を防ぎます。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_移行可能なrwxボリューム"><a class="anchor" href="#_移行可能なrwxボリューム"></a>移行可能なRWXボリューム</h3>
+<div class="paragraph">
+<p>移行可能なRWXボリュームは、KubeVirt VMなどの仮想化ワークロード専用に設計されており、進行中のI/O操作を維持しながら[ライブマイグレーション](<a href="https://kubevirt.io/user-guide/compute/live_migration/)を必要とします。これらのボリュームは、メンテナンス、フェールオーバー、またはリバランス操作中にサービスの中断なしにノード間でVMをシームレスに移動できるようにします。" class="bare">https://kubevirt.io/user-guide/compute/live_migration/)を必要とします。これらのボリュームは、メンテナンス、フェールオーバー、またはリバランス操作中にサービスの中断なしにノード間でVMをシームレスに移動できるようにします。</a></p>
+</div>
+<div class="sect3">
+<h4 id="_特性_2"><a class="anchor" href="#_特性_2"></a>特性</h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>ライブマイグレーションシナリオ用に設計されています。</p>
+</li>
+<li>
+<p>`volumeMode: Block`が必要です（`Filesystem`モードはサポートされていません）。</p>
+</li>
+<li>
+<p>ReadWriteManyアクセスモードが必要であり、<code>migratable: "true"</code>（これによりLonghornボリュームで`volume.spec.migratable=true`が設定されます）を持つStorageClassも必要です。</p>
+</li>
+<li>
+<p>一般的な共有ファイルシステムワークロードには意図されていません。</p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="注記"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>移行可能なRWXボリュームは、ボリューム仕様の`volume.spec.migratable`フィールドを確認することで区別できます。非移行可能なボリュームにはこのフィールドがありません。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_一般的非移行可能rwxボリュームの要件"><a class="anchor" href="#_一般的非移行可能rwxボリュームの要件"></a>一般的（非移行可能）RWXボリュームの要件</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>各NFSクライアントノードにはNFSv4クライアントがインストールされている必要があります。</p>
+<div class="paragraph">
+<p>インストールの詳細については、<a href="../installation-setup/requirements.html#_installing_nfsv4_client" class="xref page">Installing NFSv4 client</a>を参照してください。</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="注記"></i>
+</td>
+<td class="content">
+<div class="title">問題解決:</div>
+<div class="paragraph">
+<p>ノードにNFSv4クライアントがない場合、ボリュームをマウントしようとすると、次のテキストを含むエラーメッセージが表示されます：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>for several filesystems (e.g. nfs, cifs) you might need a /sbin/mount.&lt;type&gt; helper program.</pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>各ノードのホスト名はKubernetesクラスター内で一意です。</p>
+<div class="paragraph">
+<p>LonghornシステムにはNFSサーバー用の専用リカバリバックエンドサービスがあります。クライアントがNFSサーバーに接続すると、クライアントのホスト名を含む情報がリカバリバックエンドに保存されます。シェアマネージャーポッドまたはNFSサーバーが異常終了した場合、SUSE Storageが新しいものを作成します。90秒の猶予期間内に、クライアントはリカバリバックエンドに保存されたクライアント情報を使用してロックを再取得します。</p>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_一般的な非移行可能rwxボリュームの作成と使用"><a class="anchor" href="#_一般的な非移行可能rwxボリュームの作成と使用"></a>一般的な（非移行可能）RWXボリュームの作成と使用</h2>
+<div class="sectionbody">
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="注記"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>RWXボリュームは、アクセスモードを`ReadWriteMany`に設定し、「移行可能」フラグを無効にする必要があります（<em>parameters.migratable: `false`</em>）。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>動的にプロビジョニングされたLonghornボリュームの場合、アクセスモードはPVCのアクセスモードに基づきます。</p>
+</li>
+<li>
+<p>手動で作成されたLonghornボリューム（復元、DRボリューム）の場合、アクセスモードはSUSE Storage UIで作成時に指定できます。</p>
+</li>
+<li>
+<p>UIを介してLonghornボリュームのPV/PVCを作成する際、PV/PVCのアクセスモードはボリュームのアクセスモードに基づきます。</p>
+</li>
+<li>
+<p>ボリュームがPVCにバインドされていない場合、UIを介してLonghornボリュームのアクセスモードを変更できます。</p>
+</li>
+<li>
+<p>RWX PVCによって使用されるLonghornボリュームの場合、ボリュームのアクセスモードはRWXに変更されます。</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_一般的な非移行可能rwxボリュームのボリュームローカリティの設定"><a class="anchor" href="#_一般的な非移行可能rwxボリュームのボリュームローカリティの設定"></a>一般的な（非移行可能）RWXボリュームのボリュームローカリティの設定</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>SUSE Storageは、RWXボリュームのデータローカリティを正確に制御するための新しい設定を提供します（関連するShare Managerポッドの特定を通じて）。これらの詳細な設定は、関連するグローバル設定と連携して、最適なパフォーマンス、耐障害性、および組織のポリシーや制約の遵守を提供します。</p>
+</div>
+<div class="sect2">
+<h3 id="_sharemanagernodeselector"><a class="anchor" href="#_sharemanagernodeselector"></a><code>shareManagerNodeSelector</code></h3>
+<div class="paragraph">
+<p>StorageClassパラメータ`shareManagerNodeSelector`を使用して、RWXボリュームがスケジュールできるノードを特定するためのセレクターを指定できます。これらのセレクターは、グローバル`system-managed-components-node-selector`設定と統合され、その後RWXボリュームのShare Managerポッドに適用され、ボリュームローカリティの制御を強化します。</p>
+</div>
+<div class="paragraph">
+<p>例:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>  kind: StorageClass
+  apiVersion: storage.k8s.io/v1
+  metadata:
+    name: longhorn-rwx
+  provisioner: driver.longhorn.io
+  parameters:
+    shareManagerNodeSelector: label-key1:label-value1;label-key2:label-value2</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>この例では、指定されたStorageClassでプロビジョニングされたRWXボリュームは、ラベル`label-key1:label-value1`と`label-key2:label-value2`を持つノードにスケジュールされます。</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_allowedtopologies"><a class="anchor" href="#_allowedtopologies"></a><code>allowedTopologies</code></h3>
+<div class="paragraph">
+<p>Longhornは、`storageClass.allowedTopologies`設定をRWXボリュームのShare Managerポッドのアフィニティルールに変換します。これにより、ポッドは指定されたトポロジー要件（地域やゾーンなど）を満たすノードにスケジュールされ、RWXボリュームのローカリティに一致します。</p>
+</div>
+<div class="paragraph">
+<p>例:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>  kind: StorageClass
+  apiVersion: storage.k8s.io/v1
+  metadata:
+    name: longhorn-rwx
+  provisioner: driver.longhorn.io
+  allowedTopologies:
+  - matchLabelExpressions:
+    - key: topology.kubernetes.io/region
+      values:
+      - us-west-1</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>この例では、Share ManagerポッドとRWXボリュームは`us-west-1`地域にスケジュールされます。</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_sharemanagertolerations"><a class="anchor" href="#_sharemanagertolerations"></a><code>shareManagerTolerations</code></h3>
+<div class="paragraph">
+<p>StorageClassパラメータ`shareManagerTolerations`を使用して、ノードのテイントに基づいてより柔軟なスケジューリングを許可することもできます。定義されたトレラレーションは、グローバル`taint-toleration`設定と統合され、その後Share Managerポッドに適用されます。</p>
+</div>
+<div class="paragraph">
+<p>例:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>  kind: StorageClass
+  apiVersion: storage.k8s.io/v1
+  metadata:
+    name: longhorn-rwx
+  provisioner: driver.longhorn.io
+  parameters:
+    shareManagerTolerations: nodetype=storage:NoSchedule</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>この例では、Share Managerポッドはノード上の`nodetype=storage:NoSchedule`テイントを許容し、それらのノードにスケジュール可能になります。</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_一般的な非移行可能rwxボリュームのボリュームマウントオプションの設定"><a class="anchor" href="#_一般的な非移行可能rwxボリュームのボリュームマウントオプションの設定"></a>一般的な（非移行可能）RWXボリュームのボリュームマウントオプションの設定</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>RWXボリュームは、NFSを介してマウントされているときのみアクセス可能です。デフォルトでは、SUSE StorageはNFSバージョン4.1を使用し、`softerr`マウントオプション、`timeo`の値は"600"、`retrans`の値は"5"です。</p>
+</div>
+<div class="paragraph">
+<p>NFSサーバーがアクセスできなくなると、NFSクライアントからのリクエストは設定された`retrans`の値に従って再試行されます。電力障害やネットワーク分断などの長時間のイベントにより、リクエストは最終的に失敗します。NFSエラー（`ETIMEDOUT`は`softerr`マウントオプションのため）は呼び出し元のアプリケーションに返され、データ損失が発生する可能性があります。`softerr`がサポートされていない場合、SUSE Storageは自動的に`soft`マウントオプションを使用し、その結果`EIO`がエラーとして返されます。</p>
+</div>
+<div class="paragraph">
+<p>新しいボリュームに特定のマウントオプションを使用できます。まず、`nfsOptions`パラメータを持つカスタマイズされたStorageClassを作成し、その後、その特定のStorageClassを使用してRWXボリュームのPVCを作成します。</p>
+</div>
+<div class="paragraph">
+<p>例:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">  kind: StorageClass
+  apiVersion: storage.k8s.io/v1
+  metadata:
+    name: longhorn-test
+  provisioner: driver.longhorn.io
+  allowVolumeExpansion: true
+  reclaimPolicy: Delete
+  volumeBindingMode: Immediate
+  parameters:
+    numberOfReplicas: "3"
+    staleReplicaTimeout: "2880"
+    fromBackup: ""
+    fsType: "ext4"
+    nfsOptions: "vers=4.2,noresvport,softerr,timeo=600,retrans=5"</code></pre>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="重要"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>サンプルStorageClassを使用してRWXボリュームのPVCを作成するには、`nfsOptions`文字列をカスタマイズされたカンマ区切りの合法的なオプションのリストに置き換えます。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_備考"><a class="anchor" href="#_備考"></a>備考</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>希望するオプションの完全なセットを提供する必要があります。提供されていないオプションは、NFSサーバー側のデフォルトを使用し、SUSE Storageの独自のものではありません。</p>
+</li>
+<li>
+<p>SUSE Storageは`nfsOptions`文字列を検証しないため、誤った値やタイプミスはフラグされません。文字列が無効な場合、マウントはNFSサーバーによって拒否され、ボリュームは作成されず、接続されません。</p>
+</li>
+<li>
+<p>SUSE Storageのv1.4.0から1.4.3およびv1.5.0からv1.5.1では、共有マネージャーポッド内のボリューム（具体的には`NodeStageVolume`ステップで）は、Longhorn CSIプラグインによってデフォルトでハードマウントされます。ハードマウントにより、SUSE StorageはNFSリクエストの送信を持続的に再試行でき、NFSサーバーが一時的にアクセスできなくなってもIOが失敗しないことが保証されます。サーバーが接続を回復するか、代替サーバーが作成されると、IOはシームレスに再開されます。</p>
+<div class="paragraph">
+<p>ただし、データの整合性を保証するこのメカニズムにはいくつかのリスクが伴います。安定性を維持するために、Linuxカーネルはすべての保留中のIOが完了するまでファイルシステムのアンマウントを許可しません。これは、すべてのファイルシステムがアンマウントされるまでシステムがシャットダウンできないため、懸念事項です。NFSサーバーが回復できない場合、クライアントノードは強制再起動を行う必要があります。</p>
+</div>
+<div class="paragraph">
+<p>問題を軽減するために、v1.4.4、v1.5.2、またはそれ以降のバージョンにアップグレードしてください。アップグレード後、RWXボリュームが再接続されるたびに、`softerr`または`soft`が`nfsOptions`パラメータに自動的に適用されます（デフォルト設定が上書きされない場合）。</p>
+</div>
+</li>
+<li>
+<p>`hard`マウントオプション（`nfsOptions`上書きメカニズムを介して）を引き続き使用できますが、ハードマウントされたボリュームは、記載されたリスクの対象となります。</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>詳細については、 <a href="https://github.com/longhorn/longhorn/issues/6655">#6655</a>を参照してください。</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_一般的な移行不可能なrwxボリュームのエラー処理"><a class="anchor" href="#_一般的な移行不可能なrwxボリュームのエラー処理"></a>一般的な（移行不可能な）RWXボリュームのエラー処理</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>share-manager Podが異常終了しました</p>
+<div class="paragraph">
+<p>クライアントのIOは、SUSE Storageが新しいshare-manager Podと関連するボリュームを作成するまでブロックされます。Podが正常に作成されると、ロック回収のための90秒の猶予期間が開始され、ユーザーは期待します。</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>猶予期間が終了する前に、RWXボリュームへのクライアントのIOは依然としてブロックされます。</p>
+</li>
+<li>
+<p>サーバーは、NFS4ERR_GRACEのエラーでREADおよびWRITE操作と非回収ロック要求を拒否します。</p>
+</li>
+<li>
+<p>すべてのロックが正常に回収されれば、猶予期間は早期に終了することがあります。</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>猶予期間を終了した後、ロックを正常に回収したクライアントのIOは、古いファイルハンドルエラーやIOエラーなしで続行されます。猶予期間内にロックを回収できない場合、ロックは破棄され、サーバーはクライアントにIOエラーを返します。クライアントは新しいロックを再確立します。アプリケーションはIOエラーを処理する必要があります。それにもかかわらず、すべてのアプリケーションがその実装のためにIOエラーを処理できるわけではありません。したがって、IO操作のエラーやデータ損失を引き起こす可能性があります。データの整合性が問題になる可能性があります。</p>
+</div>
+<div class="paragraph">
+<p>+
+ここにRWXボリュームを使用したDaemonSetの例があります。</p>
+</div>
+<div class="paragraph">
+<p>+
+DaemonSetの各PodはRWXボリュームにデータを書き込んでいます。共有マネージャー Pod が実行されているノードがダウンしている場合、別のノードに新しい共有マネージャー Pod が作成されます。ダウンノードにあるクライアントの一つが消失したため、残りのクライアントのロックが正常に回収されても、ロック回収プロセスは90秒の猶予期間より早く終了することはできません。これらのクライアントの IO は、猶予期間が終了した後も続きます。</p>
+</div>
+</li>
+<li>
+<p>Kubernetes DNS サービスがダウンした場合、共有マネージャー Pod は longhorn-nfs-recovery-backend と通信できなくなります。</p>
+<div class="paragraph">
+<p>共有マネージャー Pod 内の NFS-ganesha サーバーは、サービス <code>longhorn-recovery-backend</code> の IP を介して <code>longhorn-nfs-recovery-backend</code> と通信します。DNS サービスが利用できない場合、RWX ボリュームの作成および削除、ならびに NFS サーバーの回復は操作できなくなります。したがって、通信障害を避けるために DNS サービスの高可用性が推奨されます。</p>
+</div>
+</li>
+<li>
+<p>迅速なフェールオーバー機能。</p>
+<div class="paragraph">
+<p>SUSE Storage は、ボリュームの共有マネージャー NFS サーバー Pod が実行されているノードの障害からの回復にかかる時間を短縮することで可用性を向上させる機能をサポートしています。この機能は、サーバーを監視するために直接ハートビートを使用します。サーバーが応答しない場合、通常の手順よりも早く新しいサーバーを作成するように動作します。また、NFS サーバーを異なる設定にし、回復猶予期間を90秒から30秒に短縮します。<br>
+ 詳細は <a href="../high-availability/rwx-volume-fast-failover.html" class="xref page">RWX ボリュームの迅速なフェールオーバー</a> にあります。</p>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_以前の外部プロビジョナーからの移行"><a class="anchor" href="#_以前の外部プロビジョナーからの移行"></a>以前の外部プロビジョナーからの移行</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>以下の PVC は、あるボリュームから別のボリュームにデータをコピーできる Kubernetes ジョブを作成します。</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>data-source-pvc</code> を、Kubernetes によって作成された以前の NFSv4 RWX PVC の名前に置き換えてください。</p>
+</li>
+<li>
+<p><code>data-target-pvc</code> を、新しいワークロードに使用したい新しい RWX PVC の名前に置き換えてください。</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>手動で新しい RWX Longhorn ボリューム + PVC/PV を作成するか、RWX PVC を作成して Longhorn に動的にボリュームをプロビジョニングさせることができます。</p>
+</div>
+<div class="paragraph">
+<p>両方の PVC は同じネームスペースに存在する必要があります。デフォルトとは異なるネームスペースを使用している場合は、以下のジョブのネームスペースを変更してください。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: batch/v1
+kind: Job
+metadata:
+  namespace: default  # namespace where the PVC's exist
+  name: volume-migration
+spec:
+  completions: 1
+  parallelism: 1
+  backoffLimit: 3
+  template:
+    metadata:
+      name: volume-migration
+      labels:
+        name: volume-migration
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: volume-migration
+          image: ubuntu:xenial
+          tty: true
+          command: [ "/bin/sh" ]
+          args: [ "-c", "cp -r -v /mnt/old /mnt/new" ]
+          volumeMounts:
+            - name: old-vol
+              mountPath: /mnt/old
+            - name: new-vol
+              mountPath: /mnt/new
+      volumes:
+        - name: old-vol
+          persistentVolumeClaim:
+            claimName: data-source-pvc # change to data source PVC
+        - name: new-vol
+          persistentVolumeClaim:
+            claimName: data-target-pvc # change to data target PVC</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_履歴"><a class="anchor" href="#_履歴"></a>履歴</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/Longhorn/Longhorn/issues/1183">外部プロビジョナー</a></p>
+</li>
+<li>
+<p><a href="https://github.com/Longhorn/Longhorn/issues/1470">ネイティブ RWX サポート</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<script src="../../../../_/js/site.js"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+<script src="../../../../_/js/vendor/lunr.js"></script>
+<script src="../../../../_/js/vendor/lunr-languages.js"></script>
+<script src="../../../../_/js/search-ui.js" id="search-ui-script" data-site-root-path="../../../.." data-snippet-length="100" data-stylesheet="../../../../_/css/search.css"></script>
+<script async src="../../../../search-index.js"></script>
+<script src="../../../../_/js/vendor/langSelection.js"></script>
+<script async src="../../../../_/js/vendor/tabs.js"></script>
+
+
+<script src="../../../../_/js/CNLanguageSwitcher.js"></script>
+  </body>
+</html>

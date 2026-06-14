@@ -1,0 +1,2407 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+<title>虚拟私有云 | SUSE® Virtualization  v1.7 (Latest)</title>
+    <link rel="canonical" href="https://documentation.suse.com/cloudnative/virtualization/v1.7/zh/networking/kubeovn-vpc.html">
+    <link rel="prev" href="vm-migration-network.html">
+    <link rel="next" href="vm-isolation.html">
+    <meta name="generator" content="Antora 3.1.14">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+<meta http-equiv="last-modified" content="2025-09-15"/>
+<link rel="stylesheet" href="../../../../_/css/search.css">
+<link rel="icon" href="../../../../_/img/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="../../../../_/css/font-styles.css">
+<link rel="stylesheet" href="../../../../_/fonts/css/all.css">
+<link rel="stylesheet" href="../../../../_/css/site-extra.css">
+<link rel="stylesheet" href="../../../../_/css/vendor/tabs.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap&family=SUSE+Mono:ital,wght@0,100..800;1,100..800" rel="stylesheet">
+<link href="https://documentation.suse.com/docserv/res/fonts/poppins/poppins.css" rel="stylesheet">
+<link rel="stylesheet" href="../../../../_/css/vendor/light.css">
+<script src="/docserv/res/lightheaded/analytics.js" type="text/javascript"></script>
+<script type="module">
+  import { defineCustomElements, setAssetPath } from 'https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/shared-header.esm.js';
+  defineCustomElements();
+  setAssetPath("https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/assets");
+</script>
+<!-- Default English link -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/en/networking/kubeovn-vpc.html" hreflang="x-default" rel="alternate"/>
+<!-- Link for the currently processed page -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/zh/networking/kubeovn-vpc.html" hrefLang="zh-CN" rel="alternate" />
+<!-- Link for the English page -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/en/networking/kubeovn-vpc.html" hreflang="en-US" rel="alternate" />
+<!-- Link for the Japanese page -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/ja/networking/kubeovn-vpc.html" hreflang="ja-JP" rel="alternate" />
+<!-- Link for the German page -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/de/networking/kubeovn-vpc.html" hreflang="de-DE" rel="alternate" />
+<!-- Link for the French page -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/fr/networking/kubeovn-vpc.html" hreflang="fr-FR" rel="alternate" />
+<!-- Link for the Spanish page -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/es/networking/kubeovn-vpc.html" hreflang="es-ES" rel="alternate" />
+<!-- Link for the Brazilian Portuguese page -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/pt/networking/kubeovn-vpc.html" hreflang="pt-BR" rel="alternate" />
+
+<!-- JSON-LD for doc metadata -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "虚拟私有云 | SUSE Virtualization v1.7",
+  "headline": "虚拟私有云",
+  "description": "虚拟私有云",
+  "inLanguage": "zh_CN",
+  "dateModified": "2025-09-15T00:00:00Z",
+  "author": {
+    "@type": "Organization",
+    "name": "SUSE Product & Solution Documentation Team",
+    "url": "https://documentation.suse.com"
+  },
+  "mentions": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "SUSE Virtualization",
+      "softwareVersion": "v1.7",
+      "applicationCategory": "Cloud Infrastructure",
+      "operatingSystem": "Linux"
+    }
+  ],
+  "publisher": {
+    "@type": "Organization",
+    "name": "SUSE",
+    "url": "https://documentation.suse.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.suse.com/assets/img/suse-white-logo-green.svg"
+    }
+  }
+}
+</script>
+<!-- end JSON-LD for doc metadata -->
+
+<!-- SUVA - Begin Ask Geeko-->
+<!--
+searchUnifyChatbot ("Ask Geeko") Copyright ©2024 Grazitti Interactive - All Rights Reserved. NOTICE: All information contained herein is, and remains the property of Grazitti Interactive and its suppliers, if any. The intellectual and technical concepts contained herein are proprietary to Grazitti Interactive and its suppliers and may be covered by India, U.S. and Foreign Patents, patents in process, and are protected by trade secret or copyright law. Dissemination of this information or reproduction of this material is strictly forbidden unless prior written permission is obtained from Grazitti Interactive.
+-->
+<meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport"/>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/Allow/an.js?c485cb3c-93d4-4942-99e8-91f3b8ca5636"></script>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/js/index.js?q=gAAAAABp3JBN9VuEJTi5tFafLIMwgMkCPdJS3Qm56lSYx93ir3Twt9hgSvd3OHEt6-nYfSbY3yHq0Zv8PRPsSy4nbqZiaJ4cZvRc6ItVZdvwz9Urf35cH6OUyPOwdA0phlS-zVIznQ2rWW438p-91NlTHuxJuOFpnA=="></script>
+<link rel="stylesheet" href="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/css/index.css">
+<div id="searchUnifyChatbot"></div>
+<!-- SUVA - End Ask Geeko-->
+<!--BEGIN QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+<script type='text/javascript' src="../../../../_/js/qualtrics.js" defer></script>
+<!--END QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<script type="module">import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs'; mermaid.initialize({"startOnLoad":true});</script><shared-header
+language="en"
+languages='{
+    "en": { "label": "English", "url": "https://documentation.suse.com/en-us/" },
+    "de": { "label": "Deutsch", "url": "https://documentation.suse.com/de-de/" },
+    "fr": { "label": "Français", "url": "https://documentation.suse.com/fr-fr/" },
+    "es": { "label": "Español", "url": "https://documentation.suse.com/es-es/" },
+    "zh_CN": { "label": "中文", "url": "https://documentation.suse.com/zh-cn/" },
+    "pt_BR": { "label": "Português Brasileiro", "url": "https://documentation.suse.com/pt-br/" }
+}'
+enable-search='false'>
+</shared-header>
+
+<!-- Leaving as a comment, I expect it will be required again next year.
+<a target=_blank"" class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_bEiGZbUNzLD8Tcy"> Documentation survey </a>
+-->
+<div class="body">
+<div class="nav-container" data-component="virtualization" data-version="v1.7">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title">SUSE® Virtualization</h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">简介</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/overview.html">概述</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/deploy-ha-cluster.html">部署高可用性集群</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/deploy-singlenode-cluster.html">部署单节点集群</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/glossary.html">词汇表</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/document-conventions.html">文档约定</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">安装和设置</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/requirements.html">硬件和网络要求</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">安装媒体</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/media/net-install.html">网络安装 ISO</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/media/install-binaries-mode.html">仅安装二进制文件</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">安装方法</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/methods/iso-install.html">ISO 安装</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/methods/usb-install.html">USB安装</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/methods/pxe-boot-install.html">PXE 引导安装</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">配置</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/config/configuration-file.html">配置文件</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/config/update-configuration.html">安装后更新配置</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/config/settings.html">设置</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/config/cloudinitcrd.html">CloudInit CRD</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/post-installation.html">安装后任务</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/management-address.html">管理地址</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/external-disk.html">外部磁盘支持</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/authentication.html">身份验证</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/airgap.html">隔离的环境</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/single-node-clusters.html">单节点集群</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">升级</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/upgrades.html">升级</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-1-2-to-v1-2-0.html">从 v1.1.2 升级到 v1.2.0（不推荐）</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-2-0-to-v1-2-1.html">从 v1.1.2/v1.1.3/v1.2.0 升级到 v1.2.1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-2-1-to-v1-2-2.html">从 v1.2.1 升级到 v1.2.2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-2-2-to-v1-3-1.html">从 v1.2.2/v1.3.0 升级到 v1.3.1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-3-1-to-v1-3-2.html">从 v1.3.1 升级到 v1.3.2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-3-2-to-v1-4-0.html">从 v1.3.2 升级到 v1.4.0</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-4-0-to-v1-4-1.html">从 v1.4.0 升级到 v1.4.1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-4-1-to-v1-4-2.html">从 v1.4.1 升级到 v1.4.2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-4-1-to-v1-4-3.html">从 v1.4.1 或 v1.4.2 升级到 v1.4.3</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-4-2-to-v1-5-0.html">从 v1.4.2 或 v1.4.3 升级到 v1.5.0</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-4-2-to-v1-5-1.html">从 v1.4.2 或 v1.4.3 升级到 v1.5.1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-4-2-to-v1-5-2.html">从 v1.4.2 或 v1.4.3 升级到 v1.5.2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-5-0-to-v1-5-1.html">从 v1.5.0 升级到 v1.5.1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-5-0-to-v1-5-2.html">从 v1.5.0 或 v1.5.1 升级到 v1.5.2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-5-x-to-v1-6-x.html">从 v1.5.x 升级到 v1.6.x</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-6-x-to-v1-6-y.html">从 v1.6.x 升级到 v1.6.y</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-6-x-to-v1-7-x.html">从 v1.6.x 升级到 v1.7.x</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-7-x-to-v1-7-y.html">从 v1.7.x 升级到 v1.7.y</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/troubleshooting.html">查错</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">主机</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../hosts/hosts.html">主机管理</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../hosts/witness-node.html">见证节点</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../hosts/vgpu-support.html">vGPU支持</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">虚拟机</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/virtual-machines.html">虚拟机</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">虚拟机镜像</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../virtual-machines/vm-images/upload-image.html">上传镜像</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../virtual-machines/vm-images/custom-suse-images.html">自定义 SUSE 虚拟机映像</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../virtual-machines/vm-images/image-security.html">图像安全</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/create-vm.html">创建虚拟机</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/create-windows-vm.html">创建一个 Windows 虚拟机</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/edit-vm.html">编辑虚拟机</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/access-vm.html">访问虚拟机</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/clone-vm.html">克隆虚拟机</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/backup-restore.html">虚拟机备份、快照和恢复</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/live-migration.html">实时迁移</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/hotplug-volume.html">热插拔卷</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/resource-overcommit.html">资源超额分配</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/cpu-pinning.html">处理器绑定</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/cpu-memory-hotplug.html">CPU 和内存热插拔</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/nic-hotplug.html">NIC 热插拔</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">存储</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">卷</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../storage/volumes/create-volume.html">创建卷</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../storage/volumes/edit-volume.html">编辑卷</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../storage/volumes/clone-volume.html">克隆一个卷</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../storage/volumes/export-volume.html">将卷导出为镜像</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../storage/volumes/volume-snapshots.html">卷快照</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../storage/volumes/volume-security.html">卷安全</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../storage/storageclass.html">StorageClass</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../storage/csidriver.html">第三方存储支持</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../storage/longhorn-v2-data-engine.html">Longhorn V2 数据引擎</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../storage/storage-validator.html">存储验证器</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">网络</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="cluster-network.html">群集网络</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="vm-network.html">VM 网络</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="deep-dive.html">网络深入探讨</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="load-balancer.html">负载均衡器</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="ip-pool.html">IP池</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="storage-network.html">存储网络</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="vm-migration-network.html">虚拟机迁移网络</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="kubeovn-vpc.html">虚拟私有云</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="vm-isolation.html">虚拟机隔离</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="best-practices.html">网络最佳实践</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">可观测性</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../observability/logging.html">日志记录</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../observability/monitoring.html">监控</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">附加组件</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/add-ons.html">附加组件</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/harvester-seeder.html">Harvester Seeder</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/kubeovn-operator.html">Kube-OVN Operator（实验性）</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/lvm-local-storage.html">CSI 驱动程序 LVM（实验性）</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/nvidia-driver-toolkit.html">NVIDIA 驱动工具包</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/pcidevices-controller.html">PCI设备控制器</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/rancher-vcluster.html">Rancher vCluster（实验性）</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/virtual-machine-auto-balance.html">虚拟机自动平衡（实验性）</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/vm-dhcp-controller.html">VM DHCP 控制器（实验性）</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/vm-import-controller.html">虚拟机导入控制器</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">集成</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Rancher 集成</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/rancher-integration.html">SUSE Rancher Prime 集成</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/virtualization-management.html">虚拟化管理</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">节点驱动</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../integrations/rancher/node-driver/node-driver.html">Harvester节点驱动程序</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../integrations/rancher/node-driver/rke2-cluster.html">创建 RKE2 Kubernetes 集群</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../integrations/rancher/node-driver/k3s-cluster.html">创建 K3s Kubernetes 集群</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/cloud-provider.html">Harvester 云提供商</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/csi-driver.html">Harvester CSI 驱动程序</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/resource-quota.html">资源配额</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/rancher-terraform-provider.html">Rancher Terraform</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/import-vm.html">导入基于SUSE® Virtualization虚拟机的集群</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/harvester-ui-extension.html">Harvester UI 扩展</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../integrations/terraform/terraform-provider.html">Terraform Provider</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">查错</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/installation.html">安装问题</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/operating-system.html">操作系统问题</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/cluster.html">集群问题</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/virtual-machines.html">虚拟机问题</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/monitoring.html">监控问题</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/logging.html">日志问题</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/rancher.html">Rancher 问题：</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/faq.html">常见问题</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">开发者内容</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../developer/addon-development.html">附加产品开发指南</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../api.html">API</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">SUSE® Virtualization</span>
+    <span class="version">v1.7 (Latest)</span>
+  </div>
+  <ul class="components">
+        <li class="component">
+          <div class="title"><a href="../../../../admission-controller/1.35/en/introduction.html">Admission Controller</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../admission-controller/1.36/en/introduction.html">1.36-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../admission-controller/1.35/en/introduction.html">1.35-latest</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.34/en/introduction.html">1.34</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.33/en/introduction.html">1.33</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.32/en/introduction.html">1.32</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.31/en/introduction.html">1.31</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.30/en/introduction.html">1.30</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.29/en/introduction.html">1.29</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.28/en/introduction.html">1.28</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../cluster-api/v0.26/en/index.html">Cluster API</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../cluster-api/v0.27/en/index.html">v0.27-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../cluster-api/v0.26/en/index.html">v0.26</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.25/en/index.html">0.25</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.24/en/index.html">0.24</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.23/en/index.html">0.23</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.22/en/index.html">0.22</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.21/en/index.html">0.21</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.20/en/index.html">0.20</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.19/en/index.html">0.19</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.18/en/index.html">0.18</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.17/en/index.html">0.17</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.16/en/index.html">0.16</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.11/en/index.html">0.11</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../continuous-delivery/next/en/index.html">Continuous Delivery</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../continuous-delivery/next/en/index.html">Next</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.11/en/index.html">0.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.10/en/index.html">0.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.9/en/index.html">0.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../k3s/latest/en/introduction.html">K3s</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../k3s/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../os-manager/1.9/en/index.html">OS Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../os-manager/1.10/en/index.html">1.10-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../os-manager/1.9/en/index.html">1.9</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.8/en/index.html">1.8</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.7/en/index.html">1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.6/en/index.html">1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.5/en/index.html">1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-ai/latest/en/introduction.html">Rancher AI</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-ai/latest/en/introduction.html">latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rke2/latest/en/introduction.html">RKE2</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rke2/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-observability/latest/en/classic.html">SUSE Observability</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../suse-observability/latest/en/classic.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">SUSE Rancher Developer Access</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">SUSE® Rancher for AWS</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-manager/v2.14/en/about-rancher/what-is-rancher.html">SUSE® Rancher Manager</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-manager/v2.14/en/about-rancher/what-is-rancher.html">v2.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.13/en/about-rancher/what-is-rancher.html">v2.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.12/en/about-rancher/what-is-rancher.html">v2.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.11/en/about-rancher/what-is-rancher.html">v2.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.10/en/about-rancher/what-is-rancher.html">v2.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.9/en/about-rancher/what-is-rancher.html">v2.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../security/5.5/en/overview.html">SUSE® Security</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../security/5.5/en/overview.html">5.5</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.4/en/overview.html">5.4</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.3/en/overview.html">5.3</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../storage/1.11/en/longhorn-documentation.html">SUSE® Storage</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../storage/1.12/en/longhorn-documentation.html">1.12 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../storage/1.11/en/longhorn-documentation.html">1.11 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../storage/1.10/en/longhorn-documentation.html">1.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../storage/1.9/en/longhorn-documentation.html">1.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">SUSE® Virtual Clusters</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/1.2.0/en/release-notes/version-1.2.0.html">v1.2.0 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">v1.1.0</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/1.0.2/en/release-notes/version-1.0.2.html">v1.0.2</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.1/en/introduction.html">v1.0.1</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.0/en/introduction.html">v1.0.0</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component is-current">
+          <div class="title"><a href="../../en/introduction/overview.html">SUSE® Virtualization</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../v1.8/en/introduction/overview.html">v1.8 (Dev)</a>
+            </li>
+            <li class="version is-current is-latest">
+              <a href="../../en/introduction/overview.html">v1.7 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../v1.6/en/introduction/overview.html">v1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../v1.5/en/introduction/overview.html">v1.5</a>
+            </li>
+          </ul>
+        </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+<ul>
+    <li>
+      <a class="home-link-dsc" href="https://documentation.suse.com/" title="documentation.suse.com" aria-label="SUSE Documentation Home"></a>
+    </li>
+    <li>
+      <a href="https://documentation.suse.com/cloudnative/virtualization" title="SUSE Virtualization" aria-label="SUSE Documentation - SUSE Virtualization">
+        SUSE Virtualization
+      </a>
+    </li>
+      <li>
+          网络
+      </li>
+  </ul>
+</nav><div class="page-versions">
+  <button class="version-menu-toggle" title="Show other versions of page">v1.7 (Latest)</button>
+  <div class="version-menu">
+    <a class="version is-missing" href="../../../v1.8/en/introduction/overview.html">v1.8 (Dev)</a>
+    <a class="version is-current" href="kubeovn-vpc.html">v1.7 (Latest)</a>
+    <a class="version is-missing" href="../../../v1.6/en/introduction/overview.html">v1.6</a>
+    <a class="version is-missing" href="../../../v1.5/en/introduction/overview.html">v1.5</a>
+  </div>
+</div>
+      <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <label class="visual-search-label-bc" for="search-input">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+          <input label="Search" aria-label="Search" id="search-input" type="text" placeholder="搜索文档" >
+          <label class="filter checkbox" style="display: none">
+            <input type="checkbox" data-facet-filter="component:virtualization" checked> Only this project
+          </label>
+        </div>
+      </div>
+</div>
+  <div class="content">
+<aside
+  class="toc sidebar"
+  data-title="在此页面上" data-levels="2">
+  <div class="toc-menu">
+    <!-- start qualtrics -->
+    <div id='ZN_8qZUmklKYbBqAYe'><!--DO NOT REMOVE-CONTENTS PLACED HERE--></div>
+    <div id="qualtrics_container"></div>
+    <!-- end qualtrics -->
+  </div>
+</aside><article class="doc">
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="注意"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>
+
+本文档采用自动化机器翻译技术翻译。
+尽管我们力求提供准确的译文，但不对翻译内容的完整性、准确性或可靠性作出任何保证。
+若出现任何内容不一致情况，请以原始
+<a href="https://documentation.suse.com/cloudnative/virtualization/v1.7/en/networking/kubeovn-vpc.html">
+英文
+</a>
+版本为准，且原始英文版本为权威文本。
+
+</p>
+
+</div>
+</td>
+</tr>
+</table>
+</div>
+<h1 class="page">虚拟私有云</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="注意"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>所有使用 Kube-OVN 的功能都被视为实验性功能。有关实验性功能的更多信息，请参见 <a href="../introduction/document-conventions.html#_feature_labels" class="xref page">功能标签</a>。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>虚拟私有云 (VPC) 是一个逻辑上隔离的网络，提供对云基础设施中 IP 地址、子网、路由表、防火墙和网关的完全控制。VPC 允许安全和可扩展地部署虚拟化资源，如计算、存储和容器服务。</p>
+</div>
+<div class="paragraph">
+<p>下表概述了 VPC 的关键组件：</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">组件</th>
+<th class="tableblock halign-left valign-top">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">VPC</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">具有用户定义的 IP CIDR 范围的顶级网络空间</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">subnet</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">VPC IP 空间的细分；可以是公共或私有的</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">路由表</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">定义 VPC 内部和外部的流量路由规则</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">互联网网关</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">为公共子网启用外部互联网访问</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NAT 网关</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">允许私有子网访问互联网（仅限出站）</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">安全组</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">虚拟防火墙，控制每个实例的入站和出站流量</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">VPC 对等连接</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">不同 VPC 或本地网络之间的可选对等或混合连接</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_suse_virtualization_和_kube_ovn_集成架构"><a class="anchor" href="#_suse_virtualization_和_kube_ovn_集成架构"></a>SUSE Virtualization 和 Kube-OVN 集成架构</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>下图说明了 VPC、子网、覆盖网络和虚拟机在 SUSE Virtualization 中与 Kube-OVN 的逻辑连接。该架构包括公共和私有子网，允许将面向互联网的流量与内部资源分开。此外，该架构支持在集群中可扩展的、隔离的 L3 和 L2 网络结构。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>                                 [ VPC: vpc-1 ]
+                                        │
+                  ┌─────────────────────┴─────────────────────┐
+                  │                                           │
+     [ Subnet: vswitch1-subnet ]                 [ Subnet: vswitch2-subnet ]
+       CIDR: 172.20.10.0/24                          CIDR: 172.20.20.0/24
+       Gateway: 172.20.10.1                          Gateway: 172.20.20.1
+                  │                                           │
+     [ Overlay Network: vswitch1 ]               [ Overlay Network: vswitch2 ]
+                  │                                           │
+         ┌────────┴────────┐                         ┌────────┴────────┐
+         │                 │                         │                 │
+[VM: vm1-vswitch1] [VM: vm2-vswitch1]                [VM: vm1-vswitch2]
+IP: 172.20.10.X     IP: 172.20.10.Y                    IP: 172.20.20.Z</pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">组件</th>
+<th class="tableblock halign-left valign-top">平台</th>
+<th class="tableblock halign-left valign-top">逻辑责任</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#VPC settings">VPC</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Kube-OVN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">顶级 L3 域，管理子网分组</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#Subnet settings">subnet</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Kube-OVN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CIDR 分配、路由、网关、防火墙规则</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="vm-network.html#_overlay_network_experimental" class="xref page">覆盖网络</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUSE Virtualization</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">L2 虚拟交换机（OVS 桥接），映射到子网</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../virtual-machines/virtual-machines.html" class="xref page">虚拟机</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUSE Virtualization</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">运行计算工作负载，连接到覆盖网络</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>该架构具有以下关键特征：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Kube-OVN创建VPC及其子网。</p>
+<div class="paragraph">
+<p>每个子网包括CIDR和网关IP，并绑定到覆盖网络（作为提供者）。Kube-OVN 强制子网与覆盖网络之间进行一对一映射，以避免路由不明确、流量冲突和隔离问题。</p>
+</div>
+</li>
+<li>
+<p>SUSE Virtualization定义覆盖网络。</p>
+<div class="paragraph">
+<p>每个覆盖网络在Kube-OVN中被视为提供者。当您在 SUSE Virtualization UI 上创建子网时，可在 <strong>子网：创建</strong> 屏幕上的 <strong>提供者</strong> 列表中选择这些覆盖网络（类型：<code>OverlayNetwork</code>）。</p>
+</div>
+</li>
+<li>
+<p>SUSE Virtualization提供连接到覆盖网络的虚拟机。</p>
+<div class="paragraph">
+<p>每个虚拟机在启动后使用Kube-OVN IPAM请求IP地址。虚拟机从关联的子网接收其IP地址、网关和路由信息。</p>
+</div>
+</li>
+<li>
+<p>Kube-OVN处理所有L3逻辑（路由、NAT、VPC对等和隔离）。</p>
+<div class="paragraph">
+<p>SUSE Virtualization专注于计算和网络连接。网络策略执行、私有子网和NAT出口由Kube-OVN管理。</p>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>该架构提供以下好处：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>明确的关注点分离：SUSE Virtualization处理虚拟化；Kube-OVN处理SDN。</p>
+</li>
+<li>
+<p>可伸缩性：新的 VPC、子网和对等不需要在 SUSE Virtualization 内核中进行更改。</p>
+</li>
+<li>
+<p>Kubernetes原生网络：Kube-OVN与Kubernetes紧密集成，支持CRD、策略等。</p>
+</li>
+<li>
+<p>隔离和可观测性：通过Kube-OVN集中控制IP、ACL和路由。</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_vpc和子网配置"><a class="anchor" href="#_vpc和子网配置"></a>VPC和子网配置</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_vpc设置"><a class="anchor" href="#_vpc设置"></a>VPC设置</h3>
+<div class="paragraph">
+<p>在SUSE Virtualization中，虚拟私有云（VPC）是一个逻辑网络容器，有助于管理和隔离子网和流量。它定义了路由、NAT和网络分段。</p>
+</div>
+<div class="paragraph">
+<p>SUSE Virtualization提供一个名为`ovn-cluster`的默认VPC，以及两个名为`ovn-default`和`join`的关联子网，用于内部Kube-OVN操作。您可以通过在*虚拟私有云*屏幕上单击*Create*来创建额外的VPC。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/networking/default_vpc_and_subnet.png" alt="默认VPC和子网">
+</div>
+</div>
+<div class="paragraph">
+<p>创建自定义VPC时，必须配置与定义的路由相关的设置，以引导流量和连接，从而实现本地和远程VPC之间的通信。下表概述了 <strong>虚拟私有云</strong> 详细信息屏幕上的设置：</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">部分的示例</th>
+<th class="tableblock halign-left valign-top">设置</th>
+<th class="tableblock halign-left valign-top">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">一般信息</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>名称</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">VPC 的名称</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">一般信息</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>说明</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">VPC 的描述</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>静态路由</strong> 选项卡</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>CIDR</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">路由的目标 IP 地址范围（例如，<code>192.168.1.0/24</code>）</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>静态路由</strong> 选项卡</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>下一跳 IP</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">应将 CIDR 的流量转发到的 IP 地址（例如，网关或路由器 IP 地址）</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>VPC 对等连接</strong> 选项卡</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>本地连接 IP</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">用于对等连接的本地 VPC 上的 IP 地址</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>VPC 对等连接</strong> 选项卡</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>远程 VPC</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">与本地 VPC 对等的目标远程 VPC</p></td>
+</tr>
+</tbody>
+</table>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/networking/create_vpc.png" alt="创建 VPC">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_子网设置"><a class="anchor" href="#_子网设置"></a>子网设置</h3>
+<div class="paragraph">
+<p>每个子网定义一个 CIDR 块和网关，并映射到一个 SUSE Virtualization <a href="vm-network.html#_overlay_network_experimental" class="xref page">覆盖网络</a>（虚拟交换机）。它还包括 NAT 和 <a href="vm-isolation.html#_subnet_acls" class="xref page">访问规则</a> 的控制。</p>
+</div>
+<div class="paragraph">
+<p>创建子网时，您必须配置与您的用例相关的设置。在大多数情况下，您可以通过配置 <strong>CIDR 块</strong>、<strong>网关</strong> 和 <strong>提供者</strong> 来开始。下表概述了 <strong>子网</strong> 详细信息屏幕上的设置：</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">部分的示例</th>
+<th class="tableblock halign-left valign-top">设置</th>
+<th class="tableblock halign-left valign-top">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">一般信息</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>名称</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">子网名称</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">一般信息</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>说明</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">子网描述</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>基本</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>CIDR 块</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">分配给子网的 IP 地址范围（例如，<code>172.20.10.0/24</code>）</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>基本</strong> 选项卡</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>协议</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">此子网使用的网络协议版本（IPv4 或 IPv6）</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>基本</strong> 选项卡</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>提供器</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">与子网绑定的覆盖网络（虚拟交换机）</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>基本</strong> 选项卡</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>虚拟私有云</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">子网所属的虚拟私有云</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>基本</strong> 选项卡</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>网关</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">作为子网中虚拟机默认网关的 IP 地址</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>基本</strong> 选项卡</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>私有子网</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">限制对子网访问并确保网络隔离的设置</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>基本</strong> 选项卡</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>允许子网</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">在启用 <strong>私有子网</strong> 时，允许访问子网的 CIDR</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>基本</strong> 选项卡</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>排除 IP</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">不应自动分配给虚拟机的 IP 地址列表</p></td>
+</tr>
+</tbody>
+</table>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/networking/create_subnet.png" alt="创建子网">
+</div>
+</div>
+<div class="paragraph">
+<p>每个创建的子网都有一个名为 &lt;&lt;`natOutgoing` setting,<code>natOutgoing</code>&gt;&gt; 的设置，该设置为离开子网并前往 VPC 外部目的地的流量启用网络地址转换（NAT）。在默认情况下会禁用该设置。要启用它，您必须编辑子网的 YAML 配置并将值设置为 <code>natOutgoing: true</code>。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/networking/customize_nat_outgoing.png" alt="natOutgoing 设置已启用">
+</div>
+</div>
+<div class="paragraph">
+<p>默认情况下，不同 VPC 中的子网无法直接通信。要启用它们之间安全且受控的通信，您必须建立 <a href="#VPC peering">VPC 对等连接</a>。没有它，每个 VPC 中的子网流量将完全隔离。</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="注意"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>VPC 对等连接只能在自定义 VPC 之间建立。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/networking/vpcpeer.png" alt="VPC 对等连接">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_创建_vpc"><a class="anchor" href="#_创建_vpc"></a>创建 VPC</h3>
+<div class="paragraph">
+<p>执行以下步骤以创建和配置 VPC。</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>启用 <a href="../add-ons/kubeovn-operator.html" class="xref page">kubeovn-operator</a>。</p>
+<div class="paragraph">
+<p>kubeovn-operator 附加产品将 Kube-OVN 部署到 SUSE Virtualization 集群。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/networking/kubeovn-operator.png" alt="Kube-OVN Operator 附加产品">
+</div>
+</div>
+</li>
+<li>
+<p><a href="vm-network.html#_creating_an_overlay_network" class="xref page">创建覆盖网络</a>。</p>
+<div class="paragraph">
+<p>您必须为每个计划创建的子网创建一个单独的覆盖网络。</p>
+</div>
+</li>
+<li>
+<p>创建 VPC。</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>转到 <strong>网络 &#8594; 虚拟私有云</strong>，然后单击 <strong>创建</strong>。</p>
+</li>
+<li>
+<p>在 <strong>虚拟私有云：创建</strong> 屏幕上，为 VPC 指定一个唯一名称。</p>
+</li>
+<li>
+<p>单击*创建*。</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>创建子网。</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>转到 <strong>网络 &#8594; 虚拟私有云</strong>。</p>
+</li>
+<li>
+<p>找到您创建的 VPC，然后单击 <strong>创建子网</strong>。</p>
+</li>
+<li>
+<p>在 <strong>子网：创建</strong> 屏幕上，配置与您的环境相关的 <a href="#Subnet settings">设置</a>。</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="注意"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>您必须将每个子网链接到专用的覆盖网络。在*Provider*字段中，SUSE Virtualization用户界面仅显示未链接到其他子网的覆盖网络，自动强制执行一对一映射。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>点击*Edit as YAML*。</p>
+</li>
+<li>
+<p>在`spec`下，添加`enableDHCP: true`。</p>
+<div class="paragraph">
+<p>这确保连接到子网的虚拟机可以获得正确的默认路由选项。</p>
+</div>
+</li>
+<li>
+<p>单击*创建*。</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>创建虚拟机。</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>配置与每个虚拟机相关的设置。</p>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="重要"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>在*Networks*选项卡上，您必须在*Network*字段中选择正确的覆盖网络。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>单击*创建*。</p>
+<div class="paragraph">
+<p>虚拟机从其连接的子网获取IP地址。</p>
+</div>
+</li>
+<li>
+<p>选择*⋮ &#8594; Edit YAML*。</p>
+</li>
+<li>
+<p>将`spec.domain.devices.interface.binding.name`的值更改为`managedtap`。</p>
+<div class="paragraph">
+<p>这确保虚拟机从子网获取正确的DHCP选项，而不是使用KubeVirt的默认DHCP服务器。</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="小心"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>如果您不执行此步骤，虚拟机将没有默认路由。在客户操作系统上正确配置默认路由之前，访问外部目标和不同子网上的虚拟机的尝试将失败。</p>
+</div>
+<div class="paragraph">
+<p>有关更多信息，请参见<a href="vm-network.html#_overlay_network_limitations" class="xref page">Overlay network limitations</a>。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>重启每个虚拟机。</p>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_示例vpc配置和验证"><a class="anchor" href="#_示例vpc配置和验证"></a>示例VPC配置和验证</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><a href="vm-network.html#_creating_an_overlay_network" class="xref page">创建覆盖网络</a>，设置如下：</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>名称</strong>：<code>vswitch1`和`vswitch2</code></p>
+</li>
+<li>
+<p><strong>类型</strong>：<code>OverlayNetwork</code></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>创建名为`vpc-1`的VPC。</p>
+</li>
+<li>
+<p>在`vpc-1`中创建两个子网，设置如下：</p>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">名称</th>
+<th class="tableblock halign-left valign-top">CIDR</th>
+<th class="tableblock halign-left valign-top">提供器</th>
+<th class="tableblock halign-left valign-top">网关IP</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>vswitch1-subnet</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>172.20.10.0/24</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>default/vswitch1</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>172.20.10.1</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>vswitch2-subnet</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>172.20.20.0/24</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>default/vswitch2</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>172.20.20.1</code></p></td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>创建三个虚拟机，设置如下：</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>名称</strong>：<code>vm1-vswitch1</code>、<code>vm2-vswitch1`和`vm1-vswitch2</code></p>
+</li>
+<li>
+<p>*基础*选项卡</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>处理器</strong>：<code>1</code></p>
+</li>
+<li>
+<p><strong>内存</strong>：<code>2</code></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>*卷*选项卡</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>镜像卷</strong>：一个云镜像（例如，<code>noble-server-cloudimg-amd64</code>）</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>*网络*选项卡</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>网络</strong>：<code>default/vswitch1</code></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>*高级选项*选项卡</p>
+<div class="listingblock">
+<div class="content">
+<pre>users:
+`  `- name: ubuntu
+`    `groups: [ sudo ]
+`    `shell: /bin/bash
+`    `sudo: ALL=(ALL) NOPASSWD:ALL
+`    `lock\_passwd: false</pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="注意"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>一旦虚拟机开始运行，节点将显示NTP服务器`0.suse.pool.ntp.org`和IP地址。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>打开`vm1-vswitch1`和`vm1-vswitch2`的串行控制台，然后在每个控制台上添加默认路由（如果不存在），使用以下命令：</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>vm1-vswitch1</code>（<code>172.20.10.6</code>）：</p>
+<div class="listingblock">
+<div class="content">
+<pre>#sudo ip route add default via 172.20.10.1 dev enp1s0</pre>
+</div>
+</div>
+</li>
+<li>
+<p><code>vm1-vswitch2</code>（<code>172.20.20.3</code>）：</p>
+<div class="listingblock">
+<div class="content">
+<pre>#sudo ip route add default via 172.20.20.1 dev enp1s0</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>如果虚拟机想要将流量发送到未知网络（不在本地子网中），则必须通过指定的网络接口将流量转发到为连接的子网配置的指定网关IP。在此示例中，<code>vm1-vswitch1`必须通过`172.20.10.1`转发流量，而`vm1-vswitch2`必须通过`172.20.20.1`转发流量。两个虚拟机使用网络接口`enp1s0</code>。</p>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>使用 <code>ping</code> 命令验证连接性。</p>
+<div class="ulist">
+<ul>
+<li>
+<p>使用`vm1-vswitch1`（<code>172.20.10.6</code>）来 ping <code>vm1-vswitch2</code>（<code>172.20.20.3</code>）。</p>
+</li>
+<li>
+<p>使用`vm1-vswitch2`（<code>172.20.20.3</code>）来 ping <code>vm1-vswitch1</code>（<code>172.20.10.6</code>）。</p>
+<div class="paragraph">
+<p>由于`vm1-vswitch1`和`vm1-vswitch2`在同一子网中，它们可以相互通信，而无需任何默认路由设置。</p>
+</div>
+<div class="paragraph">
+<p>如果在运行 ping 命令之前虚拟机上没有默认路由，控制台将显示消息`ping: connect:网络不可达`。</p>
+</div>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_私有子网设置"><a class="anchor" href="#_私有子网设置"></a>私有子网设置</h3>
+<div class="paragraph">
+<p>当子网上的*私有子网*设置启用时，默认情况下它无法与同一VPC中的其他子网通信。仅当您将其他子网的CIDR块添加到私有子网的*允许子网*列表中时，才允许跨子网流量。</p>
+</div>
+<div class="paragraph">
+<p>*私有子网*设置提供以下好处：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>细粒度网络分段（微分段）</p>
+</li>
+<li>
+<p>在VPC内更强的网络隔离和减少潜在攻击面</p>
+</li>
+<li>
+<p>防止未经授权访问VPC内部的敏感或关键资源</p>
+</li>
+<li>
+<p>通过*允许子网*列表控制和选择性地进行跨子网通信</p>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="_示例私有子网验证"><a class="anchor" href="#_示例私有子网验证"></a>示例私有子网验证</h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>转到 <strong>网络 &#8594; 虚拟私有云</strong>。</p>
+</li>
+<li>
+<p>找到`vswitch1-subnet`，然后选择*⋮ &#8594; 编辑配置*。</p>
+</li>
+<li>
+<p>启用*私有子网*设置。</p>
+</li>
+<li>
+<p>打开`vm1-vswitch1`（<code>172.20.10.6</code>）的串行控制台，然后 ping <code>vm1-vswitch2</code>（<code>172.20.20.3</code>）。</p>
+<div class="paragraph">
+<p>ping 尝试失败，因为`vm1-vswitch1`被隔离。在`vswitch1-subnet`上启用<strong>私有子网</strong>设置禁止`vm1-vswitch1`与其他子网中的虚拟机通信。</p>
+</div>
+</li>
+<li>
+<p>返回到*虚拟私有云*屏幕，找到`vswitch1-subnet`，然后选择*⋮ &#8594; 编辑配置*。</p>
+</li>
+<li>
+<p>将`172.20.20.0/24`添加到*允许子网*字段。</p>
+</li>
+<li>
+<p>打开`vm1-vswitch1`（<code>172.20.10.6</code>）的串行控制台，然后ping <code>vm1-vswitch2</code>（<code>172.20.20.3</code>）。</p>
+<div class="paragraph">
+<p>ping尝试成功。</p>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_natoutgoing设置"><a class="anchor" href="#_natoutgoing设置"></a>`natOutgoing`设置</h3>
+<div class="paragraph">
+<p><code>natOutgoing`设置启用网络地址转换（NAT），用于离开子网并前往VPC外部目的地的流量。在默认情况下会禁用该设置。要启用它，您必须编辑子网的YAML配置并将值设置为`natOutgoing: true</code>。</p>
+</div>
+<div class="sect3">
+<h4 id="_示例natoutgoing配置和验证"><a class="anchor" href="#_示例natoutgoing配置和验证"></a>示例`natOutgoing`配置和验证</h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><a href="vm-network.html#_creating_an_overlay_network" class="xref page">创建覆盖网络</a>，设置如下：</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>名称</strong>：<code>vswitch-external</code></p>
+</li>
+<li>
+<p><strong>类型</strong>：<code>OverlayNetwork</code></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>在`ovn-cluster` VPC中，创建一个具有以下设置的子网：</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>名称</strong>：<code>external-subnet</code></p>
+</li>
+<li>
+<p><strong>CIDR块</strong>：<code>172.20.30.0/24</code></p>
+</li>
+<li>
+<p><strong>提供者</strong>：<code>default/vswitch-external</code></p>
+</li>
+<li>
+<p><strong>网关IP</strong>：<code>172.20.30.1</code></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>创建一个具有以下设置的虚拟机：</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>名称</strong>：<code>vm-external</code></p>
+</li>
+<li>
+<p>*基础*选项卡</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>处理器</strong>：<code>1</code></p>
+</li>
+<li>
+<p><strong>内存</strong>：<code>2</code></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>*卷*选项卡</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>镜像卷</strong>：云图像（例如，<code>noble-server-cloudimg-amd64</code>）</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>*网络*选项卡</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>网络</strong>：<code>default/vswitch-external</code></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>*高级选项*选项卡</p>
+<div class="listingblock">
+<div class="content">
+<pre>users:
+`  `- name: ubuntu
+`    `groups: [ sudo ]
+`    `shell: /bin/bash
+`    `sudo: ALL=(ALL) NOPASSWD:ALL
+`    `lock\_passwd: false</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>打开`vm-external`（<code>172.20.30.2</code>）的串行控制台，然后ping <code>8.8.8.8</code>。</p>
+<div class="paragraph">
+<p>控制台显示消息`ping：连接：网络不可达`。</p>
+</div>
+</li>
+<li>
+<p>使用以下命令添加默认路由：</p>
+<div class="listingblock">
+<div class="content">
+<pre>#sudo ip route add default via 172.20.30.1 dev enp1s0</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>再次，ping尝试失败。</p>
+</div>
+</li>
+<li>
+<p>转到*虚拟私有云*屏幕。</p>
+</li>
+<li>
+<p>找到`external-subnet`，然后选择*⋮ &#8594; 编辑配置*。</p>
+</li>
+<li>
+<p>点击*Edit as YAML*。</p>
+</li>
+<li>
+<p>找到`natOutgoing`字段，然后将值更改为`true`。</p>
+</li>
+<li>
+<p>单击*保存*。</p>
+</li>
+<li>
+<p>打开`vm-external`（<code>172.20.30.2</code>）的串行控制台，然后ping <code>8.8.8.8</code>。</p>
+<div class="paragraph">
+<p>ping尝试成功。</p>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_vpc_对等连接"><a class="anchor" href="#_vpc_对等连接"></a>VPC 对等连接</h3>
+<div class="paragraph">
+<p>VPC对等连接是一种网络连接，使不同VPC中的虚拟机能够使用_私有IP地址_进行通信。</p>
+</div>
+<div class="paragraph">
+<p>每个VPC都是一个独立的网络名称空间，具有自己的CIDR块、路由表和隔离边界。没有VPC对等连接，即使在同一个SUSE Virtualization集群中，虚拟机也是隔离的。一旦建立对等连接，路由规则会自动更新，从而允许虚拟机进行私有通信。</p>
+</div>
+<div class="paragraph">
+<p>VPC对等连接提供以下优势：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>VPC在逻辑和管理上保持隔离。这对于需要强网络隔离和可选连接的多租户设置是理想的。您可以按团队、功能或环境（例如，开发与生产）组织工作负载。</p>
+</li>
+<li>
+<p>VPC之间的流量不会穿越公共互联网，从而减少暴露。您还可以使用路由表和防火墙规则来严格控制网络访问。</p>
+</li>
+<li>
+<p>将流量保持在内部云网络中不仅可以提高性能，还可以降低成本，从而在使用公共互联网或VPN时提供显著优势。</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>下图显示了Kube-OVN中VPC和子网如何映射到SUSE Virtualization中的覆盖网络和虚拟机。该架构使您能够在集群中创建可扩展和隔离的L3和L2网络结构。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>                                          ┌───────────────────────────────────────────┐
+                                          │                 Kube-OVN                  │
+                                          │          (SDN Controller / IPAM)          │
+                                          └───────────────────────────────────────────┘
+                                                                │
+         ┌──────────────────────────────────────────────────────┴──────────────────────────────────────────────────────────┐
+         │                                                      │                                                          │
+ ┌──────────────┐                                       ┌──────────────┐                                           ┌──────────────┐
+ │  VPC: vpc-1  │                                       │VPC: vpcpeer-1│      ◀────────── peering ──────────▶      │VPC: vpcpeer-2│
+ └──────────────┘                                       └──────────────┘                                           └──────────────┘
+        │                                                       │                                                         │
+        ▼                                                       ▼                                                         ▼
+┌──────────────────────────────┐                 ┌──────────────────────────────┐                    ┌──────────────────────────────┐
+│ Subnet: vswitch1-subnet      │                 │ Subnet: vswitch3-subnet      │                    │ Subnet: vswitch4-subnet      │
+│ CIDR: 172.20.10.0/24         │                 │ CIDR: 10.0.0.0/24            │                    │ CIDR: 20.0.0.0/24            │
+│ Gateway: 172.20.10.1         │                 │ Gateway: 10.0.0.1            │                    │ Gateway: 20.0.0.1            │
+└──────────────────────────────┘                 └──────────────────────────────┘                    └──────────────────────────────┘
+            │  (1:1 mapping - Provider binding)                 │                                                    │
+            ▼                                                   ▼                                                    ▼
+┌──────────────────────────────┐                 ┌──────────────────────────────┐                    ┌──────────────────────────────┐
+│ Overlay: vswitch1            │                 │ Overlay: vswitch3            │                    │ Overlay: vswitch4            │
+│ Type: OverlayNetwork         │                 │ Type: OverlayNetwork         │                    │ Type: OverlayNetwork         │
+└──────────────────────────────┘                 └──────────────────────────────┘                    └──────────────────────────────┘
+            │                                                   │                                                    │
+            ▼                                                   ▼                                                    ▼
+┌──────────────────────┐                            ┌──────────────────────┐                              ┌──────────────────────┐
+│   VM: vm1-vswitch1   │                            │   VM: vm1-vswitch3   │                              │   VM: vm1-vswitch4   │
+│   IP: 172.20.10.5    │   ◀ ──────── X ──────── ▶  │   IP: 10.0.0.2       │     ◀── Connected via ──▶    │   IP: 20.0.0.2       │
+└──────────────────────┘                            └──────────────────────┘       vswitch (overlay)      └──────────────────────┘
+            ▲
+            │
+VM launched and managed by {harvester-product-name}</pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_vpc对等配置示例"><a class="anchor" href="#_vpc对等配置示例"></a>VPC对等配置示例</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>示例 1：成功的跨VPC通信</p>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">VPC名称</th>
+<th class="tableblock halign-left valign-top">VPC CIDR</th>
+<th class="tableblock halign-left valign-top">子网</th>
+<th class="tableblock halign-left valign-top">静态路由</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>vpcpeer-1</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>10.0.0.0/16</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>10.0.0.0/24</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>20.0.0.0/16 → 169.254.0.2</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>vpcpeer-2</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>20.0.0.0/16</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>20.0.0.0/24</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>10.0.0.0/16 → 169.254.0.1</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>由于两个子网都在各自的VPC CIDR范围内，因此路由工作正常，跨VPC通信成功。</p>
+</div>
+</li>
+<li>
+<p>示例 2：由于路由配置问题导致的跨VPC通信失败</p>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">VPC名称</th>
+<th class="tableblock halign-left valign-top">VPC CIDR</th>
+<th class="tableblock halign-left valign-top">子网</th>
+<th class="tableblock halign-left valign-top">静态路由</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>vpcpeer-1</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>10.0.0.0/16</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>10.1.0.0/24</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>20.0.0.0/16 → 169.254.0.2</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>vpcpeer-2</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>20.0.0.0/16</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>20.1.0.0/24</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>10.0.0.0/16 → 169.254.0.1</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>目标子网IP地址（例如，<code>10.1.0.2`和`20.1.0.2</code>）<em>未被路由配置覆盖</em>，导致跨VPC通信失败。</p>
+</div>
+</li>
+</ul>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="重要"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>确保符合以下条件：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>VPC的CIDR包括VPC内的所有子网。</p>
+</li>
+<li>
+<p>静态路由指向*远程VPC的主CIDR块*。</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>如果子网使用的特定范围不在VPC CIDR覆盖范围内，则相关的静态路由无法到达该子网。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>有关VPC对等前提条件和配置的更多信息，请参见Kube-OVN文档中的https://kubeovn.github.io/docs/v1.13.x/en/vpc/vpc-peering[VPC对等]。</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_示例vpc对等配置和验证"><a class="anchor" href="#_示例vpc对等配置和验证"></a>示例VPC对等配置和验证</h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><a href="vm-network.html#_creating_an_overlay_network" class="xref page">创建两个覆盖网络</a>，其设置如下：</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>名称</strong>：<code>vswitch3`和`vswitch4</code></p>
+</li>
+<li>
+<p><strong>类型</strong>：<code>OverlayNetwork</code></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><a href="#Creating a VPC">创建两个VPC</a>，命名为`vpcpeer-1`和`vpcpeer-2`。</p>
+<div class="paragraph">
+<p>SUSE Virtualization创建两个隔离的网络空间，准备进行子网创建。</p>
+</div>
+</li>
+<li>
+<p>在每个VPC中创建一个子网，设置如下：</p>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">VPC名称</th>
+<th class="tableblock halign-left valign-top">子网名称</th>
+<th class="tableblock halign-left valign-top">CIDR块</th>
+<th class="tableblock halign-left valign-top">提供器</th>
+<th class="tableblock halign-left valign-top">网关 IP</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>vpcpeer-1</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>subnet1</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>10.0.0.0/24</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>default/vswitch3</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>10.0.0.1</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>vpcpeer-2</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>subnet2</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>20.0.0.0/24</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>default/vswitch4</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>20.0.0.1</code></p></td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>编辑两个VPC的配置。</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>vpcpeer-1</code></p>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">部分的示例</th>
+<th class="tableblock halign-left valign-top">设置</th>
+<th class="tableblock halign-left valign-top">值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>VPC Peering</strong> 选项卡</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>本地连接 IP</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>169.254.0.1/30</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>VPC Peering</strong> 选项卡</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>远程 VPC</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>vpcpeer-2</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>静态路由</strong> 选项卡</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>CIDR</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>20.0.0.0/16</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>静态路由</strong> 选项卡</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>下一跳 IP</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>169.254.0.2</code></p></td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p><code>vpcpeer-2</code></p>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">部分的示例</th>
+<th class="tableblock halign-left valign-top">设置</th>
+<th class="tableblock halign-left valign-top">值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>VPC Peering</strong> 选项卡</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>本地连接 IP</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>169.254.0.2/30</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>VPC Peering</strong> 选项卡</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>远程 VPC</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>vpcpeer-1</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>静态路由</strong> 选项卡</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>CIDR</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>10.0.0.0/16</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>静态路由</strong> 选项卡</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>下一跳 IP</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>169.254.0.1</code></p></td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>创建虚拟机。</p>
+<div class="paragraph">
+<p><code>Unschedulable</code> 错误通常表示内存不足。在尝试创建新虚拟机之前，请停止其他虚拟机。</p>
+</div>
+</li>
+<li>
+<p>打开 <code>vm1-vpcpeer1</code> 和 <code>vm1-vpcpeer2</code> 的串行控制台，然后在每个控制台上添加默认路由（如果不存在），使用以下命令：</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>vm1-vpcpeer1</code> (<code>10.0.0.2</code>)</p>
+<div class="listingblock">
+<div class="content">
+<pre>#sudo ip route add default via 10.0.0.1 dev enp1s0</pre>
+</div>
+</div>
+</li>
+<li>
+<p><code>vm1-vpcpeer2</code> (<code>20.0.0.2</code>)</p>
+<div class="listingblock">
+<div class="content">
+<pre>#sudo ip route add default via 20.0.0.1 dev enp1s0</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>使用 <code>ping</code> 命令测试跨 VPC 通信。</p>
+<div class="ulist">
+<ul>
+<li>
+<p>使用 <code>vm1-vpcpeer1</code> (<code>10.0.0.2</code>) ping <code>vm1-vpcpeer2</code> (<code>20.0.0.2</code>)。</p>
+</li>
+<li>
+<p>使用 <code>vm1-vpcpeer2</code> (<code>20.0.0.2</code>) ping <code>vm1-vpcpeer1</code> (<code>10.0.0.2</code>)。</p>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="重要"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>不同 VPC 中虚拟机之间的通信依赖于定义如何将流量转发到远程 VPC 的静态路由。为了使这些路由正常工作，静态路由的目标 CIDR 必须在远程 VPC 的主 CIDR 范围内。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_本地连接_ip_和_cidr_配置"><a class="anchor" href="#_本地连接_ip_和_cidr_配置"></a>本地连接 IP 和 CIDR 配置</h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">问题</th>
+<th class="tableblock halign-left valign-top">答案</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Local Connect IP</strong> 值是 CIDR 块吗？</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">是的（例如，<code>169.254.0.1/30</code>）</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">推荐的子网大小是多少？</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>/30</code>（两个可用 IP）</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">可以使用私有地址（RFC 1918）作为对等链接吗？</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">不推荐</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">为什么使用`169.254.x.x`？</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">链接本地，安全，不可互联网路由，广泛使用</p></td>
+</tr>
+</tbody>
+</table>
+<div class="ulist">
+<ul>
+<li>
+<p>问题：<strong>Local Connect IP</strong> 值是 CIDR 块吗？</p>
+<div class="paragraph">
+<p>答案：可以。您必须指定一个 CIDR 块（例如，<code>169.254.0.1/30</code>），而不是单个 IP 地址。CIDR 定义了一个 <strong>点对点网络</strong>，其中一个 IP 地址由本地 VPC 使用，另一个由远程 VPC 使用。</p>
+</div>
+<div class="paragraph">
+<p>示例：<code>/30`块（`169.254.0.0/30</code>）</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">IP 地址</th>
+<th class="tableblock halign-left valign-top">用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">169.254.0.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">网络地址</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">169.254.0.1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">由VPC A使用</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">169.254.0.2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">由VPC B使用</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">169.254.0.3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">广播（可选）</p></td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>问题：推荐的子网大小是多少？</p>
+<div class="paragraph">
+<p>答案：<code>/30</code> 提供 <strong>恰好两个可用 IP 地址</strong>，满足点对点 VPC 对等的要求。使用更大的块（例如，<code>/28</code> 和 <code>/29</code>）是没有必要的，甚至可以被认为是浪费。</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">CIDR</th>
+<th class="tableblock halign-left valign-top">可用IP</th>
+<th class="tableblock halign-left valign-top">推荐吗？</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>/30</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">是</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>/29</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">6</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">否</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>/28</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">14</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">否</p></td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>问题：为什么使用`169.254.x.x/30`而不是私有地址？</p>
+<div class="paragraph">
+<p>答案：<code>169.254.0.0/16</code><strong>不属于*RFC 1918私有地址空间（<code>10.0.0.0/8</code>, <code>172.16.0.0/12`和`192.168.0.0/16</code>）。RFC 3927将`169.254.0.0/16`定义为*链接本地地址空间</strong>，旨在用于内部通信、自动IP配置和点对点路由。</p>
+</div>
+<div class="paragraph">
+<p>`169.254.x.x/30`具有以下优点：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>不可路由到公共互联网</p>
+</li>
+<li>
+<p>适用于内部使用</p>
+</li>
+<li>
+<p>云平台（包括AWS、阿里云）通常用于内部网络目的，如VPC对等和元数据访问</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_vpc对等连接限制"><a class="anchor" href="#_vpc对等连接限制"></a>VPC对等连接限制</h4>
+<div class="paragraph">
+<p>对等连接仅在自定义VPC之间有效。任何尝试在默认VPC（<code>ovn-cluster</code>）和自定义VPC之间建立对等连接的行为都将失败。</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="vm-migration-network.html">虚拟机迁移网络</a></span>
+  <span class="next"><a href="vm-isolation.html">虚拟机隔离</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<script src="../../../../_/js/site.js"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+<script src="../../../../_/js/vendor/lunr.js"></script>
+<script src="../../../../_/js/vendor/lunr-languages.js"></script>
+<script src="../../../../_/js/search-ui.js" id="search-ui-script" data-site-root-path="../../../.." data-snippet-length="100" data-stylesheet="../../../../_/css/search.css"></script>
+<script async src="../../../../search-index.js"></script>
+<script src="../../../../_/js/vendor/langSelection.js"></script>
+<script async src="../../../../_/js/vendor/tabs.js"></script>
+
+
+<script src="../../../../_/js/CNLanguageSwitcher.js"></script>
+  </body>
+</html>
