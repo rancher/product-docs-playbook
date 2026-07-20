@@ -1,3 +1,5 @@
+[![Publish to GitHub Pages](https://github.com/rancher/product-docs-playbook/actions/workflows/publish.yml/badge.svg)](https://github.com/rancher/product-docs-playbook/actions/workflows/publish.yml)
+
 # Antora Playbook for SUSE Rancher Product Docs
 
 The repository is for the Antora playbook, which combines and generates the Product Documentation for SUSE Rancher's portfolio. The playbook combines documentation from the below listed repositories.
@@ -84,15 +86,21 @@ Navigate to the `./build/site` directory and open the index.html file in your br
 
 ### Run Antora to build the static website using the local documentation content
 
-The command provided in the previous section fetches documentation content of the products from thier respective remote GitHub respositories. If you want the playbook to use the documentation content from your local machine instead you can do so with `product-docs-playbook-local.yml`.
+The command provided in the previous section fetches documentation content of the products from their respective remote GitHub repositories. If you want the playbook to use the documentation content from your local machine instead, you can do so with `product-docs-playbook-local.yml`.
 
-Clone all the individual product documentation Github repositories one level above the current playbook repository.
+Clone all the individual product documentation GitHub repositories one level above the current playbook repository.
 
 Run the command below to use the `product-docs-playbook-local.yml` file.
 
 ```
 npx antora --fetch product-docs-playbook-local.yml
 ```
+
+## Publish to GitHub Pages
+
+The GitHub Actions workflow file in `.github/workflows/publish.yml` builds the documentation using `product-docs-playbook-remote.yml` and pushes the built content to the [gh-pages](https://github.com/rancher/product-docs-playbook/tree/gh-pages) branch from which it is published on GitHub Pages.
+
+The build job is run periodically, on push to the `main` branch of the repository, and can also be triggered manually from [GitHub Actions](https://github.com/rancher/product-docs-playbook/actions/workflows/publish.yml).
 
 ## How to report issues related to the SUSE Rancher Product Documentation
 
