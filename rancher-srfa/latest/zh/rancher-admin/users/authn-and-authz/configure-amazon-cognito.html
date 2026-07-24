@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+<title>配置 Amazon Cognito | SUSE® Rancher for AWS  Latest</title>
+    <link rel="canonical" href="https://documentation.suse.com/cloudnative/rancher-srfa/latest/zh/rancher-admin/users/authn-and-authz/configure-amazon-cognito.html">
+    <link rel="prev" href="configure-active-directory.html">
+    <link rel="next" href="configure-azure-ad.html">
+    <meta name="description" content="创建一个 Amazon Cognito 用户池并配置 Rancher 以与 Amazon Cognito 一起使用。您的用户可以使用他们的 Amazon Cognito 登录信息登录 Rancher。">
+    <meta name="generator" content="Antora 3.1.14">
+    <link rel="stylesheet" href="../../../../../../_/css/site.css">
+<meta http-equiv="last-modified" content="2025-12-08"/>
+<link rel="stylesheet" href="../../../../../../_/css/search.css">
+<link rel="icon" href="../../../../../../_/img/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="../../../../../../_/css/font-styles.css">
+<link rel="stylesheet" href="../../../../../../_/fonts/css/all.css">
+<link rel="stylesheet" href="../../../../../../_/css/site-extra.css">
+<link rel="stylesheet" href="../../../../../../_/css/vendor/tabs.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap&family=SUSE+Mono:ital,wght@0,100..800;1,100..800" rel="stylesheet">
+<link rel="stylesheet" href="../../../../../../_/css/vendor/light.css">
+<script src="/docserv/res/lightheaded/analytics.js" type="text/javascript"></script>
+<script type="module">
+  import { defineCustomElements, setAssetPath } from 'https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/shared-header.esm.js';
+  defineCustomElements();
+  setAssetPath("https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/assets");
+</script>
+<!-- Default English link -->
+<link href="https://documentation.suse.com/cloudnative/rancher-srfa/latest/en/rancher-admin/users/authn-and-authz/configure-amazon-cognito.html" hreflang="x-default" rel="alternate"/>
+<!-- Link for the currently processed page -->
+<link href="https://documentation.suse.com/cloudnative/rancher-srfa/latest/zh/rancher-admin/users/authn-and-authz/configure-amazon-cognito.html" hrefLang="zh-CN" rel="alternate" />
+<!-- Link for the English page -->
+<link href="https://documentation.suse.com/cloudnative/rancher-srfa/latest/en/rancher-admin/users/authn-and-authz/configure-amazon-cognito.html" hreflang="en-US" rel="alternate" />
+<!-- Link for the Japanese page -->
+<link href="https://documentation.suse.com/cloudnative/rancher-srfa/latest/ja/rancher-admin/users/authn-and-authz/configure-amazon-cognito.html" hreflang="ja-JP" rel="alternate" />
+<!-- Link for the German page -->
+<link href="https://documentation.suse.com/cloudnative/rancher-srfa/latest/de/rancher-admin/users/authn-and-authz/configure-amazon-cognito.html" hreflang="de-DE" rel="alternate" />
+<!-- Link for the French page -->
+<link href="https://documentation.suse.com/cloudnative/rancher-srfa/latest/fr/rancher-admin/users/authn-and-authz/configure-amazon-cognito.html" hreflang="fr-FR" rel="alternate" />
+<!-- Link for the Spanish page -->
+<link href="https://documentation.suse.com/cloudnative/rancher-srfa/latest/es/rancher-admin/users/authn-and-authz/configure-amazon-cognito.html" hreflang="es-ES" rel="alternate" />
+<!-- Link for the Brazilian Portuguese page -->
+<link href="https://documentation.suse.com/cloudnative/rancher-srfa/latest/pt/rancher-admin/users/authn-and-authz/configure-amazon-cognito.html" hreflang="pt-BR" rel="alternate" />
+
+<!-- JSON-LD for doc metadata -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "配置 Amazon Cognito | SUSE Rancher for AWS latest",
+  "headline": "配置 Amazon Cognito",
+  "description": "创建一个 Amazon Cognito 用户池并配置 Rancher 以与 Amazon Cognito 一起使用。您的用户可以使用他们的 Amazon Cognito 登录信息登录 Rancher。",
+  "inLanguage": "zh_CN",
+  "dateModified": "2025-12-08T00:00:00Z",
+  "author": {
+    "@type": "Organization",
+    "name": "SUSE Product & Solution Documentation Team",
+    "url": "https://documentation.suse.com"
+  },
+  "mentions": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "SUSE Rancher for AWS",
+      "softwareVersion": "latest",
+      "applicationCategory": "Cloud Infrastructure",
+      "operatingSystem": "Linux"
+    }
+  ],
+  "publisher": {
+    "@type": "Organization",
+    "name": "SUSE",
+    "url": "https://documentation.suse.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.suse.com/assets/img/suse-white-logo-green.svg"
+    }
+  }
+}
+</script>
+<!-- end JSON-LD for doc metadata -->
+
+<!-- SUVA - Begin Ask Geeko-->
+<!--
+searchUnifyChatbot ("Ask Geeko") Copyright ©2024 Grazitti Interactive - All Rights Reserved. NOTICE: All information contained herein is, and remains the property of Grazitti Interactive and its suppliers, if any. The intellectual and technical concepts contained herein are proprietary to Grazitti Interactive and its suppliers and may be covered by India, U.S. and Foreign Patents, patents in process, and are protected by trade secret or copyright law. Dissemination of this information or reproduction of this material is strictly forbidden unless prior written permission is obtained from Grazitti Interactive.
+-->
+<meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport"/>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/Allow/an.js?c485cb3c-93d4-4942-99e8-91f3b8ca5636"></script>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/js/index.js?q=gAAAAABp3JBN9VuEJTi5tFafLIMwgMkCPdJS3Qm56lSYx93ir3Twt9hgSvd3OHEt6-nYfSbY3yHq0Zv8PRPsSy4nbqZiaJ4cZvRc6ItVZdvwz9Urf35cH6OUyPOwdA0phlS-zVIznQ2rWW438p-91NlTHuxJuOFpnA=="></script>
+<link rel="stylesheet" href="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/css/index.css">
+<div id="searchUnifyChatbot"></div>
+<!-- SUVA - End Ask Geeko-->
+<!--BEGIN QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+<script type='text/javascript' src="../../../../../../_/js/qualtrics.js" defer></script>
+<!--END QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+    <script>var uiRootPath = '../../../../../../_'</script>
+  </head>
+  <body class="article">
+<script type="module">import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs'; mermaid.initialize({"startOnLoad":true});</script><shared-header
+language="en"
+languages='{
+    "en": { "label": "English", "url": "https://documentation.suse.com/en-us/" },
+    "de": { "label": "Deutsch", "url": "https://documentation.suse.com/de-de/" },
+    "fr": { "label": "Français", "url": "https://documentation.suse.com/fr-fr/" },
+    "es": { "label": "Español", "url": "https://documentation.suse.com/es-es/" },
+    "zh_CN": { "label": "中文", "url": "https://documentation.suse.com/zh-cn/" },
+    "pt_BR": { "label": "Português Brasileiro", "url": "https://documentation.suse.com/pt-br/" }
+}'
+enable-search='false'>
+</shared-header>
+<div class="body">
+<div class="nav-container" data-component="rancher-srfa" data-version="latest">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title">SUSE® Rancher for AWS</h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../release-notes.html">发行说明</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../release-notes/v2.14.3.html">Release v2.14.3</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../release-notes/v2.14.2.html">Release v2.14.2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../release-notes/v2.14.1.html">Release v2.14.1</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">关于 Rancher</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../about-rancher/what-is-rancher.html">什么是 SUSE Rancher for AWS？</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../about-rancher/prime.html">Cloud Native</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../about-rancher/overview.html">概述</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../about-rancher/architecture/architecture.html">SUSE Rancher for AWS体系结构</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../about-rancher/architecture/recommendations.html">架构建议</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../about-rancher/architecture/communicating-with-downstream-clusters.html">与下游用户集群通信</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../about-rancher/architecture/rancher-server-and-components.html">SUSE Rancher for AWS 服务器和组件</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../about-rancher/concepts.html">Kubernetes 概念</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../about-rancher/glossary.html">词汇表</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../rancher-admin.html">Rancher 管理</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">用户管理</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="authn-and-authz.html">配置认证</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="manage-users-and-groups.html">用户和组</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="create-local-users.html">本地鉴定</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">外部认证</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="jwt-authentication.html">JSON Web Token (JWT) 认证</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="configure-generic-oidc.html">配置通用 OIDC</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="configure-oidc-provider.html">将 Rancher 配置为 OIDC 提供者</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="configure-active-directory.html">配置活动目录 (AD)</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="5">
+    <a class="nav-link" href="configure-amazon-cognito.html">配置 Amazon Cognito</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="configure-azure-ad.html">配置 Azure AD</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="configure-freeipa.html">配置 FreeIPA</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="configure-github.html">配置GitHub</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="configure-github-app.html">配置GitHub App</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="configure-google-oauth.html">配置 Google OAuth</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="configure-keycloak-oidc.html">配置 Keycloak (OIDC)</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="configure-keycloak-saml.html">配置 Keycloak (SAML)</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="configure-okta-saml.html">配置 Okta (SAML)</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="configure-pingidentity.html">配置 PingIdentity (SAML)</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="microsoft-ad-federation-service-saml/microsoft-ad-federation-service-saml.html">配置 Microsoft 活动目录联合身份验证服务 (SAML)</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="6">
+    <a class="nav-link" href="microsoft-ad-federation-service-saml/ms-adfs-for-rancher.html">1.为 配置 Microsoft AD FS SUSE Rancher for AWS</a>
+  </li>
+  <li class="nav-item" data-depth="6">
+    <a class="nav-link" href="microsoft-ad-federation-service-saml/rancher-for-ms-adfs.html">2.为 Microsoft AD FS 配置 SUSE Rancher for AWS</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="openldap/openldap.html">配置 OpenLDAP</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="6">
+    <a class="nav-link" href="openldap/reference.html">OpenLDAP 配置参考</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="shibboleth-saml/shibboleth-saml.html">配置 Shibboleth (SAML)</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="6">
+    <a class="nav-link" href="shibboleth-saml/group-permissions.html">使用 Shibboleth 和 OpenLDAP 的组权限</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="manage-role-based-access-control-rbac/manage-role-based-access-control-rbac.html">管理基于角色的访问控制 (RBAC)</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="manage-role-based-access-control-rbac/global-permissions.html">全局权限</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="manage-role-based-access-control-rbac/global-resources.html">全球资源</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="manage-role-based-access-control-rbac/cluster-and-project-roles.html">集群和项目角色</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="manage-role-based-access-control-rbac/custom-roles.html">自定义角色</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="manage-role-based-access-control-rbac/locked-roles.html">锁定角色</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="enable-user-retention.html">启用用户保留</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../settings/settings.html">用户设置</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../settings/api-keys.html">API 词元</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../settings/user-preferences.html">用户自选设置</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../settings/manage-cloud-credentials.html">管理云凭据</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">CLI</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../cli/kubectl.html">kubectl 工具</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../cli/rancher-cli.html">SUSE Rancher for AWS CLI</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../cluster-deployment/cluster-deployment.html">集群部署</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../cluster-deployment/node-requirements.html">SUSE Rancher for AWS 管理的集群的节点要求</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../cluster-deployment/production-checklist/production-checklist.html">可用于生产用途集群的检查清单</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../cluster-deployment/production-checklist/recommended-cluster-architecture.html">推荐的集群架构</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../cluster-deployment/production-checklist/roles-for-nodes-in-kubernetes.html">Kubernetes 节点的角色</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../cluster-deployment/production-checklist/tips-to-set-up-containers.html">设置容器的提示</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../cluster-deployment/hosted-kubernetes/hosted-kubernetes.html">从托管的Kubernetes提供商处设置集群</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../cluster-deployment/hosted-kubernetes/eks/eks.html">创建 EKS 集群</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../cluster-deployment/hosted-kubernetes/eks/configuration.html">EKS 集群配置参考</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../cluster-deployment/hosted-kubernetes/sync-clusters.html">同步托管集群</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../cluster-deployment/launch-kubernetes-with-rancher.html">使用 启动 KubernetesSUSE Rancher for AWS</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../cluster-deployment/about-rancher-agents.html">SUSE Rancher for AWS 代理</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../cluster-deployment/dual-stack.html">IPv4/IPv6 双栈</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../cluster-deployment/enable-cluster-agent-scheduling-customization.html">启用集群代理调度自定义</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../cluster-deployment/infra-providers/infra-providers.html">在基础设施提供商中新节点上部署 Kubernetes</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../cluster-deployment/infra-providers/aws/aws.html">创建Amazon EC2集群</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../cluster-deployment/infra-providers/aws/machine-configuration.html">EC2机器配置参考</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../cluster-deployment/infra-providers/aws/node-template-configuration.html">EC2节点模板配置</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../cluster-deployment/custom-clusters/custom-clusters.html">在现有自定义节点上启动Kubernetes</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">配置</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../cluster-deployment/configuration/k3s.html">SUSE® Rancher Prime: K3s 集群配置参考</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">RKE2</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../cluster-deployment/configuration/rke2.html">SUSE® Rancher Prime: RKE2 集群配置参考</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../cluster-deployment/configuration/capi-infrastructure-providers.html">配置原生 CAPI 基础设施提供程序以部署 RKE2 集群</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../cluster-deployment/register-existing-clusters.html">注册现有集群</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../cluster-deployment/register-existing-clusters-troubleshooting.html">已注册的集群</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../cluster-admin/manage-clusters/manage-clusters.html">集群管理</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">管理集群</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../cluster-admin/best-practices/disconnected-clusters.html">断开集群的最佳实践</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../cluster-admin/manage-clusters/access-clusters/access-clusters.html">访问集群</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../cluster-admin/manage-clusters/access-clusters/add-users-to-clusters.html">将用户添加到集群</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../cluster-admin/manage-clusters/access-clusters/authorized-cluster-endpoint.html">授权集群端点的工作原理</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../cluster-admin/manage-clusters/access-clusters/use-kubectl-and-kubeconfig.html">使用 Kubectl 和 kubeconfig 访问集群</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../cluster-admin/manage-clusters/clean-cluster-nodes.html">从节点中移除Kubernetes组件</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../cluster-admin/manage-clusters/persistent-storage/manage-persistent-storage.html">创建 Kubernetes 持久卷和存储类</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../cluster-admin/manage-clusters/persistent-storage/about-glusterfs-volumes.html">GlusterFS Volumes</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../cluster-admin/manage-clusters/persistent-storage/about-persistent-storage.html">持久存储的工作原理</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../cluster-admin/manage-clusters/persistent-storage/dynamically-provision-new-storage.html">在 SUSE Rancher for AWS 中动态配置新的存储</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../cluster-admin/manage-clusters/persistent-storage/install-iscsi-volumes.html">iSCSI 卷</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../cluster-admin/manage-clusters/persistent-storage/set-up-existing-storage.html">设置现有持久化存储</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../cluster-admin/manage-clusters/persistent-storage/use-external-ceph-driver.html">使用外部 Ceph 驱动程序</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../../cluster-admin/manage-clusters/persistent-storage/examples/nfs-storage.html">NFS存储</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../../cluster-admin/manage-clusters/persistent-storage/examples/persistent-storage-in-amazon-ebs.html">在Amazon EBS中创建持久存储</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../cluster-admin/manage-clusters/persistent-storage/examples/examples.html">配置存储示例</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">SUSE® Rancher for AWS</span>
+    <span class="version">Latest</span>
+  </div>
+  <ul class="components">
+        <li class="component">
+          <div class="title"><a href="../../../../../../admission-controller/1.36/en/introduction.html">Admission Controller</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../../../admission-controller/1.37/en/introduction.html">1.37-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../../../admission-controller/1.36/en/introduction.html">1.36</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../admission-controller/1.35/en/introduction.html">1.35</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../admission-controller/1.34/en/introduction.html">1.34</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../admission-controller/1.33/en/introduction.html">1.33</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../admission-controller/1.32/en/introduction.html">1.32</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../admission-controller/1.31/en/introduction.html">1.31</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../admission-controller/1.30/en/introduction.html">1.30</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../admission-controller/1.29/en/introduction.html">1.29</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../admission-controller/1.28/en/introduction.html">1.28</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../../cluster-api/v0.26/en/index.html">Cluster API</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.28/en/index.html">v0.28-dev</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.27/en/index.html">v0.27-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../../../cluster-api/v0.26/en/index.html">v0.26</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.25/en/index.html">0.25</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.24/en/index.html">0.24</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.23/en/index.html">0.23</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.22/en/index.html">0.22</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.21/en/index.html">0.21</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.20/en/index.html">0.20</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.19/en/index.html">0.19</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.18/en/index.html">0.18</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.17/en/index.html">0.17</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.16/en/index.html">0.16</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.11/en/index.html">0.11</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../../continuous-delivery/next/en/index.html">Continuous Delivery</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../../continuous-delivery/next/en/index.html">Next</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../continuous-delivery/v0.15/en/index.html">v0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../continuous-delivery/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../continuous-delivery/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../continuous-delivery/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../continuous-delivery/v0.11/en/index.html">0.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../continuous-delivery/v0.10/en/index.html">0.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../continuous-delivery/v0.9/en/index.html">0.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../../k3s/latest/en/introduction.html">K3s</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../../k3s/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../../os-manager/1.9/en/index.html">OS Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../../../os-manager/1.10/en/index.html">1.10-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../../../os-manager/1.9/en/index.html">1.9</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../os-manager/1.8/en/index.html">1.8</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../os-manager/1.7/en/index.html">1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../os-manager/1.6/en/index.html">1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../os-manager/1.5/en/index.html">1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../../rancher-ai/latest/en/introduction.html">Rancher AI</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../../rancher-ai/latest/en/introduction.html">latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../../turtles/stable/en/index.html">Rancher Turtles</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../../turtles/stable/en/index.html">Stable</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../../rke2/latest/en/introduction.html">RKE2</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../../rke2/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../../suse-observability/latest/en/classic.html">SUSE Observability</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../../suse-observability/latest/en/classic.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">SUSE Rancher Developer Access</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component is-current">
+          <div class="title"><a href="../../../../en/about-rancher/what-is-rancher.html">SUSE® Rancher for AWS</a></div>
+          <ul class="versions">
+            <li class="version is-current is-latest">
+              <a href="../../../../en/about-rancher/what-is-rancher.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../../rancher-manager/v2.14/en/about-rancher/what-is-rancher.html">SUSE® Rancher Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../../../rancher-manager/v2.15/en/about-rancher/what-is-rancher.html">v2.15 (Unreleased)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../../../rancher-manager/v2.14/en/about-rancher/what-is-rancher.html">v2.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../rancher-manager/v2.13/en/about-rancher/what-is-rancher.html">v2.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../rancher-manager/v2.12/en/about-rancher/what-is-rancher.html">v2.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../rancher-manager/v2.11/en/about-rancher/what-is-rancher.html">v2.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../rancher-manager/v2.10/en/about-rancher/what-is-rancher.html">v2.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../rancher-manager/v2.9/en/about-rancher/what-is-rancher.html">v2.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../../security/5.6/en/overview.html">SUSE® Security</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../../security/5.6/en/overview.html">5.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../security/5.5/en/overview.html">5.5</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../security/5.4/en/overview.html">5.4</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../security/5.3/en/overview.html">5.3</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../../storage/1.11/en/longhorn-documentation.html">SUSE® Storage</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../../../storage/1.12/en/longhorn-documentation.html">1.12 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../../../storage/1.11/en/longhorn-documentation.html">1.11 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../storage/1.10/en/longhorn-documentation.html">1.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../storage/1.9/en/longhorn-documentation.html">1.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">SUSE® Virtual Clusters</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../../../suse-virtual-clusters/1.2.0/en/release-notes/version-1.2.0.html">v1.2.0 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">v1.1.0-latest</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../suse-virtual-clusters/1.0.2/en/release-notes/version-1.0.2.html">v1.0.2</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../suse-virtual-clusters/v1.0.1/en/introduction.html">v1.0.1</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../suse-virtual-clusters/v1.0.0/en/introduction.html">v1.0.0</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../../virtualization/v1.8/en/introduction/overview.html">SUSE® Virtualization</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../../../virtualization/v1.9/en/introduction/overview.html">v1.9 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../../../virtualization/v1.8/en/introduction/overview.html">v1.8 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../virtualization/v1.7/en/introduction/overview.html">v1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../virtualization/v1.6/en/introduction/overview.html">v1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../virtualization/v1.5/en/introduction/overview.html">v1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../../vulnerability-scanner/0.12.0/en/introduction.html">Vulnerability Scanner</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../../vulnerability-scanner/0.12.0/en/introduction.html">0.12.0</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../vulnerability-scanner/0.11.3/en/introduction.html">0.11.3</a>
+            </li>
+          </ul>
+        </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+<ul>
+    <li>
+  <a class="home-link-dsc" href="https://documentation.suse.com" title="SUSE Documentation Home" aria-label="SUSE Documentation Home"></a>
+    </li>
+    <li>
+      <a href="https://documentation.suse.com/cloudnative/rancher-srfa" title="SUSE Rancher for AWS" aria-label="SUSE Documentation - SUSE Rancher for AWS">
+        SUSE Rancher for AWS
+      </a>
+    </li>
+      <li>
+          <a href="../../rancher-admin.html" title="Rancher 管理" aria-label="Rancher 管理">Rancher 管理</a>
+      </li>
+  </ul>
+</nav>
+      <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <label class="visual-search-label-bc" for="search-input">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+          <input label="Search" aria-label="Search" id="search-input" type="text" placeholder="搜索文档" >
+          <label class="filter checkbox" style="display: none">
+            <input type="checkbox" data-facet-filter="component:rancher-srfa" checked> Only this project
+          </label>
+        </div>
+      </div>
+</div>
+  <div class="content">
+<aside
+  class="toc sidebar"
+  data-title="在此页面上" data-levels="2">
+  <div class="toc-menu">
+    <div class="docsurvey-wrapper"><a class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_diCzHC9xxyJyuN0">Documentation survey</a></div>
+    <!-- start qualtrics -->
+    <div id='ZN_8qZUmklKYbBqAYe'><!--DO NOT REMOVE-CONTENTS PLACED HERE--></div>
+    <div id="qualtrics_container"></div>
+    <!-- end qualtrics -->
+  </div>
+</aside>
+
+<aside class="toc sidebar docsurvey-sidebar">
+  <div class="toc-menu">
+    <div class="docsurvey-wrapper"><a class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_diCzHC9xxyJyuN0">Documentation survey</a></div>
+  </div>
+</aside>
+<article class="doc">
+<h1 class="page">配置 Amazon Cognito</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>如果您的组织使用 Amazon Cognito 进行用户身份验证，您可以配置 Rancher 以允许使用 Amazon Cognito 凭据登录。以下说明描述了如何配置 Rancher 以与 Amazon Cognito 一起使用：</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_prerequisites"><a class="anchor" href="#_prerequisites"></a>先决条件</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>在 Rancher 中：</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Amazon Cognito 已禁用。</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="注意"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>请参考 Amazon Cognito <a href="https://aws.amazon.com/cognito/getting-started/">文档</a> 以配置用户池。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>在 Amazon Cognito 中：</p>
+<div class="ulist">
+<ul>
+<li>
+<p>创建一个新的用户池或使用现有的用户池。</p>
+</li>
+<li>
+<p>在 <code>App client</code> 设置中，将重定向 URL 设置为 <code>https://yourRancherHostURL/verify-auth</code>。将 <code>yourRancherHostURL</code> 替换为您的 Rancher 实例的实际主机名（例如，<code>https://rancher.example.com/verify-auth</code>）。</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_在_rancher_中配置_amazon_cognito"><a class="anchor" href="#_在_rancher_中配置_amazon_cognito"></a>在 Rancher 中配置 Amazon Cognito</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>在 Rancher UI 的左上角，点击 <strong>☰ &gt; 用户与身份验证</strong>。</p>
+</li>
+<li>
+<p>在左侧导航栏中，点击 <strong>身份验证提供者</strong>。</p>
+</li>
+<li>
+<p>选择 <strong>Amazon Cognito</strong>。</p>
+</li>
+<li>
+<p>填写 <strong>配置 Amazon Cognito 账户</strong> 表单。有关填写表单的帮助，请参见 <a href="#_configuration_reference">配置参考</a>。</p>
+</li>
+<li>
+<p>单击 <strong>启用</strong>。</p>
+<div class="paragraph">
+<p>Rancher 会将您重定向到 Amazon Cognito 登录页面。输入您的 Amazon Cognito 凭据以验证您的 Rancher 配置。</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="注意"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>您可能需要禁用弹出窗口拦截器才能查看 Amazon Cognito 登录页面。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p><strong>结果：</strong>Rancher 已配置为使用 OIDC 协议与您的 Amazon Cognito 配合工作。您的用户现在可以使用他们的 Amazon Cognito 登录信息登录 Rancher。</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="注意"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Amazon Cognito 不支持用户和组搜索。在为项目或集群分配权限时，如果用户尚未登录 Rancher，您必须手动输入 Cognito 生成的用户 ID。但是，如果用户之前已登录，您可以使用他们的用户名或电子邮件地址分配权限。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_configuration_reference"><a class="anchor" href="#_configuration_reference"></a>配置参考</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">字段</th>
+<th class="tableblock halign-left valign-top">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">客户机 ID</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">您 Amazon Cognito 应用客户端的客户端 ID。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">客户端密钥</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">您 Amazon Cognito 应用客户端生成的密钥。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">颁发者</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">您 Amazon Cognito 应用客户端的发行者 URL。它遵循格式`https://cognito-idp.{region}.amazonaws.com/{userPoolId}`，可以在应用客户端设置页面中找到。Rancher 使用发行者 URL 获取所有所需的 URL。</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_oidc_support_for_pkce_extension"><a class="anchor" href="#_oidc_support_for_pkce_extension"></a>对PKCE扩展的OIDC支持</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Rancher supports the Proof Key for Code Exchange (PKCE) extension (RFC 7636) for OIDC authentication providers. SHA-256 (<code>S256</code>) is the only supported PKCE verification method. To enable this feature, your authentication provider must use PKCE with <code>S256</code> for authorization requests.</p>
+</div>
+<div class="paragraph">
+<p>You can enable this feature by selecting <strong>Enable PKCE (S256)</strong> in your authentication provider configuration in Rancher. Enabling <code>S256</code> PKCE token verification allows you to mitigate authorization code interception attacks during OIDC authentication flows.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_troubleshooting"><a class="anchor" href="#_troubleshooting"></a>查错</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_you_are_not_redirected_to_your_authentication_provider"><a class="anchor" href="#_you_are_not_redirected_to_your_authentication_provider"></a>您没有被重定向到您的身份验证提供者。</h3>
+<div class="paragraph">
+<p>如果您填写 <strong>配置 Amazon Cognito 账户</strong> 表单并点击 <strong>启用</strong>，但没有被重定向到 Amazon Cognito，请验证您的 Amazon Cognito 配置。</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_configuring_oidc_single_logout_slo"><a class="anchor" href="#_configuring_oidc_single_logout_slo"></a>配置OIDC单点注销（SLO）</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Rancher supports the ability to configure OIDC Single Logout (SLO). Options include logging out of the Rancher application only, logging out of Rancher and registered applications tied to the external authentication provider, or a prompt asking the user to choose between the previous options.</p>
+</div>
+<div class="sect2">
+<h3 id="_prerequisites_2"><a class="anchor" href="#_prerequisites_2"></a>Prerequisites</h3>
+<div class="paragraph">
+<p>Before configuring OIDC SLO, ensure the following is set up on your IdP:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>SLO Support</strong>: The <strong>Log Out behavior</strong> configuration section only appears if your OIDC IdP allows for <code>OIDC SLO</code>.</p>
+</li>
+<li>
+<p><strong>Post-Logout Redirect URI</strong>: Your Rancher Server URL must be configured as an authorized post-logout redirect URI in your IdP&#8217;s OIDC client settings. This URL is used by the IdP to redirect a user back to Rancher after a successful external logout.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_oidc_slo_configuration"><a class="anchor" href="#_oidc_slo_configuration"></a>OIDC SLO Configuration</h3>
+<div class="paragraph">
+<p>Configure the SLO settings when setting up or editing your OIDC authentication provider.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Sign in to Rancher using a standard user or an administrator role.</p>
+</li>
+<li>
+<p>In the top left corner, select <strong>☰</strong> &gt; <strong>Users &amp; Authentication</strong>.</p>
+</li>
+<li>
+<p>In the left navigation menu, select <strong>Auth Provider</strong>.</p>
+</li>
+<li>
+<p>Under the section <strong>Log Out behavior</strong>, choose the appropriate SLO setting as described below:</p>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Setting</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Log out of Rancher and not authentication provider</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Choosing this option will only logout the Rancher application and not external authentication providers.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Log out of Rancher and authentication provider (includes all other applications registered with authentication provider)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Choosing this option will logout Rancher and all external authentication providers along with any registered applications linked to the provider.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allow the user to choose one of the above in an additional log out step</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Choosing this option presents users with a choice of logout method as described above.</p></td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>If you choose to log out of your IdP, provide an <a href="#_how_to_get_the_end_session_endpoint"><strong>End Session Endpoint</strong></a>. Rancher uses this URL to initiate the external logout.</p>
+</li>
+</ol>
+</div>
+<div class="sect3">
+<h4 id="_how_to_get_the_end_session_endpoint"><a class="anchor" href="#_how_to_get_the_end_session_endpoint"></a>How to get the End Session Endpoint</h4>
+<div class="paragraph">
+<p>The <code>end_session_endpoint</code> is one of the specific URLs published within a standardized JSON object containing the IdP&#8217;s metadata and is retrieved from the OIDC Discovery URL. To get the <code>end_session_endpoint</code> from the OIDC Discovery URL, follow these steps:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Obtain the Discovery URL by appending the IdP Issuer URL with the well-known path (<code>.well-known/openid-configuration</code>).</p>
+</li>
+<li>
+<p>Send an HTTP <code>GET</code> request to the Discovery URL.</p>
+</li>
+<li>
+<p>In the JSON object, look for the key named <code>end_session_endpoint</code> and retrieve the URL.</p>
+<div class="paragraph">
+<p>You can also use a <code>curl</code> command to retrieve <code>end_session_endpoint</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">curl -s &lt;ISSUER_URL&gt;/.well-known/openid-configuration | jq '.end_session_endpoint'</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="configure-active-directory.html">配置活动目录 (AD)</a></span>
+  <span class="next"><a href="configure-azure-ad.html">配置 Azure AD</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<script src="../../../../../../_/js/site.js"></script>
+<script async src="../../../../../../_/js/vendor/highlight.js"></script>
+<script src="../../../../../../_/js/vendor/lunr.js"></script>
+<script src="../../../../../../_/js/vendor/lunr-languages.js"></script>
+<script src="../../../../../../_/js/search-ui.js" id="search-ui-script" data-site-root-path="../../../../../.." data-snippet-length="100" data-stylesheet="../../../../../../_/css/search.css"></script>
+<script async src="../../../../../../search-index.js"></script>
+<script src="../../../../../../_/js/vendor/langSelection.js"></script>
+<script async src="../../../../../../_/js/vendor/tabs.js"></script>
+
+
+<script src="../../../../../../_/js/CNLanguageSwitcher.js"></script>
+  </body>
+</html>

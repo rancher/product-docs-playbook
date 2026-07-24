@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+<title>体系结构 | SUSE® Virtual Clusters  v1.2.0 (Dev)</title>
+    <link rel="prev" href="quickstart.html">
+    <link rel="next" href="advanced-usage.html">
+    <meta name="generator" content="Antora 3.1.14">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+<meta http-equiv="last-modified" content="2025-11-07"/>
+<link rel="stylesheet" href="../../../_/css/search.css">
+<link rel="icon" href="../../../_/img/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="../../../_/css/font-styles.css">
+<link rel="stylesheet" href="../../../_/fonts/css/all.css">
+<link rel="stylesheet" href="../../../_/css/site-extra.css">
+<link rel="stylesheet" href="../../../_/css/vendor/tabs.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap&family=SUSE+Mono:ital,wght@0,100..800;1,100..800" rel="stylesheet">
+<link rel="stylesheet" href="../../../_/css/vendor/light.css">
+<script src="/docserv/res/lightheaded/analytics.js" type="text/javascript"></script>
+<script type="module">
+  import { defineCustomElements, setAssetPath } from 'https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/shared-header.esm.js';
+  defineCustomElements();
+  setAssetPath("https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/assets");
+</script>
+<!-- Default English link -->
+<link href="https://documentation.suse.com/cloudnative/suse-virtual-clusters/1.2.0/en/architecture.html" hreflang="x-default" rel="alternate"/>
+<!-- Link for the currently processed page -->
+<link href="https://documentation.suse.com/cloudnative/suse-virtual-clusters/1.2.0/zh/architecture.html" hrefLang="zh-CN" rel="alternate" />
+<!-- Link for the English page -->
+<link href="https://documentation.suse.com/cloudnative/suse-virtual-clusters/1.2.0/en/architecture.html" hreflang="en-US" rel="alternate" />
+<!-- Link for the Japanese page -->
+<link href="https://documentation.suse.com/cloudnative/suse-virtual-clusters/1.2.0/ja/architecture.html" hreflang="ja-JP" rel="alternate" />
+<!-- Link for the German page -->
+<link href="https://documentation.suse.com/cloudnative/suse-virtual-clusters/1.2.0/de/architecture.html" hreflang="de-DE" rel="alternate" />
+<!-- Link for the French page -->
+<link href="https://documentation.suse.com/cloudnative/suse-virtual-clusters/1.2.0/fr/architecture.html" hreflang="fr-FR" rel="alternate" />
+<!-- Link for the Spanish page -->
+<link href="https://documentation.suse.com/cloudnative/suse-virtual-clusters/1.2.0/es/architecture.html" hreflang="es-ES" rel="alternate" />
+<!-- Link for the Brazilian Portuguese page -->
+<link href="https://documentation.suse.com/cloudnative/suse-virtual-clusters/1.2.0/pt/architecture.html" hreflang="pt-BR" rel="alternate" />
+
+<!-- JSON-LD for doc metadata -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "体系结构 | SUSE Virtual Clusters 1.2.0",
+  "headline": "体系结构",
+  "description": "体系结构",
+  "inLanguage": "zh_CN",
+  "dateModified": "2025-11-07T00:00:00Z",
+  "author": {
+    "@type": "Organization",
+    "name": "SUSE Product & Solution Documentation Team",
+    "url": "https://documentation.suse.com"
+  },
+  "mentions": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "SUSE Virtual Clusters",
+      "softwareVersion": "1.2.0",
+      "applicationCategory": "Cloud Infrastructure",
+      "operatingSystem": "Linux"
+    }
+  ],
+  "publisher": {
+    "@type": "Organization",
+    "name": "SUSE",
+    "url": "https://documentation.suse.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.suse.com/assets/img/suse-white-logo-green.svg"
+    }
+  }
+}
+</script>
+<!-- end JSON-LD for doc metadata -->
+
+<!-- SUVA - Begin Ask Geeko-->
+<!--
+searchUnifyChatbot ("Ask Geeko") Copyright ©2024 Grazitti Interactive - All Rights Reserved. NOTICE: All information contained herein is, and remains the property of Grazitti Interactive and its suppliers, if any. The intellectual and technical concepts contained herein are proprietary to Grazitti Interactive and its suppliers and may be covered by India, U.S. and Foreign Patents, patents in process, and are protected by trade secret or copyright law. Dissemination of this information or reproduction of this material is strictly forbidden unless prior written permission is obtained from Grazitti Interactive.
+-->
+<meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport"/>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/Allow/an.js?c485cb3c-93d4-4942-99e8-91f3b8ca5636"></script>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/js/index.js?q=gAAAAABp3JBN9VuEJTi5tFafLIMwgMkCPdJS3Qm56lSYx93ir3Twt9hgSvd3OHEt6-nYfSbY3yHq0Zv8PRPsSy4nbqZiaJ4cZvRc6ItVZdvwz9Urf35cH6OUyPOwdA0phlS-zVIznQ2rWW438p-91NlTHuxJuOFpnA=="></script>
+<link rel="stylesheet" href="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/css/index.css">
+<div id="searchUnifyChatbot"></div>
+<!-- SUVA - End Ask Geeko-->
+<!--BEGIN QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+<script type='text/javascript' src="../../../_/js/qualtrics.js" defer></script>
+<!--END QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<script type="module">import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs'; mermaid.initialize({"startOnLoad":true});</script><shared-header
+language="en"
+languages='{
+    "en": { "label": "English", "url": "https://documentation.suse.com/en-us/" },
+    "de": { "label": "Deutsch", "url": "https://documentation.suse.com/de-de/" },
+    "fr": { "label": "Français", "url": "https://documentation.suse.com/fr-fr/" },
+    "es": { "label": "Español", "url": "https://documentation.suse.com/es-es/" },
+    "zh_CN": { "label": "中文", "url": "https://documentation.suse.com/zh-cn/" },
+    "pt_BR": { "label": "Português Brasileiro", "url": "https://documentation.suse.com/pt-br/" }
+}'
+enable-search='false'>
+</shared-header>
+<div class="body">
+<div class="nav-container" data-component="suse-virtual-clusters" data-version="1.2.0">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title">SUSE® Virtual Clusters</h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">发行说明</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="release-notes/version-1.2.0.html">v1.2.0</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="introduction.html">简介</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="quickstart.html">快速入门</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="1">
+    <a class="nav-link" href="architecture.html">体系结构</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="advanced-usage.html">高级用途</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="virtualclusterpolicy.html">VirtualClusterPolicy：概念</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">用户操作指南</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="how-tos-for-user/create-virtual-clusters.html">创建虚拟集群</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="how-tos-for-user/expose-workloads.html">将工作负载暴露在虚拟集群外部</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="how-tos-for-user/addons.html">插件</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">管理员操作指南</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="how-tos-for-admin/choose-mode.html">在共享模式和虚拟模式之间进行选择</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="how-tos-for-admin/adding-custom-cert.html">为来自K3k集群的K3s添加自定义证书</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="how-tos-for-admin/restrict-gpu-usage.html">限制GPU使用</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="how-tos-for-admin/secure-shared-mode.html">保障共享模式安全</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">参考资料</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="references/crds.html">自定义资源定义（CRD）</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="references/k3kcli.html">k3kcli</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="how-tos-for-user/troubleshooting.html">查错</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">SUSE® Virtual Clusters</span>
+    <span class="version">v1.2.0 (Dev)</span>
+  </div>
+  <ul class="components">
+        <li class="component">
+          <div class="title"><a href="../../../admission-controller/1.36/en/introduction.html">Admission Controller</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../admission-controller/1.37/en/introduction.html">1.37-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../admission-controller/1.36/en/introduction.html">1.36</a>
+            </li>
+            <li class="version">
+              <a href="../../../admission-controller/1.35/en/introduction.html">1.35</a>
+            </li>
+            <li class="version">
+              <a href="../../../admission-controller/1.34/en/introduction.html">1.34</a>
+            </li>
+            <li class="version">
+              <a href="../../../admission-controller/1.33/en/introduction.html">1.33</a>
+            </li>
+            <li class="version">
+              <a href="../../../admission-controller/1.32/en/introduction.html">1.32</a>
+            </li>
+            <li class="version">
+              <a href="../../../admission-controller/1.31/en/introduction.html">1.31</a>
+            </li>
+            <li class="version">
+              <a href="../../../admission-controller/1.30/en/introduction.html">1.30</a>
+            </li>
+            <li class="version">
+              <a href="../../../admission-controller/1.29/en/introduction.html">1.29</a>
+            </li>
+            <li class="version">
+              <a href="../../../admission-controller/1.28/en/introduction.html">1.28</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../cluster-api/v0.26/en/index.html">Cluster API</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../cluster-api/v0.28/en/index.html">v0.28-dev</a>
+            </li>
+            <li class="version">
+              <a href="../../../cluster-api/v0.27/en/index.html">v0.27-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../cluster-api/v0.26/en/index.html">v0.26</a>
+            </li>
+            <li class="version">
+              <a href="../../../cluster-api/v0.25/en/index.html">0.25</a>
+            </li>
+            <li class="version">
+              <a href="../../../cluster-api/v0.24/en/index.html">0.24</a>
+            </li>
+            <li class="version">
+              <a href="../../../cluster-api/v0.23/en/index.html">0.23</a>
+            </li>
+            <li class="version">
+              <a href="../../../cluster-api/v0.22/en/index.html">0.22</a>
+            </li>
+            <li class="version">
+              <a href="../../../cluster-api/v0.21/en/index.html">0.21</a>
+            </li>
+            <li class="version">
+              <a href="../../../cluster-api/v0.20/en/index.html">0.20</a>
+            </li>
+            <li class="version">
+              <a href="../../../cluster-api/v0.19/en/index.html">0.19</a>
+            </li>
+            <li class="version">
+              <a href="../../../cluster-api/v0.18/en/index.html">0.18</a>
+            </li>
+            <li class="version">
+              <a href="../../../cluster-api/v0.17/en/index.html">0.17</a>
+            </li>
+            <li class="version">
+              <a href="../../../cluster-api/v0.16/en/index.html">0.16</a>
+            </li>
+            <li class="version">
+              <a href="../../../cluster-api/v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../cluster-api/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../cluster-api/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../cluster-api/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../cluster-api/v0.11/en/index.html">0.11</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../continuous-delivery/next/en/index.html">Continuous Delivery</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../continuous-delivery/next/en/index.html">Next</a>
+            </li>
+            <li class="version">
+              <a href="../../../continuous-delivery/v0.15/en/index.html">v0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../continuous-delivery/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../continuous-delivery/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../continuous-delivery/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../continuous-delivery/v0.11/en/index.html">0.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../continuous-delivery/v0.10/en/index.html">0.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../continuous-delivery/v0.9/en/index.html">0.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../k3s/latest/en/introduction.html">K3s</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../k3s/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../os-manager/1.9/en/index.html">OS Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../os-manager/1.10/en/index.html">1.10-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../os-manager/1.9/en/index.html">1.9</a>
+            </li>
+            <li class="version">
+              <a href="../../../os-manager/1.8/en/index.html">1.8</a>
+            </li>
+            <li class="version">
+              <a href="../../../os-manager/1.7/en/index.html">1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../os-manager/1.6/en/index.html">1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../os-manager/1.5/en/index.html">1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../rancher-ai/latest/en/introduction.html">Rancher AI</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../rancher-ai/latest/en/introduction.html">latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../turtles/stable/en/index.html">Rancher Turtles</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../turtles/stable/en/index.html">Stable</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../rke2/latest/en/introduction.html">RKE2</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../rke2/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../suse-observability/latest/en/classic.html">SUSE Observability</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../suse-observability/latest/en/classic.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">SUSE Rancher Developer Access</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">SUSE® Rancher for AWS</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../rancher-manager/v2.14/en/about-rancher/what-is-rancher.html">SUSE® Rancher Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../rancher-manager/v2.15/en/about-rancher/what-is-rancher.html">v2.15 (Unreleased)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../rancher-manager/v2.14/en/about-rancher/what-is-rancher.html">v2.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../rancher-manager/v2.13/en/about-rancher/what-is-rancher.html">v2.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../rancher-manager/v2.12/en/about-rancher/what-is-rancher.html">v2.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../rancher-manager/v2.11/en/about-rancher/what-is-rancher.html">v2.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../rancher-manager/v2.10/en/about-rancher/what-is-rancher.html">v2.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../rancher-manager/v2.9/en/about-rancher/what-is-rancher.html">v2.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../security/5.6/en/overview.html">SUSE® Security</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../security/5.6/en/overview.html">5.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../security/5.5/en/overview.html">5.5</a>
+            </li>
+            <li class="version">
+              <a href="../../../security/5.4/en/overview.html">5.4</a>
+            </li>
+            <li class="version">
+              <a href="../../../security/5.3/en/overview.html">5.3</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../storage/1.11/en/longhorn-documentation.html">SUSE® Storage</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../storage/1.12/en/longhorn-documentation.html">1.12 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../storage/1.11/en/longhorn-documentation.html">1.11 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../storage/1.10/en/longhorn-documentation.html">1.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../storage/1.9/en/longhorn-documentation.html">1.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component is-current">
+          <div class="title"><a href="../../1.1.0/en/release-notes/version-1.1.0.html">SUSE® Virtual Clusters</a></div>
+          <ul class="versions">
+            <li class="version is-current">
+              <a href="../en/release-notes/version-1.2.0.html">v1.2.0 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../1.1.0/en/release-notes/version-1.1.0.html">v1.1.0-latest</a>
+            </li>
+            <li class="version">
+              <a href="../../1.0.2/en/release-notes/version-1.0.2.html">v1.0.2</a>
+            </li>
+            <li class="version">
+              <a href="../../v1.0.1/en/introduction.html">v1.0.1</a>
+            </li>
+            <li class="version">
+              <a href="../../v1.0.0/en/introduction.html">v1.0.0</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../virtualization/v1.8/en/introduction/overview.html">SUSE® Virtualization</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../virtualization/v1.9/en/introduction/overview.html">v1.9 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../virtualization/v1.8/en/introduction/overview.html">v1.8 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../virtualization/v1.7/en/introduction/overview.html">v1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../virtualization/v1.6/en/introduction/overview.html">v1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../virtualization/v1.5/en/introduction/overview.html">v1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../vulnerability-scanner/0.12.0/en/introduction.html">Vulnerability Scanner</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../vulnerability-scanner/0.12.0/en/introduction.html">0.12.0</a>
+            </li>
+            <li class="version">
+              <a href="../../../vulnerability-scanner/0.11.3/en/introduction.html">0.11.3</a>
+            </li>
+          </ul>
+        </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+<ul>
+    <li>
+  <a class="home-link-dsc" href="https://documentation.suse.com" title="SUSE Documentation Home" aria-label="SUSE Documentation Home"></a>
+    </li>
+    <li>
+      <a href="https://documentation.suse.com/cloudnative/suse-virtual-clusters" title="SUSE Virtual Clusters" aria-label="SUSE Documentation - SUSE Virtual Clusters">
+        SUSE Virtual Clusters
+      </a>
+    </li>
+      <li>
+          <a href="architecture.html" title="体系结构" aria-label="体系结构">体系结构</a>
+      </li>
+  </ul>
+</nav>
+<div class="page-versions">
+  <button class="version-menu-toggle" title="Show other versions of page">v1.2.0 (Dev)</button>
+  <div class="version-menu">
+    <a class="version is-current" href="architecture.html">v1.2.0 (Dev)</a>
+    <a class="version is-missing" href="../../1.1.0/en/release-notes/version-1.1.0.html">v1.1.0-latest</a>
+    <a class="version is-missing" href="../../1.0.2/en/release-notes/version-1.0.2.html">v1.0.2</a>
+    <a class="version is-missing" href="../../v1.0.1/en/introduction.html">v1.0.1</a>
+    <a class="version is-missing" href="../../v1.0.0/en/introduction.html">v1.0.0</a>
+  </div>
+</div>
+      <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <label class="visual-search-label-bc" for="search-input">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+          <input label="Search" aria-label="Search" id="search-input" type="text" placeholder="搜索文档" >
+          <label class="filter checkbox" style="display: none">
+            <input type="checkbox" data-facet-filter="component:suse-virtual-clusters" checked> Only this project
+          </label>
+        </div>
+      </div>
+</div>
+  <div class="content">
+<aside
+  class="toc sidebar"
+  data-title="在此页面上" data-levels="2">
+  <div class="toc-menu">
+    <div class="docsurvey-wrapper"><a class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_diCzHC9xxyJyuN0">Documentation survey</a></div>
+    <!-- start qualtrics -->
+    <div id='ZN_8qZUmklKYbBqAYe'><!--DO NOT REMOVE-CONTENTS PLACED HERE--></div>
+    <div id="qualtrics_container"></div>
+    <!-- end qualtrics -->
+  </div>
+</aside>
+
+<aside class="toc sidebar docsurvey-sidebar">
+  <div class="toc-menu">
+    <div class="docsurvey-wrapper"><a class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_diCzHC9xxyJyuN0">Documentation survey</a></div>
+  </div>
+</aside>
+<article class="doc">
+                            <div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="警告"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>这是尚未发布的文档。 SUSE® Virtual Clusters v1.2.0 (Dev).</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<h1 class="page">体系结构</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>虚拟集群是部署在物理集群上的隔离Kubernetes集群。K3k利用<a href="https://k3s.io/">K3s</a>作为Kubernetes集群的控制平面，因为它的轻量级特性。</p>
+</div>
+<div class="paragraph">
+<p>K3k提供两种部署虚拟集群的模式：- 共享（默认）- 虚拟</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_共享模式"><a class="anchor" href="#_共享模式"></a>共享模式</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>默认的*共享*模式使用K3s服务器作为控制平面，并配置为 <a href="https://docs.k3s.io/advanced#running-agentless-servers-experimental">无代理服务器配置</a>。启用此选项后，服务器不运行kubelet、容器运行时或CNI。该服务器使用特定于K3k的 <a href="https://virtual-kubelet.io/">虚拟Kubelet</a>提供程序实现，调度工作负载和其他可能需要的资源到主集群上。这个K3k虚拟Kubelet提供程序处理共享主集群环境中的资源反映和工作负载执行。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/architecture/shared-mode.png" alt="共享模式">
+</div>
+</div>
+<div class="sect2">
+<h3 id="_网络和存储"><a class="anchor" href="#_网络和存储"></a>网络和存储</h3>
+<div class="paragraph">
+<p>由于这个共享基础设施，CNI与主集群中配置的相同。可用存储也是如此，存储类和卷都是主集群的。</p>
+</div>
+<div class="paragraph">
+<p>为了提供所需的隔离，K3k利用网络策略。</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_资源共享和限制"><a class="anchor" href="#_资源共享和限制"></a>资源共享和限制</h3>
+<div class="paragraph">
+<p>在*共享*模式下，K3k利用Kubernetes的&#8217;资源配额&#8217;和&#8217;限制范围&#8217;来管理资源共享并强制执行限制。由于所有虚拟集群工作负载都在主集群的同一名称空间中运行，因此资源配额应用于该名称空间，以限制虚拟集群消耗的总资源。限制范围用于为Pods设置默认资源请求和限制，确保工作负载即使未明确指定也有合理的资源分配。</p>
+</div>
+<div class="paragraph">
+<p>虚拟集群中的每个Pod都被分配一个唯一名称，该名称包含Pod名称、名称空间和集群名称。这可以防止在共享主集群的名称空间中发生命名冲突。</p>
+</div>
+<div class="paragraph">
+<p>重要的是要理解，资源配额是在名称空间级别应用的。这意味着虚拟集群中的所有 Pod 共享相同的配额。虽然这为虚拟集群提供了整体限制，但这也意味着资源分配是动态的。如果一个工作负载没有使用其全部资源分配，_同一_虚拟集群中的其他工作负载可以利用这些资源，即使它们属于不同的部署或服务。</p>
+</div>
+<div class="paragraph">
+<p>这种动态共享既可以是一个好处，也可以是一个挑战。它允许高效的资源利用，但如果工作负载的资源需求各不相同，也可能导致不可预测的性能。此外，这种方法使得在同一虚拟集群内保证严格的资源隔离变得困难。</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="注意"></i>
+</td>
+<td class="content">
+GPU 资源共享是一个正在持续研究的领域。K3k 正在积极探索该领域的潜在解决方案。
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_隔离与安全性"><a class="anchor" href="#_隔离与安全性"></a>隔离与安全性</h3>
+<div class="paragraph">
+<p>共享模式下虚拟集群之间的隔离在很大程度上依赖于 Kubernetes 网络策略。网络策略定义了控制允许进出 Pod 的网络流量的规则。K3k 配置网络策略，以确保一个虚拟集群中的 Pod 不能与其他虚拟集群中的 Pod 或主集群中的 Pod 进行通信，为网络隔离提供了坚实的基础。</p>
+</div>
+<div class="paragraph">
+<p>虽然网络策略提供了强大的隔离能力，但理解其特性是很重要的：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>*CNI 集成：*网络策略与支持的 CNI 插件无缝集成。K3k 利用这种集成来强制执行网络隔离。</p>
+</li>
+<li>
+<p>*细粒度控制：*网络策略提供了对网络流量的细粒度控制，允许精细调整安全策略。</p>
+</li>
+<li>
+<p>*可伸缩性：*网络策略能够很好地扩展虚拟集群和应用程序的数量，确保随着环境的增长保持一致的隔离。</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>K3k 还利用 Kubernetes Pod 安全准入（PSA）根据 Pod 安全标准（PSS）在虚拟集群内强制执行安全策略。PSS 为 pods 定义不同的安全级别，限制 pods 可以执行的操作。通过配置 PSA 强制执行特定的 PSS 级别（例如，<code>baseline</code> 或 <code>restricted</code>）以用于虚拟集群，K3k 确保 pods 遵循既定的安全最佳实践，并防止它们使用特权功能或执行潜在危险的操作。</p>
+</div>
+<div class="paragraph">
+<p>PSA 集成的关键方面包括：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>*名称空间级别强制执行：*PSA 配置在名称空间级别应用，为虚拟集群内的所有 pods 提供一致的安全态势。</p>
+</li>
+<li>
+<p>*标准化控制文件：*PSS 提供一套与行业最佳实践对齐的预定义安全控制文件，简化安全配置并确保基本的安全水平。</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>共享模式架构在设计时考虑了安全性。K3k 采用多层安全控制，包括网络策略和 PSA，以保护虚拟集群和主集群。虽然共享名称空间模型需要仔细配置和管理，但这些控制为在多租户环境中运行工作负载提供了强大的安全基础。K3k 不断评估和增强其安全机制，以应对不断变化的威胁，并确保为用户提供最高级别的保护。</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_虚拟模式"><a class="anchor" href="#_虚拟模式"></a>虚拟模式</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>K3k 中的 <code>virtual</code> 模式部署完全功能的 K3s 集群（包括服务器和代理组件）作为虚拟集群。这些 K3s 集群作为 pods 在主集群内运行。每个虚拟集群都有自己的专用 K3s 服务器和一个或多个作为工作节点的 K3s 代理。这种方法提供了强大的隔离，因为每个虚拟集群独立运行，拥有自己的控制平面和工作节点。虽然这些虚拟集群作为 pods 在主集群上运行，但它们作为完整且独立的 Kubernetes 环境运作。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/architecture/virtual-mode.png" alt="虚拟模式">
+</div>
+</div>
+<div class="sect2">
+<h3 id="_网络和存储_2"><a class="anchor" href="#_网络和存储_2"></a>网络和存储</h3>
+<div class="paragraph">
+<p>在 <code>virtual</code> 模式下的虚拟集群各自拥有独立的网络配置，由各自的 K3s 服务器管理。每个虚拟集群运行自己的 CNI 插件，在其 K3s 服务器中配置，提供与其他虚拟集群和主集群的完全网络隔离。虽然虚拟集群网络最终在主集群的网络基础设施上运行，但网络配置和流量管理是完全独立的。</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_资源共享和限制_2"><a class="anchor" href="#_资源共享和限制_2"></a>资源共享和限制</h3>
+<div class="paragraph">
+<p>在 <code>virtual</code> 模式下，资源共享通过对构成虚拟集群的 pods（包括 K3s 服务器 pod 和 K3s 代理 pods）施加资源限制来管理。每个 pod 被分配特定数量的处理器、内存和其他资源。在虚拟集群 <em>内</em> 运行的工作负载则利用这些分配的资源。这意味着虚拟集群整体上有一个由其组成 pods 的限制决定的资源池。</p>
+</div>
+<div class="paragraph">
+<p>这种方法提供了一种清晰直接的方式来控制每个虚拟集群可用的资源。然而，这需要仔细的资源规划，以确保每个虚拟集群有足够的容量来处理其工作负载。</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_隔离与安全性_2"><a class="anchor" href="#_隔离与安全性_2"></a>隔离与安全性</h3>
+<div class="paragraph">
+<p><code>virtual</code> 模式由于为每个虚拟集群部署了专用的 K3s 集群，因此提供了强大的隔离。由于每个虚拟集群运行自己的独立控制平面和工作节点，工作负载在彼此之间以及与主集群之间有效隔离。这种架构最小化了一个虚拟集群对其他虚拟集群或主集群的影响风险。</p>
+</div>
+<div class="paragraph">
+<p>在 <code>virtual</code> 模式下，安全性受益于由独立的 K3s 集群提供的固有隔离。然而，标准的 Kubernetes 安全最佳实践仍然适用，K3k 强调分层安全的方法。虽然 K3s 服务器 pods 通常以提升的权限运行（由于其功能的性质，需要访问系统资源），但 K3k 建议尽可能减少这些权限，并遵循最小权限原则。这可以通过仔细配置必要的能力来实现，而不是依赖于完整的 <code>privileged</code> 模式。有关 K3s 安全最佳实践的更多信息可以在官方 K3s 文档中找到： <a href="https://docs.k3s.io/security（此链接提供一般安全指导，包括对能力和其他相关主题的讨论）。" class="bare">https://docs.k3s.io/security（此链接提供一般安全指导，包括对能力和其他相关主题的讨论）。</a></p>
+</div>
+<div class="paragraph">
+<p>目前，虚拟模式下的安全性存在特权升级的风险，因为服务器 pods 由于其功能的性质以提升的权限运行，需要访问系统资源。</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_k3k_组件"><a class="anchor" href="#_k3k_组件"></a>K3k 组件</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>K3k 由两个主要组件构成：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>*控制器：*K3k 控制器是一个在主集群上运行的核心组件。它监视 <code>Cluster</code> 自定义资源 (CR) 并管理虚拟集群的生命周期。当创建新的 <code>Cluster</code> CR 时，控制器会提供必要的资源，包括名称空间、K3s 服务器和代理 Pod，以及网络配置，以创建虚拟集群。</p>
+</li>
+<li>
+<p>*CLI:*K3k CLI 提供了与 K3k 交互的命令行界面。它允许用户轻松创建、管理和访问虚拟集群。CLI 简化了常见任务，例如创建 <code>Cluster</code> CR、检索 kubeconfig 以访问虚拟集群，以及执行其他管理操作。</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_virtualclusterpolicy"><a class="anchor" href="#_virtualclusterpolicy"></a>VirtualClusterPolicy</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>K3k 引入了 VirtualClusterPolicy 自定义资源，这是一种设置和应用常见配置以及虚拟集群在 K3k 环境中如何操作的方法。</p>
+</div>
+<div class="paragraph">
+<p>VCP 的主要目标是允许管理员集中管理和应用一致的策略。这减少了重复配置，帮助满足组织标准，并增强了 K3k 管理的虚拟集群的安全性和操作一致性。</p>
+</div>
+<div class="paragraph">
+<p>VirtualClusterPolicy 绑定到一个或多个 Kubernetes 名称空间。一旦绑定，VCP 中定义的规则适用于在该名称空间中运行或创建的所有 K3k 虚拟集群。这允许灵活的策略应用，意味着不同的名称空间可以使用自己独特的 VCP，而其他名称空间可以共享一个 VCP 以实现一致的设置。</p>
+</div>
+<div class="paragraph">
+<p>管理员利用 VirtualClusterPolicy 的常见用例包括：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>为虚拟集群定义操作模式（如 "共享" 或 "虚拟"）。</p>
+</li>
+<li>
+<p>设置资源配额和限制范围，以有效管理虚拟集群及其工作负载可以使用的资源量。</p>
+</li>
+<li>
+<p>强制执行安全标准，例如，通过为名称空间配置 Pod 安全准入 (PSA) 标签。</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>K3k 控制器主动监视 VirtualClusterPolicy 资源及其相应的名称空间绑定。当应用或更新 VCP 时，控制器确保在目标名称空间内相关虚拟集群及其关联资源上强制执行定义的配置。</p>
+</div>
+<div class="paragraph">
+<p>要深入了解 VirtualClusterPolicy 的功能及更多示例，请查看 <a href="virtualclusterpolicy.html" class="xref page">VirtualClusterPolicy 概念</a> 页面。有关所有规范字段的完整列表，请参见 <a href="./crds/crd-docs.adoc#virtualclusterpolicy">VirtualClusterPolicy API 参考</a>。</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_比较与权衡"><a class="anchor" href="#_比较与权衡"></a>比较与权衡</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>K3k 提供两种不同的虚拟集群部署模式：<code>shared</code> 和 <code>virtual</code>。每种模式都有其自身的优缺点，最佳选择取决于用户的具体需求和优先事项。以下是一个比较，帮助您做出明智的决策：</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">功能</th>
+<th class="tableblock halign-left valign-top">共享模式</th>
+<th class="tableblock halign-left valign-top">虚拟模式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>体系结构</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">无代理的 K3s 服务器与虚拟 Kubelet</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">完整的 K3s 集群（服务器和代理）作为 Pods</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>隔离</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">网络策略</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">专用控制平面和工作节点作为 Pods</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>资源共享</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">动态的名称空间级别资源配额</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">虚拟集群 Pods 的资源限制</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>网络</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">主集群的 CNI + 主集群的 Ingress 控制器（可选）</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">虚拟集群自己的 CNI + 虚拟集群自己的 Ingress 控制器</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>存储</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">主集群的存储</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">自带存储提供商</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>安全性</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pod 安全准入（PSA），网络策略</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">固有隔离，PSA，网络策略</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>性能</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">占用更小的资源，更高效，因为直接在主机上运行</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">由于运行完整的 K3s 集群而导致更高的开销</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>权衡:</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>隔离与开销:</strong>`shared`模式的开销较低，但隔离性较弱，而`virtual`模式提供更强的隔离性，但由于运行完整的 K3s 集群，可能会导致更高的开销。</p>
+</li>
+<li>
+<p><strong>资源共享:</strong>`shared`模式在一个名称空间内提供动态资源共享，这可能是高效的，但不太可预测。`virtual`模式为每个虚拟集群提供专用资源，提供更多控制，但需要仔细规划。</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>有关如何选择正确模式的更多信息，请参见<a href="how-tos-for-admin/choose-mode.html" class="xref page">选择模式</a>.</p>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="quickstart.html">快速入门</a></span>
+  <span class="next"><a href="advanced-usage.html">高级用途</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<script src="../../../_/js/site.js"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+<script src="../../../_/js/vendor/lunr.js"></script>
+<script src="../../../_/js/vendor/lunr-languages.js"></script>
+<script src="../../../_/js/search-ui.js" id="search-ui-script" data-site-root-path="../../.." data-snippet-length="100" data-stylesheet="../../../_/css/search.css"></script>
+<script async src="../../../search-index.js"></script>
+<script src="../../../_/js/vendor/langSelection.js"></script>
+<script async src="../../../_/js/vendor/tabs.js"></script>
+
+
+<script src="../../../_/js/CNLanguageSwitcher.js"></script>
+  </body>
+</html>

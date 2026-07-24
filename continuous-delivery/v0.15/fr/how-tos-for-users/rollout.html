@@ -1,0 +1,1490 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Stratégie de déploiement | Continuous Delivery  v0.15</title>
+    <link rel="canonical" href="https://documentation.suse.com/cloudnative/continuous-delivery/v0.15/fr/how-tos-for-users/rollout.html">
+    <link rel="prev" href="oci-storage.html">
+    <link rel="next" href="helm-ops.html">
+    <meta name="generator" content="Antora 3.1.14">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+<meta http-equiv="last-modified" content="2025-07-23"/>
+<link rel="stylesheet" href="../../../../_/css/search.css">
+<link rel="icon" href="../../../../_/img/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="../../../../_/css/font-styles.css">
+<link rel="stylesheet" href="../../../../_/fonts/css/all.css">
+<link rel="stylesheet" href="../../../../_/css/site-extra.css">
+<link rel="stylesheet" href="../../../../_/css/vendor/tabs.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap&family=SUSE+Mono:ital,wght@0,100..800;1,100..800" rel="stylesheet">
+<link rel="stylesheet" href="../../../../_/css/vendor/light.css">
+<script src="/docserv/res/lightheaded/analytics.js" type="text/javascript"></script>
+<script type="module">
+  import { defineCustomElements, setAssetPath } from 'https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/shared-header.esm.js';
+  defineCustomElements();
+  setAssetPath("https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/assets");
+</script>
+<!-- Default English link -->
+<link href="https://documentation.suse.com/cloudnative/continuous-delivery/v0.15/en/how-tos-for-users/rollout.html" hreflang="x-default" rel="alternate"/>
+<!-- Link for the currently processed page -->
+<link href="https://documentation.suse.com/cloudnative/continuous-delivery/v0.15/fr/how-tos-for-users/rollout.html" hrefLang="fr-FR" rel="alternate" />
+<!-- Link for the English page -->
+<link href="https://documentation.suse.com/cloudnative/continuous-delivery/v0.15/en/how-tos-for-users/rollout.html" hreflang="en-US" rel="alternate" />
+<!-- Link for the Japanese page -->
+<link href="https://documentation.suse.com/cloudnative/continuous-delivery/v0.15/ja/how-tos-for-users/rollout.html" hreflang="ja-JP" rel="alternate" />
+<!-- Link for the Chinese page -->
+<link href="https://documentation.suse.com/cloudnative/continuous-delivery/v0.15/zh/how-tos-for-users/rollout.html" hreflang="zh-CN" rel="alternate" />
+<!-- Link for the German page -->
+<link href="https://documentation.suse.com/cloudnative/continuous-delivery/v0.15/de/how-tos-for-users/rollout.html" hreflang="de-DE" rel="alternate" />
+<!-- Link for the Spanish page -->
+<link href="https://documentation.suse.com/cloudnative/continuous-delivery/v0.15/es/how-tos-for-users/rollout.html" hreflang="es-ES" rel="alternate" />
+<!-- Link for the Brazilian Portuguese page -->
+<link href="https://documentation.suse.com/cloudnative/continuous-delivery/v0.15/pt/how-tos-for-users/rollout.html" hreflang="pt-BR" rel="alternate" />
+
+<!-- JSON-LD for doc metadata -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Stratégie de déploiement | SUSE Rancher Prime Continuous Delivery v0.15",
+  "headline": "Stratégie de déploiement",
+  "description": "Stratégie de déploiement",
+  "inLanguage": "fr",
+  "dateModified": "2025-07-23T00:00:00Z",
+  "author": {
+    "@type": "Organization",
+    "name": "SUSE Product & Solution Documentation Team",
+    "url": "https://documentation.suse.com"
+  },
+  "mentions": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "SUSE Rancher Prime Continuous Delivery",
+      "softwareVersion": "v0.15",
+      "applicationCategory": "Cloud Infrastructure",
+      "operatingSystem": "Linux"
+    }
+  ],
+  "publisher": {
+    "@type": "Organization",
+    "name": "SUSE",
+    "url": "https://documentation.suse.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.suse.com/assets/img/suse-white-logo-green.svg"
+    }
+  }
+}
+</script>
+<!-- end JSON-LD for doc metadata -->
+
+<!-- SUVA - Begin Ask Geeko-->
+<!--
+searchUnifyChatbot ("Ask Geeko") Copyright ©2024 Grazitti Interactive - All Rights Reserved. NOTICE: All information contained herein is, and remains the property of Grazitti Interactive and its suppliers, if any. The intellectual and technical concepts contained herein are proprietary to Grazitti Interactive and its suppliers and may be covered by India, U.S. and Foreign Patents, patents in process, and are protected by trade secret or copyright law. Dissemination of this information or reproduction of this material is strictly forbidden unless prior written permission is obtained from Grazitti Interactive.
+-->
+<meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport"/>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/Allow/an.js?c485cb3c-93d4-4942-99e8-91f3b8ca5636"></script>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/js/index.js?q=gAAAAABp3JBN9VuEJTi5tFafLIMwgMkCPdJS3Qm56lSYx93ir3Twt9hgSvd3OHEt6-nYfSbY3yHq0Zv8PRPsSy4nbqZiaJ4cZvRc6ItVZdvwz9Urf35cH6OUyPOwdA0phlS-zVIznQ2rWW438p-91NlTHuxJuOFpnA=="></script>
+<link rel="stylesheet" href="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/css/index.css">
+<div id="searchUnifyChatbot"></div>
+<!-- SUVA - End Ask Geeko-->
+<!--BEGIN QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+<script type='text/javascript' src="../../../../_/js/qualtrics.js" defer></script>
+<!--END QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<script type="module">import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs'; mermaid.initialize({"startOnLoad":true});</script><shared-header
+language="en"
+languages='{
+    "en": { "label": "English", "url": "https://documentation.suse.com/en-us/" },
+    "de": { "label": "Deutsch", "url": "https://documentation.suse.com/de-de/" },
+    "fr": { "label": "Français", "url": "https://documentation.suse.com/fr-fr/" },
+    "es": { "label": "Español", "url": "https://documentation.suse.com/es-es/" },
+    "zh_CN": { "label": "中文", "url": "https://documentation.suse.com/zh-cn/" },
+    "pt_BR": { "label": "Português Brasileiro", "url": "https://documentation.suse.com/pt-br/" }
+}'
+enable-search='false'>
+</shared-header>
+<div class="body">
+<div class="nav-container" data-component="continuous-delivery" data-version="v0.15">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title">Continuous Delivery</h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Présentation</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../persona.html">Personas clés et leurs rôles</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Didacticiels</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tutorials/quickstart.html">Quickstart</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tutorials/tut-deployment.html">Création d&#8217;un déploiement</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tutorials/uninstall.html">Uninstall</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Explications</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../explanations/architecture.html">Architecture</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../explanations/concepts.html">Concepts du noyau</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../explanations/ref-bundle-stages.html">Cycle de vie du bundle</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../explanations/gitrepo-content.html">Contenu du dépôt Git</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../explanations/namespaces.html">Espaces de noms</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../explanations/resources-during-deployment.html">Ressources personnalisées lors du déploiement</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../explanations/glossary.html">Ressources personnalisées lors du déploiement</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Procédures pour les opérateurs</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../how-tos-for-operators/installation.html">Détails de l&#8217;installation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../how-tos-for-operators/cluster-registration.html">Enregistrer des clusters en aval</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../how-tos-for-operators/cluster-group.html">Créer des groupes de clusters</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../how-tos-for-operators/multi-user.html">Configuration multi-utilisateur</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../how-tos-for-operators/resource-limits.html">Configurer les limites de ressources</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Procédures pour les utilisateurs</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="gitrepo-add.html">Créer une ressource GitRepo</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="gitrepo-targets.html">Mapping vers des clusters en aval</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="bundle-diffs.html">Générer des différences pour ignorer les GitRepos modifiés</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="webhook.html">Utiliser des webhooks au lieu du polling</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="imagescan.html">Utiliser l&#8217;analyse d&#8217;image pour mettre à jour les références d&#8217;image de conteneur</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="bundle-add.html">Créer une ressource bundle</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="observability.html">Observabilité</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="oci-storage.html">Stockage OCI</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="rollout.html">Stratégie de déploiement</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="helm-ops.html">Opérations Helm</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="fetch-helm-oci.html">Récupérer Helm Ops</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="fine-tune-error.html">Ajustement fin de la détection d&#8217;erreurs</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Fleet CLI</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="install-use-fleet-cli.html">Installer et utiliser Fleet CLI</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="validate-fleet-cli.html">Valider le déploiement de Fleet CLI</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Référence</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">CLI</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Fleet</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-cli/fleet.html">fleet</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-cli/fleet_apply.html">fleet apply</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-cli/fleet_bundlediff.html">fleet bundlediff</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-cli/fleet_deploy.html">fleet deploy</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-cli/fleet_target.html">fleet target</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-cli/fleet_gitcloner.html">fleet gitcloner</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Dépannage de Fleet</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-cli/fleet_analyze.html">fleet analyze</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-cli/fleet_monitor.html">fleet monitor</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-cli/fleet_dump.html">fleet dump</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Fleet Agent</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-agent/fleet-agent.html">fleet-agent</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-agent/fleet-agent_clusterstatus.html">fleet-agent clusterstatus</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-agent/fleet-agent_register.html">fleet-agent register</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Nettoyage</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-cli/cleanup/fleet_cleanup.html">fleet cleanup</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-cli/cleanup/fleet_cleanup_clusterregistration.html">fleet cluster registration cleanup</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-cli/cleanup/fleet_cleanup_gitjob.html">fleet gitjob cleanup</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Fleet Controller</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-controller/fleet-controller.html">fleet-controller</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-controller/fleet-controller_agentmanagement.html">fleet-controller agentmanagement</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-controller/fleet-controller_cleanup.html">fleet-controller cleanup</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-controller/fleet-controller_gitjob.html">fleet-gitjob</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Ressources et API</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reference/ref-crds.html">Spécification des Ressources Personnalisées</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reference/ref-crd-schema.html">Schéma CRD</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reference/ref-gitrepo.html">Ressource GitRepo</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reference/ref-bundle.html">Ressource Bundle</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reference/ref-resources.html">Liste des Ressources Déployées</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Référence de configuration :</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reference/ref-fleet-yaml.html">fleet.yaml</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reference/ref-configuration.html">Configuration</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Statut et Internes</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reference/ref-status-fields.html">État du Cluster et du Bundle</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reference/ref-registration.html">Internes de l&#8217;Enregistrement du Cluster</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../troubleshooting.html">Dépannage</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Fonctionnalités Expérimentales</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../experimental-features/enableexperimental.html">Activer les Fonctionnalités Expérimentales</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../experimental-features/scheduling.html">Planification</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../experimental-features/experimental-downstream-resource.html">Propagation automatisée des ressources vers les clusters en aval</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/ref-schedule.html">Référence de planification des ressources</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Changelog</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../changelogs/v0.15.0.html">v0.15.0</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Continuous Delivery</span>
+    <span class="version">v0.15</span>
+  </div>
+  <ul class="components">
+        <li class="component">
+          <div class="title"><a href="../../../../admission-controller/1.36/en/introduction.html">Admission Controller</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../admission-controller/1.37/en/introduction.html">1.37-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../admission-controller/1.36/en/introduction.html">1.36</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.35/en/introduction.html">1.35</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.34/en/introduction.html">1.34</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.33/en/introduction.html">1.33</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.32/en/introduction.html">1.32</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.31/en/introduction.html">1.31</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.30/en/introduction.html">1.30</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.29/en/introduction.html">1.29</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.28/en/introduction.html">1.28</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../cluster-api/v0.26/en/index.html">Cluster API</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../cluster-api/v0.28/en/index.html">v0.28-dev</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.27/en/index.html">v0.27-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../cluster-api/v0.26/en/index.html">v0.26</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.25/en/index.html">0.25</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.24/en/index.html">0.24</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.23/en/index.html">0.23</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.22/en/index.html">0.22</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.21/en/index.html">0.21</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.20/en/index.html">0.20</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.19/en/index.html">0.19</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.18/en/index.html">0.18</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.17/en/index.html">0.17</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.16/en/index.html">0.16</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.11/en/index.html">0.11</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component is-current">
+          <div class="title"><a href="../../../next/en/index.html">Continuous Delivery</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../next/en/index.html">Next</a>
+            </li>
+            <li class="version is-current">
+              <a href="../../en/index.html">v0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../v0.11/en/index.html">0.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../v0.10/en/index.html">0.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../v0.9/en/index.html">0.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../k3s/latest/en/introduction.html">K3s</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../k3s/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../os-manager/1.9/en/index.html">OS Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../os-manager/1.10/en/index.html">1.10-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../os-manager/1.9/en/index.html">1.9</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.8/en/index.html">1.8</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.7/en/index.html">1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.6/en/index.html">1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.5/en/index.html">1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-ai/latest/en/introduction.html">Rancher AI</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-ai/latest/en/introduction.html">latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../turtles/stable/en/index.html">Rancher Turtles</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../turtles/stable/en/index.html">Stable</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rke2/latest/en/introduction.html">RKE2</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rke2/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-observability/latest/en/classic.html">SUSE Observability</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../suse-observability/latest/en/classic.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">SUSE Rancher Developer Access</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">SUSE® Rancher for AWS</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-manager/v2.14/en/about-rancher/what-is-rancher.html">SUSE® Rancher Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.15/en/about-rancher/what-is-rancher.html">v2.15 (Unreleased)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../rancher-manager/v2.14/en/about-rancher/what-is-rancher.html">v2.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.13/en/about-rancher/what-is-rancher.html">v2.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.12/en/about-rancher/what-is-rancher.html">v2.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.11/en/about-rancher/what-is-rancher.html">v2.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.10/en/about-rancher/what-is-rancher.html">v2.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.9/en/about-rancher/what-is-rancher.html">v2.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../security/5.6/en/overview.html">SUSE® Security</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../security/5.6/en/overview.html">5.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.5/en/overview.html">5.5</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.4/en/overview.html">5.4</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.3/en/overview.html">5.3</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../storage/1.11/en/longhorn-documentation.html">SUSE® Storage</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../storage/1.12/en/longhorn-documentation.html">1.12 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../storage/1.11/en/longhorn-documentation.html">1.11 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../storage/1.10/en/longhorn-documentation.html">1.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../storage/1.9/en/longhorn-documentation.html">1.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">SUSE® Virtual Clusters</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/1.2.0/en/release-notes/version-1.2.0.html">v1.2.0 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">v1.1.0-latest</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/1.0.2/en/release-notes/version-1.0.2.html">v1.0.2</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.1/en/introduction.html">v1.0.1</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.0/en/introduction.html">v1.0.0</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../virtualization/v1.8/en/introduction/overview.html">SUSE® Virtualization</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../virtualization/v1.9/en/introduction/overview.html">v1.9 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../virtualization/v1.8/en/introduction/overview.html">v1.8 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../virtualization/v1.7/en/introduction/overview.html">v1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../../virtualization/v1.6/en/introduction/overview.html">v1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../virtualization/v1.5/en/introduction/overview.html">v1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../vulnerability-scanner/0.12.0/en/introduction.html">Vulnerability Scanner</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../vulnerability-scanner/0.12.0/en/introduction.html">0.12.0</a>
+            </li>
+            <li class="version">
+              <a href="../../../../vulnerability-scanner/0.11.3/en/introduction.html">0.11.3</a>
+            </li>
+          </ul>
+        </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+<ul>
+    <li>
+  <a class="home-link-dsc" href="https://documentation.suse.com" title="SUSE Documentation Home" aria-label="SUSE Documentation Home"></a>
+    </li>
+    <li>
+      <a href="https://documentation.suse.com/cloudnative/continuous-delivery" title="Continuous Delivery" aria-label="SUSE Documentation - Continuous Delivery">
+        Continuous Delivery
+      </a>
+    </li>
+      <li>
+          Procédures pour les utilisateurs
+      </li>
+  </ul>
+</nav>
+<div class="page-versions">
+  <button class="version-menu-toggle" title="Show other versions of page">v0.15</button>
+  <div class="version-menu">
+    <a class="version is-missing" href="../../../next/en/index.html">Next</a>
+    <a class="version is-current" href="rollout.html">v0.15</a>
+    <a class="version is-missing" href="../../../v0.14/en/index.html">0.14</a>
+    <a class="version is-missing" href="../../../v0.13/en/index.html">0.13</a>
+    <a class="version is-missing" href="../../../v0.12/en/index.html">0.12</a>
+    <a class="version is-missing" href="../../../v0.11/en/index.html">0.11</a>
+    <a class="version is-missing" href="../../../v0.10/en/index.html">0.10</a>
+    <a class="version is-missing" href="../../../v0.9/en/index.html">0.9</a>
+  </div>
+</div>
+      <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <label class="visual-search-label-bc" for="search-input">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+          <input label="Search" aria-label="Search" id="search-input" type="text" placeholder="Searchercher dans les documents" >
+          <label class="filter checkbox" style="display: none">
+            <input type="checkbox" data-facet-filter="component:continuous-delivery" checked> Only this project
+          </label>
+        </div>
+      </div>
+</div>
+  <div class="content">
+<aside
+  class="toc sidebar"
+  data-title="Sur cette page" data-levels="2">
+  <div class="toc-menu">
+    <div class="docsurvey-wrapper"><a class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_diCzHC9xxyJyuN0">Documentation survey</a></div>
+    <!-- start qualtrics -->
+    <div id='ZN_8qZUmklKYbBqAYe'><!--DO NOT REMOVE-CONTENTS PLACED HERE--></div>
+    <div id="qualtrics_container"></div>
+    <!-- end qualtrics -->
+  </div>
+</aside>
+
+<aside class="toc sidebar docsurvey-sidebar">
+  <div class="toc-menu">
+    <div class="docsurvey-wrapper"><a class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_diCzHC9xxyJyuN0">Documentation survey</a></div>
+  </div>
+</aside>
+<article class="doc">
+<h1 class="page">Stratégie de déploiement</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>SUSE® Rancher Prime Continuous Delivery utilise une stratégie de déploiement pour contrôler comment les applis sont déployées à travers les clusters. Vous pouvez définir l&#8217;ordre et le regroupement des déploiements de clusters en utilisant des partitions, permettant des déploiements contrôlés et des mises à jour plus sûres.</p>
+</div>
+<div class="paragraph">
+<p>SUSE® Rancher Prime Continuous Delivery évalue le statut <code>Ready</code> de chaque <code>BundleDeployment</code> pour déterminer quand passer à la partition suivante. Pour plus d&#8217;informations, consultez <a href="../reference/ref-status-fields.html" class="xref page">les champs de statut</a>.</p>
+</div>
+<div class="paragraph">
+<p>Lors d&#8217;un déploiement, le statut GitRepo indique l&#8217;avancement du déploiement. Cela vous aide à comprendre quand les paquets deviennent <code>Ready</code> avant de continuer&#160;:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Pour les déploiements initiaux&#160;:</p>
+</li>
+<li>
+<p>Un ou plusieurs clusters peuvent être dans un état <code>NotReady</code>.</p>
+</li>
+<li>
+<p>Les clusters restants sont marqués comme <code>Pending</code>, ce qui signifie que le déploiement n&#8217;a pas commencé.</p>
+</li>
+<li>
+<p>Pour les déploiements&#160;:</p>
+</li>
+<li>
+<p>Un ou plusieurs clusters peuvent être dans un état <code>NotReady</code>.</p>
+</li>
+<li>
+<p>Les clusters restants sont marqués <code>OutOfSync</code> jusqu&#8217;à ce que le déploiement continue.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Les options de configuration de déploiement sont documentées dans le champ <code>rolloutStrategy</code> du <a href="../reference/ref-fleet-yaml.html" class="xref page">fleet.yaml</a>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Si <code>rolloutStrategy</code> n&#8217;est pas spécifié dans <code>fleet.yaml</code>, SUSE® Rancher Prime Continuous Delivery utilise les valeurs par défaut.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_how_does_partitioning_work"><a class="anchor" href="#_how_does_partitioning_work"></a>Comment fonctionne le partitionnement&#160;?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Les partitions sont uniquement utilisées pour regrouper et contrôler le déploiement de <code>BundleDeployments</code> à travers les clusters. Elles n&#8217;affectent en rien les options de déploiement.</p>
+</div>
+<div class="paragraph">
+<p>Si les clusters ciblés ne font pas partie du partitionnement manuel, ils ne seront pas inclus dans le déploiement. Si un cluster fait partie d&#8217;une partition, il recevra un <code>BundleDeployment</code> lorsque la partition sera traitée.</p>
+</div>
+<div class="paragraph">
+<p>Les partitions sont considérées comme <code>NotReady</code> si elles ont des clusters qui dépassent le nombre autorisé de <code>NotReady</code> clusters. Si un cluster est hors ligne, le cluster ciblé ne sera pas considéré comme <code>Ready</code> et restera dans l&#8217;état <code>NotReady</code> jusqu&#8217;à ce qu&#8217;il revienne en ligne et déploie avec succès le <code>BundleDeployment</code>.</p>
+</div>
+<div class="paragraph">
+<p>Le seuil est déterminé par&#160;:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Partitions manuelles</strong>&#160;: Utilisez la valeur <code>maxUnavailable</code> à l&#8217;intérieur de chaque partition pour contrôler la préparation de cette partition, sinon, si non spécifié, elle utilise <code>rolloutStrategy.maxUnavailable</code>.</p>
+</li>
+<li>
+<p><strong>Partitions automatiques</strong>&#160;: Utilisez la valeur <code>rolloutStrategy.maxUnavailable</code> pour contrôler quand une partition est prête.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>SUSE® Rancher Prime Continuous Delivery ne progresse que si le nombre de partitions <code>NotReady</code> reste en dessous de <code>maxUnavailablePartitions</code>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>SUSE® Rancher Prime Continuous Delivery déploie des déploiements par lots de jusqu&#8217;à <code>maxNew</code> clusters par partition (par défaut&#160;: 50), indépendamment des partitions ayant plus de clusters assignés. Après chaque lot, SUSE® Rancher Prime Continuous Delivery vérifie le seuil <code>maxUnavailable</code> avant de continuer. Après que tous les déploiements pour une partition ont été créés, <code>maxUnavailable</code> est également évalué. Par exemple :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Si une partition a 25 clusters et que <code>maxUnavailable</code> est 5, SUSE® Rancher Prime Continuous Delivery déploie à tous les 25 avant de vérifier <code>maxUnavailable</code>.</p>
+</li>
+<li>
+<p>Si une partition a 100 clusters, SUSE® Rancher Prime Continuous Delivery déploie aux 50 premiers (par défaut <code>maxNew</code>), vérifie <code>maxUnavailable</code>, et procède avec les 50 restants uniquement si le seuil n&#8217;est pas dépassé.</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Le diagramme suivant montre comment SUSE® Rancher Prime Continuous Delivery gère le déploiement&#160;:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/flow-rollout-fleet.png" alt="Un actif visuel affichant le flux de déploiement dans SUSE® Rancher Prime Continuous Delivery.">
+</div>
+</div>
+<div class="paragraph">
+<p>Diverses limites qui peuvent être configurées dans SUSE® Rancher Prime Continuous Delivery&#160;:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 62.5%;">
+<col style="width: 12.5%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Champ</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Par défaut</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">maxUnavailable</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Nombre maximum ou pourcentage de clusters qui peuvent être <code>NotReady</code> avant d&#8217;arrêter le déploiement.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">100 %</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">maxUnavailablePartitions</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Nombre ou pourcentage de partitions pouvant être <code>NotReady</code> à la fois.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">autoPartitionSize</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Nombre ou pourcentage de clusters par partition auto-créée.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">25 %</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">autoPartitionThreshold</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Nombre minimum de clusters requis avant que l&#8217;auto-partitionnement soit activé. En dessous de ce seuil, tous les clusters sont placés dans une seule partition.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">200</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">maxNew</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Nombre maximum de <code>BundleDeployments</code> pouvant être mis en scène par réconciliation.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">50</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Partitions</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Définir des partitions manuelles par étiquettes de cluster ou groupe. Si définie, la taillePartitionAuto est ignorée.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">–</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>SUSE® Rancher Prime Continuous Delivery prend en charge le partitionnement automatique et manuel. Pour plus d&#8217;informations sur les options de configuration, reportez-vous à l&#8217;option <a href="../reference/ref-fleet-yaml.html" class="xref page"><code>rolloutStrategy</code> dans la référence fleet.yaml.</a></p>
+</div>
+<div class="paragraph">
+<p><strong>Partitionnement Automatique</strong>&#160;: SUSE® Rancher Prime Continuous Delivery crée automatiquement des partitions en utilisant <code>autoPartitionSize</code>.</p>
+</div>
+<div class="paragraph">
+<p>Par exemple, vous avez 200 clusters et définissez <code>autoPartitionSize</code> à 25 %, SUSE® Rancher Prime Continuous Delivery crée quatre partitions de 50 clusters chacune. Le déploiement se poursuit par lots de 50 clusters, vérifiant <code>maxUnavailable</code> avant de continuer.</p>
+</div>
+<div class="paragraph">
+<p>Le paramètre <code>autoPartitionThreshold</code> contrôle quand l&#8217;auto-partitionnement est activé&#160;:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>En dessous du seuil</strong>&#160;: Tous les clusters sont placés dans une seule partition, indépendamment du paramètre <code>autoPartitionSize</code>. Cela empêche un partitionnement inutile pour de petits déploiements.</p>
+</li>
+<li>
+<p><strong>À ou au-dessus du seuil</strong>: SUSE® Rancher Prime Continuous Delivery crée plusieurs partitions en fonction de <code>autoPartitionSize</code>.</p>
+</li>
+<li>
+<p><strong>Seuil personnalisable</strong>&#160;: Vous pouvez abaisser la limite pour activer le partitionnement avec moins de clusters (par exemple, fixez-la à 50 pour des tests à petite échelle) ou l&#8217;augmenter pour éviter le partitionnement jusqu&#8217;à ce que vous ayez un grand nombre de clusters (par exemple, fixez-la à 500).</p>
+</li>
+<li>
+<p><strong>Désactiver le partitionnement automatique</strong>&#160;: Fixez à 0 pour forcer tous les clusters dans une seule partition, quel que soit leur nombre.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Par exemple :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">rolloutStrategy:
+  autoPartitionThreshold: 50  # Enable partitioning with only 50 clusters
+  autoPartitionSize: 50%      # Create partitions of 50% each
+[source,text]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Avec 50 clusters, cela crée 2 partitions de 25 clusters chacune. Sans définir <code>autoPartitionThreshold</code>, ces 50 clusters seraient dans une seule partition (puisque la limite par défaut est de 200).</p>
+</div>
+<div class="paragraph">
+<p><strong>Partitionnement manuel</strong>&#160;: Vous définissez des partitions spécifiques en utilisant l&#8217;option <code>partitions</code>. Cela permet de contrôler la sélection des clusters et l&#8217;ordre de déploiement.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Si vous spécifiez les partitions manuellement, le <code>autoPartitionSize</code> est ignoré.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Par exemple, considérez&#160;:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">rolloutStrategy:
+  partitions:
+    - name: demoRollout
+      maxUnavailable: 10%
+      clusterSelector:
+        matchLabels:
+          env: staging
+    - name: stable
+      maxUnavailable: 5%
+      clusterSelector:
+        matchLabels:
+          env: prod
+[source,text]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>SUSE® Rancher Prime Continuous Delivery ensuite&#160;:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Sélectionne les clusters en fonction de <code>clusterSelector</code>, <code>clusterGroup</code> ou <code>clusterGroupSelector</code>.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Les partitions peuvent être spécifiées par <code>clusterName</code>, <code>clusterSelector</code>, <code>clusterGroup</code> et <code>clusterGroupSelector</code>.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Commence le déploiement vers la première partition.</p>
+</li>
+<li>
+<p>Attend que la partition soit considérée comme <code>Ready</code> (en fonction du seuil <code>maxUnavailable</code>).</p>
+</li>
+<li>
+<p>Procède à la partition suivante.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Le diagramme suivant illustre comment SUSE® Rancher Prime Continuous Delivery gère le déploiement à travers plusieurs partitions, y compris les vérifications de préparation et le flux de déploiement&#160;:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/deploy-targets-partition.png" alt="Un actif visuel affichant le flux de déploiement des partitions.">
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><code>maxNew</code> contrôle combien de <code>BundleDeployments</code> peuvent être mis en scène par réconciliation. La valeur par défaut est 50. Vous pouvez configurer cela via <code>rolloutStrategy.maxNew</code> dans <code>fleet.yaml</code>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Dans chaque partition, SUSE® Rancher Prime Continuous Delivery déploie jusqu&#8217;à <code>maxNew</code> <code>BundleDeployments</code> à la fois (par défaut&#160;: 50). Le diagramme ci-dessous montre comment SUSE® Rancher Prime Continuous Delivery détermine s&#8217;il faut continuer ou attendre pendant ce processus&#160;:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/partition-rollout-flow.png" alt="Un actif visuel affichant le flux de déploiement des cibles dans une partition.">
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>SUSE® Rancher Prime Continuous Delivery recommande d&#8217;étiqueter les clusters afin que vous puissiez utiliser ces étiquettes pour assigner des clusters à des partitions spécifiques.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>SUSE® Rancher Prime Continuous Delivery traite les partitions dans l&#8217;ordre dans lequel elles apparaissent dans le fichier <code>fleet.yaml</code>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_single_partition"><a class="anchor" href="#_single_partition"></a>Partition unique</h3>
+<div class="paragraph">
+<p>Si vous ne définissez pas <code>rolloutStrategy.partitions</code>, SUSE® Rancher Prime Continuous Delivery crée des partitions automatiquement en fonction du nombre de clusters ciblés&#160;:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Pour moins de <code>autoPartitionThreshold</code> clusters (par défaut 200), SUSE® Rancher Prime Continuous Delivery utilise une seule partition.</p>
+</li>
+<li>
+<p>Pour <code>autoPartitionThreshold</code> clusters ou plus, SUSE® Rancher Prime Continuous Delivery utilise la valeur <code>autoPartitionSize</code> (par défaut 25 %) pour créer des partitions.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Par exemple, avec 200 clusters (répondant au <code>autoPartitionThreshold</code> par défaut), SUSE® Rancher Prime Continuous Delivery utilise le <code>autoPartitionSize</code> par défaut de 25 %. Cela signifie que SUSE® Rancher Prime Continuous Delivery crée 4 partitions (25 % de 200 = 50 clusters par partition). SUSE® Rancher Prime Continuous Delivery traite jusqu&#8217;à 50 clusters à la fois, ce qui signifie qu&#8217;il&#160;:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Déploie aux 50 premiers clusters.</p>
+</li>
+<li>
+<p>Évalue la préparation en fonction de <code>maxUnavailable</code>.</p>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Si la condition est remplie, passe aux 50 suivants, et ainsi de suite.</p>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_multiple_partitions"><a class="anchor" href="#_multiple_partitions"></a>Multiples partitions</h3>
+<div class="paragraph">
+<p>Si vous définissez plusieurs partitions, SUSE® Rancher Prime Continuous Delivery utilise <code>maxUnavailablePartitions</code> pour limiter le nombre de partitions pouvant être <code>NotReady</code> à la fois. Si le nombre de partitions <code>NotReady</code> dépasse <code>maxUnavailablePartitions</code>, SUSE® Rancher Prime Continuous Delivery met en pause le déploiement.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_preventing_image_pull_storms"><a class="anchor" href="#_preventing_image_pull_storms"></a>Prévenir les tempêtes de tirage d&#8217;images</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Pendant le déploiement, chaque cluster en aval tire des images de conteneur. Si des centaines de clusters commencent à tirer des images simultanément, cela peut submerger le registre et se comporter comme une attaque DDoS.</p>
+</div>
+<div class="paragraph">
+<p>Pour éviter cela, SUSE® Rancher Prime Continuous Delivery peut contrôler combien de clusters sont mis à jour à la fois. Vous pouvez utiliser les options de configuration de déploiement suivantes pour ralentir et étager le déploiement&#160;:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>autoPartitionSize</code></p>
+</li>
+<li>
+<p><code>partitions</code></p>
+</li>
+<li>
+<p><code>maxUnavailable</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>SUSE® Rancher Prime Continuous Delivery n&#8217;ajoute pas de délais artificiels pendant le déploiement. Au lieu de cela, il progresse en fonction de l&#8217;état <code>readiness</code> des charges de travail dans chaque cluster. Les facteurs qui affectent la préparation incluent le temps de récupération d&#8217;image, le temps de démarrage et les sondes de préparation. Bien que l&#8217;utilisation de sondes de préparation soit recommandée, elles ne sont pas strictement nécessaires pour contrôler la vitesse de déploiement.</p>
+</div>
+<div class="paragraph">
+<p>Par exemple, vous avez 200 clusters, qui sont partitionnés manuellement, chacune contenant 40 clusters et vous souhaitez éviter une tempête de récupération d&#8217;image&#160;:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>maxUnavailablePartitions</code> : Définissez sur 0.</p>
+</li>
+<li>
+<p><code>maxUnavailable</code> : Définissez sur 10 %.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Comment le déploiement progresse&#160;:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>SUSE® Rancher Prime Continuous Delivery commence par la première partition (40 clusters).</p>
+</li>
+<li>
+<p>Il déploie jusqu&#8217;à 50 <code>BundleDeployments</code> à la fois. Ainsi, il déploie tous les 40 clusters de la partition en un seul lot.</p>
+</li>
+<li>
+<p>SUSE® Rancher Prime Continuous Delivery vérifie si les clusters de la partition sont prêts.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Si plus de 4 clusters ne sont pas prêts, alors la partition est considérée comme <code>NotReady</code> et le déploiement est mis en pause.</p>
+</li>
+<li>
+<p>Une fois que ≤4 clusters sont <code>NotReady</code>, SUSE® Rancher Prime Continuous Delivery poursuit le déploiement.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Lorsque l&#8217;ensemble de la partition est principalement prêt (90 %), SUSE® Rancher Prime Continuous Delivery passe à la partition suivante.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Si vous souhaitez ou devez traiter moins de 40 déploiements à la fois, vous pouvez mettre moins de clusters dans chaque partition.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_use_cases_and_behavior"><a class="anchor" href="#_use_cases_and_behavior"></a>Cas d&#8217;utilisation et comportement</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Si le nombre de clusters ne se divise pas uniformément, SUSE® Rancher Prime Continuous Delivery arrondit les tailles de partition. Par exemple, 230 clusters avec <code>autoPartitionSize: 25%</code> donne&#160;:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Quatre partitions de 57 clusters</p>
+</li>
+<li>
+<p>Une partition de 2 clusters</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="_scenario_50_clusters_single_partition"><a class="anchor" href="#_scenario_50_clusters_single_partition"></a>Scénario : 50 Clusters (Partition unique)</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">rolloutStrategy:
+  maxUnavailable: 10%
+[source,text]</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>SUSE® Rancher Prime Continuous Delivery crée une partition contenant les 50 clusters, car aucune partition n&#8217;est définie.</p>
+</li>
+<li>
+<p>Aucune nécessité de spécifier <code>maxUnavailablePartitions</code>, car une seule partition est créée.</p>
+</li>
+<li>
+<p>Bien qu&#8217;il n&#8217;y ait pas de partition manuelle spécifiée et que <code>maxUnavailable</code> soit réglé à 10 %, SUSE® Rancher Prime Continuous Delivery déploie tous les 50 clusters en même temps (le comportement par lot remplace initialement <code>maxUnavailable</code>).</p>
+</li>
+<li>
+<p>L&#8217;évaluation a lieu après que tous les déploiements ont été créés.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Le diagramme suivant illustre comment SUSE® Rancher Prime Continuous Delivery gère 50 clusters dans une seule partition&#160;:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/deploy-50Clusters.png" alt="scénario de 50 clusters">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_scenario_100_clusters_single_partition"><a class="anchor" href="#_scenario_100_clusters_single_partition"></a>Scénario : 100 Clusters (Partition unique)</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">rolloutStrategy:
+  maxUnavailable: 10%
+[source,text]</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>SUSE® Rancher Prime Continuous Delivery crée une partition contenant les 100 clusters, car aucune partition n&#8217;est définie.</p>
+</li>
+<li>
+<p>Aucune nécessité de spécifier <code>maxUnavailablePartitions</code>, car vous n&#8217;en avez qu&#8217;une.</p>
+</li>
+<li>
+<p>Bien qu&#8217;il n&#8217;y ait pas de partition manuelle spécifiée et que <code>maxUnavailable</code> soit réglé à 10 %, SUSE® Rancher Prime Continuous Delivery déploie 50 clusters en même temps (le comportement par lot remplace initialement <code>maxUnavailable</code>).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Si 10 clusters (10 % de 100 clusters) ne sont pas disponibles, le déploiement des 50 clusters restants est suspendu jusqu&#8217;à ce que moins de 10 clusters soient <code>NotReady</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_scenario_200_clusters_multiple_partitions"><a class="anchor" href="#_scenario_200_clusters_multiple_partitions"></a>Scénario : 200 Clusters (Multiples partitions)</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">rolloutStrategy:
+  maxUnavailablePartitions: 1
+  autoPartitionSize: 10%
+[source,text]</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>SUSE® Rancher Prime Continuous Delivery crée 10 partitions, chacune avec 20 clusters.</p>
+</li>
+<li>
+<p>Le déploiement se poursuit séquentiellement par partition.</p>
+</li>
+<li>
+<p>Si deux partitions ou plus deviennent <code>NotReady</code>, le déploiement est suspendu.</p>
+</li>
+<li>
+<p>Si une partition est <code>NotReady</code>, le déploiement peut se poursuivre vers la suivante.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>SUSE® Rancher Prime Continuous Delivery crée <code>BundleDeployments</code> pour 20 clusters, attend qu&#8217;ils deviennent <code>Ready</code>, puis passe au suivant. Cela limite effectivement le nombre de téléchargements d&#8217;images depuis les clusters en aval à environ 40 images à la fois.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_scenario_200_clusters_strict_readiness_manual_partitions"><a class="anchor" href="#_scenario_200_clusters_strict_readiness_manual_partitions"></a>Scénario : 200 Clusters (Préparation stricte, Partitions manuelles)</h3>
+<div class="paragraph">
+<p>La partition manuelle vous permet de contrôler le regroupement des clusters avec <code>maxUnavailablePartitions: 0</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">rolloutStrategy:
+  maxUnavailable: 0
+  maxUnavailablePartitions: 0
+  partitions:
+    - name: demoRollout
+      clusterSelector:
+        matchLabels:
+          stage: demoRollout
+    - name: stable
+      clusterSelector:
+        matchLabels:
+          stage: stable
+[source,text]</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Vous définissez des partitions manuelles en utilisant <code>clusterSelector</code> et des étiquettes comme <code>stage: demoRollout</code> et <code>stage: stable</code>.</p>
+</li>
+<li>
+<p>SUSE® Rancher Prime Continuous Delivery crée <code>BundleDeployments</code> pour les clusters dans la première partition (par exemple, <code>demoRollout</code>).</p>
+</li>
+<li>
+<p>Le déploiement se déroule strictement dans l&#8217;ordre, SUSE® Rancher Prime Continuous Delivery ne passe à la partition suivante que lorsque la partition actuelle est considérée comme prête.</p>
+</li>
+<li>
+<p>Avec <code>maxUnavailable: 0</code> et <code>maxUnavailablePartitions: 0</code>, SUSE® Rancher Prime Continuous Delivery suspend le déploiement si une partition n&#8217;est pas considérée comme prête.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Le diagramme suivant décrit comment SUSE® Rancher Prime Continuous Delivery gère la décision de continuer ou de suspendre le déploiement.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/partition-fleet-rollout.png" alt="Scénario de partitions manuelles">
+</div>
+</div>
+<div class="paragraph">
+<p>Cela garantit une préparation complète et un déploiement par étapes sur les 200 clusters. Utilisez cette approche lorsque vous avez besoin d&#8217;une séquence de déploiement précise et d&#8217;une préparation complète des clusters avant d&#8217;avancer.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_rollout_strategy_defaults"><a class="anchor" href="#_rollout_strategy_defaults"></a>Valeurs par défaut de la stratégie de déploiement</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Si les valeurs de déploiement au niveau de la partition ne sont pas définies, SUSE® Rancher Prime Continuous Delivery applique les valeurs globales de <code>rolloutStrategy</code> dans <code>fleet.yaml</code>. Les paramètres spécifiques à la partition remplacent les valeurs globales lorsqu&#8217;ils sont explicitement définis.</p>
+</div>
+<div class="paragraph">
+<p>Par défaut, SUSE® Rancher Prime Continuous Delivery définit&#160;:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>maxUnavailable</code> à <code>100%</code>&#160;: Tous les clusters d&#8217;une partition peuvent être <code>NotReady</code> et être considérés comme Prêts.</p>
+</li>
+<li>
+<p><code>maxUnavailablePartitions</code> à <code>0</code>&#160;: Empêche le déploiement uniquement lorsque une ou plusieurs partitions sont considérées comme <code>NotReady</code>. Cependant, cette vérification est inefficace si toutes les partitions semblent Prêtes en raison de <code>maxUnavailable: 100%</code>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Par exemple, considérez 200 clusters avec les paramètres par défaut&#160;:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>SUSE® Rancher Prime Continuous Delivery crée 4 partitions de 50 clusters chacune (<code>autoPartitionSize: 25%</code>).</p>
+</li>
+<li>
+<p>Parce que <code>maxUnavailable</code> est <code>100%</code>, chaque partition est traitée comme <code>Ready</code> immédiatement.</p>
+</li>
+<li>
+<p>SUSE® Rancher Prime Continuous Delivery progresse à travers toutes les partitions, indépendamment de leur préparation réelle.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>SUSE® Rancher Prime Continuous Delivery vous recommande de contrôler les déploiements en définissant&#160;:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Baissez <code>maxUnavailable</code>, par exemple à 10 %.</p>
+</li>
+<li>
+<p>Définissez <code>maxUnavailablePartitions</code> à 0 ou plus, si vous le souhaitez.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Cela garantit&#160;:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Les partitions répondent aux critères de préparation avant que le déploiement ne continue.</p>
+</li>
+<li>
+<p>SUSE® Rancher Prime Continuous Delivery suspend le déploiement si trop de partitions ne sont pas prêtes.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="oci-storage.html">Stockage OCI</a></span>
+  <span class="next"><a href="helm-ops.html">Opérations Helm</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<script src="../../../../_/js/site.js"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+<script src="../../../../_/js/vendor/lunr.js"></script>
+<script src="../../../../_/js/vendor/lunr-languages.js"></script>
+<script src="../../../../_/js/search-ui.js" id="search-ui-script" data-site-root-path="../../../.." data-snippet-length="100" data-stylesheet="../../../../_/css/search.css"></script>
+<script async src="../../../../search-index.js"></script>
+<script src="../../../../_/js/vendor/langSelection.js"></script>
+<script async src="../../../../_/js/vendor/tabs.js"></script>
+
+
+<script src="../../../../_/js/CNLanguageSwitcher.js"></script>
+  </body>
+</html>

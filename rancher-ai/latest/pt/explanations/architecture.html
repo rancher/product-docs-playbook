@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="pt_BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Arquitetura | Rancher AI  latest</title>
+    <link rel="canonical" href="https://documentation.suse.com/cloudnative/rancher-ai/latest/pt/explanations/architecture.html">
+    <link rel="prev" href="../quick-start.html">
+    <link rel="next" href="models.html">
+    <meta name="description" content="Uma introdução à arquitetura multi-agente de Liz: The Rancher AI Assistant.">
+    <meta name="generator" content="Antora 3.1.14">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+<meta http-equiv="last-modified" content="2026-02-25"/>
+<link rel="stylesheet" href="../../../../_/css/search.css">
+<link rel="icon" href="../../../../_/img/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="../../../../_/css/font-styles.css">
+<link rel="stylesheet" href="../../../../_/fonts/css/all.css">
+<link rel="stylesheet" href="../../../../_/css/site-extra.css">
+<link rel="stylesheet" href="../../../../_/css/vendor/tabs.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap&family=SUSE+Mono:ital,wght@0,100..800;1,100..800" rel="stylesheet">
+<link rel="stylesheet" href="../../../../_/css/vendor/light.css">
+<script src="/docserv/res/lightheaded/analytics.js" type="text/javascript"></script>
+<script type="module">
+  import { defineCustomElements, setAssetPath } from 'https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/shared-header.esm.js';
+  defineCustomElements();
+  setAssetPath("https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/assets");
+</script>
+<!-- Default English link -->
+<link href="https://documentation.suse.com/cloudnative/rancher-ai/latest/en/explanations/architecture.html" hreflang="x-default" rel="alternate"/>
+<!-- Link for the currently processed page -->
+<link href="https://documentation.suse.com/cloudnative/rancher-ai/latest/pt/explanations/architecture.html" hrefLang="pt-BR" rel="alternate" />
+<!-- Link for the English page -->
+<link href="https://documentation.suse.com/cloudnative/rancher-ai/latest/en/explanations/architecture.html" hreflang="en-US" rel="alternate" />
+<!-- Link for the Japanese page -->
+<link href="https://documentation.suse.com/cloudnative/rancher-ai/latest/ja/explanations/architecture.html" hreflang="ja-JP" rel="alternate" />
+<!-- Link for the Chinese page -->
+<link href="https://documentation.suse.com/cloudnative/rancher-ai/latest/zh/explanations/architecture.html" hreflang="zh-CN" rel="alternate" />
+<!-- Link for the German page -->
+<link href="https://documentation.suse.com/cloudnative/rancher-ai/latest/de/explanations/architecture.html" hreflang="de-DE" rel="alternate" />
+<!-- Link for the French page -->
+<link href="https://documentation.suse.com/cloudnative/rancher-ai/latest/fr/explanations/architecture.html" hreflang="fr-FR" rel="alternate" />
+<!-- Link for the Spanish page -->
+<link href="https://documentation.suse.com/cloudnative/rancher-ai/latest/es/explanations/architecture.html" hreflang="es-ES" rel="alternate" />
+
+<!-- JSON-LD for doc metadata -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Arquitetura | Liz: The Rancher AI Assistant latest",
+  "headline": "Arquitetura",
+  "description": "Uma introdução à arquitetura multi-agente de Liz: The Rancher AI Assistant.",
+  "inLanguage": "pt_BR",
+  "dateModified": "2026-02-25T00:00:00Z",
+  "author": {
+    "@type": "Organization",
+    "name": "SUSE Product & Solution Documentation Team",
+    "url": "https://documentation.suse.com"
+  },
+  "mentions": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "Liz: The Rancher AI Assistant",
+      "softwareVersion": "latest",
+      "applicationCategory": "Cloud Infrastructure",
+      "operatingSystem": "Linux"
+    }
+  ],
+  "publisher": {
+    "@type": "Organization",
+    "name": "SUSE",
+    "url": "https://documentation.suse.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.suse.com/assets/img/suse-white-logo-green.svg"
+    }
+  }
+}
+</script>
+<!-- end JSON-LD for doc metadata -->
+
+<!-- SUVA - Begin Ask Geeko-->
+<!--
+searchUnifyChatbot ("Ask Geeko") Copyright ©2024 Grazitti Interactive - All Rights Reserved. NOTICE: All information contained herein is, and remains the property of Grazitti Interactive and its suppliers, if any. The intellectual and technical concepts contained herein are proprietary to Grazitti Interactive and its suppliers and may be covered by India, U.S. and Foreign Patents, patents in process, and are protected by trade secret or copyright law. Dissemination of this information or reproduction of this material is strictly forbidden unless prior written permission is obtained from Grazitti Interactive.
+-->
+<meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport"/>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/Allow/an.js?c485cb3c-93d4-4942-99e8-91f3b8ca5636"></script>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/js/index.js?q=gAAAAABp3JBN9VuEJTi5tFafLIMwgMkCPdJS3Qm56lSYx93ir3Twt9hgSvd3OHEt6-nYfSbY3yHq0Zv8PRPsSy4nbqZiaJ4cZvRc6ItVZdvwz9Urf35cH6OUyPOwdA0phlS-zVIznQ2rWW438p-91NlTHuxJuOFpnA=="></script>
+<link rel="stylesheet" href="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/css/index.css">
+<div id="searchUnifyChatbot"></div>
+<!-- SUVA - End Ask Geeko-->
+<!--BEGIN QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+<script type='text/javascript' src="../../../../_/js/qualtrics.js" defer></script>
+<!--END QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<script type="module">import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs'; mermaid.initialize({"startOnLoad":true});</script><shared-header
+language="en"
+languages='{
+    "en": { "label": "English", "url": "https://documentation.suse.com/en-us/" },
+    "de": { "label": "Deutsch", "url": "https://documentation.suse.com/de-de/" },
+    "fr": { "label": "Français", "url": "https://documentation.suse.com/fr-fr/" },
+    "es": { "label": "Español", "url": "https://documentation.suse.com/es-es/" },
+    "zh_CN": { "label": "中文", "url": "https://documentation.suse.com/zh-cn/" },
+    "pt_BR": { "label": "Português Brasileiro", "url": "https://documentation.suse.com/pt-br/" }
+}'
+enable-search='false'>
+</shared-header>
+<div class="body">
+<div class="nav-container" data-component="rancher-ai" data-version="latest">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title">Rancher AI</h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../introduction.html">Introdução</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../quick-start.html">Início rápido</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Explicações e conceitos</span>
+<ul class="nav-list">
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="architecture.html">Arquitetura</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="models.html">Modelos LLM</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="shared-data.html">Uso de dados</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Guias</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../how-tos/how-to-admin.html">Guias para administradores</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../how-tos/how-to-admin.html#ollama">Configurar Ollama</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../how-tos/how-to-admin.html#openai">Configurar OpenAI</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../how-tos/how-to-admin.html#gemini">Configurar Gemini</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../how-tos/how-to-admin.html#bedrock">Configurar AWS Bedrock</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../how-tos/how-to-admin.html#multi-agent">Configurar Múltiplos Agentes de IA</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../how-tos/how-to-admin.html#bring-your-own-mcp">Adicionar seu servidor MCP</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../how-tos/how-to-admin.html#rbac">Controlar Acesso (RBAC)</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../how-tos/how-to-admin.html#mcp-read-only">Modo Somente Leitura</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../how-tos/how-to-admin.html#airgap">Instalação de air gap</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../how-tos/how-to-admin.html#persistconversations">Persistir Conversas</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../how-tos/how-to-user.html">Guias para usuários</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../how-tos/how-to-user.html#getting-started ">Interagir com Liz</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../how-tos/how-to-user.html#context-aware ">Consciência de contexto</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../how-tos/how-to-user.html#user-confirmation ">Confirmação do usuário</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../how-tos/how-to-user.html#managing-conversations">Gerenciando conversas</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../how-tos/how-to-user.html#manual-agent-selection">Selecionar agente manualmente</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../how-tos/how-to-user.html#prompt-examples">Exemplos de prompts</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Referência</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/troubleshooting.html">Solução de problemas</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Rancher AI</span>
+    <span class="version">latest</span>
+  </div>
+  <ul class="components">
+        <li class="component">
+          <div class="title"><a href="../../../../admission-controller/1.36/en/introduction.html">Admission Controller</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../admission-controller/1.37/en/introduction.html">1.37-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../admission-controller/1.36/en/introduction.html">1.36</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.35/en/introduction.html">1.35</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.34/en/introduction.html">1.34</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.33/en/introduction.html">1.33</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.32/en/introduction.html">1.32</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.31/en/introduction.html">1.31</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.30/en/introduction.html">1.30</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.29/en/introduction.html">1.29</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.28/en/introduction.html">1.28</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../cluster-api/v0.26/en/index.html">Cluster API</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../cluster-api/v0.28/en/index.html">v0.28-dev</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.27/en/index.html">v0.27-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../cluster-api/v0.26/en/index.html">v0.26</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.25/en/index.html">0.25</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.24/en/index.html">0.24</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.23/en/index.html">0.23</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.22/en/index.html">0.22</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.21/en/index.html">0.21</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.20/en/index.html">0.20</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.19/en/index.html">0.19</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.18/en/index.html">0.18</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.17/en/index.html">0.17</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.16/en/index.html">0.16</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.11/en/index.html">0.11</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../continuous-delivery/next/en/index.html">Continuous Delivery</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../continuous-delivery/next/en/index.html">Next</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.15/en/index.html">v0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.11/en/index.html">0.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.10/en/index.html">0.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.9/en/index.html">0.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../k3s/latest/en/introduction.html">K3s</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../k3s/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../os-manager/1.9/en/index.html">OS Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../os-manager/1.10/en/index.html">1.10-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../os-manager/1.9/en/index.html">1.9</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.8/en/index.html">1.8</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.7/en/index.html">1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.6/en/index.html">1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.5/en/index.html">1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component is-current">
+          <div class="title"><a href="../../en/introduction.html">Rancher AI</a></div>
+          <ul class="versions">
+            <li class="version is-current is-latest">
+              <a href="../../en/introduction.html">latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../turtles/stable/en/index.html">Rancher Turtles</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../turtles/stable/en/index.html">Stable</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rke2/latest/en/introduction.html">RKE2</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rke2/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-observability/latest/en/classic.html">SUSE Observability</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../suse-observability/latest/en/classic.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">SUSE Rancher Developer Access</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">SUSE® Rancher for AWS</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-manager/v2.14/en/about-rancher/what-is-rancher.html">SUSE® Rancher Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.15/en/about-rancher/what-is-rancher.html">v2.15 (Unreleased)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../rancher-manager/v2.14/en/about-rancher/what-is-rancher.html">v2.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.13/en/about-rancher/what-is-rancher.html">v2.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.12/en/about-rancher/what-is-rancher.html">v2.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.11/en/about-rancher/what-is-rancher.html">v2.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.10/en/about-rancher/what-is-rancher.html">v2.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.9/en/about-rancher/what-is-rancher.html">v2.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../security/5.6/en/overview.html">SUSE® Security</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../security/5.6/en/overview.html">5.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.5/en/overview.html">5.5</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.4/en/overview.html">5.4</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.3/en/overview.html">5.3</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../storage/1.11/en/longhorn-documentation.html">SUSE® Storage</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../storage/1.12/en/longhorn-documentation.html">1.12 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../storage/1.11/en/longhorn-documentation.html">1.11 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../storage/1.10/en/longhorn-documentation.html">1.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../storage/1.9/en/longhorn-documentation.html">1.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">SUSE® Virtual Clusters</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/1.2.0/en/release-notes/version-1.2.0.html">v1.2.0 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">v1.1.0-latest</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/1.0.2/en/release-notes/version-1.0.2.html">v1.0.2</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.1/en/introduction.html">v1.0.1</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.0/en/introduction.html">v1.0.0</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../virtualization/v1.8/en/introduction/overview.html">SUSE® Virtualization</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../virtualization/v1.9/en/introduction/overview.html">v1.9 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../virtualization/v1.8/en/introduction/overview.html">v1.8 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../virtualization/v1.7/en/introduction/overview.html">v1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../../virtualization/v1.6/en/introduction/overview.html">v1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../virtualization/v1.5/en/introduction/overview.html">v1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../vulnerability-scanner/0.12.0/en/introduction.html">Vulnerability Scanner</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../vulnerability-scanner/0.12.0/en/introduction.html">0.12.0</a>
+            </li>
+            <li class="version">
+              <a href="../../../../vulnerability-scanner/0.11.3/en/introduction.html">0.11.3</a>
+            </li>
+          </ul>
+        </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+<ul>
+    <li>
+  <a class="home-link-dsc" href="https://documentation.suse.com" title="SUSE Documentation Home" aria-label="SUSE Documentation Home"></a>
+    </li>
+    <li>
+      <a href="https://documentation.suse.com/cloudnative/rancher-ai" title="Liz: The Rancher AI Assistant" aria-label="SUSE Documentation - Liz: The Rancher AI Assistant">
+        Liz: The Rancher AI Assistant
+      </a>
+    </li>
+      <li>
+          Explicações e conceitos
+      </li>
+  </ul>
+</nav>
+      <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <label class="visual-search-label-bc" for="search-input">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+          <input label="Search" aria-label="Search" id="search-input" type="text" placeholder="Pesquisar na documentação" >
+          <label class="filter checkbox" style="display: none">
+            <input type="checkbox" data-facet-filter="component:rancher-ai" checked> Only this project
+          </label>
+        </div>
+      </div>
+</div>
+  <div class="content">
+<aside
+  class="toc sidebar"
+  data-title="Nesta página" data-levels="2">
+  <div class="toc-menu">
+    <div class="docsurvey-wrapper"><a class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_diCzHC9xxyJyuN0">Documentation survey</a></div>
+    <!-- start qualtrics -->
+    <div id='ZN_8qZUmklKYbBqAYe'><!--DO NOT REMOVE-CONTENTS PLACED HERE--></div>
+    <div id="qualtrics_container"></div>
+    <!-- end qualtrics -->
+  </div>
+</aside>
+
+<aside class="toc sidebar docsurvey-sidebar">
+  <div class="toc-menu">
+    <div class="docsurvey-wrapper"><a class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_diCzHC9xxyJyuN0">Documentation survey</a></div>
+  </div>
+</aside>
+<article class="doc">
+<h1 class="page">Arquitetura</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>O sistema é projetado como um <strong>ecossistema multi-agente hierárquico</strong>. Ele usa um <strong>Supervisor (Liz)</strong> central para orquestrar solicitações entre múltiplos <strong>Agentes de IA</strong> especializados, cada um conectado a um ou mais servidores <strong>MCP (Protocolo de Contexto de Modelo)</strong>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_componentes"><a class="anchor" href="#_componentes"></a>Componentes</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_o_supervisor_liz"><a class="anchor" href="#_o_supervisor_liz"></a><a href="https://github.com/rancher/rancher-ai-agent">O Supervisor (Liz)</a></h3>
+<div class="paragraph">
+<p>Liz é o ponto de entrada do sistema e o orquestrador da experiência do usuário. Em vez de executar diretamente cada tarefa técnica, Liz atua como um <strong>Roteador</strong> inteligente.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Analisa o prompt do usuário para determinar o domínio necessário (por exemplo, Segurança, Provisionamento ou Fleet).</p>
+</li>
+<li>
+<p>Consulta os metadados de <code>AIAgentConfig</code> para selecionar o Agente especializado mais apropriado para a tarefa.</p>
+</li>
+<li>
+<p>Acompanha a localização do usuário na interface do Rancher e garante que os metadados relevantes de cluster, namespace e recurso sejam passados para os Agentes downstream para fornecer uma resposta "consciente do contexto".</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_agentes_de_ia_especializados_a_equipe"><a class="anchor" href="#_agentes_de_ia_especializados_a_equipe"></a>Agentes de IA Especializados (A "Equipe")</h3>
+<div class="paragraph">
+<p>Os Agentes Especializados são os cavalos de batalha do sistema. Cada agente é o orquestrador da inteligência de seu domínio específico. Ele usa um modelo de linguagem de grande escala (LLM) como seu motor de raciocínio, enquanto o agente em si fornece a estrutura, coordenação e execução segura das ações.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>LLM (Motor de Raciocínio)</strong>:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Interpreta as entradas do usuário expressas em linguagem natural.</p>
+</li>
+<li>
+<p>Realiza o raciocínio: divide solicitações complexas em etapas menores.</p>
+</li>
+<li>
+<p>Decide o que deve acontecer a seguir (continuar raciocinando vs. tomar ação).</p>
+</li>
+<li>
+<p>Sintetiza saídas de ferramentas em respostas claras e legíveis por humanos.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>Agente (Orquestrador)</strong>:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Envolve o LLM com o padrão ReAct (Raciocínio + Ação).</p>
+</li>
+<li>
+<p>Decide quando deixar o LLM continuar raciocinando ou quando agir de acordo com suas instruções.</p>
+</li>
+<li>
+<p>Chama ferramentas externas (via o Servidor MCP) conforme direcionado pelo LLM.</p>
+</li>
+<li>
+<p>Garante interações seguras passando o token do Rancher do usuário para o servidor MCP para autenticação e autorização.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_servidor_mcp"><a class="anchor" href="#_servidor_mcp"></a><a href="https://github.com/rancher/rancher-ai-mcp">Servidor MCP</a></h3>
+<div class="paragraph">
+<p>O Servidor MCP atua como um gateway seguro e controlado entre o Agente ReAct e as APIs do Rancher e Kubernetes. Suas funções incluem:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Expondo Ferramentas</strong>: Ele fornece um conjunto de ferramentas bem definidas e seguras (pontos de extremidade da API) que o Agente ReAct pode chamar. Essas ferramentas abstraem a complexidade das interações diretas com a API do Rancher/Kubernetes.</p>
+</li>
+<li>
+<p><strong>Interação com o Rancher</strong>: Ele traduz chamadas de ferramentas do agente nas solicitações de API apropriadas para o servidor de gerenciamento do Rancher, recuperando ou modificando recursos conforme necessário.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_extensão_de_ui"><a class="anchor" href="#_extensão_de_ui"></a>Extensão de UI</h3>
+<div class="paragraph">
+<p>A extensão de UI fornece a interface de chat voltada para o usuário dentro do painel do Rancher. Ela é projetada para ser uma parte integrada da experiência do Rancher e é responsável por:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Entrada do Usuário</strong>: Ela captura consultas do usuário e as envia para o Agente ReAct.</p>
+</li>
+<li>
+<p><strong>Exibindo Respostas</strong>: Ela recebe respostas do Agente ReAct e as apresenta em um formato semelhante a um chat.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_como_funciona_o_fluxo"><a class="anchor" href="#_como_funciona_o_fluxo"></a>Como Funciona (O Fluxo)</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>Solicitação do Usuário</strong>: O usuário envia uma consulta através da Extensão da UI.</p>
+</li>
+<li>
+<p><strong>Roteamento do Supervisor</strong>: Liz identifica a intenção e roteia a consulta, juntamente com o contexto da UI, para o agente especializado (por exemplo, o Fleet agent).</p>
+</li>
+<li>
+<p><strong>Raciocínio LLM</strong>: O LLM do Agente especializado interpreta o pedido, raciocina sobre o problema e propõe um plano de ação.</p>
+</li>
+<li>
+<p><strong>Atuação do Agente</strong>: Se o plano requer operações externas, o agente chama as ferramentas apropriadas do Servidor MCP usando o token seguro do usuário.</p>
+</li>
+<li>
+<p><strong>Formulação da Resposta</strong>: O LLM pega as saídas das ferramentas e elabora uma resposta coerente e legível por humanos.</p>
+</li>
+<li>
+<p><strong>Resposta Final</strong>: Liz entrega a resposta sintetizada do Agente de volta para a UI.</p>
+</li>
+</ol>
+</div>
+<div class="imageblock"><div class="mermaid content" style=" ">
+grafo TD
+
+subgraph "A. User Interaction"
+User[User / DevOps]
+UI[UI Extension]
+end
+
+subgrafo "B. Camada do Supervisor" +
+Liz{Liz Supervisor} +
+encerrar
+
+subgrafo "C. Agentes Especializados (ReAct)" +
+AgenteRancher(Rancher Agent) +
+AgenteFleet(Rancher Fleet Agent) +
+AgenteProv(Rancher Provisioning Agent) +
+AgenteAppCo(SUSE Application Collection Agent) +
+AgenteObs(SUSE Observability Agent) +
+AgenteSeg(SUSE Security Agent) +
+AgentePersonalizado(Custom Agent) +
+encerrar
+
+subgrafo "Camada de Raciocínio LLM (Aplicável a todos os Agentes)" +
+direção LR +
+LLMLocal[LLM Local] +
+LLMPúblico[LLM Público] +
+encerrar
+
+subgrafo "D. Gateways de Infraestrutura" +
+MCP1[MCP Rancher] +
+MCP2[MCP de Coleta de Aplicações] +
+MCP_Obs[MCP de Observabilidade] +
+MCP_Sec[MCP de Segurança] +
+MCP4[MCP de Terceiros] +
+encerrar
+
+subgrafo "E. Dados & APIs" +
+API_Rancher[(API Rancher / K8s)] +
+API_AppCo[(API de Coleta de Aplicações)] +
+DB_Métricas[(Observabilidade SUSE / Métricas)] +
+DB_Vulnerabilidades[(Segurança / Scans CVE)] +
+API_Externa[(Sistema Externo)] +
+encerrar
+
+%% Fluxo
+Usuário -- "1. Consulta" --> UI
+UI -- "2. Contexto + Intenção" --> Liz
+Liz -- "3. Roteia" --> AgenteRancher +
+Liz --> AgenteFleet +
+Liz --> AgenteProv +
+Liz --> AgenteAppCo +
+Liz --> AgenteObs +
+Liz --> AgenteSeg +
+Liz --> AgentePersonalizado
+
+%% Exemplo de Loop de Raciocínio
+AgenteRancher -. "Motor de Raciocínio" .-> LocalLLM
+RancherAgent -. "Motor de Raciocínio" .-> PublicLLM
+
+%% Conexões de Razão + Ação +
+AgenteRancher -- "4" --> MCP1 +
+AgenteFleet -- "4" --> MCP1 +
+AgenteProv -- "4" --> MCP1 +
+AgenteAppCo -- "4" --> MCP2 +
+AgenteObs -- "4" --> MCP_Obs +
+AgenteSeg -- "4" --> MCP_Sec +
+AgentePersonalizado -- "4" --> MCP4
+
+%% Conexões de API
+MCP1 -- "5" --> APIRancher
+MCP2 -- "5" --> APIAppCo
+MCP_Obs -- "5" --> DBMétricas
+MCP_Sec -- "5" --> DBVuln
+MCP4 -- "5" --> APIExterna
+
+%% Estilo
+estilo Liz fill:#f9f,stroke:#333,stroke-width:2px
+estilo LLMLocal fill:#fff3cd,stroke:#ffc107,stroke-dasharray: 5 5
+estilo LLMPúblico fill:#fff3cd,stroke:#ffc107,stroke-dasharray: 5 5 +
+estilo Nota fill:#fff,stroke:none +
+estilo AgenteRancher fill:#d4edda,stroke:#28a745 +
+estilo AgenteFleet fill:#d4edda,stroke:#28a745 +
+estilo AgenteProv fill:#d4edda,stroke:#28a745 +
+estilo AgenteAppCo fill:#d4edda,stroke:#28a745 +
+estilo AgenteObs fill:#d4edda,stroke:#28a745 +
+estilo AgenteSeg fill:#d4edda,stroke:#28a745 +
+estilo MCP_Obs fill:#cce5ff,stroke:#007bff +
+estilo MCP_Sec fill:#cce5ff,stroke:#007bff</div></div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="../quick-start.html">Início rápido</a></span>
+  <span class="next"><a href="models.html">Modelos LLM</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<script src="../../../../_/js/site.js"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+<script src="../../../../_/js/vendor/lunr.js"></script>
+<script src="../../../../_/js/vendor/lunr-languages.js"></script>
+<script src="../../../../_/js/search-ui.js" id="search-ui-script" data-site-root-path="../../../.." data-snippet-length="100" data-stylesheet="../../../../_/css/search.css"></script>
+<script async src="../../../../search-index.js"></script>
+<script src="../../../../_/js/vendor/langSelection.js"></script>
+<script async src="../../../../_/js/vendor/tabs.js"></script>
+
+
+<script src="../../../../_/js/CNLanguageSwitcher.js"></script>
+  </body>
+</html>

@@ -1,0 +1,1645 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Host Network Configuration and Underlay Selection | SUSE® Virtualization  v1.8 (Latest)</title>
+    <link rel="canonical" href="https://documentation.suse.com/cloudnative/virtualization/v1.8/en/networking/host-network-config.html">
+    <link rel="prev" href="vm-isolation.html">
+    <link rel="next" href="best-practices.html">
+    <meta name="generator" content="Antora 3.1.14">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+<meta http-equiv="last-modified" content="2026-07-16"/>
+<link rel="stylesheet" href="../../../../_/css/search.css">
+<link rel="icon" href="../../../../_/img/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="../../../../_/css/font-styles.css">
+<link rel="stylesheet" href="../../../../_/fonts/css/all.css">
+<link rel="stylesheet" href="../../../../_/css/site-extra.css">
+<link rel="stylesheet" href="../../../../_/css/vendor/tabs.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap&family=SUSE+Mono:ital,wght@0,100..800;1,100..800" rel="stylesheet">
+<link rel="stylesheet" href="../../../../_/css/vendor/light.css">
+<script src="/docserv/res/lightheaded/analytics.js" type="text/javascript"></script>
+<script type="module">
+  import { defineCustomElements, setAssetPath } from 'https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/shared-header.esm.js';
+  defineCustomElements();
+  setAssetPath("https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/assets");
+</script>
+<!-- Default English link -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.8/en/networking/host-network-config.html" hreflang="x-default" rel="alternate"/>
+<!-- Link for the currently processed page -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.8/en/networking/host-network-config.html" hrefLang="en-US" rel="alternate" />
+
+<!-- JSON-LD for doc metadata -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Host Network Configuration and Underlay Selection | SUSE Virtualization v1.8",
+  "headline": "Host Network Configuration and Underlay Selection",
+  "description": "Host Network Configuration and Underlay Selection",
+  "inLanguage": "en",
+  "dateModified": "2026-07-16T00:00:00Z",
+  "author": {
+    "@type": "Organization",
+    "name": "SUSE Product & Solution Documentation Team",
+    "url": "https://documentation.suse.com"
+  },
+  "mentions": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "SUSE Virtualization",
+      "softwareVersion": "v1.8",
+      "applicationCategory": "Cloud Infrastructure",
+      "operatingSystem": "Linux"
+    }
+  ],
+  "publisher": {
+    "@type": "Organization",
+    "name": "SUSE",
+    "url": "https://documentation.suse.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.suse.com/assets/img/suse-white-logo-green.svg"
+    }
+  }
+}
+</script>
+<!-- end JSON-LD for doc metadata -->
+
+<!-- SUVA - Begin Ask Geeko-->
+<!--
+searchUnifyChatbot ("Ask Geeko") Copyright ©2024 Grazitti Interactive - All Rights Reserved. NOTICE: All information contained herein is, and remains the property of Grazitti Interactive and its suppliers, if any. The intellectual and technical concepts contained herein are proprietary to Grazitti Interactive and its suppliers and may be covered by India, U.S. and Foreign Patents, patents in process, and are protected by trade secret or copyright law. Dissemination of this information or reproduction of this material is strictly forbidden unless prior written permission is obtained from Grazitti Interactive.
+-->
+<meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport"/>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/Allow/an.js?c485cb3c-93d4-4942-99e8-91f3b8ca5636"></script>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/js/index.js?q=gAAAAABp3JBN9VuEJTi5tFafLIMwgMkCPdJS3Qm56lSYx93ir3Twt9hgSvd3OHEt6-nYfSbY3yHq0Zv8PRPsSy4nbqZiaJ4cZvRc6ItVZdvwz9Urf35cH6OUyPOwdA0phlS-zVIznQ2rWW438p-91NlTHuxJuOFpnA=="></script>
+<link rel="stylesheet" href="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/css/index.css">
+<div id="searchUnifyChatbot"></div>
+<!-- SUVA - End Ask Geeko-->
+<!--BEGIN QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+<script type='text/javascript' src="../../../../_/js/qualtrics.js" defer></script>
+<!--END QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<script type="module">import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs'; mermaid.initialize({"startOnLoad":true});</script><shared-header
+language="en"
+languages='{
+    "en": { "label": "English", "url": "https://documentation.suse.com/en-us/" },
+    "de": { "label": "Deutsch", "url": "https://documentation.suse.com/de-de/" },
+    "fr": { "label": "Français", "url": "https://documentation.suse.com/fr-fr/" },
+    "es": { "label": "Español", "url": "https://documentation.suse.com/es-es/" },
+    "zh_CN": { "label": "中文", "url": "https://documentation.suse.com/zh-cn/" },
+    "pt_BR": { "label": "Português Brasileiro", "url": "https://documentation.suse.com/pt-br/" }
+}'
+enable-search='false'>
+</shared-header>
+<div class="body">
+<div class="nav-container" data-component="virtualization" data-version="v1.8">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title">SUSE® Virtualization</h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Introduction</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/overview.html">Overview</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/deploy-ha-cluster.html">Deploy a High-Availability Cluster</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/deploy-singlenode-cluster.html">Deploy a Single-Node Cluster</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/glossary.html">Glossary</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/document-conventions.html">Document Conventions</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Installation and Setup</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/requirements.html">Hardware and Network Requirements</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Installation Media</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/media/net-install.html">Net Install ISO</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/media/install-binaries-mode.html">Install Binaries Only</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Installation Methods</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/methods/iso-install.html">ISO Installation</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/methods/usb-install.html">USB Installation</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/methods/pxe-boot-install.html">PXE Boot Installation</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Configuration</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/config/configuration-file.html">Configuration File</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/config/update-configuration.html">Update the Configuration After Installation</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/config/settings.html">Settings</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/config/cloudinitcrd.html">CloudInit CRD</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/post-installation.html">Post-Installation Tasks</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/management-address.html">Management Address</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/external-disk.html">External Disk Support</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/authentication.html">Authentication</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/airgap.html">Air-Gapped Environment</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/single-node-clusters.html">Single-Node Clusters</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Upgrades</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/upgrades.html">Upgrades</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-5-0-to-v1-5-1.html">Upgrade from v1.5.0 to v1.5.1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-5-0-to-v1-5-2.html">Upgrade from v1.5.0 or v1.5.1 to v1.5.2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-5-x-to-v1-6-x.html">Upgrade from v1.5.x to v1.6.x</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-6-x-to-v1-6-y.html">Upgrade from v1.6.x to v1.6.y</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-6-x-to-v1-7-x.html">Upgrade from v1.6.x to v1.7.x</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-7-x-to-v1-7-y.html">Upgrade from v1.7.x to v1.7.y</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-7-x-to-v1-8-x.html">Upgrade from v1.7.x to v1.8.x</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/troubleshooting.html">Troubleshooting</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Hosts</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../hosts/hosts.html">Host Management</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../hosts/witness-node.html">Witness Node</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../hosts/vgpu-support.html">vGPU Support</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Virtual Machines</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/virtual-machines.html">Virtual Machines</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Virtual Machine Images</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../virtual-machines/vm-images/upload-image.html">Upload Images</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../virtual-machines/vm-images/custom-suse-images.html">Custom SUSE Virtual Machine Images</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../virtual-machines/vm-images/image-security.html">Image Security</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/create-vm.html">Create a Virtual Machine</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/create-windows-vm.html">Create a Windows Virtual Machine</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/edit-vm.html">Edit a Virtual Machine</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/access-vm.html">Access to the Virtual Machine</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/clone-vm.html">Clone a Virtual Machine</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/backup-restore.html">Virtual Machine Backup, Snapshot &amp; Restore</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/live-migration.html">Live Migration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/hotplug-volume.html">Hot-Plug Volumes</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/resource-overcommit.html">Resource Overcommit</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/cpu-pinning.html">CPU Pinning</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/cpu-memory-hotplug.html">CPU and Memory Hotplug</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/nic-hotplug.html">NIC Hotplug</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/cpu-model-selection.html">CPU Model Selection</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/cdrom-hotplug.html">CD-ROM Hotplug</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Storage</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../storage/storage.html">Storage</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Volumes</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../storage/volumes/create-volume.html">Create a Volume</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../storage/volumes/edit-volume.html">Edit a Volume</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../storage/volumes/clone-volume.html">Clone a Volume</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../storage/volumes/export-volume.html">Export a Volume to Image</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../storage/volumes/volume-snapshots.html">Volume Snapshots</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../storage/volumes/volume-security.html">Volume Security</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../storage/storageclass.html">StorageClass</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../storage/csidriver.html">Third-Party Storage Support</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../storage/longhorn-v2-data-engine.html">Longhorn V2 Data Engine</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../storage/disk-filter-auto-provision.html">Disk Filtering and Automatic Provisioning</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../storage/storage-migration.html">Storage Migration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../storage/storage-validator.html">Storage Validator</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Networking</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="cluster-network.html">Cluster Network</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="vm-network.html">VM Network</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="deep-dive.html">Networking Deep Dive</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="load-balancer.html">Load Balancer</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="ip-pool.html">IP Pool</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="storage-network.html">Storage Network</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="rwx-network.html">RWX Network</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="vm-migration-network.html">VM Migration Network</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="kubeovn-vpc.html">Virtual Private Cloud</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="vpc-nat-gateway.html">VPC NAT Gateway</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="vm-isolation.html">Virtual Machine Isolation</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="host-network-config.html">Host Network Configuration and Underlay Selection</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="best-practices.html">Networking Best Practices</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Security and Resilience</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../security-resilience/pod-security-standards.html">Cluster Pod Security Standards</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../security-resilience/ha-principles.html">High Availability Principles</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../security-resilience/failure-domains.html">Cluster Architecture and Failure Domains</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Observability</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../observability/logging.html">Logging</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../observability/monitoring.html">Monitoring</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Add-ons</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/add-ons.html">Add-ons</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/harvester-seeder.html">Harvester Seeder</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/kubeovn-operator.html">Kube-OVN Operator (Experimental)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/lvm-local-storage.html">CSI Driver LVM (Experimental)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/nvidia-driver-toolkit.html">NVIDIA Driver Toolkit</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/pcidevices-controller.html">PCI Devices Controller</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/rancher-vcluster.html">Rancher vCluster (Experimental)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/suse-observability-agent.html">SUSE Observability Agent (Experimental)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/virtual-machine-auto-balance.html">Virtual Machine Auto Balance (Experimental)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/vm-dhcp-controller.html">VM DHCP Controller (Experimental)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/vm-import-controller.html">VM Import Controller</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/upgrade-manager.html">Upgrade Manager</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Integrations</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Rancher Integration</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/rancher-integration.html">SUSE Rancher Prime Integration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/virtualization-management.html">Virtualization Management</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/rancher-rbac.html">Rancher Role-Based Access Control</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Node Driver</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../integrations/rancher/node-driver/node-driver.html">Harvester Node Driver</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../integrations/rancher/node-driver/rke2-cluster.html">Creating an RKE2 Kubernetes Cluster</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../integrations/rancher/node-driver/k3s-cluster.html">Creating a K3s Kubernetes Cluster</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/cloud-provider.html">Harvester Cloud Provider</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/csi-driver.html">Harvester CSI Driver</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/resource-quota.html">Resource Quotas</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/rancher-terraform-provider.html">Rancher Terraform</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/import-vm.html">Import a Cluster Built on a SUSE® Virtualization VM</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/harvester-ui-extension.html">Harvester UI Extension</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../integrations/terraform/terraform-provider.html">Terraform Provider</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Troubleshooting</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/installation.html">Installation Issues</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/operating-system.html">Operating System Issues</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/cluster.html">Cluster Issues</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/virtual-machines.html">Virtual Machine Issues</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/monitoring.html">Monitoring Issues</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/logging.html">Logging Issues</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/rancher.html">SUSE Rancher Prime Issues</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/admin-access.html">Password Recovery for UI and Console User Accounts</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/ssh-users.html">Creating Users with SSH Access to Harvester Nodes</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/faq.html">FAQ</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Developer Content</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../developer/addon-development.html">Add-on Development Guide</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../api.html">API</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">SUSE® Virtualization</span>
+    <span class="version">v1.8 (Latest)</span>
+  </div>
+  <ul class="components">
+        <li class="component">
+          <div class="title"><a href="../../../../admission-controller/1.36/en/introduction.html">Admission Controller</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../admission-controller/1.37/en/introduction.html">1.37-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../admission-controller/1.36/en/introduction.html">1.36</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.35/en/introduction.html">1.35</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.34/en/introduction.html">1.34</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.33/en/introduction.html">1.33</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.32/en/introduction.html">1.32</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.31/en/introduction.html">1.31</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.30/en/introduction.html">1.30</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.29/en/introduction.html">1.29</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.28/en/introduction.html">1.28</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../cluster-api/v0.26/en/index.html">Cluster API</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../cluster-api/v0.28/en/index.html">v0.28-dev</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.27/en/index.html">v0.27-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../cluster-api/v0.26/en/index.html">v0.26</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.25/en/index.html">0.25</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.24/en/index.html">0.24</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.23/en/index.html">0.23</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.22/en/index.html">0.22</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.21/en/index.html">0.21</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.20/en/index.html">0.20</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.19/en/index.html">0.19</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.18/en/index.html">0.18</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.17/en/index.html">0.17</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.16/en/index.html">0.16</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.11/en/index.html">0.11</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../continuous-delivery/next/en/index.html">Continuous Delivery</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../continuous-delivery/next/en/index.html">Next</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.15/en/index.html">v0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.11/en/index.html">0.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.10/en/index.html">0.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.9/en/index.html">0.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../k3s/latest/en/introduction.html">K3s</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../k3s/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../os-manager/1.9/en/index.html">OS Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../os-manager/1.10/en/index.html">1.10-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../os-manager/1.9/en/index.html">1.9</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.8/en/index.html">1.8</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.7/en/index.html">1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.6/en/index.html">1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.5/en/index.html">1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-ai/latest/en/introduction.html">Rancher AI</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-ai/latest/en/introduction.html">latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../turtles/stable/en/index.html">Rancher Turtles</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../turtles/stable/en/index.html">Stable</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rke2/latest/en/introduction.html">RKE2</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rke2/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-observability/latest/en/classic.html">SUSE Observability</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../suse-observability/latest/en/classic.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">SUSE Rancher Developer Access</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">SUSE® Rancher for AWS</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-manager/v2.14/en/about-rancher/what-is-rancher.html">SUSE® Rancher Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.15/en/about-rancher/what-is-rancher.html">v2.15 (Unreleased)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../rancher-manager/v2.14/en/about-rancher/what-is-rancher.html">v2.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.13/en/about-rancher/what-is-rancher.html">v2.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.12/en/about-rancher/what-is-rancher.html">v2.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.11/en/about-rancher/what-is-rancher.html">v2.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.10/en/about-rancher/what-is-rancher.html">v2.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.9/en/about-rancher/what-is-rancher.html">v2.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../security/5.6/en/overview.html">SUSE® Security</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../security/5.6/en/overview.html">5.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.5/en/overview.html">5.5</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.4/en/overview.html">5.4</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.3/en/overview.html">5.3</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../storage/1.11/en/longhorn-documentation.html">SUSE® Storage</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../storage/1.12/en/longhorn-documentation.html">1.12 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../storage/1.11/en/longhorn-documentation.html">1.11 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../storage/1.10/en/longhorn-documentation.html">1.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../storage/1.9/en/longhorn-documentation.html">1.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">SUSE® Virtual Clusters</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/1.2.0/en/release-notes/version-1.2.0.html">v1.2.0 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">v1.1.0-latest</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/1.0.2/en/release-notes/version-1.0.2.html">v1.0.2</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.1/en/introduction.html">v1.0.1</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.0/en/introduction.html">v1.0.0</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component is-current">
+          <div class="title"><a href="../introduction/overview.html">SUSE® Virtualization</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../v1.9/en/introduction/overview.html">v1.9 (Dev)</a>
+            </li>
+            <li class="version is-current is-latest">
+              <a href="../introduction/overview.html">v1.8 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../v1.7/en/introduction/overview.html">v1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../v1.6/en/introduction/overview.html">v1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../v1.5/en/introduction/overview.html">v1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../vulnerability-scanner/0.12.0/en/introduction.html">Vulnerability Scanner</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../vulnerability-scanner/0.12.0/en/introduction.html">0.12.0</a>
+            </li>
+            <li class="version">
+              <a href="../../../../vulnerability-scanner/0.11.3/en/introduction.html">0.11.3</a>
+            </li>
+          </ul>
+        </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+<ul>
+    <li>
+  <a class="home-link-dsc" href="https://documentation.suse.com" title="SUSE Documentation Home" aria-label="SUSE Documentation Home"></a>
+    </li>
+    <li>
+      <a href="https://documentation.suse.com/cloudnative/virtualization" title="SUSE Virtualization" aria-label="SUSE Documentation - SUSE Virtualization">
+        SUSE Virtualization
+      </a>
+    </li>
+      <li>
+          Networking
+      </li>
+  </ul>
+</nav>
+<div class="page-versions">
+  <button class="version-menu-toggle" title="Show other versions of page">v1.8 (Latest)</button>
+  <div class="version-menu">
+    <a class="version" href="../../../v1.9/en/networking/host-network-config.html">v1.9 (Dev)</a>
+    <a class="version is-current" href="host-network-config.html">v1.8 (Latest)</a>
+    <a class="version is-missing" href="../../../v1.7/en/introduction/overview.html">v1.7</a>
+    <a class="version is-missing" href="../../../v1.6/en/introduction/overview.html">v1.6</a>
+    <a class="version is-missing" href="../../../v1.5/en/introduction/overview.html">v1.5</a>
+  </div>
+</div>
+  <div class="edit-this-page"><a href="https://github.com/rancher/harvester-product-docs/edit/main/versions/v1.8/modules/en/pages/networking/host-network-config.adoc"><strong>Edit</strong></a></div>
+        <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <label class="visual-search-label-bc" for="search-input">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+          <input label="Search" aria-label="Search" id="search-input" type="text" placeholder="Search the docs" >
+          <label class="filter checkbox" style="display: none">
+            <input type="checkbox" data-facet-filter="component:virtualization" checked> Only this project
+          </label>
+        </div>
+      </div>
+</div>
+  <div class="content">
+<aside
+  class="toc sidebar"
+  data-title="On this page" data-levels="2">
+  <div class="toc-menu">
+    <div class="docsurvey-wrapper"><a class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_diCzHC9xxyJyuN0">Documentation survey</a></div>
+    <!-- start qualtrics -->
+    <div id='ZN_8qZUmklKYbBqAYe'><!--DO NOT REMOVE-CONTENTS PLACED HERE--></div>
+    <div id="qualtrics_container"></div>
+    <!-- end qualtrics -->
+  </div>
+</aside>
+
+<aside class="toc sidebar docsurvey-sidebar">
+  <div class="toc-menu">
+    <div class="docsurvey-wrapper"><a class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_diCzHC9xxyJyuN0">Documentation survey</a></div>
+  </div>
+</aside>
+<article class="doc">
+<h1 class="page">Host Network Configuration and Underlay Selection</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Although SUSE Virtualization can configure a management VLAN during installation if a VID is provided, production environments often demand more granular control over the network stack. Relying solely on the management interface can create performance bottlenecks and security risks.</p>
+</div>
+<div class="paragraph">
+<p>The <code>HostNetworkConfig</code> resource addresses these limitations by managing VLAN sub-interfaces and IP assignments across all cluster nodes. This approach offers the following benefits:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Layer 3 routed storage</strong>: High-performance storage networks often require dedicated routed subnets with static or DHCP addressing that are entirely separate from the management plane.</p>
+</li>
+<li>
+<p><strong>Physical traffic isolation</strong>: Operators can offload virtual machine and application traffic to secondary physical uplinks and gateways, ensuring management access remains responsive during high network load.</p>
+</li>
+<li>
+<p><strong>External service integration</strong>: Edge and cloud deployments may require non-management NICs to hold IPv4 addresses for peering with BGP, OSPF, or other external routing services.</p>
+</li>
+<li>
+<p><strong>Kube-OVN underlay optimization</strong>: By default, Kube-OVN uses the management interface for virtual machine overlay traffic. The <code>HostNetworkConfig</code> resource allows you to designate a dedicated VLAN as the underlay, which eliminates traffic contention and enhances isolation.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_suse_virtualization_vlan_and_layer_3_extension"><a class="anchor" href="#_suse_virtualization_vlan_and_layer_3_extension"></a>SUSE Virtualization VLAN and Layer 3 extension</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>SUSE Virtualization supports VLAN sub-interfaces on cluster networks, enabling static IPv4 assignment directly to the node. This unlocks dedicated Layer 3 paths to external infrastructure, facilitating the following:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>High-speed, low-latency connectivity to external storage arrays, such as iSCSI and NFS.</p>
+</li>
+<li>
+<p>Hardware-level separation for sensitive applications and tenant data.</p>
+</li>
+<li>
+<p>Direct peering with existing physical routers and switches.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_kube_ovn_underlay_support"><a class="anchor" href="#_kube_ovn_underlay_support"></a>Kube-OVN underlay support</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You can further designate a VLAN interface as the underlay for Kube-OVN. By offloading virtual machine inter-node traffic to a dedicated underlay, you eliminate contention with the control plane, significantly boosting both network throughput and cluster security.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_prerequisites"><a class="anchor" href="#_prerequisites"></a>Prerequisites</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Before creating a <code>HostNetworkConfig</code> resource, ensure the following requirements are met:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The target cluster network (such as <code>cn-1</code> or <code>mgmt</code>) is created and in a <code>Ready</code> state.</p>
+</li>
+<li>
+<p>A <code>VlanConfig</code> or <code>NetworkConfig</code> resource is created for the cluster network and covers the intended nodes.</p>
+</li>
+<li>
+<p>For static mode: Valid CIDR addresses are prepared for each node.</p>
+</li>
+<li>
+<p>For underlay selection: The <code>HostNetworkConfig</code> resource covers all nodes in the cluster.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_configuring_a_hostnetworkconfig_resource"><a class="anchor" href="#_configuring_a_hostnetworkconfig_resource"></a>Configuring a <code>HostNetworkConfig</code> resource</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Create a <code>HostNetworkConfig</code> manifest and apply it by running the following command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">kubectl apply -f &lt;hostnetworkconfig&gt;.yaml</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_examples"><a class="anchor" href="#_examples"></a>Examples</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_dhcp_mode_all_nodes"><a class="anchor" href="#_dhcp_mode_all_nodes"></a>DHCP mode (all nodes)</h3>
+<div class="paragraph">
+<p>This <code>HostNetworkConfig</code> manifest automates the following actions:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Creates a VLAN sub-interface on a cluster network named <code>cn-1</code> using VLAN ID <code>2012</code>.</p>
+</li>
+<li>
+<p>Assigns an IP address via DHCP to every node covered by the cluster network&#8217;s <code>VlanConfig</code> resource.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: network.harvesterhci.io/v1beta1
+kind: HostNetworkConfig
+metadata:
+  name: cn1-vlan2012-dhcp
+spec:
+  clusterNetwork: cn-1
+  vlanID: 2012
+  mode: dhcp</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Once you apply the manifest, SUSE Virtualization automatically configures the following components on each targeted node:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>VLAN <code>2012</code> is added to the bridge (<code>cn-1-br</code>) and uplink (<code>cn-1-bo</code>) ports.</p>
+</li>
+<li>
+<p>The sub-interface <code>cn-1-br.2012</code> is created and activated.</p>
+</li>
+<li>
+<p>An IP address is requested via DHCP and applied directly to the sub-interface.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_static_mode_node_specific_ips"><a class="anchor" href="#_static_mode_node_specific_ips"></a>Static mode (node-specific IPs)</h3>
+<div class="paragraph">
+<p>This <code>HostNetworkConfig</code> manifest assigns specific IP addresses to each node&#8217;s sub-interface.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: network.harvesterhci.io/v1beta1
+kind: HostNetworkConfig
+metadata:
+  name: cn1-vlan2012-static
+spec:
+  clusterNetwork: cn-1
+  vlanID: 2012
+  mode: static
+  ips:
+    node1: 192.168.1.10/24
+    node2: 192.168.1.11/24
+    node3: 192.168.1.12/24</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Replace <code>node1</code>, <code>node2</code>, and <code>node3</code> with the actual node names from your cluster.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>You must provide an IP entry for every node covered by the <code>VlanConfig</code> resource&#8217;s node selector. If a node joins the cluster later, update the <code>HostNetworkConfig</code> resource to include the new node&#8217;s IP address before the configuration is applied to it.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_node_selector_targeted_nodes_only"><a class="anchor" href="#_node_selector_targeted_nodes_only"></a>Node selector (targeted nodes only)</h3>
+<div class="paragraph">
+<p>This <code>HostNetworkConfig</code> manifest applies the configuration exclusively to nodes matching the label <code>network-role=l3</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: network.harvesterhci.io/v1beta1
+kind: HostNetworkConfig
+metadata:
+  name: cn1-vlan2014-selected
+spec:
+  nodeSelector:
+    matchLabels:
+      network-role: l3
+  clusterNetwork: cn-1
+  vlanID: 2014
+  mode: dhcp</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Apply the required label to your target nodes by running the following command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">kubectl label node &lt;node-name&gt; network-role=l3</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When you remove the <code>network-role</code> label from a node, SUSE Virtualization automatically removes the associated VLAN interface and bridge VLAN entry from that node.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">kubectl label node &lt;node-name&gt; network-role=-</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_management_network_mgmt"><a class="anchor" href="#_management_network_mgmt"></a>Management network (<code>mgmt</code>)</h3>
+<div class="paragraph">
+<p>The built-in cluster network <code>mgmt</code> is also supported. This <code>HostNetworkConfig</code> manifest creates a VLAN sub-interface directly on the management bridge.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: network.harvesterhci.io/v1beta1
+kind: HostNetworkConfig
+metadata:
+  name: mgmt-vlan2014-dhcp
+spec:
+  clusterNetwork: mgmt
+  vlanID: 2014
+  mode: dhcp</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Linux network interface names are strictly limited to 15 characters. Ensure that the generated bridge name, which uses the format <code>&lt;ClusterNetworkName&gt;-br.&lt;vlanID&gt;</code>, does not exceed this limit.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_underlay_for_suse_virtualization_overlay_networking"><a class="anchor" href="#_underlay_for_suse_virtualization_overlay_networking"></a>Underlay for SUSE Virtualization overlay networking</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>By default, Kube-OVN uses the management interface <code>mgmt-br.&lt;vlan&gt;</code> as the underlay tunnel interface for inter-node virtual machine traffic. However, you can designate any <code>HostNetworkConfig</code> resource with a configured VLAN interface to function as the underlay instead.</p>
+</div>
+<div class="paragraph">
+<p>Modifying this default configuration provides the following architectural advantages:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Separates inter-node (VXLAN) virtual machine traffic from management traffic, reducing contention.</p>
+</li>
+<li>
+<p>Allows use of a dedicated physical NIC and VLAN for virtual machine traffic.</p>
+</li>
+<li>
+<p>Enforces strict separation between the management plane and the data plane.</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="_configuring_the_underlay"><a class="anchor" href="#_configuring_the_underlay"></a>Configuring the underlay</h3>
+<div class="paragraph">
+<p>To designate a <code>HostNetworkConfig</code> resource to carry overlay traffic, set the <code>spec.underlay</code> field to <code>true</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: network.harvesterhci.io/v1beta1
+kind: HostNetworkConfig
+metadata:
+  name: cn1-vlan2012-underlay
+spec:
+  underlay: true
+  clusterNetwork: cn-1
+  vlanID: 2012
+  mode: static
+  ips:
+    node1: 10.115.8.15/21
+    node2: 10.115.8.16/21
+    node3: 10.115.8.17/21</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When the <code>spec.underlay</code> field is set to <code>true</code>, SUSE Virtualization orchestrates the following system modifications:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The <code>hostnetworkconfig</code> agent updates the <code>ovn.kubernetes.io/tunnel_interface</code> annotation on each node to point to the newly created sub-interface (such as <code>cn-1-br.2012</code>).</p>
+</li>
+<li>
+<p>Kube-OVN automatically reconfigures the remote VXLAN tunnel endpoints inside the OVS bridges on every node to route traffic through the new sub-interface IP addresses.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Allow time for the Kube-OVN controller to update the remote endpoints on the default OVS bridge.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Example (output from <code>node1</code>):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">kubectl exec -it ovs-ovn-pk57r -n kube-system -- /bin/bash
+
+ovs-vsctl show
+992c73d7-68cd-4422-8df4-84cd2bea12fb
+    Bridge br-int
+        fail_mode: secure
+        datapath_type: system
+        Port ovn0
+            Interface ovn0
+                type: internal
+        Port ovn-a33a48-0
+            Interface ovn-a33a48-0
+                type: vxlan
+                options: {csum="true", key=flow, local_ip="10.115.8.15", remote_ip="10.115.8.16","10.115.8.17"}
+        Port br-int
+            Interface br-int
+                type: internal
+        Port mirror0
+            Interface mirror0
+                type: internal
+    ovs_version: "3.5.3"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To revert to the default configuration, set the <code>spec.underlay</code> field to <code>false</code> in the <code>HostNetworkConfig</code> resource. The agent automatically restores the <code>ovn.kubernetes.io/tunnel_interface</code> annotation to the default management interface, and Kube-OVN reconfigures the tunnel endpoints accordingly.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_lifecycle_behavior"><a class="anchor" href="#_lifecycle_behavior"></a>Lifecycle behavior</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Cluster node scaling</strong></p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>DHCP mode</strong>: When a new node joins the cluster, SUSE Virtualization automatically provisions the VLAN interface and requests a DHCP lease on that node.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>Static mode</strong>: New nodes are not configured automatically. You must add a corresponding entry for the new node to the <code>spec.ips</code> map and reapply the <code>HostNetworkConfig</code> manifest.</p>
+</li>
+<li>
+<p><strong>Node reboots</strong>: All VLAN sub-interfaces and IP address assignments are persistent. Following a node reboot, SUSE Virtualization automatically restores the interfaces, resumes DHCP renewals, and reapplies static IP addresses as configured.</p>
+</li>
+<li>
+<p><strong>IP allocation mode changes</strong>: When you switch between DHCP and static, or modify existing static IP entries, SUSE Virtualization removes the existing IP addresses from the sub-interface before applying the new network configuration.</p>
+</li>
+<li>
+<p><strong><code>HostNetworkConfig</code> resource deletion</strong>: SUSE Virtualization deletes the VLAN sub-interface and removes the corresponding VLAN ID from the bridge and uplink ports <em>on all affected nodes</em>.</p>
+</li>
+<li>
+<p><strong><code>VlanConfig</code> resource modification or deletion</strong>: If the resource is deleted or its node selector changes, SUSE Virtualization automatically removes all associated <code>HostNetworkConfig</code> VLAN sub-interfaces from any nodes that no longer possess a valid uplink configuration.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_verifying_the_configuration"><a class="anchor" href="#_verifying_the_configuration"></a>Verifying the configuration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>After applying a <code>HostNetworkConfig</code> resource, log into a cluster node to verify the interface and IP address status.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Check the IP address assignment.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">ip addr show cn-1-br.2012</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Expected output for a DHCP configuration appears similar to the following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">cn-1-br.2012@cn-1-br: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 ...
+    inet 10.115.8.15/21 brd 10.115.15.255 scope global cn-1-br.2012</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Check the bridge VLAN membership.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">bridge vlan show</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The expected output includes the following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell"># cn-1-bo    1 PVID Egress Untagged
+#            2012
+# cn-1-br    1 PVID Egress Untagged
+#            2012</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Check the status of each node.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">kubectl get hostnetworkconfig cn1-vlan2012-dhcp -o yaml</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>status.nodeStatus</code> field tracks the <code>Ready</code> state of each node and lists active error conditions.</p>
+</div>
+<div class="paragraph">
+<p>Example of output:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: network.harvesterhci.io/v1beta1
+kind: HostNetworkConfig
+metadata:
+  name: cn1-vlan2012-dhcp
+spec:
+  clusterNetwork: cn-1
+  mode: dhcp
+  vlanID: 2012
+status:
+  nodeStatus:
+    hp-46:
+      clusterNetwork: cn-1
+      conditions:
+      - message: ""
+        status: "True"
+        type: ready
+      mode: dhcp
+      vlanID: 2012
+    hp-65:
+      clusterNetwork: cn-1
+      conditions:
+      - message: ""
+        status: "True"
+        type: ready
+      mode: dhcp
+      vlanID: 2012</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_managing_a_hostnetworkconfig_resource"><a class="anchor" href="#_managing_a_hostnetworkconfig_resource"></a>Managing a <code>HostNetworkConfig</code> resource</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Use the following commands to modify or delete an existing resource.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Modify the resource inline.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">kubectl edit hostnetworkconfig cn1-vlan2012-dhcp</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You must save the configuration after making any changes.</p>
+</div>
+</li>
+<li>
+<p>Delete the resource.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">kubectl delete hostnetworkconfig cn1-vlan2012-dhcp</code></pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If a node has multiple host interfaces, do not attach them to the same VLAN or subnet. This restriction applies to interfaces configured manually on the host and those configured through <code>HostNetwork</code> configurations.</p>
+</div>
+<div class="paragraph">
+<p><strong>DHCP Response Misrouting</strong></p>
+</div>
+<div class="paragraph">
+<p>VLAN interfaces used in a cluster network are derived from the same underlying bridge and consequently share the same MAC address. This shared MAC address can cause DHCP response misrouting.</p>
+</div>
+<div class="paragraph">
+<p>When multiple host interfaces from the same cluster network reside on the same VLAN, DHCP responses may be incorrectly associated with an existing interface instead of a newly created one. For example, if <code>mgmt-br</code> is connected to the native VLAN and has an active IP address, a DHCP client running on <code>mgmt-br.1</code> may fail to acquire a lease. This failure occurs because the DHCP <code>OFFER</code> packets are delivered to <code>mgmt-br</code> instead of <code>mgmt-br.1</code>.</p>
+</div>
+<div class="paragraph">
+<p><strong>Ambiguous Routing Behavior</strong></p>
+</div>
+<div class="paragraph">
+<p>Additionally, configuring multiple interfaces in the same VLAN and subnet results in ambiguous routing. The Linux kernel typically installs a single connected route for a given subnet. If multiple interfaces are attached to the same VLAN and subnet, the kernel may associate the subnet route with only one of those interfaces, causing traffic to be forwarded through an unintended physical path.</p>
+</div>
+<div class="paragraph">
+<p>For example, host networks on cluster networks <code>cn1</code> and <code>cn2</code> are both attached to VLAN <code>2017</code> and assigned the same subnet (<code>192.168.0.0/24</code>). Because both interfaces are in the same subnet, the Linux kernel will install the connected route for <code>192.168.0.0/24</code> via only one of those interfaces (typically the one configured last). Traffic destined for that subnet may be routed through the wrong interface, leading to unexpected issues.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_limitations"><a class="anchor" href="#_limitations"></a>Limitations</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Only tagged VLANs with a VLAN ID between <code>1</code> and <code>4094</code> are supported.</p>
+</li>
+<li>
+<p>Only IPv4 addresses can be assigned to VLAN sub-interfaces.</p>
+</li>
+<li>
+<p>IP address allocation must be handled via DHCP or manually specified static addresses. Direct integration with external IPAM systems is not supported.</p>
+</li>
+<li>
+<p>Only one <code>HostNetworkConfig</code> resource can be designated as the underlay at any given time. The validating webhook rejects any attempt to set the <code>spec.underlay</code> field to <code>true</code> on a second resource.</p>
+</li>
+<li>
+<p>A <code>HostNetworkConfig</code> resource used as the underlay must cover all nodes in the cluster. The webhook rejects configurations where the associated cluster network or <code>VlanConfig</code> resource does not cover all active nodes.</p>
+</li>
+<li>
+<p>Underlay selection is only supported for the default Kube-OVN bridge. Custom OVS bridge setups are not supported.</p>
+</li>
+<li>
+<p>The <code>spec.vlanID</code> and <code>spec.clusterNetwork</code> fields are immutable once the resource is created. To modify their values, you must delete the resource and create a new one.</p>
+</li>
+<li>
+<p>The webhook rejects attempts to modify or delete resources in the following situations:</p>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Resource</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Situation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>HostNetworkConfig</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The resource is actively used as an underlay.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Virtual machines are running on overlay networks.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>VlanConfig</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The resource is used by an active underlay.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">VirtualMachineInstance (VMI) objects are present in the cluster.</p></td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="vm-isolation.html">Virtual Machine Isolation</a></span>
+  <span class="next"><a href="best-practices.html">Networking Best Practices</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<script src="../../../../_/js/site.js"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+<script src="../../../../_/js/vendor/lunr.js"></script>
+<script src="../../../../_/js/vendor/lunr-languages.js"></script>
+<script src="../../../../_/js/search-ui.js" id="search-ui-script" data-site-root-path="../../../.." data-snippet-length="100" data-stylesheet="../../../../_/css/search.css"></script>
+<script async src="../../../../search-index.js"></script>
+<script src="../../../../_/js/vendor/langSelection.js"></script>
+<script async src="../../../../_/js/vendor/tabs.js"></script>
+
+
+<script src="../../../../_/js/CNLanguageSwitcher.js"></script>
+  </body>
+</html>

@@ -1,0 +1,1991 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Active Directory (AD)の設定 | SUSE® Rancher for AWS  Latest</title>
+    <link rel="canonical" href="https://documentation.suse.com/cloudnative/rancher-srfa/latest/ja/rancher-admin/users/authn-and-authz/configure-active-directory.html">
+    <link rel="prev" href="configure-oidc-provider.html">
+    <link rel="next" href="configure-amazon-cognito.html">
+    <meta name="generator" content="Antora 3.1.14">
+    <link rel="stylesheet" href="../../../../../../_/css/site.css">
+<meta http-equiv="last-modified" content="2025-09-22"/>
+<link rel="stylesheet" href="../../../../../../_/css/search.css">
+<link rel="icon" href="../../../../../../_/img/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="../../../../../../_/css/font-styles.css">
+<link rel="stylesheet" href="../../../../../../_/fonts/css/all.css">
+<link rel="stylesheet" href="../../../../../../_/css/site-extra.css">
+<link rel="stylesheet" href="../../../../../../_/css/vendor/tabs.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap&family=SUSE+Mono:ital,wght@0,100..800;1,100..800" rel="stylesheet">
+<link rel="stylesheet" href="../../../../../../_/css/vendor/light.css">
+<script src="/docserv/res/lightheaded/analytics.js" type="text/javascript"></script>
+<script type="module">
+  import { defineCustomElements, setAssetPath } from 'https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/shared-header.esm.js';
+  defineCustomElements();
+  setAssetPath("https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/assets");
+</script>
+<!-- Default English link -->
+<link href="https://documentation.suse.com/cloudnative/rancher-srfa/latest/en/rancher-admin/users/authn-and-authz/configure-active-directory.html" hreflang="x-default" rel="alternate"/>
+<!-- Link for the currently processed page -->
+<link href="https://documentation.suse.com/cloudnative/rancher-srfa/latest/ja/rancher-admin/users/authn-and-authz/configure-active-directory.html" hrefLang="ja-JP" rel="alternate" />
+<!-- Link for the English page -->
+<link href="https://documentation.suse.com/cloudnative/rancher-srfa/latest/en/rancher-admin/users/authn-and-authz/configure-active-directory.html" hreflang="en-US" rel="alternate" />
+<!-- Link for the Chinese page -->
+<link href="https://documentation.suse.com/cloudnative/rancher-srfa/latest/zh/rancher-admin/users/authn-and-authz/configure-active-directory.html" hreflang="zh-CN" rel="alternate" />
+<!-- Link for the German page -->
+<link href="https://documentation.suse.com/cloudnative/rancher-srfa/latest/de/rancher-admin/users/authn-and-authz/configure-active-directory.html" hreflang="de-DE" rel="alternate" />
+<!-- Link for the French page -->
+<link href="https://documentation.suse.com/cloudnative/rancher-srfa/latest/fr/rancher-admin/users/authn-and-authz/configure-active-directory.html" hreflang="fr-FR" rel="alternate" />
+<!-- Link for the Spanish page -->
+<link href="https://documentation.suse.com/cloudnative/rancher-srfa/latest/es/rancher-admin/users/authn-and-authz/configure-active-directory.html" hreflang="es-ES" rel="alternate" />
+<!-- Link for the Brazilian Portuguese page -->
+<link href="https://documentation.suse.com/cloudnative/rancher-srfa/latest/pt/rancher-admin/users/authn-and-authz/configure-active-directory.html" hreflang="pt-BR" rel="alternate" />
+
+<!-- JSON-LD for doc metadata -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Active Directory (AD)の設定 | SUSE Rancher for AWS latest",
+  "headline": "Active Directory (AD)の設定",
+  "description": "Active Directory (AD)の設定",
+  "inLanguage": "ja",
+  "dateModified": "2025-09-22T00:00:00Z",
+  "author": {
+    "@type": "Organization",
+    "name": "SUSE Product & Solution Documentation Team",
+    "url": "https://documentation.suse.com"
+  },
+  "mentions": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "SUSE Rancher for AWS",
+      "softwareVersion": "latest",
+      "applicationCategory": "Cloud Infrastructure",
+      "operatingSystem": "Linux"
+    }
+  ],
+  "publisher": {
+    "@type": "Organization",
+    "name": "SUSE",
+    "url": "https://documentation.suse.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.suse.com/assets/img/suse-white-logo-green.svg"
+    }
+  }
+}
+</script>
+<!-- end JSON-LD for doc metadata -->
+
+<!-- SUVA - Begin Ask Geeko-->
+<!--
+searchUnifyChatbot ("Ask Geeko") Copyright ©2024 Grazitti Interactive - All Rights Reserved. NOTICE: All information contained herein is, and remains the property of Grazitti Interactive and its suppliers, if any. The intellectual and technical concepts contained herein are proprietary to Grazitti Interactive and its suppliers and may be covered by India, U.S. and Foreign Patents, patents in process, and are protected by trade secret or copyright law. Dissemination of this information or reproduction of this material is strictly forbidden unless prior written permission is obtained from Grazitti Interactive.
+-->
+<meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport"/>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/Allow/an.js?c485cb3c-93d4-4942-99e8-91f3b8ca5636"></script>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/js/index.js?q=gAAAAABp3JBN9VuEJTi5tFafLIMwgMkCPdJS3Qm56lSYx93ir3Twt9hgSvd3OHEt6-nYfSbY3yHq0Zv8PRPsSy4nbqZiaJ4cZvRc6ItVZdvwz9Urf35cH6OUyPOwdA0phlS-zVIznQ2rWW438p-91NlTHuxJuOFpnA=="></script>
+<link rel="stylesheet" href="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/css/index.css">
+<div id="searchUnifyChatbot"></div>
+<!-- SUVA - End Ask Geeko-->
+<!--BEGIN QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+<script type='text/javascript' src="../../../../../../_/js/qualtrics.js" defer></script>
+<!--END QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+    <script>var uiRootPath = '../../../../../../_'</script>
+  </head>
+  <body class="article">
+<script type="module">import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs'; mermaid.initialize({"startOnLoad":true});</script><shared-header
+language="en"
+languages='{
+    "en": { "label": "English", "url": "https://documentation.suse.com/en-us/" },
+    "de": { "label": "Deutsch", "url": "https://documentation.suse.com/de-de/" },
+    "fr": { "label": "Français", "url": "https://documentation.suse.com/fr-fr/" },
+    "es": { "label": "Español", "url": "https://documentation.suse.com/es-es/" },
+    "zh_CN": { "label": "中文", "url": "https://documentation.suse.com/zh-cn/" },
+    "pt_BR": { "label": "Português Brasileiro", "url": "https://documentation.suse.com/pt-br/" }
+}'
+enable-search='false'>
+</shared-header>
+<div class="body">
+<div class="nav-container" data-component="rancher-srfa" data-version="latest">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title">SUSE® Rancher for AWS</h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../release-notes.html">リリースノート</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../release-notes/v2.14.3.html">Release v2.14.3</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../release-notes/v2.14.2.html">Release v2.14.2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../release-notes/v2.14.1.html">Release v2.14.1</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Rancherについて</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../about-rancher/what-is-rancher.html">SUSE Rancher for AWSとは</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../about-rancher/prime.html">Cloud Native</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../about-rancher/overview.html">概要</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../about-rancher/architecture/architecture.html">SUSE Rancher for AWSアーキテクチャ</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../about-rancher/architecture/recommendations.html">アーキテクチャの推奨事項</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../about-rancher/architecture/communicating-with-downstream-clusters.html">ダウンストリームユーザークラスターとの通信</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../about-rancher/architecture/rancher-server-and-components.html">SUSE Rancher for AWSサーバーとコンポーネント</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../about-rancher/concepts.html">Kubernetesの概念</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../about-rancher/glossary.html">用語集</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../rancher-admin.html">Rancherの管理</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">ユーザ管理</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="authn-and-authz.html">認証の設定</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="manage-users-and-groups.html">ユーザとグループ</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="create-local-users.html">ローカル認証</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">外部認証</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="jwt-authentication.html">JSON Web Token (JWT) 認証</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="configure-generic-oidc.html">汎用 OIDC を設定する</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="configure-oidc-provider.html">RancherをOIDCプロバイダーとして設定します。</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="5">
+    <a class="nav-link" href="configure-active-directory.html">Active Directory (AD)の設定</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="configure-amazon-cognito.html">Amazon Cognitoの設定</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="configure-azure-ad.html">Azure ADを設定する</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="configure-freeipa.html">FreeIPAを設定する</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="configure-github.html">GitHubの設定</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="configure-github-app.html">GitHubアプリの設定</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="configure-google-oauth.html">Google OAuthの設定</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="configure-keycloak-oidc.html">Keycloak (OIDC) を設定する</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="configure-keycloak-saml.html">Keycloak (SAML) を設定する</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="configure-okta-saml.html">Okta (SAML) の設定</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="configure-pingidentity.html">PingIdentity (SAML) の設定</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="microsoft-ad-federation-service-saml/microsoft-ad-federation-service-saml.html">Microsoft Active Directory Federation Service (SAML) の設定</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="6">
+    <a class="nav-link" href="microsoft-ad-federation-service-saml/ms-adfs-for-rancher.html">1.Microsoft AD FS をSUSE Rancher for AWS用に構成</a>
+  </li>
+  <li class="nav-item" data-depth="6">
+    <a class="nav-link" href="microsoft-ad-federation-service-saml/rancher-for-ms-adfs.html">2.Microsoft AD FSのためのSUSE Rancher for AWSの設定</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="openldap/openldap.html">OpenLDAPの設定</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="6">
+    <a class="nav-link" href="openldap/reference.html">OpenLDAP設定リファレンス</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="shibboleth-saml/shibboleth-saml.html">Shibboleth (SAML) の設定</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="6">
+    <a class="nav-link" href="shibboleth-saml/group-permissions.html">ShibbolethとOpenLDAPによるグループ権限管理</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="manage-role-based-access-control-rbac/manage-role-based-access-control-rbac.html">ロールベースのアクセス制御（RBAC）の管理</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="manage-role-based-access-control-rbac/global-permissions.html">グローバルパーミッション</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="manage-role-based-access-control-rbac/global-resources.html">グローバルリソース</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="manage-role-based-access-control-rbac/cluster-and-project-roles.html">クラスタおよびプロジェクトのロール</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="manage-role-based-access-control-rbac/custom-roles.html">カスタム役割</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="manage-role-based-access-control-rbac/locked-roles.html">ロック済みの役割</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="enable-user-retention.html">ユーザー保持の有効化</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../settings/settings.html">ユーザ設定</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../settings/api-keys.html">APIキー</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../settings/user-preferences.html">ユーザの環境設定</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../settings/manage-cloud-credentials.html">クラウド資格情報の管理</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">CLI</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../cli/kubectl.html">kubectlユーティリティ</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../cli/rancher-cli.html">SUSE Rancher for AWS CLI</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../cluster-deployment/cluster-deployment.html">クラスタの展開</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../cluster-deployment/node-requirements.html">SUSE Rancher for AWS管理クラスターのノード要件</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../cluster-deployment/production-checklist/production-checklist.html">運用準備完了クラスターのチェックリスト</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../cluster-deployment/production-checklist/recommended-cluster-architecture.html">推奨クラスターアーキテクチャ</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../cluster-deployment/production-checklist/roles-for-nodes-in-kubernetes.html">Kubernetesにおけるノードの役割</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../cluster-deployment/production-checklist/tips-to-set-up-containers.html">コンテナの設定に関するヒント</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../cluster-deployment/hosted-kubernetes/hosted-kubernetes.html">ホステッドKubernetesプロバイダーからのクラスターのセットアップ</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../cluster-deployment/hosted-kubernetes/eks/eks.html">EKSクラスターの作成</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../cluster-deployment/hosted-kubernetes/eks/configuration.html">EKSクラスター設定リファレンス</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../cluster-deployment/hosted-kubernetes/sync-clusters.html">ホストされたクラスターのsync</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../cluster-deployment/launch-kubernetes-with-rancher.html">KubernetesをSUSE Rancher for AWSで起動する</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../cluster-deployment/about-rancher-agents.html">SUSE Rancher for AWS エージェント</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../cluster-deployment/dual-stack.html">IPv4/IPv6デュアルスタック</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../cluster-deployment/enable-cluster-agent-scheduling-customization.html">クラスタエージェントスケジューリングのカスタマイズを有効にする</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../cluster-deployment/infra-providers/infra-providers.html">インフラプロバイダーにおける新しいノードでのKubernetesの起動</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../cluster-deployment/infra-providers/aws/aws.html">Amazon EC2 クラスターの作成</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../cluster-deployment/infra-providers/aws/machine-configuration.html">EC2マシン構成リファレンス</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../cluster-deployment/infra-providers/aws/node-template-configuration.html">EC2ノードテンプレートの設定</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../cluster-deployment/custom-clusters/custom-clusters.html">既存のカスタムノードでKubernetesを起動する</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">設定</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../cluster-deployment/configuration/k3s.html">SUSE® Rancher Prime: K3s クラスター設定リファレンス</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">RKE2</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../cluster-deployment/configuration/rke2.html">SUSE® Rancher Prime: RKE2 クラスター設定リファレンス</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../cluster-deployment/configuration/capi-infrastructure-providers.html">ネイティブCAPIインフラストラクチャプロバイダーを使用してRKE2クラスターをプロビジョニングする</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../cluster-deployment/register-existing-clusters.html">既存のクラスターの登録</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../cluster-deployment/register-existing-clusters-troubleshooting.html">登録済みクラスター</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../cluster-admin/manage-clusters/manage-clusters.html">クラスタの管理</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">クラスタの管理</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../cluster-admin/best-practices/disconnected-clusters.html">切断されたクラスターのベストプラクティス</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../cluster-admin/manage-clusters/access-clusters/access-clusters.html">クラスターへのアクセス</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../cluster-admin/manage-clusters/access-clusters/add-users-to-clusters.html">クラスターへのユーザー追加</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../cluster-admin/manage-clusters/access-clusters/authorized-cluster-endpoint.html">認可されたクラスターエンドポイントの動作について</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../cluster-admin/manage-clusters/access-clusters/use-kubectl-and-kubeconfig.html">Kubectlとkubeconfigを使用してクラスターにアクセスする</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../cluster-admin/manage-clusters/clean-cluster-nodes.html">ノードからKubernetesコンポーネントを削除する</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../cluster-admin/manage-clusters/persistent-storage/manage-persistent-storage.html">Kubernetesの永続ボリュームとストレージクラスを作成する</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../cluster-admin/manage-clusters/persistent-storage/about-glusterfs-volumes.html">GlusterFS Volumes</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../cluster-admin/manage-clusters/persistent-storage/about-persistent-storage.html">永続ストレージの仕組み</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../cluster-admin/manage-clusters/persistent-storage/dynamically-provision-new-storage.html">における新しいストレージの動的プロビジョニングSUSE Rancher for AWS</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../cluster-admin/manage-clusters/persistent-storage/install-iscsi-volumes.html">iSCSIボリューム</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../cluster-admin/manage-clusters/persistent-storage/set-up-existing-storage.html">既存のストレージを設定する</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../cluster-admin/manage-clusters/persistent-storage/use-external-ceph-driver.html">外部 Ceph ドライバーの使用</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../../cluster-admin/manage-clusters/persistent-storage/examples/nfs-storage.html">NFS Storage</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../../cluster-admin/manage-clusters/persistent-storage/examples/persistent-storage-in-amazon-ebs.html">AmazonのEBSにおける永続ストレージの作成</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../cluster-admin/manage-clusters/persistent-storage/examples/examples.html">ストレージプロビジョニングの例</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../cluster-admin/manage-clusters/install-cluster-autoscaler/install-cluster-autoscaler.html">クラスターオートスケーラー</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../cluster-admin/manage-clusters/install-cluster-autoscaler/use-aws-ec2-auto-scaling-groups.html">AWS EC2 Auto Scaling Groupsを使用したクラスターオートスケーラー</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../cluster-admin/manage-clusters/cluster-templates.html">クラスター テンプレート</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../cluster-admin/manage-clusters/nodes-and-machine-pools.html">ノードとマシンプール</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../cluster-admin/manage-clusters/projects-and-namespaces.html">プロジェクトとKubernetesネームスペースSUSE Rancher for AWS</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../cluster-admin/manage-clusters/rotate-certificates.html">証明書のローテーション</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../cluster-admin/manage-clusters/rotate-encryption-key.html">暗号化キーのローテーション</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../cluster-admin/kubernetes-resources/kubernetes-resources-setup.html">Kubernetesリソースのセットアップ</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../cluster-admin/kubernetes-resources/workloads-and-pods/workloads-and-pods.html">Kubernetesのワークロードとポッド</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../cluster-admin/kubernetes-resources/workloads-and-pods/deploy-workloads.html">ワークロードの展開</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../cluster-admin/kubernetes-resources/workloads-and-pods/add-a-sidecar.html">サイドカーの追加</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../cluster-admin/kubernetes-resources/workloads-and-pods/upgrade-workloads.html">ワークロードのアップグレード</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../cluster-admin/kubernetes-resources/workloads-and-pods/roll-back-workloads.html">ワークロードのロールバック</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../cluster-admin/kubernetes-resources/horizontal-pod-autoscaler/horizontal-pod-autoscaler.html">水平ポッドオートスケーラー</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../cluster-admin/kubernetes-resources/horizontal-pod-autoscaler/about-hpas.html">HPAに関する背景情報</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../cluster-admin/kubernetes-resources/horizontal-pod-autoscaler/manage-hpas-with-ui.html">SUSE Rancher for AWS UIを使用したHPAの管理</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../cluster-admin/kubernetes-resources/horizontal-pod-autoscaler/manage-hpas-with-kubectl.html">kubectlを使用したHPAの管理</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../cluster-admin/kubernetes-resources/horizontal-pod-autoscaler/test-hpas-with-kubectl.html">kubectlでHPAをテストする</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../cluster-admin/kubernetes-resources/load-balancer-and-ingress-controller/load-balancer-and-ingress-controller.html">内でのロードバランサーとイングレスコントローラーのセットアップSUSE Rancher for AWS</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../cluster-admin/kubernetes-resources/load-balancer-and-ingress-controller/layer-4-and-layer-7-load-balancing.html">レイヤー4およびレイヤー7の負荷分散</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../cluster-admin/kubernetes-resources/load-balancer-and-ingress-controller/add-ingresses.html">イングレスの追加</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../cluster-admin/kubernetes-resources/load-balancer-and-ingress-controller/ingress-configuration.html">Ingressの設定</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../cluster-admin/kubernetes-resources/load-balancer-and-ingress-controller/guide-to-ingress-retirement.html">Ingress NGINXの退役に関するガイド</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../cluster-admin/kubernetes-resources/create-services.html">サービス</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../cluster-admin/kubernetes-resources/configmaps.html">ConfigMap</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../cluster-admin/kubernetes-resources/kubernetes-and-docker-registries.html">Kubernetesレジストリとコンテナイメージレジストリ</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../cluster-admin/backups-and-restore/backups-and-restore.html">Kubernetesのアップグレードとロールバック</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../cluster-admin/backups-and-restore/backups-without-uprading-rancher.html">をアップグレードせずにKubernetesをアップグレードするSUSE Rancher for AWS</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../cluster-admin/backups-and-restore/backups.html">クラスタのバックアップ</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../cluster-admin/backups-and-restore/restore.html">バックアップからクラスターを復元する</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../cluster-admin/namespaces.html">ネームスペース</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../cluster-admin/project-admin/project-admin.html">プロジェクト管理</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../cluster-admin/project-admin/add-users-to-projects.html">プロジェクトへのユーザー追加</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../cluster-admin/project-admin/project-resource-quotas/project-resource-quotas.html">プロジェクトのリソースクォータ</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../cluster-admin/project-admin/project-resource-quotas/resource-quotas-in-projects.html">SUSE Rancher for AWSプロジェクトにおけるリソースクォータの仕組み</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../cluster-admin/project-admin/project-resource-quotas/override-default-limit-in-namespaces.html">ネームスペースのデフォルト制限を上書きする</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../cluster-admin/project-admin/project-resource-quotas/resource-quota-types.html">リソースクォータタイプのリファレンス</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../cluster-admin/project-admin/project-resource-quotas/set-container-default-resource-limits.html">コンテナのデフォルトリソース制限の設定</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../cluster-admin/helm-charts-in-rancher/helm-charts-in-rancher.html">Helmチャートとアプリ</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../cluster-admin/helm-charts-in-rancher/create-apps.html">アプリを作成する</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../cluster-admin/helm-charts-in-rancher/oci-repositories.html">OCIベースのHelmチャートリポジトリの使用</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">セキュリティ</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../security/security-overview.html">SUSE Rancher for AWS セキュリティガイド</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../security/cves.html">セキュリティアドバイザリーおよびCVE</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../security/rancher-security-best-practices.html">SUSE Rancher for AWS セキュリティのベストプラクティス</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../security/rancher-webhook/rancher-webhook.html">SUSE Rancher for AWS ウェブフック</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../security/rancher-webhook/expired-webhook-certificate-rotation.html">期限切れのWebhook証明書のローテーション</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../security/rancher-webhook/hardening.html">SUSE Rancher for AWSウェブフックのハードニング</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../security/selinux-rpm/selinux-rpm.html">SELinux RPM</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../security/selinux-rpm/about-rancher-selinux.html">rancher-selinuxについて</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../security/selinux-rpm/about-rke2-selinux.html">rke2-selinuxについて</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../security/selinux-rpm/about-k3s-selinux.html">k3s-selinuxについて</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../security/compliance-scans/compliance-scans.html">コンプライアンススキャン</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../security/compliance-scans/rbac-for-compliance-scans.html">ロールベースのアクセス制御</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../security/compliance-scans/how-to.html">コンプライアンススキャンガイド</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../security/compliance-scans/install-rancher-compliance.html">SUSE Rancher for AWSコンプライアンスをインストールします。</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../security/compliance-scans/uninstall-rancher-compliance.html">コンプライアンスSUSE Rancher for AWSをアンインストール</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../security/compliance-scans/configuration-reference.html">設定</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../security/compliance-scans/custom-benchmark.html">クラスター スキャンを実行するためのカスタム ベンチマーク バージョンの作成</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../security/compliance-scans/run-a-scan.html">スキャンを実行します</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../security/compliance-scans/run-a-scan-periodically-on-a-schedule.html">スケジュールに従って定期的にスキャンを実行してください。</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../security/compliance-scans/view-reports.html">レポート表示</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../security/compliance-scans/enable-alerting-for-rancher-compliance.html">SUSE Rancher for AWSコンプライアンスのアラートを有効にする</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../security/compliance-scans/configure-alerts-for-periodic-scan-on-a-schedule.html">スケジュールに従って定期スキャンのアラートを設定</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../security/compliance-scans/create-a-custom-compliance-version-to-run.html">クラスター スキャンを実行するためのカスタムコンプライアンス バージョンを作成する</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../security/psa-pss.html">ポッドセキュリティスタンダード (PSS) とポッドセキュリティアドミッション (PSA)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../security/psact.html">ポッドセキュリティアドミッション（PSA）設定テンプレート</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../security/sample-psact.html">Sample PodSecurityConfiguration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../security/secrets-hub.html">シークレット</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../security/open-ports-with-firewalld.html">firewalldを使用したポートの開放</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../security/encrypting-http.html">HTTP通信の暗号化</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">監視</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../observability/rancher-cluster-tools.html">ログ、監視、可視化のためのクラスタ用ツール</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../observability/rancher-project-tools.html">ロギング、監視、可視化のためのプロジェクトツール</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../observability/logging/logging.html">SUSE Rancher for AWS ロギングサービスとの統合</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../observability/logging/logging-architecture.html">ロギングアーキテクチャ</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../observability/logging/best-practices.html">ログ記録のベストプラクティス</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../observability/logging/rbac-for-logging.html">ログのためのロールベースのアクセス制御</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../observability/logging/logging-helm-chart-options.html">rancher-logging Helmチャートオプション</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../observability/logging/enable-api-audit-log.html">API監査ログを有効にしてシステムイベントを記録する</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../observability/logging/enable-api-audit-log-in-downstream-clusters.html">ダウンストリームクラスターでのAPI監査ログの有効化</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../observability/logging/taints-and-tolerations.html">テイントと許容の操作</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">カスタムリソースの設定</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../observability/logging/custom-resource-configuration/flows-and-clusterflows.html">フローとクラスター・フロー</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../observability/logging/custom-resource-configuration/outputs-and-clusteroutputs.html">出力とクラスター・出力</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../observability/logging/troubleshooting.html">トラブルシューティング</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../observability/monitoring-and-dashboards/monitoring-and-dashboards.html">監視とダッシュボード</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../observability/monitoring-and-dashboards/best-practices.html">監視のベストプラクティス</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../observability/monitoring-and-dashboards/built-in-dashboards.html">組み込みダッシュボード</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../observability/monitoring-and-dashboards/how-monitoring-works.html">監視の仕組み</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../observability/monitoring-and-dashboards/promql-expressions.html">PromQL式リファレンス</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../observability/monitoring-and-dashboards/rbac-for-monitoring.html">ロール（役割）ベースのアクセス制御</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../observability/monitoring-and-dashboards/windows-support.html">Monitoring V2のWindowsクラスターサポート</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../observability/monitoring-and-dashboards/enable-monitoring.html">監視を有効にする</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../observability/monitoring-and-dashboards/uninstall-monitoring.html">Monitoringのアンインストール</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../observability/monitoring-and-dashboards/set-up-monitoring-for-workloads.html">ワークロードの監視を設定する</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../observability/monitoring-and-dashboards/configuration/examples.html">監視設定の例</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../observability/monitoring-and-dashboards/configuration/helm-chart-options.html">Helmチャートオプション</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../observability/monitoring-and-dashboards/configuration/receivers.html">受信者の設定</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../observability/monitoring-and-dashboards/configuration/routes.html">ルート構成</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../observability/monitoring-and-dashboards/configuration/servicemonitors-and-podmonitors.html">ServiceMonitorおよびPodMonitorの設定</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../observability/monitoring-and-dashboards/configuration/advanced/advanced.html">高度な構成</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../../observability/monitoring-and-dashboards/configuration/advanced/alertmanager.html">Alertmanager構成</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../../observability/monitoring-and-dashboards/configuration/advanced/prometheus.html">Prometheus構成</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../../observability/monitoring-and-dashboards/configuration/advanced/prometheusrules.html">PrometheusRulesの設定</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../observability/monitoring-and-dashboards/configuration/configuration.html">監視設定ガイド</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../observability/monitoring-and-dashboards/configuration/debug-high-memory-usage.html">高メモリ使用量のデバッグ</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../observability/monitoring-and-dashboards/customizing-dashboard/create-persistent-grafana-dashboard.html">永続的なGrafanaダッシュボード</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../observability/monitoring-and-dashboards/customizing-dashboard/customize-grafana-dashboard.html">Grafanaダッシュボードのカスタマイズ</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../observability/monitoring-and-dashboards/prometheus-federator/prometheus-federator.html">プロメテウスフェデレーター</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../observability/monitoring-and-dashboards/prometheus-federator/rbac.html">ロールベースのアクセス制御</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../observability/monitoring-and-dashboards/prometheus-federator/enable-prometheus-federator.html">プロメテウスフェデレーターを有効にする</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../observability/monitoring-and-dashboards/prometheus-federator/uninstall-prometheus-federator.html">Prometheus Federatorをアンインストールする</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../observability/monitoring-and-dashboards/prometheus-federator/set-up-workloads.html">ワークロード用のPrometheus Federatorのセットアップ</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../observability/monitoring-and-dashboards/prometheus-federator/customize-grafana-dashboards.html">Grafanaダッシュボードのカスタマイズ</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../observability/monitoring-and-dashboards/prometheus-federator/install-project-monitors.html">プロジェクトモニターのインストール</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../observability/istio/istio.html">Istio</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../observability/istio/rbac.html">ロール（役割）ベースのアクセス制御</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../observability/istio/cpu-and-memory-allocations.html">CPUおよびメモリの割り当て</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../observability/istio/disable-istio.html">Istioの無効化</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../observability/istio/configuration/configuration.html">設定オプション</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../observability/istio/configuration/selectors-and-scrape-configurations.html">セレクターとスクレイプ設定</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../observability/istio/configuration/project-network-isolation.html">プロジェクトネットワークの隔離に関する追加手順</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../observability/istio/configuration/install-istio-on-rke2-cluster.html">SUSE® Rancher Prime: RKE2およびSUSE® Rancher Prime: K3sクラスターにIstioをインストールするための追加手順</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../observability/istio/guides/enable-istio-in-cluster.html">クラスターで Istio を有効にします。</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../observability/istio/guides/enable-istio-in-namespace.html">名前空間でIstioを有効にする</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../observability/istio/guides/set-up-traffic-management.html">トラフィック管理のための Istio コンポーネントを設定します。</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../observability/istio/guides/guides.html">Istio セットアップガイド</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../observability/istio/guides/generate-and-view-traffic.html">Istio からのトラフィックを生成および表示する</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../observability/istio/guides/set-up-istio-gateway.html">Istio ゲートウェイを設定します。</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../observability/istio/guides/use-istio-sidecar.html">Istioサイドカーを使用してデプロイメントとサービスを追加します。</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">API</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../api/quickstart.html">RK-API クイックスタートガイド</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Workflows</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../api/workflows/kubeconfigs.html">Kubeconfig群</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../api/workflows/projects.html">プロジェクト</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../api/workflows/tokens.html">トークン</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../api/workflows/users.html">ユーザ</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../api/reference.html">APIリファレンス</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../api/api-tokens.html">APIトークンの使用</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../api/extension-apiserver.html">拡張機能APIサーバー</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../api/v3-rancher-api-guide.html">以前のv3 SUSE Rancher for AWS API ガイド</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">トラブルシューティング</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../troubleshooting/general-troubleshooting.html">一般的なトラブルシューティング</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../troubleshooting/kubernetes-components/kubernetes-components.html">Kubernetesコンポーネント</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../troubleshooting/kubernetes-components/troubleshooting-controlplane-nodes.html">コントロールプレーンノードのトラブルシューティング</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../troubleshooting/kubernetes-components/troubleshooting-etcd-nodes.html">etcdノードのトラブルシューティング</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../troubleshooting/kubernetes-components/troubleshooting-nginx-proxy.html">nginx-proxyのトラブルシューティング</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../troubleshooting/kubernetes-components/troubleshooting-worker-nodes-and-generic-components.html">ワーカーノードと一般的なコンポーネントのトラブルシューティング</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../troubleshooting/other-troubleshooting-tips/user-id-tracking-in-audit-logs.html">監査ログにおけるユーザーIDの追跡</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../troubleshooting/other-troubleshooting-tips/networking.html">ネットワーキング</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../troubleshooting/other-troubleshooting-tips/kubernetes-resources.html">Kubernetesリソース</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../troubleshooting/other-troubleshooting-tips/dns.html">DNS</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">FAQ（よくある質問と答え）</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../faq/general-faq.html">よくある質問</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../faq/deprecated-features.html">の廃止機能SUSE Rancher for AWS</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../faq/install-and-configure-kubectl.html">kubectlのインストールと設定</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../faq/technical-items.html">技術的なFAQ</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../faq/security.html">セキュリティ FAQ</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../faq/container-network-interface-providers.html">コンテナネットワークインタフェース（CNI）プロバイダー</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../faq/rancher-is-no-longer-needed.html">SUSE Rancher for AWSはもはや必要ありません</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../../contribute-to-rancher.html">SUSE Rancher for AWSへの貢献</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">SUSE® Rancher for AWS</span>
+    <span class="version">Latest</span>
+  </div>
+  <ul class="components">
+        <li class="component">
+          <div class="title"><a href="../../../../../../admission-controller/1.36/en/introduction.html">Admission Controller</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../../../admission-controller/1.37/en/introduction.html">1.37-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../../../admission-controller/1.36/en/introduction.html">1.36</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../admission-controller/1.35/en/introduction.html">1.35</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../admission-controller/1.34/en/introduction.html">1.34</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../admission-controller/1.33/en/introduction.html">1.33</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../admission-controller/1.32/en/introduction.html">1.32</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../admission-controller/1.31/en/introduction.html">1.31</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../admission-controller/1.30/en/introduction.html">1.30</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../admission-controller/1.29/en/introduction.html">1.29</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../admission-controller/1.28/en/introduction.html">1.28</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../../cluster-api/v0.26/en/index.html">Cluster API</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.28/en/index.html">v0.28-dev</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.27/en/index.html">v0.27-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../../../cluster-api/v0.26/en/index.html">v0.26</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.25/en/index.html">0.25</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.24/en/index.html">0.24</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.23/en/index.html">0.23</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.22/en/index.html">0.22</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.21/en/index.html">0.21</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.20/en/index.html">0.20</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.19/en/index.html">0.19</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.18/en/index.html">0.18</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.17/en/index.html">0.17</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.16/en/index.html">0.16</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.11/en/index.html">0.11</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../../continuous-delivery/next/en/index.html">Continuous Delivery</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../../continuous-delivery/next/en/index.html">Next</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../continuous-delivery/v0.15/en/index.html">v0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../continuous-delivery/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../continuous-delivery/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../continuous-delivery/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../continuous-delivery/v0.11/en/index.html">0.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../continuous-delivery/v0.10/en/index.html">0.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../continuous-delivery/v0.9/en/index.html">0.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../../k3s/latest/en/introduction.html">K3s</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../../k3s/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../../os-manager/1.9/en/index.html">OS Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../../../os-manager/1.10/en/index.html">1.10-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../../../os-manager/1.9/en/index.html">1.9</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../os-manager/1.8/en/index.html">1.8</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../os-manager/1.7/en/index.html">1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../os-manager/1.6/en/index.html">1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../os-manager/1.5/en/index.html">1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../../rancher-ai/latest/en/introduction.html">Rancher AI</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../../rancher-ai/latest/en/introduction.html">latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../../turtles/stable/en/index.html">Rancher Turtles</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../../turtles/stable/en/index.html">Stable</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../../rke2/latest/en/introduction.html">RKE2</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../../rke2/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../../suse-observability/latest/en/classic.html">SUSE Observability</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../../suse-observability/latest/en/classic.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">SUSE Rancher Developer Access</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component is-current">
+          <div class="title"><a href="../../../../en/about-rancher/what-is-rancher.html">SUSE® Rancher for AWS</a></div>
+          <ul class="versions">
+            <li class="version is-current is-latest">
+              <a href="../../../../en/about-rancher/what-is-rancher.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../../rancher-manager/v2.14/en/about-rancher/what-is-rancher.html">SUSE® Rancher Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../../../rancher-manager/v2.15/en/about-rancher/what-is-rancher.html">v2.15 (Unreleased)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../../../rancher-manager/v2.14/en/about-rancher/what-is-rancher.html">v2.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../rancher-manager/v2.13/en/about-rancher/what-is-rancher.html">v2.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../rancher-manager/v2.12/en/about-rancher/what-is-rancher.html">v2.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../rancher-manager/v2.11/en/about-rancher/what-is-rancher.html">v2.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../rancher-manager/v2.10/en/about-rancher/what-is-rancher.html">v2.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../rancher-manager/v2.9/en/about-rancher/what-is-rancher.html">v2.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../../security/5.6/en/overview.html">SUSE® Security</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../../security/5.6/en/overview.html">5.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../security/5.5/en/overview.html">5.5</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../security/5.4/en/overview.html">5.4</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../security/5.3/en/overview.html">5.3</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../../storage/1.11/en/longhorn-documentation.html">SUSE® Storage</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../../../storage/1.12/en/longhorn-documentation.html">1.12 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../../../storage/1.11/en/longhorn-documentation.html">1.11 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../storage/1.10/en/longhorn-documentation.html">1.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../storage/1.9/en/longhorn-documentation.html">1.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">SUSE® Virtual Clusters</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../../../suse-virtual-clusters/1.2.0/en/release-notes/version-1.2.0.html">v1.2.0 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">v1.1.0-latest</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../suse-virtual-clusters/1.0.2/en/release-notes/version-1.0.2.html">v1.0.2</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../suse-virtual-clusters/v1.0.1/en/introduction.html">v1.0.1</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../suse-virtual-clusters/v1.0.0/en/introduction.html">v1.0.0</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../../virtualization/v1.8/en/introduction/overview.html">SUSE® Virtualization</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../../../virtualization/v1.9/en/introduction/overview.html">v1.9 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../../../virtualization/v1.8/en/introduction/overview.html">v1.8 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../virtualization/v1.7/en/introduction/overview.html">v1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../virtualization/v1.6/en/introduction/overview.html">v1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../virtualization/v1.5/en/introduction/overview.html">v1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../../vulnerability-scanner/0.12.0/en/introduction.html">Vulnerability Scanner</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../../vulnerability-scanner/0.12.0/en/introduction.html">0.12.0</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../vulnerability-scanner/0.11.3/en/introduction.html">0.11.3</a>
+            </li>
+          </ul>
+        </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+<ul>
+    <li>
+  <a class="home-link-dsc" href="https://documentation.suse.com" title="SUSE Documentation Home" aria-label="SUSE Documentation Home"></a>
+    </li>
+    <li>
+      <a href="https://documentation.suse.com/cloudnative/rancher-srfa" title="SUSE Rancher for AWS" aria-label="SUSE Documentation - SUSE Rancher for AWS">
+        SUSE Rancher for AWS
+      </a>
+    </li>
+      <li>
+          <a href="../../rancher-admin.html" title="Rancherの管理" aria-label="Rancherの管理">Rancherの管理</a>
+      </li>
+  </ul>
+</nav>
+      <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <label class="visual-search-label-bc" for="search-input">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+          <input label="Search" aria-label="Search" id="search-input" type="text" placeholder="ドキュメントを検索" >
+          <label class="filter checkbox" style="display: none">
+            <input type="checkbox" data-facet-filter="component:rancher-srfa" checked> Only this project
+          </label>
+        </div>
+      </div>
+</div>
+  <div class="content">
+<aside
+  class="toc sidebar"
+  data-title="このページで" data-levels="2">
+  <div class="toc-menu">
+    <div class="docsurvey-wrapper"><a class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_diCzHC9xxyJyuN0">Documentation survey</a></div>
+    <!-- start qualtrics -->
+    <div id='ZN_8qZUmklKYbBqAYe'><!--DO NOT REMOVE-CONTENTS PLACED HERE--></div>
+    <div id="qualtrics_container"></div>
+    <!-- end qualtrics -->
+  </div>
+</aside>
+
+<aside class="toc sidebar docsurvey-sidebar">
+  <div class="toc-menu">
+    <div class="docsurvey-wrapper"><a class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_diCzHC9xxyJyuN0">Documentation survey</a></div>
+  </div>
+</aside>
+<article class="doc">
+<h1 class="page">Active Directory (AD)の設定</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>組織がMicrosoft Active Directoryを中央ユーザーリポジトリとして使用している場合、Rancherを設定してActive Directoryサーバーと通信し、ユーザーを認証することができます。これにより、Rancherの管理者はActive Directoryで外部管理されているユーザーやグループに基づいてクラスターやプロジェクトへのアクセスを制御でき、エンドユーザーはRancher UIにログインする際にAD資格情報で認証できます。</p>
+</div>
+<div class="paragraph">
+<p>RancherはLDAPを使用してActive Directoryサーバーと通信します。したがって、Active Directoryの認証フローは<a href="openldap/openldap.html" class="xref page">OpenLDAP認証</a>統合と同じです。</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="注記"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>開始する前に、<a href="authn-and-authz.html#_external_authentication_configuration_and_principal_users" class="xref page">外部認証設定と主要ユーザー</a>の概念に慣れておいてください。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_prerequisites"><a class="anchor" href="#_prerequisites"></a>前提条件</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Rancherのサービスアカウントとして使用するために、新しいADユーザーを作成するか、AD管理者から取得する必要があります。このユーザーは、LDAP検索を実行し、ADドメイン内のユーザーやグループの属性を読み取るための十分な権限を持っている必要があります。</p>
+</div>
+<div class="paragraph">
+<p>通常、この目的には（非管理者の）*ドメインユーザー*アカウントを使用するべきです。デフォルトでは、そのようなユーザーはドメインパーティション内のほとんどのオブジェクトに対して読み取り専用の権限を持っています。</p>
+</div>
+<div class="paragraph">
+<p>ただし、一部の制限されたActive Directory構成では、このデフォルトの動作が適用されない場合があります。その場合、サービスアカウントユーザーがBase OU（ユーザーとグループを含む）またはドメイン全体で少なくとも*読み取り*および*コンテンツのリスト*の権限を持っていることを確認する必要があります。</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="注記"></i>
+</td>
+<td class="content">
+<div class="title">TLSを使用していますか？</div>
+<div class="ulist">
+<ul>
+<li>
+<p>ADサーバーで使用される証明書が自己署名であるか、認識された証明書機関からのものでない場合、CA証明書（中間証明書と連結されたもの）をPEM形式で手元に用意してください。この証明書を設定中に貼り付ける必要があるため、Rancherが証明書チェーンを検証できるようにします。</p>
+</li>
+<li>
+<p>v2.6.0へのアップグレード時に、TLSを用いてRancher経由でActive Directoryへ認証を試みると、ADサーバーの証明書がSAN属性をサポートしていない場合、認証が失敗する可能性があります。これは、Go v1.15でデフォルトで有効になっているチェックです。</p>
+<div class="ulist">
+<ul>
+<li>
+<p>受け取ったエラーは「SSL接続の作成エラー：LDAP結果コード200「ネットワークエラー」：x509：証明書は従来の共通名フィールドに依存しています。SANを使用するか、一時的にGODEBUG=x509ignoreCN=0で共通名の一致を有効にしてください。」</p>
+</li>
+<li>
+<p>エラーを解決するには、ADサーバーの証明書をSAN属性をサポートする新しいものに更新または置き換えてください。このエラーは、`GODEBUG=x509ignoreCN=0`をRancherサーバーコンテナの環境変数として設定することで無視できます。</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_configuration_steps"><a class="anchor" href="#_configuration_steps"></a>設定手順</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_open_active_directory_configuration"><a class="anchor" href="#_open_active_directory_configuration"></a>Active Directory設定を開く</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>初期のローカル`admin`アカウントを使用して、Rancher UIにログインしてください。</p>
+</li>
+<li>
+<p>左上隅で、*☰ &gt; ユーザーと認証*をクリックします。</p>
+</li>
+<li>
+<p>左側のナビゲーションメニューで、*認証プロバイダー*をクリックします。</p>
+</li>
+<li>
+<p>*ActiveDirectory*をクリックします。*認証プロバイダー:ActiveDirectory*フォームが表示されます。</p>
+</li>
+<li>
+<p>フォームを記入します。ヘルプが必要な場合は、以下の構成オプションの詳細を参照してください。</p>
+</li>
+<li>
+<p>［*有効］*をクリックします。</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_configure_active_directory_server_settings"><a class="anchor" href="#_configure_active_directory_server_settings"></a>Active Directoryサーバーの設定</h3>
+<div class="paragraph">
+<p>`1. Configure an Active Directory server`というタイトルのセクションで、Active Directoryサーバーに特有の情報を使ってフィールドを完成させてください。各パラメータに必要な値の詳細については、以下の表を参照してください。</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="注記"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>ユーザー/グループ検索ベースフィールドに入力する正しい値が不明な場合は、<a href="#_annex_identify_search_base_and_schema_using_ldapsearch">ldapsearchを使用して検索ベースとスキーマを特定する</a>を参照してください。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><strong>表1:ADサーバーパラメータ</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">パラメータ</th>
+<th class="tableblock halign-left valign-top">説明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ホスト名</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ADサーバーのホスト名またはIPアドレスを指定してください。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ポート</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Active Directoryサーバーが接続を待機しているポートを指定してください。暗号化されていないLDAPは通常、標準ポートの389を使用し、LDAPSはポート636を使用します。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">TLS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">このボックスにチェックを入れて、SSL/TLS上のLDAPを有効にします（一般にLDAPSとして知られています）。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">サーバー接続タイムアウト</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">RancherがADサーバーに到達できないと見なすまでの待機時間（秒単位）です。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">サービスアカウントのユーザー名</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ドメインパーティションに対して読み取り専用アクセス権を持つADアカウントのユーザー名を入力してください（<a href="#_prerequisites">前提条件</a>を参照）。ユーザー名はNetBIOS形式（例:"DOMAIN\serviceaccount"）またはUPN形式（例: "<a href="mailto:serviceaccount@domain.com">serviceaccount@domain.com</a>"）で入力できます。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">サービスアカウントのパスワード</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">サービスアカウントのパスワード。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">デフォルトログインドメイン</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">このフィールドをADドメインのNetBIOS名で構成すると、ドメインなしで入力されたユーザー名（例："jdoe"）は自動的にスラッシュ付きのNetBIOSログオン（例："LOGIN_DOMAIN\jdoe"）に変換されます。ADサーバーにバインドする際に。ユーザーがUPN（例："<a href="mailto:jdoe@acme.com">jdoe@acme.com</a>"）をユーザー名として認証する場合、このフィールドは*空白のままにする必要があります*。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ユーザー検索ベース</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ユーザーオブジェクトの検索を開始するディレクトリツリー内のノードの識別名（Distinguished Name）。すべてのユーザーはこのベースDNの子孫でなければなりません。例えば: "ou=people,dc=acme,dc=com"。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">グループ検索ベース</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">グループが`User Search Base`で設定されたノードとは異なるノードに存在する場合は、ここに識別名（Distinguished Name）を提供する必要があります。そうでない場合は、空白のままにします。例えば: "ou=groups,dc=acme,dc=com"。</p></td>
+</tr>
+</tbody>
+</table>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="_configure_user_group_schema"><a class="anchor" href="#_configure_user_group_schema"></a>ユーザー/グループスキーマ設定</h3>
+<div class="paragraph">
+<p>`2. Customize Schema`というタイトルのセクションでは、Rancherにディレクトリで使用されるスキーマに対応するユーザーおよびグループ属性の正しいマッピングを提供する必要があります。</p>
+</div>
+<div class="paragraph">
+<p>RancherはLDAPクエリを使用して、Active Directory内のユーザーおよびグループに関する情報を検索し、取得します。このセクションで設定された属性マッピングは、検索フィルターを構築し、グループメンバーシップを解決するために使用されます。したがって、提供された設定がADドメインの現実を反映していることが非常に重要です。</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="注記"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Active Directoryドメインで使用されるスキーマに不慣れな場合は、<a href="#_annex_identify_search_base_and_schema_using_ldapsearch">ldapsearchを使用して検索ベースとスキーマを特定する</a>を参照して、正しい設定値を確認してください。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_user_schema"><a class="anchor" href="#_user_schema"></a>ユーザースキーマ</h4>
+<div class="paragraph">
+<p>以下の表は、ユーザースキーマセクション設定のパラメータを詳述しています。</p>
+</div>
+<div class="paragraph">
+<p><strong>表2:ユーザースキーマ設定パラメータ</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">パラメータ</th>
+<th class="tableblock halign-left valign-top">説明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">オブジェクトクラス</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ドメイン内のユーザーオブジェクトに使用されるオブジェクトクラスの名前。定義されている場合、オブジェクトクラスの名前のみを指定し、LDAPラッパー（例: &amp;(objectClass=xxxx)）には_含めない_ようにしてください。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ユーザー名属性</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">表示名として適切な値を持つユーザー属性。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ログイン属性</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ユーザーがRancherにログインする際に入力した資格情報のユーザー名部分と一致する値を持つ属性。ユーザーがUPN（例："<a href="mailto:jdoe@acme.com">jdoe@acme.com</a>"）をユーザー名として認証する場合、このフィールドは通常`userPrincipalName`に設定する必要があります。そうでない場合、古いNetBIOSスタイルのログオン名（例："jdoe"）の場合は通常`sAMAccountName`です。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ユーザーメンバー属性</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ユーザーが所属するグループを含む属性。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">検索属性</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ユーザーがUIでユーザーやグループを追加するためにテキストを入力すると、RancherはADサーバーにクエリを送り、この設定で提供された属性に基づいてユーザーを一致させようとします。複数の属性は、パイプ（"|"）記号で区切ることによって指定できます。UPNユーザー名（例：<a href="mailto:jdoe@acme.com">jdoe@acme.com</a>）を一致させるには、通常このフィールドの値を`userPrincipalName`に設定する必要があります。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">検索フィルタ</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">このフィルターは、Rancherがサイトアクセスリストにユーザーを追加しようとしたり、クラスターやプロジェクトにメンバーを追加しようとしたときに検索されるユーザーのリストに適用されます。例えば、ユーザー検索フィルターは`(|(memberOf=CN=group1,CN=Users,DC=testad,DC=rancher,DC=io)(memberOf=CN=group2,CN=Users,DC=testad,DC=rancher,DC=io))`のようになります。注意:検索フィルターが <a href="https://docs.microsoft.com/en-us/windows/win32/adsi/search-filter-syntax">有効なAD検索構文,</a>を使用しない場合、ユーザーのリストは空になります。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ユーザー有効属性</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ユーザーアカウントフラグのビット単位の列挙を表す整数値を含む属性です。Rancherはこれを使用して、ユーザーアカウントが無効になっているかどうかを判断します。通常は、これをAD標準の`userAccountControl`に設定しておくべきです。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">無効ステータスビットマスク</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">これは、無効なユーザーアカウントを示す`User Enabled Attribute`の値です。通常は、Microsoft Active Directoryスキーマで指定されているデフォルト値の"2"に設定しておくべきです（詳細は <a href="https://docs.microsoft.com/en-us/windows/desktop/adschema/a-useraccountcontrol#remarks">こちら</a>を参照）。</p></td>
+</tr>
+</tbody>
+</table>
+<hr>
+</div>
+<div class="sect3">
+<h4 id="_group_schema"><a class="anchor" href="#_group_schema"></a>グループスキーマ</h4>
+<div class="paragraph">
+<p>以下の表は、グループスキーマ設定のパラメータの詳細を示しています。</p>
+</div>
+<div class="paragraph">
+<p><strong>表3:グループスキーマ設定パラメータ</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">パラメータ</th>
+<th class="tableblock halign-left valign-top">説明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">オブジェクトクラス</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ドメイン内のグループオブジェクトに使用されるオブジェクトクラスの名前です。定義されている場合、オブジェクトクラスの名前のみを指定し、LDAPラッパー（例: &amp;(objectClass=xxxx)）には_含めない_ようにしてください。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">名前属性</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">表示名に適した値を持つグループ属性です。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">グループメンバーユーザー属性</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">*ユーザー属性*の名前で、その値の形式が`Group Member Mapping Attribute`のグループメンバーと一致します。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">グループメンバーマッピング属性</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">グループのメンバーを含むグループ属性の名前です。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">検索属性</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">クラスターやプロジェクトにグループを追加する際に検索フィルターを構築するために使用される属性です。ユーザースキーマ`Search Attribute`の説明を参照してください。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">検索フィルタ</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">このフィルターは、Rancherがサイトアクセスリストにグループを追加しようとしたり、クラスターやプロジェクトにグループを追加しようとしたときに検索されるグループのリストに適用されます。例えば、グループ検索フィルターは`(|(cn=group1)(cn=group2))`のようになります。注意:検索フィルターが <a href="https://docs.microsoft.com/en-us/windows/win32/adsi/search-filter-syntax">有効なAD検索構文,</a>を使用しない場合、グループのリストは空になります。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">グループDN属性</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ユーザーのメンバーシップを記述するユーザー属性の値と形式が一致するグループ属性の名前です。を参照してください。<code>User Member Attribute</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ネストされたグループメンバーシップ</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">この設定は、Rancherがネストされたグループメンバーシップを解決するかどうかを定義します。組織がこれらのネストされたメンバーシップを利用している場合のみ使用してください（つまり、他のグループをメンバーとして含むグループがあります）。ネストされたグループは、ネストされたメンバーシップが大量にある場合のパフォーマンスの問題を避けるために、可能な限り避けることをお勧めします。</p></td>
+</tr>
+</tbody>
+</table>
+<hr>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_test_authentication"><a class="anchor" href="#_test_authentication"></a>認証のテスト</h3>
+<div class="paragraph">
+<p>設定が完了したら、ADサーバーへの接続をテストして進めてください*AD管理者アカウントを使用して*。テストが成功した場合、テストに使用したアカウントが管理者として設定され、構成されたActive Directoryによる認証が暗黙的に有効になります。</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="注記"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>このステップで入力された資格情報に関連するADユーザーは、ローカルの主要アカウントにマッピングされ、Rancherで管理者権限が付与されます。したがって、このステップを実行するために使用するADアカウントについて、意識的な決定を下す必要があります。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>ローカルの主要アカウントにマッピングされるべきADアカウントの*ユーザー名*と*パスワード*を入力してください。</p>
+</li>
+<li>
+<p>セットアップを完了するには、*Active Directoryで認証*をクリックしてください。</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p><strong>結果:</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Active Directory認証が有効になりました。</p>
+</li>
+<li>
+<p>提供されたAD資格情報を使用して、管理者としてRancherにサインインしました。</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="注記"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>LDAPサービスが中断された場合でも、ローカルに設定された`admin`アカウントとパスワードを使用してログインすることができます。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_annex_identify_search_base_and_schema_using_ldapsearch"><a class="anchor" href="#_annex_identify_search_base_and_schema_using_ldapsearch"></a>付録：ldapsearchを使用して検索ベースとスキーマを特定します。</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>AD認証を正常に構成するためには、ADサーバーの階層とスキーマに関する正しい構成を提供することが重要です。</p>
+</div>
+<div class="paragraph">
+<p><a href="https://manpages.ubuntu.com/manpages/noble/en/man1/ldapsearch.1.html"><code>ldapsearch</code></a>ツールを使用すると、ユーザーおよびグループオブジェクトに使用されるスキーマについてADサーバーにクエリを実行できます。</p>
+</div>
+<div class="paragraph">
+<p>以下に示す例のコマンドの目的のために、次のことを仮定します：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Active Directoryサーバーのホスト名は`ad.acme.com`です。</p>
+</li>
+<li>
+<p>サーバーはポート`389`で暗号化されていない接続を待機しています。</p>
+</li>
+<li>
+<p>Active Directoryドメインは`acme`です。</p>
+</li>
+<li>
+<p>ユーザー名`jdoe`とパスワード`secret`を持つ有効なADアカウントがあります。</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="_identify_search_base"><a class="anchor" href="#_identify_search_base"></a>検索ベースを特定します。</h3>
+<div class="paragraph">
+<p>最初に、`ldapsearch`を使用してユーザーとグループの親ノードの識別名（DN）を特定します：</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ ldapsearch -x -D "acme\jdoe" -w "secret" -p 389 \
+-h ad.acme.com -b "dc=acme,dc=com" -s sub "sAMAccountName=jdoe"</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>このコマンドは、検索ベースをドメインルート（<code>-b "dc=acme,dc=com"</code>）に設定し、ユーザーアカウント（<code>sAMAccountNam=jdoe</code>）をターゲットにしたフィルターでLDAP検索を実行し、該当するユーザーの属性を返します：</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../../../_images/ldapsearch-user.png" alt="ldapsearch user">
+</div>
+</div>
+<div class="paragraph">
+<p>この場合、ユーザーのDNが`CN=John Doe,CN=Users,DC=acme,DC=com` [5]であるため、*ユーザー検索ベース*を親ノードDN `CN=Users,DC=acme,DC=com`で構成する必要があります。</p>
+</div>
+<div class="paragraph">
+<p>同様に、*memberOf*属性[4]で参照されるグループのDNに基づいて、*グループ検索ベース*の正しい値はその値の親ノード、すなわち`OU=Groups,DC=acme,DC=com`になります。</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_identify_user_schema"><a class="anchor" href="#_identify_user_schema"></a>ユーザースキーマを特定する</h3>
+<div class="paragraph">
+<p>上記の`ldapsearch`クエリの出力は、ユーザースキーマ設定で使用する正しい値を決定することも可能にします：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>Object Class</code>: <strong>person</strong> [1]</p>
+</li>
+<li>
+<p><code>Username Attribute</code>: <strong>名前</strong> [2]</p>
+</li>
+<li>
+<p><code>Login Attribute</code>: <strong>sAMAccountName</strong> [3]</p>
+</li>
+<li>
+<p><code>User Member Attribute</code>: <strong>memberOf</strong> [4]</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="注記"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>もし私たちの組織のADユーザーが短いログオン名の代わりにUPN（例：<a href="mailto:jdoe@acme.com">jdoe@acme.com</a>）で認証する場合、`Login Attribute`を*userPrincipalName*に設定する必要があります。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">また、`Search Attribute`パラメータを**sAMAccountName name**に設定します。</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">（前文と統合済み）その方法で、ユーザーはRancher UIのクラスター/プロジェクトにユーザー名またはフルネームを入力することで追加できます。</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_identify_group_schema"><a class="anchor" href="#_identify_group_schema"></a>グループスキーマを特定する</h3>
+<div class="paragraph">
+<p>次に、このユーザーに関連付けられたグループの1つをクエリします。この場合は`CN=examplegroup,OU=Groups,DC=acme,DC=com`：</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ ldapsearch -x -D "acme\jdoe" -w "secret" -p 389 \
+-h ad.acme.com -b "ou=groups,dc=acme,dc=com" \
+-s sub "CN=examplegroup"</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>このコマンドは、グループオブジェクトに使用される属性について教えてくれます：</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../../../_images/ldapsearch-group.png" alt="ldapsearch group">
+</div>
+</div>
+<div class="paragraph">
+<p>再度、これによりグループスキーマ設定に入力する正しい値を決定できます：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>Object Class</code>: <strong>グループ</strong> [1]</p>
+</li>
+<li>
+<p><code>Name Attribute</code>: <strong>名前</strong> [2]</p>
+</li>
+<li>
+<p><code>Group Member Mapping Attribute</code>: <strong>member</strong> [3]</p>
+</li>
+<li>
+<p><code>Search Attribute</code>: <strong>sAMAccountName</strong> [4]</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>member</strong> 属性の値を見ると、参照されたユーザーのDNが含まれていることがわかります。これは、私たちのユーザーオブジェクトの*distinguishedName*属性に対応します。したがって、`Group Member User Attribute`パラメータの値をこの属性に設定する必要があります。</p>
+</div>
+<div class="paragraph">
+<p>同様に、ユーザーオブジェクトの*memberOf*属性の値は、グループの*distinguishedName*[5]に対応していることが観察できます。したがって、`Group DN Attribute`パラメータの値をこの属性に設定する必要があります。</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_annex_troubleshooting"><a class="anchor" href="#_annex_troubleshooting"></a>付録：トラブルシューティング</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Active Directoryサーバーへの接続をテストしている際に問題が発生した場合は、サービスアカウントの資格情報と検索ベースの設定を再確認してください。問題の原因を特定するために、Rancherのログを確認することもできます。デバッグログには、エラーに関するより詳細な情報が含まれている場合があります。このドキュメントの<a href="../../../faq/technical-items.html#_how_can_i_enable_debug_logging" class="xref page">デバッグログを有効にする方法</a>を参照してください。</p>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="configure-oidc-provider.html">RancherをOIDCプロバイダーとして設定します。</a></span>
+  <span class="next"><a href="configure-amazon-cognito.html">Amazon Cognitoの設定</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<script src="../../../../../../_/js/site.js"></script>
+<script async src="../../../../../../_/js/vendor/highlight.js"></script>
+<script src="../../../../../../_/js/vendor/lunr.js"></script>
+<script src="../../../../../../_/js/vendor/lunr-languages.js"></script>
+<script src="../../../../../../_/js/search-ui.js" id="search-ui-script" data-site-root-path="../../../../../.." data-snippet-length="100" data-stylesheet="../../../../../../_/css/search.css"></script>
+<script async src="../../../../../../search-index.js"></script>
+<script src="../../../../../../_/js/vendor/langSelection.js"></script>
+<script async src="../../../../../../_/js/vendor/tabs.js"></script>
+
+
+<script src="../../../../../../_/js/CNLanguageSwitcher.js"></script>
+  </body>
+</html>

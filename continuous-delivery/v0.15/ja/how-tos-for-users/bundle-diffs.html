@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+<title>変更された GitRepos を無視するための Diffs を生成する | Continuous Delivery  v0.15</title>
+    <link rel="canonical" href="https://documentation.suse.com/cloudnative/continuous-delivery/v0.15/ja/how-tos-for-users/bundle-diffs.html">
+    <link rel="prev" href="gitrepo-targets.html">
+    <link rel="next" href="webhook.html">
+    <meta name="generator" content="Antora 3.1.14">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+<meta http-equiv="last-modified" content="2025-07-23"/>
+<link rel="stylesheet" href="../../../../_/css/search.css">
+<link rel="icon" href="../../../../_/img/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="../../../../_/css/font-styles.css">
+<link rel="stylesheet" href="../../../../_/fonts/css/all.css">
+<link rel="stylesheet" href="../../../../_/css/site-extra.css">
+<link rel="stylesheet" href="../../../../_/css/vendor/tabs.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap&family=SUSE+Mono:ital,wght@0,100..800;1,100..800" rel="stylesheet">
+<link rel="stylesheet" href="../../../../_/css/vendor/light.css">
+<script src="/docserv/res/lightheaded/analytics.js" type="text/javascript"></script>
+<script type="module">
+  import { defineCustomElements, setAssetPath } from 'https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/shared-header.esm.js';
+  defineCustomElements();
+  setAssetPath("https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/assets");
+</script>
+<!-- Default English link -->
+<link href="https://documentation.suse.com/cloudnative/continuous-delivery/v0.15/en/how-tos-for-users/bundle-diffs.html" hreflang="x-default" rel="alternate"/>
+<!-- Link for the currently processed page -->
+<link href="https://documentation.suse.com/cloudnative/continuous-delivery/v0.15/ja/how-tos-for-users/bundle-diffs.html" hrefLang="ja-JP" rel="alternate" />
+<!-- Link for the English page -->
+<link href="https://documentation.suse.com/cloudnative/continuous-delivery/v0.15/en/how-tos-for-users/bundle-diffs.html" hreflang="en-US" rel="alternate" />
+<!-- Link for the Chinese page -->
+<link href="https://documentation.suse.com/cloudnative/continuous-delivery/v0.15/zh/how-tos-for-users/bundle-diffs.html" hreflang="zh-CN" rel="alternate" />
+<!-- Link for the German page -->
+<link href="https://documentation.suse.com/cloudnative/continuous-delivery/v0.15/de/how-tos-for-users/bundle-diffs.html" hreflang="de-DE" rel="alternate" />
+<!-- Link for the French page -->
+<link href="https://documentation.suse.com/cloudnative/continuous-delivery/v0.15/fr/how-tos-for-users/bundle-diffs.html" hreflang="fr-FR" rel="alternate" />
+<!-- Link for the Spanish page -->
+<link href="https://documentation.suse.com/cloudnative/continuous-delivery/v0.15/es/how-tos-for-users/bundle-diffs.html" hreflang="es-ES" rel="alternate" />
+<!-- Link for the Brazilian Portuguese page -->
+<link href="https://documentation.suse.com/cloudnative/continuous-delivery/v0.15/pt/how-tos-for-users/bundle-diffs.html" hreflang="pt-BR" rel="alternate" />
+
+<!-- JSON-LD for doc metadata -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "変更された GitRepos を無視するための Diffs を生成する | SUSE Rancher Prime Continuous Delivery v0.15",
+  "headline": "変更された GitRepos を無視するための Diffs を生成する",
+  "description": "変更された GitRepos を無視するための Diffs を生成する",
+  "inLanguage": "ja",
+  "dateModified": "2025-07-23T00:00:00Z",
+  "author": {
+    "@type": "Organization",
+    "name": "SUSE Product & Solution Documentation Team",
+    "url": "https://documentation.suse.com"
+  },
+  "mentions": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "SUSE Rancher Prime Continuous Delivery",
+      "softwareVersion": "v0.15",
+      "applicationCategory": "Cloud Infrastructure",
+      "operatingSystem": "Linux"
+    }
+  ],
+  "publisher": {
+    "@type": "Organization",
+    "name": "SUSE",
+    "url": "https://documentation.suse.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.suse.com/assets/img/suse-white-logo-green.svg"
+    }
+  }
+}
+</script>
+<!-- end JSON-LD for doc metadata -->
+
+<!-- SUVA - Begin Ask Geeko-->
+<!--
+searchUnifyChatbot ("Ask Geeko") Copyright ©2024 Grazitti Interactive - All Rights Reserved. NOTICE: All information contained herein is, and remains the property of Grazitti Interactive and its suppliers, if any. The intellectual and technical concepts contained herein are proprietary to Grazitti Interactive and its suppliers and may be covered by India, U.S. and Foreign Patents, patents in process, and are protected by trade secret or copyright law. Dissemination of this information or reproduction of this material is strictly forbidden unless prior written permission is obtained from Grazitti Interactive.
+-->
+<meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport"/>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/Allow/an.js?c485cb3c-93d4-4942-99e8-91f3b8ca5636"></script>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/js/index.js?q=gAAAAABp3JBN9VuEJTi5tFafLIMwgMkCPdJS3Qm56lSYx93ir3Twt9hgSvd3OHEt6-nYfSbY3yHq0Zv8PRPsSy4nbqZiaJ4cZvRc6ItVZdvwz9Urf35cH6OUyPOwdA0phlS-zVIznQ2rWW438p-91NlTHuxJuOFpnA=="></script>
+<link rel="stylesheet" href="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/css/index.css">
+<div id="searchUnifyChatbot"></div>
+<!-- SUVA - End Ask Geeko-->
+<!--BEGIN QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+<script type='text/javascript' src="../../../../_/js/qualtrics.js" defer></script>
+<!--END QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<script type="module">import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs'; mermaid.initialize({"startOnLoad":true});</script><shared-header
+language="en"
+languages='{
+    "en": { "label": "English", "url": "https://documentation.suse.com/en-us/" },
+    "de": { "label": "Deutsch", "url": "https://documentation.suse.com/de-de/" },
+    "fr": { "label": "Français", "url": "https://documentation.suse.com/fr-fr/" },
+    "es": { "label": "Español", "url": "https://documentation.suse.com/es-es/" },
+    "zh_CN": { "label": "中文", "url": "https://documentation.suse.com/zh-cn/" },
+    "pt_BR": { "label": "Português Brasileiro", "url": "https://documentation.suse.com/pt-br/" }
+}'
+enable-search='false'>
+</shared-header>
+<div class="body">
+<div class="nav-container" data-component="continuous-delivery" data-version="v0.15">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title">Continuous Delivery</h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">概要</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../persona.html">主要なペルソナとその役割</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">チュートリアル</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tutorials/quickstart.html">クイックスタート</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tutorials/tut-deployment.html">デプロイメントの作成</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tutorials/uninstall.html">アンインストール</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">説明</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../explanations/architecture.html">アーキテクチャ</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../explanations/concepts.html">コアコンセプト</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../explanations/ref-bundle-stages.html">バンドルライフサイクル</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../explanations/gitrepo-content.html">Gitリポジトリの内容</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../explanations/namespaces.html">ネームスペース</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../explanations/resources-during-deployment.html">デプロイメント中のカスタムリソース</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../explanations/glossary.html">デプロイメント中のカスタムリソース</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">オペレーター向けハウツー</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../how-tos-for-operators/installation.html">インストール詳細</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../how-tos-for-operators/cluster-registration.html">ダウンストリームクラスタの登録</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../how-tos-for-operators/cluster-group.html">クラスタグループの作成</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../how-tos-for-operators/multi-user.html">マルチユーザーのセットアップ</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../how-tos-for-operators/resource-limits.html">リソース制限の設定</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">ユーザー向けハウツー</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="gitrepo-add.html">GitRepoリソースの作成</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="gitrepo-targets.html">ダウンストリームクラスタへのマッピング</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="bundle-diffs.html">変更されたGitReposを無視するための差分生成</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="webhook.html">ポーリングの代わりにWebhookを使用する</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="imagescan.html">コンテナイメージ参照を更新するためのイメージスキャンの使用</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="bundle-add.html">バンドルリソースの作成</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="observability.html">監視</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="oci-storage.html">OCIストレージ</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="rollout.html">ロールアウト戦略</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="helm-ops.html">ヘルムオプス</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="fetch-helm-oci.html">ヘルムオプスを取得する</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="fine-tune-error.html">エラー検出の微調整</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Fleet CLI</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="install-use-fleet-cli.html">Fleet CLI のインストールと使用</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="validate-fleet-cli.html">Validate Fleet CLI Deployment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">リファレンス</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">CLI</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Fleet</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-cli/fleet.html">fleet</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-cli/fleet_apply.html">fleet apply</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-cli/fleet_bundlediff.html">Fleet bundlediff</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-cli/fleet_deploy.html">Fleet deploy</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-cli/fleet_target.html">Fleet target</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-cli/fleet_gitcloner.html">Fleet gitcloner</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Fleetのトラブルシューティング</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-cli/fleet_analyze.html">Fleet analyze</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-cli/fleet_monitor.html">Fleet monitor</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-cli/fleet_dump.html">Fleet dump</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Fleet Agent</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-agent/fleet-agent.html">fleet-agent</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-agent/fleet-agent_clusterstatus.html">fleet-agent clusterstatus</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-agent/fleet-agent_register.html">fleet-agent register</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">クリーンアップ</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-cli/cleanup/fleet_cleanup.html">Fleet cleanup</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-cli/cleanup/fleet_cleanup_clusterregistration.html">Fleet cluster registration cleanup</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-cli/cleanup/fleet_cleanup_gitjob.html">Fleet gitjob cleanup</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Fleet Controller</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-controller/fleet-controller.html">fleet-controller</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-controller/fleet-controller_agentmanagement.html">fleet-controller agentmanagement</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-controller/fleet-controller_cleanup.html">fleet-controller cleanup</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-controller/fleet-controller_gitjob.html">fleet-gitjob</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">リソースとAPI</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reference/ref-crds.html">カスタムリソース仕様</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reference/ref-crd-schema.html">CRDスキーマ</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reference/ref-gitrepo.html">GitRepoリソース</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reference/ref-bundle.html">バンドルリソース</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reference/ref-resources.html">デプロイされたリソースの一覧</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">構成リファレンス</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reference/ref-fleet-yaml.html">fleet.yaml</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reference/ref-configuration.html">設定</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">ステータスと内部情報</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reference/ref-status-fields.html">クラスターとバンドルの状態</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reference/ref-registration.html">クラスター登録の内部情報</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../troubleshooting.html">トラブルシューティング</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">実験的機能</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../experimental-features/enableexperimental.html">実験的機能を有効にする</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../experimental-features/scheduling.html">スケジューリング</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../experimental-features/experimental-downstream-resource.html">リソースをダウンストリームクラスターに自動伝播する</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/ref-schedule.html">リソース参照のスケジュール</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">変更ログ</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../changelogs/v0.15.0.html">v0.15.0</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Continuous Delivery</span>
+    <span class="version">v0.15</span>
+  </div>
+  <ul class="components">
+        <li class="component">
+          <div class="title"><a href="../../../../admission-controller/1.36/en/introduction.html">Admission Controller</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../admission-controller/1.37/en/introduction.html">1.37-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../admission-controller/1.36/en/introduction.html">1.36</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.35/en/introduction.html">1.35</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.34/en/introduction.html">1.34</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.33/en/introduction.html">1.33</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.32/en/introduction.html">1.32</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.31/en/introduction.html">1.31</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.30/en/introduction.html">1.30</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.29/en/introduction.html">1.29</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.28/en/introduction.html">1.28</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../cluster-api/v0.26/en/index.html">Cluster API</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../cluster-api/v0.28/en/index.html">v0.28-dev</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.27/en/index.html">v0.27-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../cluster-api/v0.26/en/index.html">v0.26</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.25/en/index.html">0.25</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.24/en/index.html">0.24</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.23/en/index.html">0.23</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.22/en/index.html">0.22</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.21/en/index.html">0.21</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.20/en/index.html">0.20</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.19/en/index.html">0.19</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.18/en/index.html">0.18</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.17/en/index.html">0.17</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.16/en/index.html">0.16</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.11/en/index.html">0.11</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component is-current">
+          <div class="title"><a href="../../../next/en/index.html">Continuous Delivery</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../next/en/index.html">Next</a>
+            </li>
+            <li class="version is-current">
+              <a href="../../en/index.html">v0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../v0.11/en/index.html">0.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../v0.10/en/index.html">0.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../v0.9/en/index.html">0.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../k3s/latest/en/introduction.html">K3s</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../k3s/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../os-manager/1.9/en/index.html">OS Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../os-manager/1.10/en/index.html">1.10-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../os-manager/1.9/en/index.html">1.9</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.8/en/index.html">1.8</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.7/en/index.html">1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.6/en/index.html">1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.5/en/index.html">1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-ai/latest/en/introduction.html">Rancher AI</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-ai/latest/en/introduction.html">latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../turtles/stable/en/index.html">Rancher Turtles</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../turtles/stable/en/index.html">Stable</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rke2/latest/en/introduction.html">RKE2</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rke2/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-observability/latest/en/classic.html">SUSE Observability</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../suse-observability/latest/en/classic.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">SUSE Rancher Developer Access</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">SUSE® Rancher for AWS</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-manager/v2.14/en/about-rancher/what-is-rancher.html">SUSE® Rancher Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.15/en/about-rancher/what-is-rancher.html">v2.15 (Unreleased)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../rancher-manager/v2.14/en/about-rancher/what-is-rancher.html">v2.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.13/en/about-rancher/what-is-rancher.html">v2.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.12/en/about-rancher/what-is-rancher.html">v2.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.11/en/about-rancher/what-is-rancher.html">v2.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.10/en/about-rancher/what-is-rancher.html">v2.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.9/en/about-rancher/what-is-rancher.html">v2.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../security/5.6/en/overview.html">SUSE® Security</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../security/5.6/en/overview.html">5.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.5/en/overview.html">5.5</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.4/en/overview.html">5.4</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.3/en/overview.html">5.3</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../storage/1.11/en/longhorn-documentation.html">SUSE® Storage</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../storage/1.12/en/longhorn-documentation.html">1.12 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../storage/1.11/en/longhorn-documentation.html">1.11 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../storage/1.10/en/longhorn-documentation.html">1.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../storage/1.9/en/longhorn-documentation.html">1.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">SUSE® Virtual Clusters</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/1.2.0/en/release-notes/version-1.2.0.html">v1.2.0 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">v1.1.0-latest</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/1.0.2/en/release-notes/version-1.0.2.html">v1.0.2</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.1/en/introduction.html">v1.0.1</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.0/en/introduction.html">v1.0.0</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../virtualization/v1.8/en/introduction/overview.html">SUSE® Virtualization</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../virtualization/v1.9/en/introduction/overview.html">v1.9 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../virtualization/v1.8/en/introduction/overview.html">v1.8 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../virtualization/v1.7/en/introduction/overview.html">v1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../../virtualization/v1.6/en/introduction/overview.html">v1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../virtualization/v1.5/en/introduction/overview.html">v1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../vulnerability-scanner/0.12.0/en/introduction.html">Vulnerability Scanner</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../vulnerability-scanner/0.12.0/en/introduction.html">0.12.0</a>
+            </li>
+            <li class="version">
+              <a href="../../../../vulnerability-scanner/0.11.3/en/introduction.html">0.11.3</a>
+            </li>
+          </ul>
+        </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+<ul>
+    <li>
+  <a class="home-link-dsc" href="https://documentation.suse.com" title="SUSE Documentation Home" aria-label="SUSE Documentation Home"></a>
+    </li>
+    <li>
+      <a href="https://documentation.suse.com/cloudnative/continuous-delivery" title="Continuous Delivery" aria-label="SUSE Documentation - Continuous Delivery">
+        Continuous Delivery
+      </a>
+    </li>
+      <li>
+          ユーザー向けハウツー
+      </li>
+  </ul>
+</nav>
+<div class="page-versions">
+  <button class="version-menu-toggle" title="Show other versions of page">v0.15</button>
+  <div class="version-menu">
+    <a class="version is-missing" href="../../../next/en/index.html">Next</a>
+    <a class="version is-current" href="bundle-diffs.html">v0.15</a>
+    <a class="version is-missing" href="../../../v0.14/en/index.html">0.14</a>
+    <a class="version is-missing" href="../../../v0.13/en/index.html">0.13</a>
+    <a class="version is-missing" href="../../../v0.12/en/index.html">0.12</a>
+    <a class="version is-missing" href="../../../v0.11/en/index.html">0.11</a>
+    <a class="version is-missing" href="../../../v0.10/en/index.html">0.10</a>
+    <a class="version is-missing" href="../../../v0.9/en/index.html">0.9</a>
+  </div>
+</div>
+      <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <label class="visual-search-label-bc" for="search-input">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+          <input label="Search" aria-label="Search" id="search-input" type="text" placeholder="ドキュメントを検索" >
+          <label class="filter checkbox" style="display: none">
+            <input type="checkbox" data-facet-filter="component:continuous-delivery" checked> Only this project
+          </label>
+        </div>
+      </div>
+</div>
+  <div class="content">
+<aside
+  class="toc sidebar"
+  data-title="このページで" data-levels="2">
+  <div class="toc-menu">
+    <div class="docsurvey-wrapper"><a class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_diCzHC9xxyJyuN0">Documentation survey</a></div>
+    <!-- start qualtrics -->
+    <div id='ZN_8qZUmklKYbBqAYe'><!--DO NOT REMOVE-CONTENTS PLACED HERE--></div>
+    <div id="qualtrics_container"></div>
+    <!-- end qualtrics -->
+  </div>
+</aside>
+
+<aside class="toc sidebar docsurvey-sidebar">
+  <div class="toc-menu">
+    <div class="docsurvey-wrapper"><a class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_diCzHC9xxyJyuN0">Documentation survey</a></div>
+  </div>
+</aside>
+<article class="doc">
+<h1 class="page">変更された GitRepos を無視するための Diffs を生成する</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Rancher における継続的デリバリは SUSE® Rancher Prime Continuous Delivery によって支えられています。ユーザーが GitRepo CR を追加すると、継続的デリバリは関連するフリートバンドルを作成します。</p>
+</div>
+<div class="paragraph">
+<p>これらのバンドルには、クラスターエクスプローラー（ダッシュボード UI）に移動し、<code>Bundles</code> セクションを選択することでアクセスできます。</p>
+</div>
+<div class="paragraph">
+<p>バンドルされたチャートには、実行時に修正されるオブジェクトが含まれている場合があります。たとえば、ValidatingWebhookConfiguration では <code>caBundle</code> が空で、CA 証明書はクラスターによって注入されます。</p>
+</div>
+<div class="paragraph">
+<p>これにより、バンドルと関連する GitRepo のステータスが「変更済み」として報告されます。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/ModifiedGitRepo.png" alt="スタティック" width="600">
+</div>
+</div>
+<div class="paragraph">
+<p>関連バンドル</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/ModifiedBundle.png" alt="スタティック" width="600">
+</div>
+</div>
+<div class="paragraph">
+<p>SUSE® Rancher Prime Continuous Delivery バンドルはカスタム <a href="http://jsonpatch.com/">jsonPointer パッチ</a> を指定する機能をサポートします。</p>
+</div>
+<div class="paragraph">
+<p>パッチを使用すると、ユーザーは SUSE® Rancher Prime Continuous Delivery にオブジェクトの変更と全オブジェクトを無視するよう指示できます。</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_generating_comparepatches_with_fleet_bundlediff"><a class="anchor" href="#_generating_comparepatches_with_fleet_bundlediff"></a><code>fleet bundlediff</code> を使用して comparePatches を生成する</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><code>fleet bundlediff</code> CLI コマンドは、すでに <code>Bundle</code> と <code>BundleDeployment</code> ステータスフィールドに存在する diff 情報を読み取り、人間が読みやすい形式で表示します。
+また、観察されたドリフトを手動で JSON パッチパスを構築することなく受け入れるために、<code>diff:</code> 形式の使用可能な <code>fleet.yaml</code> スニペットを生成することもできます。</p>
+</div>
+<div class="sect2">
+<h3 id="_viewing_diffs"><a class="anchor" href="#_viewing_diffs"></a>diff を表示する</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"># Show all diffs across all namespaces, grouped by Bundle
+fleet bundlediff
+
+# Show diffs for a specific Bundle
+fleet bundlediff --bundle my-bundle
+
+# Show diffs for a specific BundleDeployment
+fleet bundlediff --bundle-deployment my-bundle-deployment -n cluster-fleet-local-local-abc123
+
+# Output in JSON format
+fleet bundlediff --json</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>デフォルトのテキスト出力は結果を <code>Bundle</code> でグループ化し、各変更されたリソースまたは準備が整っていないリソースをその JSON マージパッチと共にリストします。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Bundle: my-bundle
+BundleDeployments with diffs: 1
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  BundleDeployment: cluster-fleet-local-local-abc123/my-bundle-deployment
+  Modified Resources (1):
+    Resource: ConfigMap.v1 default/my-config
+    Status: Modified
+    Patch:
+    {
+      "metadata": {
+        "annotations": {
+          "timestamp": "2024-01-15T10:30:00Z"
+        }
+      }
+    }</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_generating_a_fleet_yaml_comparepatches_snippet"><a class="anchor" href="#_generating_a_fleet_yaml_comparepatches_snippet"></a><code>fleet.yaml</code> <code>comparePatches</code> スニペットを生成する</h3>
+<div class="paragraph">
+<p><code>--fleet-yaml</code> を <code>--bundle-deployment</code> と組み合わせて使用し、<code>diff:</code> ブロックを生成して直接 <code>fleet.yaml</code> に貼り付けることができます。コマンドは観察された JSON マージパッチを <code>remove</code> 操作に変換し、<code>comparePatches</code> にすでに構成されている <code>Bundle</code> とマージするため、既存の無視がそのまま保持されます。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">fleet bundlediff \
+  --fleet-yaml \
+  --bundle-deployment my-bundle-deployment \
+  -n cluster-fleet-local-local-abc123</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>出力の例：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">diff:
+  comparePatches:
+  - apiVersion: v1
+    kind: ConfigMap
+    name: my-config
+    namespace: default
+    operations:
+    - op: remove
+      path: /metadata/annotations/timestamp</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>出力をリダイレクトし、Git の <code>fleet.yaml</code> に追加できます。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">fleet bundlediff \
+  --fleet-yaml \
+  --bundle-deployment my-bundle-deployment \
+  -n cluster-fleet-local-local-abc123 &gt;&gt; fleet.yaml</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>更新された <code>fleet.yaml</code> をコミットしてプッシュした後、SUSE® Rancher Prime Continuous Delivery は変更を調整し、バンドルは <strong>変更済み</strong> から <strong>準備完了</strong> に移行します。フィールド自体は元に戻されません。SUSE® Rancher Prime Continuous Delivery単にドリフトとして報告するのを停止します。</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="注記"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><code>--fleet-yaml`フラグは</code>--bundle-deployment`を必要とします。生成された出力は、関連する`comparePatches`からの既存の`Bundle`とマージされます。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>完全なフラグの参照については、<a href="../reference/cli/fleet-cli/fleet_bundlediff.html" class="xref page">fleet bundlediff</a>
+[SUSE® Rancher Prime Continuous Delivery bundlediff]を参照してください。</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_ignoring_object_modifications"><a class="anchor" href="#_ignoring_object_modifications"></a>オブジェクトの変更を無視する</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_simple_example"><a class="anchor" href="#_simple_example"></a>シンプルな例</h3>
+<div class="paragraph">
+<p>このシンプルな例では、バンドルの差分を適用するServiceとConfigMapを作成します。</p>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/rancher/fleet-test-data/tree/master/bundle-diffs" class="bare">https://github.com/rancher/fleet-test-data/tree/master/bundle-diffs</a></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_gatekeeper_example"><a class="anchor" href="#_gatekeeper_example"></a>ゲートキーパーの例</h3>
+<div class="paragraph">
+<p>この例では、継続的デリバリを使用してopa-gatekeeperをクラスターにデプロイしようとしています。</p>
+</div>
+<div class="paragraph">
+<p>opa GitRepoに関連付けられたopa-gatekeeperバンドルは、変更された状態にあります。</p>
+</div>
+<div class="paragraph">
+<p>GitRepo CR内の各パスには、関連するBundle CRがあります。ユーザーはBundlesを表示でき、Bundleのステータスに必要な関連する差分を確認できます。</p>
+</div>
+<div class="paragraph">
+<p>私たちのケースでは、検出された違いは次のとおりです：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">  summary:
+    desiredReady: 1
+    modified: 1
+    nonReadyResources:
+    - bundleState: Modified
+      modifiedStatus:
+      - apiVersion: admissionregistration.k8s.io/v1
+        kind: ValidatingWebhookConfiguration
+        name: gatekeeper-validating-webhook-configuration
+        patch: '{"$setElementOrder/webhooks":[{"name":"validation.gatekeeper.sh"},{"name":"check-ignore-label.gatekeeper.sh"}],"webhooks":[{"clientConfig":{"caBundle":"Cg=="},"name":"validation.gatekeeper.sh","rules":[{"apiGroups":["*"],"apiVersions":["*"],"operations":["CREATE","UPDATE"],"resources":["*"]}]},{"clientConfig":{"caBundle":"Cg=="},"name":"check-ignore-label.gatekeeper.sh","rules":[{"apiGroups":[""],"apiVersions":["*"],"operations":["CREATE","UPDATE"],"resources":["namespaces"]}]}]}'
+      - apiVersion: apps/v1
+        kind: Deployment
+        name: gatekeeper-audit
+        namespace: cattle-gatekeeper-system
+        patch: '{"spec":{"template":{"spec":{"$setElementOrder/containers":[{"name":"manager"}],"containers":[{"name":"manager","resources":{"limits":{"cpu":"1000m"}}}],"tolerations":[]}}}}'
+      - apiVersion: apps/v1
+        kind: Deployment
+        name: gatekeeper-controller-manager
+        namespace: cattle-gatekeeper-system
+        patch: '{"spec":{"template":{"spec":{"$setElementOrder/containers":[{"name":"manager"}],"containers":[{"name":"manager","resources":{"limits":{"cpu":"1000m"}}}],"tolerations":[]}}}}'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>この要約に基づいて、パッチが必要なオブジェクトは3つあります。</p>
+</div>
+<div class="paragraph">
+<p>これらを一度に1つずつ見ていきます。</p>
+</div>
+<div class="sect3">
+<h4 id="_1_validatingwebhookconfiguration"><a class="anchor" href="#_1_validatingwebhookconfiguration"></a>1.ValidatingWebhookConfiguration：</h4>
+<div class="paragraph">
+<p>gatekeeper-validating-webhook-configurationの検証Webhookには、仕様に2つのValidatingWebhooksがあります。</p>
+</div>
+<div class="paragraph">
+<p>フィールド内の要素が1つ以上パッチを必要とする場合、そのパッチはこれを`$setElementOrder/ELEMENTNAME`と呼びます。</p>
+</div>
+<div class="paragraph">
+<p>この情報から、問題の2つのValidatingWebhooksが次のように示されます：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">  "$setElementOrder/webhooks": [
+    {
+      "name": "validation.gatekeeper.sh"
+    },
+    {
+      "name": "check-ignore-label.gatekeeper.sh"
+    }
+  ],</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>各ValidatingWebhook内で無視する必要があるフィールドは次のとおりです：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">    {
+      "clientConfig": {
+        "caBundle": "Cg=="
+      },
+      "name": "validation.gatekeeper.sh",
+      "rules": [
+        {
+          "apiGroups": [
+            "*"
+          ],
+          "apiVersions": [
+            "*"
+          ],
+          "operations": [
+            "CREATE",
+            "UPDATE"
+          ],
+          "resources": [
+            "*"
+          ]
+        }
+      ]
+    },</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>および</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">     {
+      "clientConfig": {
+        "caBundle": "Cg=="
+      },
+      "name": "check-ignore-label.gatekeeper.sh",
+      "rules": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "apiVersions": [
+            "*"
+          ],
+          "operations": [
+            "CREATE",
+            "UPDATE"
+          ],
+          "resources": [
+            "namespaces"
+          ]
+        }
+      ]
+    }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>要約すると、パッチ仕様でフィールド`rules`と`clientConfig.caBundle`を無視する必要があります。</p>
+</div>
+<div class="paragraph">
+<p>ValidatingWebhookConfigurationのspecにあるフィールドwebhookは配列であるため、要素をインデックス値で指定する必要があります。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/WebhookConfigurationSpec.png" alt="スタティック" width="600">
+</div>
+</div>
+<div class="paragraph">
+<p>この情報に基づいて、私たちのdiffパッチは次のようになります：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">  - apiVersion: admissionregistration.k8s.io/v1
+    kind: ValidatingWebhookConfiguration
+    name: gatekeeper-validating-webhook-configuration
+    operations:
+    - {"op": "remove", "path":"/webhooks/0/clientConfig/caBundle"}
+    - {"op": "remove", "path":"/webhooks/0/rules"}
+    - {"op": "remove", "path":"/webhooks/1/clientConfig/caBundle"}
+    - {"op": "remove", "path":"/webhooks/1/rules"}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_2_deployment_gatekeeper_controller_manager"><a class="anchor" href="#_2_deployment_gatekeeper_controller_manager"></a>2.Deployment gatekeeper-controller-manager：</h4>
+<div class="paragraph">
+<p>gatekeeper-controller-managerのデプロイメントは、CPU制限と許容が適用されているため（実際のバンドルには含まれていません）、修正されています。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "spec": {
+    "template": {
+      "spec": {
+        "$setElementOrder/containers": [
+          {
+            "name": "manager"
+          }
+        ],
+        "containers": [
+          {
+            "name": "manager",
+            "resources": {
+              "limits": {
+                "cpu": "1000m"
+              }
+            }
+          }
+        ],
+        "tolerations": []
+      }
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>この場合、デプロイメントコンテナspecには1つのコンテナしかなく、そのコンテナにはCPU制限と許容が追加されています。</p>
+</div>
+<div class="paragraph">
+<p>この情報に基づいて、私たちのdiffパッチは次のようになります：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">  - apiVersion: apps/v1
+    kind: Deployment
+    name: gatekeeper-controller-manager
+    namespace: cattle-gatekeeper-system
+    operations:
+    - {"op": "remove", "path": "/spec/template/spec/containers/0/resources/limits/cpu"}
+    - {"op": "remove", "path": "/spec/template/spec/tolerations"}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_3_deployment_gatekeeper_audit"><a class="anchor" href="#_3_deployment_gatekeeper_audit"></a>3.Deployment gatekeeper-audit：</h4>
+<div class="paragraph">
+<p>gatekeeper-auditのデプロイメントは、gatekeeper-controller-managerと同様に、追加のCPU制限と許容が適用されて修正されています。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "spec": {
+    "template": {
+      "spec": {
+        "$setElementOrder/containers": [
+          {
+            "name": "manager"
+          }
+        ],
+        "containers": [
+          {
+            "name": "manager",
+            "resources": {
+              "limits": {
+                "cpu": "1000m"
+              }
+            }
+          }
+        ],
+        "tolerations": []
+      }
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>gatekeeper-controller-managerと同様に、デプロイメントのコンテナspecには1つのコンテナしかなく、そのコンテナにはCPU制限と許容が追加されています。</p>
+</div>
+<div class="paragraph">
+<p>この情報に基づいて、私たちのdiffパッチは次のようになります：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">  - apiVersion: apps/v1
+    kind: Deployment
+    name: gatekeeper-audit
+    namespace: cattle-gatekeeper-system
+    operations:
+    - {"op": "remove", "path": "/spec/template/spec/containers/0/resources/limits/cpu"}
+    - {"op": "remove", "path": "/spec/template/spec/tolerations"}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_combining_it_all_together"><a class="anchor" href="#_combining_it_all_together"></a>すべてをまとめる</h4>
+<div class="paragraph">
+<p>これらのパッチを次のようにまとめることができます：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">diff:
+  comparePatches:
+  - apiVersion: apps/v1
+    kind: Deployment
+    name: gatekeeper-audit
+    namespace: cattle-gatekeeper-system
+    operations:
+    - {"op": "remove", "path": "/spec/template/spec/containers/0/resources/limits/cpu"}
+    - {"op": "remove", "path": "/spec/template/spec/tolerations"}
+  - apiVersion: apps/v1
+    kind: Deployment
+    name: gatekeeper-controller-manager
+    namespace: cattle-gatekeeper-system
+    operations:
+    - {"op": "remove", "path": "/spec/template/spec/containers/0/resources/limits/cpu"}
+    - {"op": "remove", "path": "/spec/template/spec/tolerations"}
+  - apiVersion: admissionregistration.k8s.io/v1
+    kind: ValidatingWebhookConfiguration
+    name: gatekeeper-validating-webhook-configuration
+    operations:
+    - {"op": "remove", "path":"/webhooks/0/clientConfig/caBundle"}
+    - {"op": "remove", "path":"/webhooks/0/rules"}
+    - {"op": "remove", "path":"/webhooks/1/clientConfig/caBundle"}
+    - {"op": "remove", "path":"/webhooks/1/rules"}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>これらを今すぐバンドルに直接追加してテストし、同じものをあなたのGitRepoの`fleet.yaml`にコミットすることができます。</p>
+</div>
+<div class="paragraph">
+<p>これらが追加されると、GitRepoはデプロイされ、「アクティブ」ステータスになります。</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_ignoring_entire_objects"><a class="anchor" href="#_ignoring_entire_objects"></a>全体のオブジェクトを無視する</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><a href="https://developer.hashicorp.com/consul/docs/k8s/helm">Consul</a>のようなチャートをインストールすると、`consul-server-acl-init`という名前のジョブが作成され、正常に完了すると削除されます。</p>
+</div>
+<div class="paragraph">
+<p>そのチャートは、次のような`GitRepo`を使用してGitリポジトリを指す`fleet.yaml`を作成することでインストールできます：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">defaultNamespace: consul
+helm:
+  releaseName: test-consul
+  chart: "consul"
+  repo: "https://helm.releases.hashicorp.com"
+
+  values:
+    global:
+      name: consul
+      acls:
+        manageSystemACLs: true</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>このチャートをインストールすると、ジョブが完了した後、`GitRepo`が`Modified`ステータスを報告し、ジョブ`consul-server-acl-init`が存在しなくなります。</p>
+</div>
+<div class="paragraph">
+<p>これは、私たちの`fleet.yaml`における次のバンドルdiffで修正できます：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">diff:
+  comparePatches:
+  - apiVersion: batch/v1
+    kind: Job
+    namespace: consul
+    name: consul-server-acl-init
+    operations:
+    - {"op":"ignore"}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>場合によっては、ジョブのフルネームが事前に知られていないことがあります。例えば、それが生成されるときです。
+さらに、特定のワークロードは同じネームスペース内に複数のジョブを作成する可能性があり、通常はジョブごとに1つのバンドルdiffが発生します。</p>
+</div>
+<div class="paragraph">
+<p>これらの状況を扱いやすくするために、ジョブを無視することもできます：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>名前に対する正規表現を通じて、その場合、上記の差分は次のようになります：</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>diff:
+  comparePatches:
+  - apiVersion: batch/v1
+    kind: Job
+    namespace: consul
+    name: 'consul-server.*'
+    operations:
+    - {"op":"ignore"}</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>または空の <code>name</code> フィールドを指定するか、そのフィールドを完全に省略することによって、その場合、そのネームスペース（この例では <code>consul</code> ネームスペース）に存在するすべてのジョブは無視されます。</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>サポートされている正規表現の構文に関する詳細情報は <a href="https://pkg.go.dev/regexp/syntax">こちら</a> です。</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_horizontal_pod_autoscaling"><a class="anchor" href="#_horizontal_pod_autoscaling"></a>水平ポッド自動スケーリング</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>水平ポッドオートスケーラーによって参照されるデプロイメントまたはステートフルセットを扱う際、レプリカ数の更新に関してバンドルの差分はもはや必要ありません。
+Fleet agentはこれらの更新を自動的にフィルタリングします。その結果、ソースバンドルのデプロイメントは <em>変更されていない</em> と見なされます。</p>
+</div>
+<div class="paragraph">
+<p>ただし、デプロイメントまたはステートフルセットの <code>replicas</code> フィールドが、参照している HPA によって許容される間隔の上限または下限を超える値に設定されている場合、その変更はソースバンドルのデプロイメントのステータスに表示されます。</p>
+</div>
+<div class="paragraph">
+<p><code>autoscaling/v1</code> と <code>autoscaling/v2</code> の両方がサポートされています。</p>
+</div>
+<div class="paragraph">
+<p>HPA の空の <code>minReplicas</code> フィールドは <code>1</code> と解釈されます。</p>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="gitrepo-targets.html">ダウンストリームクラスタへのマッピング</a></span>
+  <span class="next"><a href="webhook.html">ポーリングの代わりにWebhookを使用する</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<script src="../../../../_/js/site.js"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+<script src="../../../../_/js/vendor/lunr.js"></script>
+<script src="../../../../_/js/vendor/lunr-languages.js"></script>
+<script src="../../../../_/js/search-ui.js" id="search-ui-script" data-site-root-path="../../../.." data-snippet-length="100" data-stylesheet="../../../../_/css/search.css"></script>
+<script async src="../../../../search-index.js"></script>
+<script src="../../../../_/js/vendor/langSelection.js"></script>
+<script async src="../../../../_/js/vendor/tabs.js"></script>
+
+
+<script src="../../../../_/js/CNLanguageSwitcher.js"></script>
+  </body>
+</html>

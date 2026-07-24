@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+<title>创建Amazon EC2集群 | SUSE® Rancher for AWS  Latest</title>
+    <link rel="canonical" href="https://documentation.suse.com/cloudnative/rancher-srfa/latest/zh/cluster-deployment/infra-providers/aws/aws.html">
+    <link rel="prev" href="../infra-providers.html">
+    <link rel="next" href="machine-configuration.html">
+    <meta name="description" content="了解使用Rancher创建Amazon EC2集群所需的先决条件和步骤">
+    <meta name="generator" content="Antora 3.1.14">
+    <link rel="stylesheet" href="../../../../../../_/css/site.css">
+<meta http-equiv="last-modified" content="2026-03-19"/>
+<link rel="stylesheet" href="../../../../../../_/css/search.css">
+<link rel="icon" href="../../../../../../_/img/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="../../../../../../_/css/font-styles.css">
+<link rel="stylesheet" href="../../../../../../_/fonts/css/all.css">
+<link rel="stylesheet" href="../../../../../../_/css/site-extra.css">
+<link rel="stylesheet" href="../../../../../../_/css/vendor/tabs.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap&family=SUSE+Mono:ital,wght@0,100..800;1,100..800" rel="stylesheet">
+<link rel="stylesheet" href="../../../../../../_/css/vendor/light.css">
+<script src="/docserv/res/lightheaded/analytics.js" type="text/javascript"></script>
+<script type="module">
+  import { defineCustomElements, setAssetPath } from 'https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/shared-header.esm.js';
+  defineCustomElements();
+  setAssetPath("https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/assets");
+</script>
+<!-- Default English link -->
+<link href="https://documentation.suse.com/cloudnative/rancher-srfa/latest/en/cluster-deployment/infra-providers/aws/aws.html" hreflang="x-default" rel="alternate"/>
+<!-- Link for the currently processed page -->
+<link href="https://documentation.suse.com/cloudnative/rancher-srfa/latest/zh/cluster-deployment/infra-providers/aws/aws.html" hrefLang="zh-CN" rel="alternate" />
+<!-- Link for the English page -->
+<link href="https://documentation.suse.com/cloudnative/rancher-srfa/latest/en/cluster-deployment/infra-providers/aws/aws.html" hreflang="en-US" rel="alternate" />
+<!-- Link for the Japanese page -->
+<link href="https://documentation.suse.com/cloudnative/rancher-srfa/latest/ja/cluster-deployment/infra-providers/aws/aws.html" hreflang="ja-JP" rel="alternate" />
+<!-- Link for the German page -->
+<link href="https://documentation.suse.com/cloudnative/rancher-srfa/latest/de/cluster-deployment/infra-providers/aws/aws.html" hreflang="de-DE" rel="alternate" />
+<!-- Link for the French page -->
+<link href="https://documentation.suse.com/cloudnative/rancher-srfa/latest/fr/cluster-deployment/infra-providers/aws/aws.html" hreflang="fr-FR" rel="alternate" />
+<!-- Link for the Spanish page -->
+<link href="https://documentation.suse.com/cloudnative/rancher-srfa/latest/es/cluster-deployment/infra-providers/aws/aws.html" hreflang="es-ES" rel="alternate" />
+<!-- Link for the Brazilian Portuguese page -->
+<link href="https://documentation.suse.com/cloudnative/rancher-srfa/latest/pt/cluster-deployment/infra-providers/aws/aws.html" hreflang="pt-BR" rel="alternate" />
+
+<!-- JSON-LD for doc metadata -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "创建Amazon EC2集群 | SUSE Rancher for AWS latest",
+  "headline": "创建Amazon EC2集群",
+  "description": "了解使用Rancher创建Amazon EC2集群所需的先决条件和步骤",
+  "inLanguage": "zh_CN",
+  "dateModified": "2026-03-19T00:00:00Z",
+  "author": {
+    "@type": "Organization",
+    "name": "SUSE Product & Solution Documentation Team",
+    "url": "https://documentation.suse.com"
+  },
+  "mentions": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "SUSE Rancher for AWS",
+      "softwareVersion": "latest",
+      "applicationCategory": "Cloud Infrastructure",
+      "operatingSystem": "Linux"
+    }
+  ],
+  "publisher": {
+    "@type": "Organization",
+    "name": "SUSE",
+    "url": "https://documentation.suse.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.suse.com/assets/img/suse-white-logo-green.svg"
+    }
+  }
+}
+</script>
+<!-- end JSON-LD for doc metadata -->
+
+<!-- SUVA - Begin Ask Geeko-->
+<!--
+searchUnifyChatbot ("Ask Geeko") Copyright ©2024 Grazitti Interactive - All Rights Reserved. NOTICE: All information contained herein is, and remains the property of Grazitti Interactive and its suppliers, if any. The intellectual and technical concepts contained herein are proprietary to Grazitti Interactive and its suppliers and may be covered by India, U.S. and Foreign Patents, patents in process, and are protected by trade secret or copyright law. Dissemination of this information or reproduction of this material is strictly forbidden unless prior written permission is obtained from Grazitti Interactive.
+-->
+<meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport"/>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/Allow/an.js?c485cb3c-93d4-4942-99e8-91f3b8ca5636"></script>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/js/index.js?q=gAAAAABp3JBN9VuEJTi5tFafLIMwgMkCPdJS3Qm56lSYx93ir3Twt9hgSvd3OHEt6-nYfSbY3yHq0Zv8PRPsSy4nbqZiaJ4cZvRc6ItVZdvwz9Urf35cH6OUyPOwdA0phlS-zVIznQ2rWW438p-91NlTHuxJuOFpnA=="></script>
+<link rel="stylesheet" href="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/css/index.css">
+<div id="searchUnifyChatbot"></div>
+<!-- SUVA - End Ask Geeko-->
+<!--BEGIN QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+<script type='text/javascript' src="../../../../../../_/js/qualtrics.js" defer></script>
+<!--END QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+    <script>var uiRootPath = '../../../../../../_'</script>
+  </head>
+  <body class="article">
+<script type="module">import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs'; mermaid.initialize({"startOnLoad":true});</script><shared-header
+language="en"
+languages='{
+    "en": { "label": "English", "url": "https://documentation.suse.com/en-us/" },
+    "de": { "label": "Deutsch", "url": "https://documentation.suse.com/de-de/" },
+    "fr": { "label": "Français", "url": "https://documentation.suse.com/fr-fr/" },
+    "es": { "label": "Español", "url": "https://documentation.suse.com/es-es/" },
+    "zh_CN": { "label": "中文", "url": "https://documentation.suse.com/zh-cn/" },
+    "pt_BR": { "label": "Português Brasileiro", "url": "https://documentation.suse.com/pt-br/" }
+}'
+enable-search='false'>
+</shared-header>
+<div class="body">
+<div class="nav-container" data-component="rancher-srfa" data-version="latest">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title">SUSE® Rancher for AWS</h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../release-notes.html">发行说明</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../release-notes/v2.14.3.html">Release v2.14.3</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../release-notes/v2.14.2.html">Release v2.14.2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../release-notes/v2.14.1.html">Release v2.14.1</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">关于 Rancher</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../about-rancher/what-is-rancher.html">什么是 SUSE Rancher for AWS？</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../about-rancher/prime.html">Cloud Native</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../about-rancher/overview.html">概述</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../about-rancher/architecture/architecture.html">SUSE Rancher for AWS体系结构</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../about-rancher/architecture/recommendations.html">架构建议</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../about-rancher/architecture/communicating-with-downstream-clusters.html">与下游用户集群通信</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../about-rancher/architecture/rancher-server-and-components.html">SUSE Rancher for AWS 服务器和组件</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../about-rancher/concepts.html">Kubernetes 概念</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../about-rancher/glossary.html">词汇表</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../rancher-admin/rancher-admin.html">Rancher 管理</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">用户管理</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../rancher-admin/users/authn-and-authz/authn-and-authz.html">配置认证</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../rancher-admin/users/authn-and-authz/manage-users-and-groups.html">用户和组</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../rancher-admin/users/authn-and-authz/create-local-users.html">本地鉴定</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">外部认证</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../../rancher-admin/users/authn-and-authz/jwt-authentication.html">JSON Web Token (JWT) 认证</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../../rancher-admin/users/authn-and-authz/configure-generic-oidc.html">配置通用 OIDC</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../../rancher-admin/users/authn-and-authz/configure-oidc-provider.html">将 Rancher 配置为 OIDC 提供者</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../../rancher-admin/users/authn-and-authz/configure-active-directory.html">配置活动目录 (AD)</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../../rancher-admin/users/authn-and-authz/configure-amazon-cognito.html">配置 Amazon Cognito</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../../rancher-admin/users/authn-and-authz/configure-azure-ad.html">配置 Azure AD</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../../rancher-admin/users/authn-and-authz/configure-freeipa.html">配置 FreeIPA</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../../rancher-admin/users/authn-and-authz/configure-github.html">配置GitHub</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../../rancher-admin/users/authn-and-authz/configure-github-app.html">配置GitHub App</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../../rancher-admin/users/authn-and-authz/configure-google-oauth.html">配置 Google OAuth</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../../rancher-admin/users/authn-and-authz/configure-keycloak-oidc.html">配置 Keycloak (OIDC)</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../../rancher-admin/users/authn-and-authz/configure-keycloak-saml.html">配置 Keycloak (SAML)</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../../rancher-admin/users/authn-and-authz/configure-okta-saml.html">配置 Okta (SAML)</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../../rancher-admin/users/authn-and-authz/configure-pingidentity.html">配置 PingIdentity (SAML)</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../rancher-admin/users/authn-and-authz/microsoft-ad-federation-service-saml/microsoft-ad-federation-service-saml.html">配置 Microsoft 活动目录联合身份验证服务 (SAML)</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="6">
+    <a class="nav-link" href="../../../rancher-admin/users/authn-and-authz/microsoft-ad-federation-service-saml/ms-adfs-for-rancher.html">1.为 配置 Microsoft AD FS SUSE Rancher for AWS</a>
+  </li>
+  <li class="nav-item" data-depth="6">
+    <a class="nav-link" href="../../../rancher-admin/users/authn-and-authz/microsoft-ad-federation-service-saml/rancher-for-ms-adfs.html">2.为 Microsoft AD FS 配置 SUSE Rancher for AWS</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../rancher-admin/users/authn-and-authz/openldap/openldap.html">配置 OpenLDAP</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="6">
+    <a class="nav-link" href="../../../rancher-admin/users/authn-and-authz/openldap/reference.html">OpenLDAP 配置参考</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../rancher-admin/users/authn-and-authz/shibboleth-saml/shibboleth-saml.html">配置 Shibboleth (SAML)</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="6">
+    <a class="nav-link" href="../../../rancher-admin/users/authn-and-authz/shibboleth-saml/group-permissions.html">使用 Shibboleth 和 OpenLDAP 的组权限</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../rancher-admin/users/authn-and-authz/manage-role-based-access-control-rbac/manage-role-based-access-control-rbac.html">管理基于角色的访问控制 (RBAC)</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../../rancher-admin/users/authn-and-authz/manage-role-based-access-control-rbac/global-permissions.html">全局权限</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../../rancher-admin/users/authn-and-authz/manage-role-based-access-control-rbac/global-resources.html">全球资源</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../../rancher-admin/users/authn-and-authz/manage-role-based-access-control-rbac/cluster-and-project-roles.html">集群和项目角色</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../../rancher-admin/users/authn-and-authz/manage-role-based-access-control-rbac/custom-roles.html">自定义角色</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../../rancher-admin/users/authn-and-authz/manage-role-based-access-control-rbac/locked-roles.html">锁定角色</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../rancher-admin/users/authn-and-authz/enable-user-retention.html">启用用户保留</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../rancher-admin/users/settings/settings.html">用户设置</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../rancher-admin/users/settings/api-keys.html">API 词元</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../rancher-admin/users/settings/user-preferences.html">用户自选设置</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../rancher-admin/users/settings/manage-cloud-credentials.html">管理云凭据</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">CLI</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../rancher-admin/cli/kubectl.html">kubectl 工具</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../rancher-admin/cli/rancher-cli.html">SUSE Rancher for AWS CLI</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../cluster-deployment.html">集群部署</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../node-requirements.html">SUSE Rancher for AWS 管理的集群的节点要求</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../production-checklist/production-checklist.html">可用于生产用途集群的检查清单</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../production-checklist/recommended-cluster-architecture.html">推荐的集群架构</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../production-checklist/roles-for-nodes-in-kubernetes.html">Kubernetes 节点的角色</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../production-checklist/tips-to-set-up-containers.html">设置容器的提示</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../hosted-kubernetes/hosted-kubernetes.html">从托管的Kubernetes提供商处设置集群</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../hosted-kubernetes/eks/eks.html">创建 EKS 集群</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../hosted-kubernetes/eks/configuration.html">EKS 集群配置参考</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../hosted-kubernetes/sync-clusters.html">同步托管集群</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../launch-kubernetes-with-rancher.html">使用 启动 KubernetesSUSE Rancher for AWS</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../about-rancher-agents.html">SUSE Rancher for AWS 代理</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../dual-stack.html">IPv4/IPv6 双栈</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../enable-cluster-agent-scheduling-customization.html">启用集群代理调度自定义</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../infra-providers.html">在基础设施提供商中新节点上部署 Kubernetes</a>
+<ul class="nav-list">
+  <li class="nav-item is-current-page" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="aws.html">创建Amazon EC2集群</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="machine-configuration.html">EC2机器配置参考</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="node-template-configuration.html">EC2节点模板配置</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../custom-clusters/custom-clusters.html">在现有自定义节点上启动Kubernetes</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">配置</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../configuration/k3s.html">SUSE® Rancher Prime: K3s 集群配置参考</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">RKE2</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../configuration/rke2.html">SUSE® Rancher Prime: RKE2 集群配置参考</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../configuration/capi-infrastructure-providers.html">配置原生 CAPI 基础设施提供程序以部署 RKE2 集群</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../register-existing-clusters.html">注册现有集群</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../register-existing-clusters-troubleshooting.html">已注册的集群</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../cluster-admin/manage-clusters/manage-clusters.html">集群管理</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">管理集群</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../cluster-admin/best-practices/disconnected-clusters.html">断开集群的最佳实践</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../cluster-admin/manage-clusters/access-clusters/access-clusters.html">访问集群</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../cluster-admin/manage-clusters/access-clusters/add-users-to-clusters.html">将用户添加到集群</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../cluster-admin/manage-clusters/access-clusters/authorized-cluster-endpoint.html">授权集群端点的工作原理</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../cluster-admin/manage-clusters/access-clusters/use-kubectl-and-kubeconfig.html">使用 Kubectl 和 kubeconfig 访问集群</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../cluster-admin/manage-clusters/clean-cluster-nodes.html">从节点中移除Kubernetes组件</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../cluster-admin/manage-clusters/persistent-storage/manage-persistent-storage.html">创建 Kubernetes 持久卷和存储类</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../cluster-admin/manage-clusters/persistent-storage/about-glusterfs-volumes.html">GlusterFS Volumes</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../cluster-admin/manage-clusters/persistent-storage/about-persistent-storage.html">持久存储的工作原理</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../cluster-admin/manage-clusters/persistent-storage/dynamically-provision-new-storage.html">在 SUSE Rancher for AWS 中动态配置新的存储</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../cluster-admin/manage-clusters/persistent-storage/install-iscsi-volumes.html">iSCSI 卷</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../cluster-admin/manage-clusters/persistent-storage/set-up-existing-storage.html">设置现有持久化存储</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../../cluster-admin/manage-clusters/persistent-storage/use-external-ceph-driver.html">使用外部 Ceph 驱动程序</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../../cluster-admin/manage-clusters/persistent-storage/examples/nfs-storage.html">NFS存储</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../../cluster-admin/manage-clusters/persistent-storage/examples/persistent-storage-in-amazon-ebs.html">在Amazon EBS中创建持久存储</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../../cluster-admin/manage-clusters/persistent-storage/examples/examples.html">配置存储示例</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">SUSE® Rancher for AWS</span>
+    <span class="version">Latest</span>
+  </div>
+  <ul class="components">
+        <li class="component">
+          <div class="title"><a href="../../../../../../admission-controller/1.36/en/introduction.html">Admission Controller</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../../../admission-controller/1.37/en/introduction.html">1.37-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../../../admission-controller/1.36/en/introduction.html">1.36</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../admission-controller/1.35/en/introduction.html">1.35</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../admission-controller/1.34/en/introduction.html">1.34</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../admission-controller/1.33/en/introduction.html">1.33</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../admission-controller/1.32/en/introduction.html">1.32</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../admission-controller/1.31/en/introduction.html">1.31</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../admission-controller/1.30/en/introduction.html">1.30</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../admission-controller/1.29/en/introduction.html">1.29</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../admission-controller/1.28/en/introduction.html">1.28</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../../cluster-api/v0.26/en/index.html">Cluster API</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.28/en/index.html">v0.28-dev</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.27/en/index.html">v0.27-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../../../cluster-api/v0.26/en/index.html">v0.26</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.25/en/index.html">0.25</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.24/en/index.html">0.24</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.23/en/index.html">0.23</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.22/en/index.html">0.22</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.21/en/index.html">0.21</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.20/en/index.html">0.20</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.19/en/index.html">0.19</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.18/en/index.html">0.18</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.17/en/index.html">0.17</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.16/en/index.html">0.16</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../cluster-api/v0.11/en/index.html">0.11</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../../continuous-delivery/next/en/index.html">Continuous Delivery</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../../continuous-delivery/next/en/index.html">Next</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../continuous-delivery/v0.15/en/index.html">v0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../continuous-delivery/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../continuous-delivery/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../continuous-delivery/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../continuous-delivery/v0.11/en/index.html">0.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../continuous-delivery/v0.10/en/index.html">0.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../continuous-delivery/v0.9/en/index.html">0.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../../k3s/latest/en/introduction.html">K3s</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../../k3s/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../../os-manager/1.9/en/index.html">OS Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../../../os-manager/1.10/en/index.html">1.10-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../../../os-manager/1.9/en/index.html">1.9</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../os-manager/1.8/en/index.html">1.8</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../os-manager/1.7/en/index.html">1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../os-manager/1.6/en/index.html">1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../os-manager/1.5/en/index.html">1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../../rancher-ai/latest/en/introduction.html">Rancher AI</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../../rancher-ai/latest/en/introduction.html">latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../../turtles/stable/en/index.html">Rancher Turtles</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../../turtles/stable/en/index.html">Stable</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../../rke2/latest/en/introduction.html">RKE2</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../../rke2/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../../suse-observability/latest/en/classic.html">SUSE Observability</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../../suse-observability/latest/en/classic.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">SUSE Rancher Developer Access</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component is-current">
+          <div class="title"><a href="../../../../en/about-rancher/what-is-rancher.html">SUSE® Rancher for AWS</a></div>
+          <ul class="versions">
+            <li class="version is-current is-latest">
+              <a href="../../../../en/about-rancher/what-is-rancher.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../../rancher-manager/v2.14/en/about-rancher/what-is-rancher.html">SUSE® Rancher Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../../../rancher-manager/v2.15/en/about-rancher/what-is-rancher.html">v2.15 (Unreleased)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../../../rancher-manager/v2.14/en/about-rancher/what-is-rancher.html">v2.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../rancher-manager/v2.13/en/about-rancher/what-is-rancher.html">v2.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../rancher-manager/v2.12/en/about-rancher/what-is-rancher.html">v2.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../rancher-manager/v2.11/en/about-rancher/what-is-rancher.html">v2.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../rancher-manager/v2.10/en/about-rancher/what-is-rancher.html">v2.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../rancher-manager/v2.9/en/about-rancher/what-is-rancher.html">v2.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../../security/5.6/en/overview.html">SUSE® Security</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../../security/5.6/en/overview.html">5.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../security/5.5/en/overview.html">5.5</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../security/5.4/en/overview.html">5.4</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../security/5.3/en/overview.html">5.3</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../../storage/1.11/en/longhorn-documentation.html">SUSE® Storage</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../../../storage/1.12/en/longhorn-documentation.html">1.12 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../../../storage/1.11/en/longhorn-documentation.html">1.11 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../storage/1.10/en/longhorn-documentation.html">1.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../storage/1.9/en/longhorn-documentation.html">1.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">SUSE® Virtual Clusters</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../../../suse-virtual-clusters/1.2.0/en/release-notes/version-1.2.0.html">v1.2.0 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">v1.1.0-latest</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../suse-virtual-clusters/1.0.2/en/release-notes/version-1.0.2.html">v1.0.2</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../suse-virtual-clusters/v1.0.1/en/introduction.html">v1.0.1</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../suse-virtual-clusters/v1.0.0/en/introduction.html">v1.0.0</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../../virtualization/v1.8/en/introduction/overview.html">SUSE® Virtualization</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../../../virtualization/v1.9/en/introduction/overview.html">v1.9 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../../../virtualization/v1.8/en/introduction/overview.html">v1.8 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../virtualization/v1.7/en/introduction/overview.html">v1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../virtualization/v1.6/en/introduction/overview.html">v1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../virtualization/v1.5/en/introduction/overview.html">v1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../../vulnerability-scanner/0.12.0/en/introduction.html">Vulnerability Scanner</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../../vulnerability-scanner/0.12.0/en/introduction.html">0.12.0</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../../vulnerability-scanner/0.11.3/en/introduction.html">0.11.3</a>
+            </li>
+          </ul>
+        </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+<ul>
+    <li>
+  <a class="home-link-dsc" href="https://documentation.suse.com" title="SUSE Documentation Home" aria-label="SUSE Documentation Home"></a>
+    </li>
+    <li>
+      <a href="https://documentation.suse.com/cloudnative/rancher-srfa" title="SUSE Rancher for AWS" aria-label="SUSE Documentation - SUSE Rancher for AWS">
+        SUSE Rancher for AWS
+      </a>
+    </li>
+      <li>
+          <a href="../../cluster-deployment.html" title="集群部署" aria-label="集群部署">集群部署</a>
+      </li>
+  </ul>
+</nav>
+      <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <label class="visual-search-label-bc" for="search-input">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+          <input label="Search" aria-label="Search" id="search-input" type="text" placeholder="搜索文档" >
+          <label class="filter checkbox" style="display: none">
+            <input type="checkbox" data-facet-filter="component:rancher-srfa" checked> Only this project
+          </label>
+        </div>
+      </div>
+</div>
+  <div class="content">
+<aside
+  class="toc sidebar"
+  data-title="在此页面上" data-levels="2">
+  <div class="toc-menu">
+    <div class="docsurvey-wrapper"><a class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_diCzHC9xxyJyuN0">Documentation survey</a></div>
+    <!-- start qualtrics -->
+    <div id='ZN_8qZUmklKYbBqAYe'><!--DO NOT REMOVE-CONTENTS PLACED HERE--></div>
+    <div id="qualtrics_container"></div>
+    <!-- end qualtrics -->
+  </div>
+</aside>
+
+<aside class="toc sidebar docsurvey-sidebar">
+  <div class="toc-menu">
+    <div class="docsurvey-wrapper"><a class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_diCzHC9xxyJyuN0">Documentation survey</a></div>
+  </div>
+</aside>
+<article class="doc">
+<h1 class="page">创建Amazon EC2集群</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>在本节中，您将学习如何在Amazon EC2中部署https://documentation.suse.com/cloudnative/rke2/[RKE2]或https://documentation.suse.com/cloudnative/k3s/[K3s] Kubernetes集群。</p>
+</div>
+<div class="paragraph">
+<p>首先，您需要在Rancher中设置您的EC2云凭证。</p>
+</div>
+<div class="paragraph">
+<p>然后，您在Rancher中创建一个EC2集群，并在配置新集群时定义机器池。每个机器池都有一个Kubernetes角色：etcd、controlplane或worker。Rancher在新节点上安装Kubernetes，并根据机器池定义的Kubernetes角色设置每个节点。</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_prerequisites"><a class="anchor" href="#_prerequisites"></a>先决条件</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><strong>AWS EC2访问密钥和秘密密钥</strong>，将用于创建实例。请参见 <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html#Using_CreateAccessKey">亚马逊文档：创建访问密钥</a>，了解如何创建访问密钥和秘密密钥。</p>
+</li>
+<li>
+<p><strong>创建的IAM策略</strong>，以添加到访问密钥和秘密密钥的用户。请参见 <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_create.html#access_policies_create-start">亚马逊文档：创建IAM策略（控制台）</a>，了解如何创建IAM策略。请查看下面我们的三个示例JSON策略：</p>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#_example_iam_policy">示例IAM策略</a></p>
+</li>
+<li>
+<p><a href="#_example_iam_policy_with_passrole">带有PassRole的示例IAM策略</a>（如果您想使用<a href="../../set-up-cloud-providers/set-up-cloud-providers.html" class="xref page">Kubernetes云提供商</a>或想将IAM控制文件传递给实例，则需要）</p>
+</li>
+<li>
+<p><a href="#_example_iam_policy_to_allow_encrypted_ebs_volumes">允许加密EBS卷的示例IAM策略</a></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>作为权限添加的IAM策略</strong>，以添加到用户。请参见 <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_change-permissions.html#users_change_permissions-add-console">亚马逊文档：向用户添加权限（控制台）</a>，了解如何将其附加到用户。</p>
+</li>
+<li>
+<p><strong>仅IPv4或仅IPv6或双栈子网和/或VPC</strong>，可以在其中配置节点并分配IPv4和/或IPv6地址。请参见 <a href="https://docs.aws.amazon.com/vpc/latest/userguide/vpc-migrate-ipv6.html">亚马逊文档：您的VPC的IPv6支持</a>。</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_creating_an_ec2_cluster"><a class="anchor" href="#_creating_an_ec2_cluster"></a>创建EC2集群</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>创建集群的步骤根据您的Rancher版本而有所不同。</p>
+</div>
+<div class="sect2">
+<h3 id="_create_your_cloud_credentials"><a class="anchor" href="#_create_your_cloud_credentials"></a>创建您的云凭据</h3>
+<div class="paragraph">
+<p>如果您已经有一组云凭证可供使用，请跳过此部分。</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>单击 <strong>☰ &gt; 集群管理</strong>。</p>
+</li>
+<li>
+<p>点击 <strong>云凭据</strong>。</p>
+</li>
+<li>
+<p>单击*创建*。</p>
+</li>
+<li>
+<p>点击*Amazon*。</p>
+</li>
+<li>
+<p>输入云凭证的名称。</p>
+</li>
+<li>
+<p>在*默认区域*字段中，选择您的集群节点将要所在的AWS区域。</p>
+</li>
+<li>
+<p>输入您的AWS EC2 <strong>访问密钥*和*秘密密钥</strong>。</p>
+</li>
+<li>
+<p>单击*创建*。</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>*结果：*您已创建用于在集群中部署节点的云凭证。</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_create_your_cluster"><a class="anchor" href="#_create_your_cluster"></a>创建您的集群</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>单击 <strong>☰ &gt; 集群管理</strong>。</p>
+</li>
+<li>
+<p>在*集群*页面，点击*创建*。</p>
+</li>
+<li>
+<p>切换开关到*RKE2/K3s*。</p>
+</li>
+<li>
+<p>点击*Amazon EC2*。</p>
+</li>
+<li>
+<p>选择一个*云凭证*（如果存在多个）。否则，它会被预选。</p>
+</li>
+<li>
+<p>输入*集群名称*。</p>
+</li>
+<li>
+<p>为每个Kubernetes角色创建一个机器池。请参考<a href="../infra-providers.html#_node_roles" class="xref page">最佳实践</a>，以获取角色分配和数量的建议。</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>为每个机器池定义机器配置。请参考<a href="machine-configuration.html" class="xref page">EC2机器配置参考</a>以获取有关配置选项的信息。</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>使用*集群配置*选择要安装的Kubernetes版本、使用的网络提供商以及是否希望启用项目网络隔离。有关配置集群的帮助，请参考<a href="../../configuration/rke2.html" class="xref page">RKE2</a>和<a href="../../configuration/k3s.html" class="xref page">K3s</a>集群配置参考。</p>
+</li>
+<li>
+<p>使用*成员角色*配置集群的用户授权。点击*添加成员*以添加可以访问集群的用户。使用*角色*下拉菜单为每个用户设置权限。</p>
+</li>
+<li>
+<p>单击*创建*。</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p><strong>结果：</strong></p>
+</div>
+<div class="paragraph">
+<p>您的集群已创建并被分配为*正在配置*状态。Rancher 正在启动您的集群。</p>
+</div>
+<div class="paragraph">
+<p>在集群状态更新为*活动*后，您可以访问您的集群。</p>
+</div>
+<div class="paragraph">
+<p>*活动*集群被分配两个项目：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>Default</code>，包含`default`名称空间</p>
+</li>
+<li>
+<p><code>System</code>，包含 <code>cattle-system</code>、<code>traefik</code>、<code>kube-public</code> 和 <code>kube-system</code> 名称空间</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_optional_next_steps"><a class="anchor" href="#_optional_next_steps"></a>可选的后续步骤</h3>
+<div class="paragraph">
+<p>创建集群后，您可以通过Rancher UI访问它。作为最佳实践，我们建议设置这些访问集群的替代方法：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>*使用kubectl CLI访问您的集群：*按照<a href="../../../cluster-admin/manage-clusters/access-clusters/use-kubectl-and-kubeconfig.html#_从工作站使用kubectl访问集群" class="xref page">这些步骤</a>，在您的工作站上使用kubectl访问集群。在这种情况下，您将通过Rancher服务器的身份验证代理进行身份验证，然后Rancher将连接您到下游集群。此方法允许您在没有Rancher UI的情况下管理集群。</p>
+</li>
+<li>
+<p>*使用授权的集群端点通过kubectl CLI访问您的集群：*按照<a href="../../../cluster-admin/manage-clusters/access-clusters/use-kubectl-and-kubeconfig.html#_直接与下游集群进行身份验证" class="xref page">这些步骤</a>，直接使用kubectl访问您的集群，而无需通过Rancher进行身份验证。我们建议设置这种替代方法来访问您的集群，以便在无法连接到Rancher的情况下，您仍然可以访问集群。</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_iam_policies"><a class="anchor" href="#_iam_policies"></a>IAM策略</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_example_iam_policy"><a class="anchor" href="#_example_iam_policy"></a>示例IAM策略</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": [
+                "ec2:AuthorizeSecurityGroupIngress",
+                "ec2:Describe*",
+                "ec2:ImportKeyPair",
+                "ec2:CreateKeyPair",
+                "ec2:CreateSecurityGroup",
+                "ec2:CreateTags",
+                "ec2:DeleteKeyPair",
+                "ec2:ModifyInstanceMetadataOptions"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "VisualEditor1",
+            "Effect": "Allow",
+            "Action": [
+                "ec2:RunInstances"
+            ],
+            "Resource": [
+                "arn:aws:ec2:REGION::image/ami-*",
+                "arn:aws:ec2:REGION:AWS_ACCOUNT_ID:instance/*",
+                "arn:aws:ec2:REGION:AWS_ACCOUNT_ID:placement-group/*",
+                "arn:aws:ec2:REGION:AWS_ACCOUNT_ID:volume/*",
+                "arn:aws:ec2:REGION:AWS_ACCOUNT_ID:subnet/*",
+                "arn:aws:ec2:REGION:AWS_ACCOUNT_ID:key-pair/*",
+                "arn:aws:ec2:REGION:AWS_ACCOUNT_ID:network-interface/*",
+                "arn:aws:ec2:REGION:AWS_ACCOUNT_ID:security-group/*"
+            ]
+        },
+        {
+            "Sid": "VisualEditor2",
+            "Effect": "Allow",
+            "Action": [
+                "ec2:RebootInstances",
+                "ec2:TerminateInstances",
+                "ec2:StartInstances",
+                "ec2:StopInstances"
+            ],
+            "Resource": "arn:aws:ec2:REGION:AWS_ACCOUNT_ID:instance/*"
+        }
+    ]
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_example_iam_policy_with_passrole"><a class="anchor" href="#_example_iam_policy_with_passrole"></a>带有PassRole的示例IAM策略</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": [
+                "ec2:AuthorizeSecurityGroupIngress",
+                "ec2:Describe*",
+                "ec2:ImportKeyPair",
+                "ec2:CreateKeyPair",
+                "ec2:CreateSecurityGroup",
+                "ec2:CreateTags",
+                "ec2:DeleteKeyPair",
+                "ec2:ModifyInstanceMetadataOptions"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "VisualEditor1",
+            "Effect": "Allow",
+            "Action": [
+                "iam:PassRole",
+                "ec2:RunInstances"
+            ],
+            "Resource": [
+                "arn:aws:ec2:REGION::image/ami-*",
+                "arn:aws:ec2:REGION:AWS_ACCOUNT_ID:instance/*",
+                "arn:aws:ec2:REGION:AWS_ACCOUNT_ID:placement-group/*",
+                "arn:aws:ec2:REGION:AWS_ACCOUNT_ID:volume/*",
+                "arn:aws:ec2:REGION:AWS_ACCOUNT_ID:subnet/*",
+                "arn:aws:ec2:REGION:AWS_ACCOUNT_ID:key-pair/*",
+                "arn:aws:ec2:REGION:AWS_ACCOUNT_ID:network-interface/*",
+                "arn:aws:ec2:REGION:AWS_ACCOUNT_ID:security-group/*",
+                "arn:aws:iam::AWS_ACCOUNT_ID:role/YOUR_ROLE_NAME"
+            ]
+        },
+        {
+            "Sid": "VisualEditor2",
+            "Effect": "Allow",
+            "Action": [
+                "ec2:RebootInstances",
+                "ec2:TerminateInstances",
+                "ec2:StartInstances",
+                "ec2:StopInstances"
+            ],
+            "Resource": "arn:aws:ec2:REGION:AWS_ACCOUNT_ID:instance/*"
+        }
+    ]
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_example_iam_policy_to_allow_encrypted_ebs_volumes"><a class="anchor" href="#_example_iam_policy_to_allow_encrypted_ebs_volumes"></a>允许加密EBS卷的示例IAM策略</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "kms:Decrypt",
+        "kms:GenerateDataKeyWithoutPlaintext",
+        "kms:Encrypt",
+        "kms:DescribeKey",
+        "kms:CreateGrant",
+        "ec2:DetachVolume",
+        "ec2:AttachVolume",
+        "ec2:DeleteSnapshot",
+        "ec2:DeleteTags",
+        "ec2:CreateTags",
+        "ec2:CreateVolume",
+        "ec2:DeleteVolume",
+        "ec2:CreateSnapshot"
+      ],
+      "Resource": [
+        "arn:aws:ec2:REGION:AWS_ACCOUNT_ID:volume/*",
+        "arn:aws:ec2:REGION:AWS_ACCOUNT_ID:instance/*",
+        "arn:aws:ec2:REGION:AWS_ACCOUNT_ID:snapshot/*",
+        "arn:aws:kms:REGION:AWS_ACCOUNT_ID:key/KMS_KEY_ID"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ec2:DescribeInstances",
+        "ec2:DescribeTags",
+        "ec2:DescribeVolumes",
+        "ec2:DescribeSnapshots"
+      ],
+      "Resource": "*"
+    }
+  ]
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="../infra-providers.html">在基础设施提供商中新节点上部署 Kubernetes</a></span>
+  <span class="next"><a href="machine-configuration.html">EC2机器配置参考</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<script src="../../../../../../_/js/site.js"></script>
+<script async src="../../../../../../_/js/vendor/highlight.js"></script>
+<script src="../../../../../../_/js/vendor/lunr.js"></script>
+<script src="../../../../../../_/js/vendor/lunr-languages.js"></script>
+<script src="../../../../../../_/js/search-ui.js" id="search-ui-script" data-site-root-path="../../../../../.." data-snippet-length="100" data-stylesheet="../../../../../../_/css/search.css"></script>
+<script async src="../../../../../../search-index.js"></script>
+<script src="../../../../../../_/js/vendor/langSelection.js"></script>
+<script async src="../../../../../../_/js/vendor/tabs.js"></script>
+
+
+<script src="../../../../../../_/js/CNLanguageSwitcher.js"></script>
+  </body>
+</html>

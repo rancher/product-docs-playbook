@@ -1,0 +1,2094 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Protokollierung | SUSE® Virtualization  v1.7</title>
+    <link rel="canonical" href="https://documentation.suse.com/cloudnative/virtualization/v1.7/de/observability/logging.html">
+    <link rel="prev" href="../networking/best-practices.html">
+    <link rel="next" href="monitoring.html">
+    <meta name="generator" content="Antora 3.1.14">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+<meta http-equiv="last-modified" content="2025-06-04"/>
+<link rel="stylesheet" href="../../../../_/css/search.css">
+<link rel="icon" href="../../../../_/img/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="../../../../_/css/font-styles.css">
+<link rel="stylesheet" href="../../../../_/fonts/css/all.css">
+<link rel="stylesheet" href="../../../../_/css/site-extra.css">
+<link rel="stylesheet" href="../../../../_/css/vendor/tabs.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap&family=SUSE+Mono:ital,wght@0,100..800;1,100..800" rel="stylesheet">
+<link rel="stylesheet" href="../../../../_/css/vendor/light.css">
+<script src="/docserv/res/lightheaded/analytics.js" type="text/javascript"></script>
+<script type="module">
+  import { defineCustomElements, setAssetPath } from 'https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/shared-header.esm.js';
+  defineCustomElements();
+  setAssetPath("https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/assets");
+</script>
+<!-- Default English link -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/en/observability/logging.html" hreflang="x-default" rel="alternate"/>
+<!-- Link for the currently processed page -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/de/observability/logging.html" hrefLang="de-DE" rel="alternate" />
+<!-- Link for the English page -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/en/observability/logging.html" hreflang="en-US" rel="alternate" />
+<!-- Link for the Japanese page -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/ja/observability/logging.html" hreflang="ja-JP" rel="alternate" />
+<!-- Link for the Chinese page -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/zh/observability/logging.html" hreflang="zh-CN" rel="alternate" />
+<!-- Link for the French page -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/fr/observability/logging.html" hreflang="fr-FR" rel="alternate" />
+<!-- Link for the Spanish page -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/es/observability/logging.html" hreflang="es-ES" rel="alternate" />
+<!-- Link for the Brazilian Portuguese page -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/pt/observability/logging.html" hreflang="pt-BR" rel="alternate" />
+
+<!-- JSON-LD for doc metadata -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Protokollierung | SUSE Virtualization v1.7",
+  "headline": "Protokollierung",
+  "description": "Protokollierung",
+  "inLanguage": "de",
+  "dateModified": "2025-06-04T00:00:00Z",
+  "author": {
+    "@type": "Organization",
+    "name": "SUSE Product & Solution Documentation Team",
+    "url": "https://documentation.suse.com"
+  },
+  "mentions": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "SUSE Virtualization",
+      "softwareVersion": "v1.7",
+      "applicationCategory": "Cloud Infrastructure",
+      "operatingSystem": "Linux"
+    }
+  ],
+  "publisher": {
+    "@type": "Organization",
+    "name": "SUSE",
+    "url": "https://documentation.suse.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.suse.com/assets/img/suse-white-logo-green.svg"
+    }
+  }
+}
+</script>
+<!-- end JSON-LD for doc metadata -->
+
+<!-- SUVA - Begin Ask Geeko-->
+<!--
+searchUnifyChatbot ("Ask Geeko") Copyright ©2024 Grazitti Interactive - All Rights Reserved. NOTICE: All information contained herein is, and remains the property of Grazitti Interactive and its suppliers, if any. The intellectual and technical concepts contained herein are proprietary to Grazitti Interactive and its suppliers and may be covered by India, U.S. and Foreign Patents, patents in process, and are protected by trade secret or copyright law. Dissemination of this information or reproduction of this material is strictly forbidden unless prior written permission is obtained from Grazitti Interactive.
+-->
+<meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport"/>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/Allow/an.js?c485cb3c-93d4-4942-99e8-91f3b8ca5636"></script>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/js/index.js?q=gAAAAABp3JBN9VuEJTi5tFafLIMwgMkCPdJS3Qm56lSYx93ir3Twt9hgSvd3OHEt6-nYfSbY3yHq0Zv8PRPsSy4nbqZiaJ4cZvRc6ItVZdvwz9Urf35cH6OUyPOwdA0phlS-zVIznQ2rWW438p-91NlTHuxJuOFpnA=="></script>
+<link rel="stylesheet" href="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/css/index.css">
+<div id="searchUnifyChatbot"></div>
+<!-- SUVA - End Ask Geeko-->
+<!--BEGIN QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+<script type='text/javascript' src="../../../../_/js/qualtrics.js" defer></script>
+<!--END QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<script type="module">import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs'; mermaid.initialize({"startOnLoad":true});</script><shared-header
+language="en"
+languages='{
+    "en": { "label": "English", "url": "https://documentation.suse.com/en-us/" },
+    "de": { "label": "Deutsch", "url": "https://documentation.suse.com/de-de/" },
+    "fr": { "label": "Français", "url": "https://documentation.suse.com/fr-fr/" },
+    "es": { "label": "Español", "url": "https://documentation.suse.com/es-es/" },
+    "zh_CN": { "label": "中文", "url": "https://documentation.suse.com/zh-cn/" },
+    "pt_BR": { "label": "Português Brasileiro", "url": "https://documentation.suse.com/pt-br/" }
+}'
+enable-search='false'>
+</shared-header>
+<div class="body">
+<div class="nav-container" data-component="virtualization" data-version="v1.7">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title">SUSE® Virtualization</h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Einführung</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/overview.html">Übersicht</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/deploy-ha-cluster.html">Cluster mit hoher Verfügbarkeit bereitstellen</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/deploy-singlenode-cluster.html">Bereitstellen eines Einzelknoten-Clusters</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/glossary.html">Glossar</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/document-conventions.html">Dokumentenkonventionen</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Installation und Einrichtung</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/requirements.html">Hardware- und Netzwerkanforderungen</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Installationsmedien</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/media/net-install.html">Netzinstallations-ISO</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/media/install-binaries-mode.html">Installieren Sie nur Binärdateien</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Installationsmethoden</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/methods/iso-install.html">ISO Installation</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/methods/usb-install.html">USB-Installation</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/methods/pxe-boot-install.html">PXE-Boot-Installation</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Konfiguration</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/config/configuration-file.html">Konfigurationsdatei</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/config/update-configuration.html">Aktualisieren Sie die Konfiguration nach der Installation.</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/config/settings.html">Einstellungen</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/config/cloudinitcrd.html">CloudInit CRD</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/post-installation.html">Aufgaben nach Abschluss der Installation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/management-address.html">Verwaltungsadresse</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/external-disk.html">Unterstützung für externe Festplatten</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/authentication.html">Authentifizierung</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/airgap.html">Air-Gapped-Umgebung</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/single-node-clusters.html">Einzelknoten-Cluster</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Aufrüstungen</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/upgrades.html">Aufrüstungen</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-1-2-to-v1-2-0.html">Upgrade von v1.1.2 auf v1.2.0 (nicht empfohlen)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-2-0-to-v1-2-1.html">Upgrade von v1.1.2/v1.1.3/v1.2.0 auf v1.2.1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-2-1-to-v1-2-2.html">Upgrade von v1.2.1 auf v1.2.2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-2-2-to-v1-3-1.html">Upgrade von v1.2.2/v1.3.0 auf v1.3.1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-3-1-to-v1-3-2.html">Upgrade von v1.3.1 auf v1.3.2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-3-2-to-v1-4-0.html">Upgrade von v1.3.2 auf v1.4.0</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-4-0-to-v1-4-1.html">Upgrade von v1.4.0 auf v1.4.1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-4-1-to-v1-4-2.html">Upgrade von v1.4.1 auf v1.4.2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-4-1-to-v1-4-3.html">Upgrade von v1.4.1 oder v1.4.2 auf v1.4.3</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-4-2-to-v1-5-0.html">Upgrade von v1.4.2 oder v1.4.3 auf v1.5.0</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-4-2-to-v1-5-1.html">Upgrade von v1.4.2 oder v1.4.3 auf v1.5.1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-4-2-to-v1-5-2.html">Upgrade von v1.4.2 oder v1.4.3 auf v1.5.2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-5-0-to-v1-5-1.html">Upgrade von v1.5.0 auf v1.5.1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-5-0-to-v1-5-2.html">Upgrade von v1.5.0 oder v1.5.1 auf v1.5.2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-5-x-to-v1-6-x.html">Upgrade von v1.5.x auf v1.6.x</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-6-x-to-v1-6-y.html">Upgrade von v1.6.x auf v1.6.y</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-6-x-to-v1-7-x.html">Upgrade von v1.6.x auf v1.7.x</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-7-x-to-v1-7-y.html">Upgrade von v1.7.x auf v1.7.y</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/troubleshooting.html">Fehlerbehebung</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Hosts</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../hosts/hosts.html">Hostverwaltung</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../hosts/witness-node.html">Zeugen-Knoten</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../hosts/vgpu-support.html">vGPU Support</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Virtuelle Maschinen</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/virtual-machines.html">Virtuelle Maschinen</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Virtuelle Maschinenbilder</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../virtual-machines/vm-images/upload-image.html">Bilder hochladen</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../virtual-machines/vm-images/custom-suse-images.html">Benutzerdefinierte SUSE Virtuelle Maschinen-Images</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../virtual-machines/vm-images/image-security.html">Imagesicherheit</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/create-vm.html">Erstellen Sie eine virtuelle Maschine</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/create-windows-vm.html">Erstellen Sie eine Windows-virtuelle Maschine.</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/edit-vm.html">Bearbeiten Sie eine virtuelle Maschine</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/access-vm.html">Zugriff auf die virtuelle Maschine</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/clone-vm.html">Virtuelle Maschine klonen</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/backup-restore.html">Sicherung, Snapshot und Wiederherstellung virtueller Maschinen</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/live-migration.html">Live-Migration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/hotplug-volume.html">Hot-Plug-Volumes</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/resource-overcommit.html">Ressourcenüberbelegung</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/cpu-pinning.html">CPU-Pinning</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/cpu-memory-hotplug.html">CPU- und Speicher-Hot-Plugging</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/nic-hotplug.html">NIC Hotplug</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Speicher</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Volumes</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../storage/volumes/create-volume.html">Erstellen eines Volumes</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../storage/volumes/edit-volume.html">Ein Volume bearbeiten</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../storage/volumes/clone-volume.html">Ein Volume klonen</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../storage/volumes/export-volume.html">Exportieren Sie ein Volume in ein Bild</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../storage/volumes/volume-snapshots.html">Volume Snapshots</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../storage/volumes/volume-security.html">Volumensicherheit</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../storage/storageclass.html">StorageClass</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../storage/csidriver.html">Unterstützung für Speicher von Drittanbietern</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../storage/longhorn-v2-data-engine.html">Longhorn V2 Data Engine</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../storage/storage-validator.html">Speichervalidator</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Netzwerke</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/cluster-network.html">Cluster-Netzwerk</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/vm-network.html">VM-Netzwerk</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/deep-dive.html">Netzwerk-Deep-Dive</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/load-balancer.html">Lastenausgleich</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/ip-pool.html">IP-Pool</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/storage-network.html">Speichernetzwerk</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/vm-migration-network.html">VM-Migrationsnetzwerk</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/kubeovn-vpc.html">Private Cloud</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/vm-isolation.html">Isolierung von virtuellen Maschinen</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/best-practices.html">Netzwerk-Best-Practices</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Einblick</span>
+<ul class="nav-list">
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="logging.html">Protokollierung</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="monitoring.html">Überwachung</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Add-Ons</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/add-ons.html">Add-Ons</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/harvester-seeder.html">Harvester Seeder</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/kubeovn-operator.html">Kube-OVN Operator (Experimentell)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/lvm-local-storage.html">CSI-Treiber LVM (Experimentell)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/nvidia-driver-toolkit.html">NVIDIA-Treiber-Toolkit</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/pcidevices-controller.html">PCI-Geräte-Controller</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/rancher-vcluster.html">Rancher vCluster (Experimentell)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/virtual-machine-auto-balance.html">Virtuelle Maschine Auto-Balance (Experimentell)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/vm-dhcp-controller.html">VM DHCP Controller (Experimentell)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/vm-import-controller.html">VM Import Controller</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Integrationen</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Rancher-Integration</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/rancher-integration.html">SUSE Rancher Prime Integration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/virtualization-management.html">Virtualisierungsmanagement</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Node-Treiber</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../integrations/rancher/node-driver/node-driver.html">Harvester Node Driver</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../integrations/rancher/node-driver/rke2-cluster.html">Erstellen eines RKE2 Kubernetes-Clusters</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../integrations/rancher/node-driver/k3s-cluster.html">Erstellen eines K3s Kubernetes-Clusters</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/cloud-provider.html">Harvester Cloud-Anbieter</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/csi-driver.html">Harvester CSI-Treiber</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/resource-quota.html">Ressourcenkontingente</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/rancher-terraform-provider.html">Rancher Terraform</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/import-vm.html">Importieren Sie einen Cluster, der auf einer SUSE® Virtualization-VM basiert</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/harvester-ui-extension.html">Harvester UI Erweiterung</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../integrations/terraform/terraform-provider.html">Terraform Provider</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Fehlerbehebung</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/installation.html">Probleme bei der Installation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/operating-system.html">Betriebssystemprobleme</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/cluster.html">Cluster-Probleme</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/virtual-machines.html">Virtuelle Maschinenprobleme</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/monitoring.html">Überwachungsprobleme</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/logging.html">Protokollierungsprobleme</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/rancher.html">Rancher-Probleme</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/faq.html">FAQ</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Entwicklerinhalte</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../developer/addon-development.html">Entwicklungsleitfaden für Add-ons</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../api.html">API</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">SUSE® Virtualization</span>
+    <span class="version">v1.7</span>
+  </div>
+  <ul class="components">
+        <li class="component">
+          <div class="title"><a href="../../../../admission-controller/1.36/en/introduction.html">Admission Controller</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../admission-controller/1.37/en/introduction.html">1.37-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../admission-controller/1.36/en/introduction.html">1.36</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.35/en/introduction.html">1.35</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.34/en/introduction.html">1.34</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.33/en/introduction.html">1.33</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.32/en/introduction.html">1.32</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.31/en/introduction.html">1.31</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.30/en/introduction.html">1.30</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.29/en/introduction.html">1.29</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.28/en/introduction.html">1.28</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../cluster-api/v0.26/en/index.html">Cluster API</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../cluster-api/v0.28/en/index.html">v0.28-dev</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.27/en/index.html">v0.27-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../cluster-api/v0.26/en/index.html">v0.26</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.25/en/index.html">0.25</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.24/en/index.html">0.24</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.23/en/index.html">0.23</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.22/en/index.html">0.22</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.21/en/index.html">0.21</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.20/en/index.html">0.20</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.19/en/index.html">0.19</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.18/en/index.html">0.18</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.17/en/index.html">0.17</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.16/en/index.html">0.16</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.11/en/index.html">0.11</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../continuous-delivery/next/en/index.html">Continuous Delivery</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../continuous-delivery/next/en/index.html">Next</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.15/en/index.html">v0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.11/en/index.html">0.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.10/en/index.html">0.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.9/en/index.html">0.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../k3s/latest/en/introduction.html">K3s</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../k3s/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../os-manager/1.9/en/index.html">OS Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../os-manager/1.10/en/index.html">1.10-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../os-manager/1.9/en/index.html">1.9</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.8/en/index.html">1.8</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.7/en/index.html">1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.6/en/index.html">1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.5/en/index.html">1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-ai/latest/en/introduction.html">Rancher AI</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-ai/latest/en/introduction.html">latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../turtles/stable/en/index.html">Rancher Turtles</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../turtles/stable/en/index.html">Stable</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rke2/latest/en/introduction.html">RKE2</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rke2/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-observability/latest/en/classic.html">SUSE Observability</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../suse-observability/latest/en/classic.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">SUSE Rancher Developer Access</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">SUSE® Rancher for AWS</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-manager/v2.14/en/about-rancher/what-is-rancher.html">SUSE® Rancher Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.15/en/about-rancher/what-is-rancher.html">v2.15 (Unreleased)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../rancher-manager/v2.14/en/about-rancher/what-is-rancher.html">v2.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.13/en/about-rancher/what-is-rancher.html">v2.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.12/en/about-rancher/what-is-rancher.html">v2.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.11/en/about-rancher/what-is-rancher.html">v2.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.10/en/about-rancher/what-is-rancher.html">v2.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.9/en/about-rancher/what-is-rancher.html">v2.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../security/5.6/en/overview.html">SUSE® Security</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../security/5.6/en/overview.html">5.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.5/en/overview.html">5.5</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.4/en/overview.html">5.4</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.3/en/overview.html">5.3</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../storage/1.11/en/longhorn-documentation.html">SUSE® Storage</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../storage/1.12/en/longhorn-documentation.html">1.12 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../storage/1.11/en/longhorn-documentation.html">1.11 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../storage/1.10/en/longhorn-documentation.html">1.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../storage/1.9/en/longhorn-documentation.html">1.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">SUSE® Virtual Clusters</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/1.2.0/en/release-notes/version-1.2.0.html">v1.2.0 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">v1.1.0-latest</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/1.0.2/en/release-notes/version-1.0.2.html">v1.0.2</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.1/en/introduction.html">v1.0.1</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.0/en/introduction.html">v1.0.0</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component is-current">
+          <div class="title"><a href="../../../v1.8/en/introduction/overview.html">SUSE® Virtualization</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../v1.9/en/introduction/overview.html">v1.9 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../v1.8/en/introduction/overview.html">v1.8 (Latest)</a>
+            </li>
+            <li class="version is-current">
+              <a href="../../en/introduction/overview.html">v1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../v1.6/en/introduction/overview.html">v1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../v1.5/en/introduction/overview.html">v1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../vulnerability-scanner/0.12.0/en/introduction.html">Vulnerability Scanner</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../vulnerability-scanner/0.12.0/en/introduction.html">0.12.0</a>
+            </li>
+            <li class="version">
+              <a href="../../../../vulnerability-scanner/0.11.3/en/introduction.html">0.11.3</a>
+            </li>
+          </ul>
+        </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+<ul>
+    <li>
+  <a class="home-link-dsc" href="https://documentation.suse.com" title="SUSE Documentation Home" aria-label="SUSE Documentation Home"></a>
+    </li>
+    <li>
+      <a href="https://documentation.suse.com/cloudnative/virtualization" title="SUSE Virtualization" aria-label="SUSE Documentation - SUSE Virtualization">
+        SUSE Virtualization
+      </a>
+    </li>
+      <li>
+          Einblick
+      </li>
+  </ul>
+</nav>
+<div class="page-versions">
+  <button class="version-menu-toggle" title="Show other versions of page">v1.7</button>
+  <div class="version-menu">
+    <a class="version is-missing" href="../../../v1.9/en/introduction/overview.html">v1.9 (Dev)</a>
+    <a class="version is-missing" href="../../../v1.8/en/introduction/overview.html">v1.8 (Latest)</a>
+    <a class="version is-current" href="logging.html">v1.7</a>
+    <a class="version is-missing" href="../../../v1.6/en/introduction/overview.html">v1.6</a>
+    <a class="version is-missing" href="../../../v1.5/en/introduction/overview.html">v1.5</a>
+  </div>
+</div>
+      <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <label class="visual-search-label-bc" for="search-input">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+          <input label="Search" aria-label="Search" id="search-input" type="text" placeholder="Dokumentation durchsuchen" >
+          <label class="filter checkbox" style="display: none">
+            <input type="checkbox" data-facet-filter="component:virtualization" checked> Only this project
+          </label>
+        </div>
+      </div>
+</div>
+  <div class="content">
+<aside
+  class="toc sidebar"
+  data-title="Auf dieser Seite" data-levels="2">
+  <div class="toc-menu">
+    <div class="docsurvey-wrapper"><a class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_diCzHC9xxyJyuN0">Documentation survey</a></div>
+    <!-- start qualtrics -->
+    <div id='ZN_8qZUmklKYbBqAYe'><!--DO NOT REMOVE-CONTENTS PLACED HERE--></div>
+    <div id="qualtrics_container"></div>
+    <!-- end qualtrics -->
+  </div>
+</aside>
+
+<aside class="toc sidebar docsurvey-sidebar">
+  <div class="toc-menu">
+    <div class="docsurvey-wrapper"><a class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_diCzHC9xxyJyuN0">Documentation survey</a></div>
+  </div>
+</aside>
+<article class="doc">
+<h1 class="page">Protokollierung</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Es ist wichtig zu wissen, was im <code>Harvester Cluster</code> passiert/ist passiert.</p>
+</div>
+<div class="paragraph">
+<p><code>Harvester</code> sammelt die <code>cluster running log</code>, Kubernetes <code>audit</code> und <code>event</code> Protokolle direkt nach dem Einschalten des Clusters, was hilfreich für Überwachung, Protokollierung, Prüfung und Fehlersuche ist.</p>
+</div>
+<div class="paragraph">
+<p><code>Harvester</code> unterstützt das Senden dieser Protokolle an verschiedene Arten von Protokollservern.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Anmerkung"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Die Größe der Protokolldaten hängt von der Clustergröße, der Arbeitslast und anderen Faktoren ab. <code>Harvester</code> verwendet keinen persistenten Speicher, um Protokolldaten im Cluster zu speichern. Benutzer müssen einen Protokollserver einrichten, um die Protokolle entsprechend zu empfangen.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Die Protokollierungsfunktion ist jetzt mit einem Add-on implementiert und standardmäßig in neuen Installationen deaktiviert.</p>
+</div>
+<div class="paragraph">
+<p>Benutzer können das <code>rancher-logging</code> <a href="../add-ons/add-ons.html" class="xref page">Add-on</a> über die Harvester-Benutzeroberfläche nach der Installation aktivieren/deaktivieren.</p>
+</div>
+<div class="paragraph">
+<p>Benutzer können das <code>rancher-logging</code> Add-on in ihrer Harvester-Installation auch aktivieren/deaktivieren, indem sie die <a href="../installation-setup/config/configuration-file.html#_install_addons" class="xref page">Konfigurationsdatei</a> anpassen.</p>
+</div>
+<div class="paragraph">
+<p>Für Harvester-Cluster, die von Version v1.1.x aktualisiert wurden, wird die Protokollierungsfunktion automatisch in ein Add-on umgewandelt und bleibt wie zuvor aktiviert.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_übersicht_über_die_architektur"><a class="anchor" href="#_übersicht_über_die_architektur"></a>Übersicht über die Architektur</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Sowohl Harvester als auch Rancher verwenden den <a href="https://kube-logging.dev/docs/#overview">Logging Operator</a>, um spezifische Komponenten und Operationen der internen Protokollierungsinfrastruktur zu verwalten.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/logging/logging-operator.png" alt="logging operator">
+</div>
+</div>
+<div class="paragraph">
+<p>In der Praxis von Harvester nutzen <code>Logging</code>, <code>Audit</code> und <code>Event</code> eine gemeinsame Architektur, wobei <code>Logging</code> die Infrastruktur darstellt und <code>Audit</code> sowie <code>Event</code> darauf aufbauen.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_protokollierung"><a class="anchor" href="#_protokollierung"></a>Protokollierung</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Die Protokollierungsinfrastruktur von Harvester ermöglicht es Ihnen, Harvester-Protokolle in einen externen Dienst wie <a href="https://www.graylog.org">Graylog</a>, <a href="https://www.elastic.co/elasticsearch/">Elasticsearch</a>, <a href="https://www.splunk.com/">Splunk</a>, <a href="https://grafana.com/oss/loki/">Grafana Loki</a> und andere zu aggregieren.</p>
+</div>
+<div class="sect2">
+<h3 id="_gesammelte_protokolle"><a class="anchor" href="#_gesammelte_protokolle"></a>Gesammelte Protokolle</h3>
+<div class="paragraph">
+<p>Siehe unten für eine Liste der gesammelten Protokolle:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Protokolle von allen Clustern <code>Pods</code></p>
+</li>
+<li>
+<p>Kernel-Protokolle von jedem <code>node</code></p>
+</li>
+<li>
+<p>Protokolle von ausgewählten systemd-Diensten von jedem Knoten</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>rke2-server</code></p>
+</li>
+<li>
+<p><code>rke2-agent</code></p>
+</li>
+<li>
+<p><code>rancherd</code></p>
+</li>
+<li>
+<p><code>rancher-system-agent</code></p>
+</li>
+<li>
+<p><code>NetworkManager</code></p>
+</li>
+<li>
+<p><code>iscsid</code></p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Anmerkung"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Benutzer können konfigurieren und ändern, wohin die aggregierten Protokolle gesendet werden, sowie einige grundlegende Filter anwenden. Es wird nicht unterstützt, die Auswahl der zu sammelnden Protokolle zu ändern.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_konfigurieren_von_protokollressourcen"><a class="anchor" href="#_konfigurieren_von_protokollressourcen"></a>Konfigurieren von Protokollressourcen</h3>
+<div class="paragraph">
+<p>Unter dem Logging-Operator befinden sich <a href="https://www.fluentd.org/">Fluentd</a> und <a href="https://fluentbit.io/">Fluent Bit</a>, die für die Protokollsammlung und -weiterleitung zuständig sind. Falls gewünscht, können Sie anpassen, wie viele Ressourcen diesen Komponenten zugewiesen werden.</p>
+</div>
+<div class="sect3">
+<h4 id="_von_der_benutzeroberfläche"><a class="anchor" href="#_von_der_benutzeroberfläche"></a>Von der Benutzeroberfläche</h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Gehen Sie zur Seite <strong>Erweitert</strong> &gt; <strong>Addons</strong> und wählen Sie das <strong>rancher-logging</strong> Addon aus.</p>
+</li>
+<li>
+<p>Wechseln Sie zum Tab <strong>Fluentbit</strong> und ändern Sie die Ressourcennachfragen und -limits.</p>
+</li>
+<li>
+<p>Wechseln Sie zum Tab <strong>Fluentd</strong> und ändern Sie die Ressourcennachfragen und -limits.</p>
+</li>
+<li>
+<p>Wählen Sie <strong>Speichern</strong>, wenn Sie mit dem Konfigurieren der Einstellungen für das <strong>rancher-logging</strong> Add-on fertig sind.</p>
+</li>
+</ol>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/logging/modify-logging-resources-from-addon.png" alt="modify logging resources from addon">
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Anmerkung"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Die Konfiguration der Benutzeroberfläche ist nur sichtbar, wenn das <strong>rancher-logging</strong> Add-on aktiviert ist.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_von_der_kommandozeilenschnittstelle"><a class="anchor" href="#_von_der_kommandozeilenschnittstelle"></a>Von der Kommandozeilenschnittstelle</h4>
+<div class="paragraph">
+<p>Sie können den folgenden <code>kubectl</code> Befehl verwenden, um die Ressourcenkonfigurationen für das <code>rancher-logging</code> Add-on zu ändern: <code>kubectl edit addons.harvesterhci.io -n cattle-logging-system rancher-logging</code>.</p>
+</div>
+<div class="paragraph">
+<p>Der Ressourcenpfad und die Standardwerte sind wie folgt.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>apiVersion: harvesterhci.io/v1beta1
+kind: Addon
+metadata:
+  name: rancher-logging
+  namespace: cattle-logging-system
+spec:
+  valuesContent: |
+    fluentbit:
+      resources:
+        limits:
+          cpu: 200m
+          memory: 200Mi
+        requests:
+          cpu: 50m
+          memory: 50Mi
+    fluentd:
+      resources:
+        limits:
+          cpu: 1000m
+          memory: 800Mi
+        requests:
+          cpu: 100m
+          memory: 200Mi</pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Anmerkung"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Sie können weiterhin Konfigurationsanpassungen vornehmen, wenn das Add-on deaktiviert ist. Diese Änderungen treten jedoch erst in Kraft, wenn Sie das Add-on wieder aktivieren.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_überprüfung_von_nicht_verwendeten_ressourcen"><a class="anchor" href="#_überprüfung_von_nicht_verwendeten_ressourcen"></a>Überprüfung von nicht verwendeten Ressourcen</h4>
+<div class="paragraph">
+<p>Beim Aktivieren des <strong>rancher-logging</strong> Add-ons kann der folgende Fehler auftreten:</p>
+</div>
+<div class="paragraph">
+<p>Sie können auch beobachten, dass die Implementierungen, die mit dem Add-on verbunden sind, nicht vollständig ausgerollt sind.</p>
+</div>
+<div class="paragraph">
+<p>Um zu verhindern, dass der Fehler erneut auftritt, führen Sie die folgenden Aktionen aus, bevor Sie das Add-on aktivieren:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Aktualisieren oder löschen Sie die betroffenen nicht verwendeten Ressourcen.</p>
+</li>
+<li>
+<p>Fügen Sie die Annotation <code>harvesterhci.io/skipRancherLoggingAddonWebhookCheck: "true"</code> zum Add-on hinzu.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_konfigurieren_von_protokollzielen"><a class="anchor" href="#_konfigurieren_von_protokollzielen"></a>Konfigurieren von Protokollzielen</h3>
+<div class="paragraph">
+<p>Protokollierungsoperationen werden durch den <a href="https://kube-logging.dev/docs/#overview">Logging Operator</a> unterstützt und mithilfe von Fluentd-Ressourcen gesteuert, insbesondere <a href="https://kube-logging.dev/docs/configuration/flow/">Flow und ClusterFlow</a> sowie <a href="https://kube-logging.dev/docs/configuration/output/">Output und ClusterOutput</a>. Sie können Protokolle routen und filtern, indem Sie diese CRDs auf den Harvester-Cluster anwenden.</p>
+</div>
+<div class="paragraph">
+<p>Beim Anwenden neuer <code>Outputs</code> und <code>Flows</code> auf den Cluster kann es einige Zeit dauern, bis der Logging-Operator sie effektiv anwendet. Bitte erlauben Sie daher einige Minuten, bis die Protokolle beginnen zu fließen.</p>
+</div>
+<div class="sect3">
+<h4 id="_clustered_vs_namespaced"><a class="anchor" href="#_clustered_vs_namespaced"></a>Clustered vs Namespaced</h4>
+<div class="paragraph">
+<p>Eine wichtige Sache, die man beim Routen von Protokollen verstehen sollte, ist der Unterschied zwischen <code>ClusterFlow</code> vs <code>Flow</code> und <code>ClusterOutput</code> vs <code>Output</code>. Der Hauptunterschied zwischen der clusterbasierten und der nicht-clusterbasierten Version besteht darin, dass letztere in Namespaces organisiert sind.</p>
+</div>
+<div class="paragraph">
+<p>Die größte Auswirkung davon ist, dass <code>Flows</code> nur auf <code>Outputs</code> zugreifen kann, die sich im selben Namespace befinden, aber dennoch auf beliebige <code>ClusterOutput</code> zugreifen kann.</p>
+</div>
+<div class="paragraph">
+<p>Weitere Informationen finden Sie in der Dokumentation:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://kube-logging.dev/docs/configuration/flow/">Flow und ClusterFlow</a></p>
+</li>
+<li>
+<p><a href="https://kube-logging.dev/docs/configuration/output/">Output und ClusterOutput</a></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_von_der_benutzeroberfläche_2"><a class="anchor" href="#_von_der_benutzeroberfläche_2"></a>Von der Benutzeroberfläche</h4>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Anmerkung"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>UI-Bilder sind für <code>Output</code> und <code>Flow</code> gedacht, deren Konfigurationsprozess nahezu identisch mit dem ihrer clusterbasierten Gegenstücke ist. Etwaige Unterschiede werden in den folgenden Schritten vermerkt.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_erstellen_von_ausgaben"><a class="anchor" href="#_erstellen_von_ausgaben"></a>Erstellen von Ausgaben</h5>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Wählen Sie die Option, um ein neues <code>Output</code> oder <code>ClusterOutput</code> zu erstellen.</p>
+</li>
+<li>
+<p>Wenn Sie ein <code>Output</code> erstellen, wählen Sie den gewünschten Namespace aus.</p>
+</li>
+<li>
+<p>Fügen Sie einen Namen für die Ressourcen hinzu.</p>
+</li>
+<li>
+<p>Wählen Sie den Protokolltyp.</p>
+</li>
+<li>
+<p>Wählen Sie den Protokollausgabetyp.</p>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/logging/create-output.png" alt="create output">
+</div>
+</div>
+</li>
+<li>
+<p>Konfigurieren Sie den Ausgabepuffer, falls erforderlich.</p>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/logging/create-output-buffer.png" alt="create output buffer">
+</div>
+</div>
+</li>
+<li>
+<p>Fügen Sie beliebige Labels oder Anmerkungen hinzu.</p>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/logging/create-output-labels-and-annotations.png" alt="create output labels and annotations">
+</div>
+</div>
+</li>
+<li>
+<p>Sobald Sie fertig sind, klicken Sie <code>Create</code> unten rechts.</p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Anmerkung"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Je nach ausgewählter Ausgabe (Splunk, Elasticsearch usw.) gibt es zusätzliche Felder, die im Formular angegeben werden müssen.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect5">
+<h6 id="_ausgabe"><a class="anchor" href="#_ausgabe"></a>Ausgabe</h6>
+<div class="paragraph">
+<p>Das Formular zeigt die Felder an, die für die ausgewählte <a href="https://kube-logging.dev/docs/configuration/plugins/outputs/">Ausgabe</a> verfügbar sind.</p>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_ausgabepuffer"><a class="anchor" href="#_ausgabepuffer"></a>Ausgabepuffer</h6>
+<div class="paragraph">
+<p>Der Editor ermöglicht es Ihnen, das bevorzugte Verhalten des Ausgabepuffers mithilfe verschiedener <a href="https://kube-logging.dev/docs/configuration/plugins/outputs/buffer/">Felder</a> zu beschreiben.</p>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_labels_anmerkungen"><a class="anchor" href="#_labels_anmerkungen"></a>Labels &amp; Anmerkungen</h6>
+<div class="paragraph">
+<p>Sie können Labels und Anmerkungen zu der erstellten Ressource hinzufügen.</p>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_flows_erstellen"><a class="anchor" href="#_flows_erstellen"></a>Flows erstellen</h5>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Wählen Sie die Option, um ein neues <code>Flow</code> oder <code>ClusterFlow</code> zu erstellen.</p>
+</li>
+<li>
+<p>Wenn Sie ein <code>Flow</code> erstellen, wählen Sie den gewünschten Namespace aus.</p>
+</li>
+<li>
+<p>Fügen Sie einen Namen für die Ressource hinzu.</p>
+</li>
+<li>
+<p>Wählen Sie beliebige Knoten aus, deren Protokolle ein- oder ausgeschlossen werden sollen.</p>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/logging/create-flow-matches.png" alt="create flow matches">
+</div>
+</div>
+</li>
+<li>
+<p>Wählen Sie Ziel <code>Outputs</code> und <code>ClusterOutputs</code> aus.</p>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/logging/create-flow-outputs.png" alt="create flow outputs">
+</div>
+</div>
+</li>
+<li>
+<p>Fügen Sie bei Bedarf Filter hinzu.</p>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/logging/create-flow-filters.png" alt="create flow filters">
+</div>
+</div>
+</li>
+<li>
+<p>Sobald Sie fertig sind, klicken Sie <code>Create</code> unten links.</p>
+</li>
+</ol>
+</div>
+<div class="sect5">
+<h6 id="_entspricht"><a class="anchor" href="#_entspricht"></a>Entspricht</h6>
+<div class="paragraph">
+<p>Übereinstimmungen ermöglichen es Ihnen, zu filtern, welche Protokolle Sie in die <code>Flow</code> einbeziehen möchten. Das Formular erlaubt nur das Ein- oder Ausschließen von Knotenprotokollen, aber falls erforderlich, können Sie andere von der Ressource unterstützte Übereinstimmungsregeln hinzufügen, indem Sie <code>Edit as YAML</code> auswählen.</p>
+</div>
+<div class="paragraph">
+<p>Für weitere Informationen zur Übereinstimmungsanweisung siehe <a href="https://kube-logging.dev/docs/configuration/log-routing/#match-statement">Übereinstimmungsanweisung</a>.</p>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_ausgaben"><a class="anchor" href="#_ausgaben"></a>Ausgaben</h6>
+<div class="paragraph">
+<p>Ausgaben ermöglichen es Ihnen, eine oder mehrere <code>OutputRefs</code> auszuwählen, um die aggregierten Protokolle zu senden. Beim Erstellen oder Bearbeiten eines <code>Flow</code> / <code>ClusterFlow</code> ist es erforderlich, dass der Benutzer mindestens eine <code>Output</code> auswählt.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Anmerkung"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Es muss mindestens eine vorhandene <code>ClusterOutput</code> oder <code>Output</code> geben, die an den Fluss angehängt werden kann, oder Sie können den Fluss nicht erstellen / bearbeiten.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_filter"><a class="anchor" href="#_filter"></a>Filter</h6>
+<div class="paragraph">
+<p>Filter ermöglichen es Ihnen, die Protokolle zu transformieren, zu verarbeiten und zu verändern. Für weitere Informationen siehe die Liste der unterstützten <a href="https://kube-logging.dev/docs/configuration/plugins/filters/">Filter</a>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_von_der_kommandozeile"><a class="anchor" href="#_von_der_kommandozeile"></a>Von der Kommandozeile</h4>
+<div class="paragraph">
+<p>Um Protokollrouten über die Befehlszeile zu konfigurieren, müssen Sie nur die YAML-Dateien für die relevanten Ressourcen definieren:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml"># elasticsearch-logging.yaml
+apiVersion: logging.banzaicloud.io/v1beta1
+kind: Output
+metadata:
+   name: elasticsearch-example
+   namespace: fleet-local
+   labels:
+      example-label: elasticsearch-example
+   annotations:
+      example-annotation: elasticsearch-example
+spec:
+   elasticsearch:
+      host: &lt;url-to-elasticsearch-server&gt;
+      port: 9200
+---
+apiVersion: logging.banzaicloud.io/v1beta1
+kind: Flow
+metadata:
+   name: elasticsearch-example
+   namespace: fleet-local
+spec:
+   match:
+      - select: {}
+   globalOutputRefs:
+      - elasticsearch-example</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Und dann anwenden:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f elasticsearch-logging.yaml</code></pre>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_verweisen_auf_geheimnisse"><a class="anchor" href="#_verweisen_auf_geheimnisse"></a>Verweisen auf Geheimnisse</h5>
+<div class="paragraph">
+<p>Sie können geheime Werte (im YAML-Format) mit einer der folgenden Methoden definieren:</p>
+</div>
+<div class="paragraph">
+<p>Die einfachste Möglichkeit ist die Verwendung des <code>value</code>-Schlüssels, der einen einfachen Stringwert für das gewünschte Geheimnis darstellt. Diese Methode sollte nur zu Testzwecken und niemals in der Produktion verwendet werden:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">aws_key_id:
+  value: "secretvalue"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Die nächste Möglichkeit ist die Verwendung von <code>valueFrom</code>, die es ermöglicht, einen bestimmten Wert aus einem Geheimnis durch ein Name- und Schlüssel-Paar zu referenzieren:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">aws_key_id:
+   valueFrom:
+      secretKeyRef:
+         name: &lt;kubernetes-secret-name&gt;
+         key: &lt;kubernetes-secret-key&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Einige Plugins benötigen eine Datei, aus der sie lesen, anstatt einfach einen Wert aus dem Geheimnis zu erhalten (dies ist oft der Fall bei CA-Zertifikatdateien). In diesen Fällen müssen Sie <code>mountFrom</code> verwenden, das das Geheimnis als Datei in die zugrunde liegende <code>fluentd</code>-Implementierung einbindet und das Plugin auf die Datei verweist. Die <code>valueFrom</code>- und <code>mountFrom</code>-Objekte sehen gleich aus:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">tls_cert_path:
+   mountFrom:
+      secretKeyRef:
+         name: &lt;kubernetes-secret-name&gt;
+         key: &lt;kubernetes-secret-key&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Für weitere Informationen siehe <a href="https://kube-logging.dev/docs/configuration/plugins/outputs/secret/">Geheimnisdefinition</a>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_beispiel_outputs"><a class="anchor" href="#_beispiel_outputs"></a>Beispiel <code>Outputs</code></h3>
+<div id="_tabs_1" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_1_elasticsearch" class="tab">
+<p>Elasticsearch</p>
+</li>
+<li id="_tabs_1_graylog" class="tab">
+<p>Graylog</p>
+</li>
+<li id="_tabs_1_splunk" class="tab">
+<p>Splunk</p>
+</li>
+<li id="_tabs_1_loki" class="tab">
+<p>Loki</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_1_elasticsearch--panel" class="tabpanel" aria-labelledby="_tabs_1_elasticsearch">
+<div class="paragraph">
+<p>Für die einfachste Implementierung können Sie Elasticsearch auf Ihrem lokalen System mit Docker bereitstellen:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">sudo docker run --name elasticsearch -p 9200:9200 -p 9300:9300 -e xpack.security.enabled=false -e node.name=es01 -e discovery.type=single-node -it docker.elastic.co/elasticsearch/elasticsearch:8.16.6</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Anmerkung"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Um Elasticsearch mit SUSE Virtualization v1.5.0 zu verwenden, stellen Sie sicher, dass der Elasticsearch-Server Version 8.11.0 oder höher läuft.</p>
+</div>
+<div class="paragraph">
+<p>Sie müssen Elasticsearch upgraden, wenn der <code>rancher-logging-root-fluentd-0</code>-Pod einen Fehler wie <code>#0 unexpected error error_class=Elastic::Transport::Transport::Error error="no address for http (Resolv::ResolvError)" Client can’t recognise the server.</code> meldet.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Stellen Sie sicher, dass Sie <code>vm.max_map_count</code> auf &gt;= 262144 gesetzt haben, da der oben genannte Docker-Befehl sonst fehlschlägt. Sobald der Elasticsearch-Server läuft, können Sie die YAML-Datei für <code>ClusterOutput</code> und <code>ClusterFlow</code> erstellen:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">cat &lt;&lt; EOF &gt; elasticsearch-example.yaml
+apiVersion: logging.banzaicloud.io/v1beta1
+kind: ClusterOutput
+metadata:
+  name: elasticsearch-example
+  namespace: cattle-logging-system
+spec:
+  elasticsearch:
+    host: 192.168.0.119
+    port: 9200
+    buffer:
+      timekey: 1m
+      timekey_wait: 30s
+      timekey_use_utc: true
+---
+apiVersion: logging.banzaicloud.io/v1beta1
+kind: ClusterFlow
+metadata:
+  name: elasticsearch-example
+  namespace: cattle-logging-system
+spec:
+  match:
+    - select: {}
+  globalOutputRefs:
+    - elasticsearch-example
+EOF</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Und wenden Sie die Datei an:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">kubectl apply -f elasticsearch-example.yaml</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Nachdem Sie etwas Zeit gewährt haben, damit der Logging-Operator die Ressourcen anwenden kann, können Sie testen, ob die Protokolle fließen:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">$ curl localhost:9200/fluentd/_search
+{
+  "took": 1,
+  "timed_out": false,
+  "_shards": {
+    "total": 5,
+    "successful": 5,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": 11603,
+    "max_score": 1,
+    "hits": [
+      {
+        "_index": "fluentd",
+        "_type": "fluentd",
+        "_id": "yWHr0oMBXcBggZRJgagY",
+        "_score": 1,
+        "_source": {
+          "stream": "stderr",
+          "logtag": "F",
+          "message": "I1013 02:29:43.020384       1 csi_handler.go:248] Attaching \"csi-974b4a6d2598d8a7a37b06d06557c428628875e077dabf8f32a6f3aa2750961d\"",
+          "kubernetes": {
+            "pod_name": "csi-attacher-5d4cc8cfc8-hd4nb",
+            "namespace_name": "longhorn-system",
+            "pod_id": "c63c2014-9556-40ce-a8e1-22c55de12e70",
+            "labels": {
+              "app": "csi-attacher",
+              "pod-template-hash": "5d4cc8cfc8"
+            },
+            "annotations": {
+              "cni.projectcalico.org/containerID": "857df09c8ede7b8dee786a8c8788e8465cca58f0b4d973c448ed25bef62660cf",
+              "cni.projectcalico.org/podIP": "10.52.0.15/32",
+              "cni.projectcalico.org/podIPs": "10.52.0.15/32",
+              "k8s.v1.cni.cncf.io/network-status": "[{\n    \"name\": \"k8s-pod-network\",\n    \"ips\": [\n        \"10.52.0.15\"\n    ],\n    \"default\": true,\n    \"dns\": {}\n}]",
+              "k8s.v1.cni.cncf.io/networks-status": "[{\n    \"name\": \"k8s-pod-network\",\n    \"ips\": [\n        \"10.52.0.15\"\n    ],\n    \"default\": true,\n    \"dns\": {}\n}]",
+              "kubernetes.io/psp": "global-unrestricted-psp"
+            },
+            "host": "harvester-node-0",
+            "container_name": "csi-attacher",
+            "docker_id": "f10e4449492d4191376d3e84e39742bf077ff696acbb1e5f87c9cfbab434edae",
+            "container_hash": "sha256:03e115718d258479ce19feeb9635215f98e5ad1475667b4395b79e68caf129a6",
+            "container_image": "docker.io/longhornio/csi-attacher:v3.4.0"
+          }
+        }
+      },
+
+      ...
+
+    ]
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_graylog--panel" class="tabpanel" aria-labelledby="_tabs_1_graylog">
+<div class="paragraph">
+<p>Sie können den Anweisungen <a href="https://github.com/w13915984028/harvester-develop-summary/blob/main/integrate-harvester-logging-with-log-servers.md#integrate-harvester-logging-with-graylog">hier</a> folgen, um Clusterprotokolle über <a href="https://www.graylog.org/">Graylog</a> bereitzustellen und anzuzeigen:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: logging.banzaicloud.io/v1beta1
+kind: ClusterFlow
+metadata:
+  name: "all-logs-gelf-hs"
+  namespace: "cattle-logging-system"
+spec:
+  globalOutputRefs:
+    - "example-gelf-hs"
+---
+apiVersion: logging.banzaicloud.io/v1beta1
+kind: ClusterOutput
+metadata:
+  name: "example-gelf-hs"
+  namespace: "cattle-logging-system"
+spec:
+  gelf:
+    host: "192.168.122.159"
+    port: 12202
+    protocol: "udp"</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_splunk--panel" class="tabpanel" aria-labelledby="_tabs_1_splunk">
+<div class="paragraph">
+<p>Sie können den Anweisungen <a href="https://github.com/w13915984028/harvester-develop-summary/blob/main/test-log-event-audit-with-splunk.md">hier</a> folgen, um Clusterprotokolle über <a href="https://www.splunk.com/">Splunk</a> bereitzustellen und anzuzeigen.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: logging.banzaicloud.io/v1beta1
+kind: ClusterOutput
+metadata:
+  name: harvester-logging-splunk
+  namespace: cattle-logging-system
+spec:
+ splunkHec:
+    hec_host: 192.168.122.101
+    hec_port: 8088
+    insecure_ssl: true
+    index: harvester-log-index
+    hec_token:
+      valueFrom:
+        secretKeyRef:
+          key: HECTOKEN
+          name: splunk-hec-token2
+    buffer:
+      chunk_limit_size: 3MB
+      timekey: 2m
+      timekey_wait: 1m
+---
+apiVersion: logging.banzaicloud.io/v1beta1
+kind: ClusterFlow
+metadata:
+   name: harvester-logging-splunk
+   namespace: cattle-logging-system
+spec:
+   filters:
+      - tag_normaliser: {}
+   match:
+   globalOutputRefs:
+      - harvester-logging-splunk</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_loki--panel" class="tabpanel" aria-labelledby="_tabs_1_loki">
+<div class="paragraph">
+<p>Sie können die Anweisungen im <a href="https://github.com/joshmeranda/harvester/blob/logging/enhancements/20220525-system-logging.md">Logging HEP</a> zur Bereitstellung und Anzeige von Clusterprotokollen über <a href="https://grafana.com/oss/loki/">Grafana Loki</a> befolgen.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: logging.banzaicloud.io/v1beta1
+kind: ClusterFlow
+metadata:
+  name: harvester-loki
+  namespace: cattle-logging-system
+spec:
+  match:
+    - select: {}
+  globalOutputRefs:
+    - harvester-loki
+---
+apiVersion: logging.banzaicloud.io/v1beta1
+kind: ClusterOutput
+metadata:
+  name: harvester-loki
+  namespace: cattle-logging-system
+spec:
+  loki:
+    url: http://loki-stack.cattle-logging-system.svc:3100
+    extra_labels:
+      logOutput: harvester-loki</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_revision"><a class="anchor" href="#_revision"></a>Revision</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Harvester sammelt Kubernetes <code>audit</code> und kann die <code>audit</code> an verschiedene Arten von Protokollservern senden.</p>
+</div>
+<div class="paragraph">
+<p>Die Richtliniendatei zur Anleitung von <code>kube-apiserver</code> ist <a href="https://github.com/harvester/harvester-installer/blob/5991dcf6307aa5da79c5d6926566541f48105778/pkg/config/templates/rke2-92-harvester-kube-audit-policy.yaml">hier</a>.</p>
+</div>
+<div class="sect2">
+<h3 id="_audit_definition"><a class="anchor" href="#_audit_definition"></a>Audit-Definition</h3>
+<div class="paragraph">
+<p>In <code>kubernetes</code> werden die <a href="https://kubernetes.io/docs/tasks/debug/debug-cluster/audit/">Audit</a>-Daten von <code>kube-apiserver</code> gemäß der definierten Richtlinie generiert.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>...
+Audit policy
+Audit policy defines rules about what events should be recorded and what data they should include. The audit policy object structure is defined in the audit.k8s.io API group. When an event is processed, it's compared against the list of rules in order. The first matching rule sets the audit level of the event. The defined audit levels are:
+
+None - don't log events that match this rule.
+Metadata - log request metadata (requesting user, timestamp, resource, verb, etc.) but not request or response body.
+Request - log event metadata and request body but not response body. This does not apply for non-resource requests.
+RequestResponse - log event metadata, request and response bodies. This does not apply for non-resource requests.</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_audit_protokollformat"><a class="anchor" href="#_audit_protokollformat"></a>Audit-Protokollformat</h3>
+<div class="sect3">
+<h4 id="_audit_protokollformat_in_kubernetes"><a class="anchor" href="#_audit_protokollformat_in_kubernetes"></a>Audit-Protokollformat in Kubernetes</h4>
+<div class="paragraph">
+<p>Kubernetes apiserver protokolliert Audit im folgenden JSON-Format in eine lokale Datei.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+"kind":"Event",
+"apiVersion":"audit.k8s.io/v1",
+"level":"Metadata",
+"auditID":"13d0bf83-7249-417b-b386-d7fc7c024583",
+"stage":"RequestReceived",
+"requestURI":"/apis/flowcontrol.apiserver.k8s.io/v1beta2/prioritylevelconfigurations?fieldManager=api-priority-and-fairness-config-producer-v1",
+"verb":"create",
+"user":{"username":"system:apiserver","uid":"d311c1fe-2d96-4e54-a01b-5203936e1046","groups":["system:masters"]},
+"sourceIPs":["::1"],
+"userAgent":"kube-apiserver/v1.24.7+rke2r1 (linux/amd64) kubernetes/e6f3597",
+"objectRef":{"resource":"prioritylevelconfigurations",
+"apiGroup":"flowcontrol.apiserver.k8s.io",
+"apiVersion":"v1beta2"},
+"requestReceivedTimestamp":"2022-10-19T18:55:07.244781Z",
+"stageTimestamp":"2022-10-19T18:55:07.244781Z"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_audit_protokollformat_bevor_es_an_protokollserver_gesendet_wird"><a class="anchor" href="#_audit_protokollformat_bevor_es_an_protokollserver_gesendet_wird"></a>Audit-Protokollformat, bevor es an Protokollserver gesendet wird</h4>
+<div class="paragraph">
+<p>Harvester hält das <code>audit</code>-Protokoll unverändert, bevor es an den Protokollserver gesendet wird.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_audit_protokollausgabeclusterausgabe"><a class="anchor" href="#_audit_protokollausgabeclusterausgabe"></a>Audit-Protokollausgabe/Clusterausgabe</h3>
+<div class="paragraph">
+<p>Um auditbezogene Protokolle auszugeben, erfordert der <code>Output</code>/<code>ClusterOutput</code> den Wert von <code>loggingRef</code>, um <code>harvester-kube-audit-log-ref</code> zu sein.</p>
+</div>
+<div class="paragraph">
+<p>Wenn Sie vom Harvester-Dashboard aus konfigurieren, wird das Feld automatisch hinzugefügt.</p>
+</div>
+<div class="paragraph">
+<p>Wählen Sie den Typ <code>Audit Only</code> aus der Dropdown-Liste <code>Type</code> aus.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/logging/cluster-output-type.png" alt="cluster output type">
+</div>
+</div>
+<div class="paragraph">
+<p>Wenn Sie über die Kommandozeilenschnittstelle konfigurieren, fügen Sie bitte das Feld manuell hinzu.</p>
+</div>
+<div class="paragraph">
+<p>Beispiel:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>apiVersion: logging.banzaicloud.io/v1beta1
+kind: ClusterOutput
+metadata:
+  name: "harvester-audit-webhook"
+  namespace: "cattle-logging-system"
+spec:
+  http:
+    endpoint: "http://192.168.122.159:8096/"
+    open_timeout: 3
+    format:
+      type: "json"
+    buffer:
+      chunk_limit_size: 3MB
+      timekey: 2m
+      timekey_wait: 1m
+  loggingRef: harvester-kube-audit-log-ref   # this reference is fixed and must be here</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_audit_protokollflussclusterfluss"><a class="anchor" href="#_audit_protokollflussclusterfluss"></a>Audit-Protokollfluss/Clusterfluss</h3>
+<div class="paragraph">
+<p>Um auditbezogene Protokolle zu leiten, erfordert der <code>Flow</code>/<code>ClusterFlow</code> den Wert von <code>loggingRef</code>, um <code>harvester-kube-audit-log-ref</code> zu sein.</p>
+</div>
+<div class="paragraph">
+<p>Wenn Sie vom Harvester-Dashboard aus konfigurieren, wird das Feld automatisch hinzugefügt.</p>
+</div>
+<div class="paragraph">
+<p>Wählen Sie den Typ <code>Audit</code> aus.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/logging/cluster-flow-type.png" alt="cluster flow type">
+</div>
+</div>
+<div class="paragraph">
+<p>Wenn Sie über die Kommandozeilenschnittstelle konfigurieren, fügen Sie bitte das Feld manuell hinzu.</p>
+</div>
+<div class="paragraph">
+<p>Beispiel:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>apiVersion: logging.banzaicloud.io/v1beta1
+kind: ClusterFlow
+metadata:
+  name: "harvester-audit-webhook"
+  namespace: "cattle-logging-system"
+spec:
+  globalOutputRefs:
+    - "harvester-audit-webhook"
+  loggingRef: harvester-kube-audit-log-ref  # this reference is fixed and must be here</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_harvester"><a class="anchor" href="#_harvester"></a>Harvester</h3>
+
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_ereignis"><a class="anchor" href="#_ereignis"></a>Ereignis</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Harvester sammelt Kubernetes <code>event</code> und kann die <code>event</code> an verschiedene Arten von Protokollservern senden.</p>
+</div>
+<div class="sect2">
+<h3 id="_ereignisdefinition"><a class="anchor" href="#_ereignisdefinition"></a>Ereignisdefinition</h3>
+<div class="paragraph">
+<p>Kubernetes <code>events</code> sind Objekte, die Ihnen zeigen, was innerhalb eines Clusters passiert, wie z.B. welche Entscheidungen vom Scheduler getroffen wurden oder warum einige Pods vom Knoten entfernt wurden. Alle Kernelkomponenten und Erweiterungen (Operatoren/Controller) können über den API-Server Ereignisse erstellen.</p>
+</div>
+<div class="paragraph">
+<p>Ereignisse haben keine direkte Beziehung zu Protokollnachrichten, die von den verschiedenen Komponenten generiert werden, und sind nicht vom Protokoll-Verbosity-Level betroffen. Wenn eine Komponente ein Ereignis erstellt, gibt sie oft eine entsprechende Protokollnachricht aus. Ereignisse werden vom API-Server nach kurzer Zeit (typischerweise nach einer Stunde) bereinigt, was bedeutet, dass sie verwendet werden können, um Probleme zu verstehen, die auftreten, aber Sie müssen sie sammeln, um vergangene Ereignisse zu untersuchen.</p>
+</div>
+<div class="paragraph">
+<p>Ereignisse sind das Erste, worauf man bei Anwendungen sowie Infrastrukturoperationen achten sollte, wenn etwas nicht wie erwartet funktioniert. Sie für einen längeren Zeitraum aufzubewahren, ist entscheidend, wenn der Fehler das Ergebnis früherer Ereignisse ist oder bei der Durchführung einer Post-Mortem-Analyse.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_ereignisprotokollformat"><a class="anchor" href="#_ereignisprotokollformat"></a>Ereignisprotokollformat</h3>
+<div class="sect3">
+<h4 id="_ereignisprotokollformat_in_kubernetes"><a class="anchor" href="#_ereignisprotokollformat_in_kubernetes"></a>Ereignisprotokollformat in Kubernetes</h4>
+<div class="paragraph">
+<p>Ein <code>kubernetes event</code> Beispiel:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2022-08-24T11:17:35Z",
+            "involvedObject": {
+                "apiVersion": "kubevirt.io/v1",
+                "kind": "VirtualMachineInstance",
+                "name": "vm-ide-1",
+                "namespace": "default",
+                "resourceVersion": "604601",
+                "uid": "1bd4133f-5aa3-4eda-bd26-3193b255b480"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2022-08-24T11:17:35Z",
+            "message": "VirtualMachineInstance defined.",
+            "metadata": {
+                "creationTimestamp": "2022-08-24T11:17:35Z",
+                "name": "vm-ide-1.170e43cbdd833b62",
+                "namespace": "default",
+                "resourceVersion": "604626",
+                "uid": "0114f4e7-1d4a-4201-b0e5-8cc8ede202f4"
+            },
+            "reason": "Created",
+            "reportingComponent": "",
+            "reportingInstance": "",
+            "source": {
+                "component": "virt-handler",
+                "host": "harv1"
+            },
+            "type": "Normal"
+        },</pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_ereignisprotokollformat_bevor_es_an_protokollserver_gesendet_wird"><a class="anchor" href="#_ereignisprotokollformat_bevor_es_an_protokollserver_gesendet_wird"></a>Ereignisprotokollformat, bevor es an Protokollserver gesendet wird.</h4>
+<div class="paragraph">
+<p>Jeder <code>event log</code> hat das Format: <code>{"stream":"","logtag":"F","message":"","kubernetes":{""}}</code>. Das <code>kubernetes event</code> befindet sich im Feld <code>message</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>{
+"stream":"stdout",
+
+"logtag":"F",
+
+"message":"{
+\\"verb\\":\\"ADDED\\",
+
+\\"event\\":{\\"metadata\\":{\\"name\\":\\"vm-ide-1.170e446c3f890433\\",\\"namespace\\":\\"default\\",\\"uid\\":\\"0b44b6c7-b415-4034-95e5-a476fcec547f\\",\\"resourceVersion\\":\\"612482\\",\\"creationTimestamp\\":\\"2022-08-24T11:29:04Z\\",\\"managedFields\\":[{\\"manager\\":\\"virt-controller\\",\\"operation\\":\\"Update\\",\\"apiVersion\\":\\"v1\\",\\"time\\":\\"2022-08-24T11:29:04Z\\"}]},\\"involvedObject\\":{\\"kind\\":\\"VirtualMachineInstance\\",\\"namespace\\":\\"default\\",\\"name\\":\\"vm-ide-1\\",\\"uid\\":\\"1bd4133f-5aa3-4eda-bd26-3193b255b480\\",\\"apiVersion\\":\\"kubevirt.io/v1\\",\\"resourceVersion\\":\\"612477\\"},\\"reason\\":\\"SuccessfulDelete\\",\\"message\\":\\"Deleted PodDisruptionBudget kubevirt-disruption-budget-hmmgd\\",\\"source\\":{\\"component\\":\\"disruptionbudget-controller\\"},\\"firstTimestamp\\":\\"2022-08-24T11:29:04Z\\",\\"lastTimestamp\\":\\"2022-08-24T11:29:04Z\\",\\"count\\":1,\\"type\\":\\"Normal\\",\\"eventTime\\":null,\\"reportingComponent\\":\\"\\",\\"reportingInstance\\":\\"\\"}
+}",
+
+"kubernetes":{"pod_name":"harvester-default-event-tailer-0","namespace_name":"cattle-logging-system","pod_id":"d3453153-58c9-456e-b3c3-d91242580df3","labels":{"app.kubernetes.io/instance":"harvester-default-event-tailer","app.kubernetes.io/name":"event-tailer","controller-revision-hash":"harvester-default-event-tailer-747b9d4489","statefulset.kubernetes.io/pod-name":"harvester-default-event-tailer-0"},"annotations":{"cni.projectcalico.org/containerID":"aa72487922ceb4420ebdefb14a81f0d53029b3aec46ed71a8875ef288cde4103","cni.projectcalico.org/podIP":"10.52.0.178/32","cni.projectcalico.org/podIPs":"10.52.0.178/32","k8s.v1.cni.cncf.io/network-status":"[{\\n    \\"name\\": \\"k8s-pod-network\\",\\n    \\"ips\\": [\\n        \\"10.52.0.178\\"\\n    ],\\n    \\"default\\": true,\\n    \\"dns\\": {}\\n}]","k8s.v1.cni.cncf.io/networks-status":"[{\\n    \\"name\\": \\"k8s-pod-network\\",\\n    \\"ips\\": [\\n        \\"10.52.0.178\\"\\n    ],\\n    \\"default\\": true,\\n    \\"dns\\": {}\\n}]","kubernetes.io/psp":"global-unrestricted-psp"},"host":"harv1","container_name":"harvester-default-event-tailer-0","docker_id":"455064de50cc4f66e3dd46c074a1e4e6cfd9139cb74d40f5ba00b4e3e2a7ab2d","container_hash":"docker.io/banzaicloud/eventrouter@sha256:6353d3f961a368d95583758fa05e8f4c0801881c39ed695bd4e8283d373a4262","container_image":"docker.io/banzaicloud/eventrouter:v0.1.0"}
+
+}</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_ereignisprotokollausgabeclusterausgabe"><a class="anchor" href="#_ereignisprotokollausgabeclusterausgabe"></a>Ereignisprotokollausgabe/ClusterAusgabe</h3>
+<div class="paragraph">
+<p>Ereignisse teilen sich das <code>Output</code>/<code>ClusterOutput</code> mit <code>Logging</code>.</p>
+</div>
+<div class="paragraph">
+<p>Wählen Sie <code>Logging/Event</code> aus der <code>Type</code> Dropdownliste aus.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/logging/cluster-output-type.png" alt="cluster output type">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_ereignisprotokollflussclusterfluss"><a class="anchor" href="#_ereignisprotokollflussclusterfluss"></a>Ereignisprotokollfluss/ClusterFluss</h3>
+<div class="paragraph">
+<p>Im Vergleich zur normalen Protokollierung <code>Flow</code>/<code>ClusterFlow</code> hat das <code>Event</code>-bezogene <code>Flow</code>/<code>ClusterFlow</code> ein zusätzliches Übereinstimmungsfeld mit dem Wert <code>event-tailer</code>.</p>
+</div>
+<div class="paragraph">
+<p>Wenn Sie vom Harvester-Dashboard aus konfigurieren, wird das Feld automatisch hinzugefügt.</p>
+</div>
+<div class="paragraph">
+<p>Wählen Sie <code>Event</code> aus der <code>Type</code> Dropdownliste aus.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/logging/cluster-flow-type.png" alt="cluster flow type">
+</div>
+</div>
+<div class="paragraph">
+<p>Wenn Sie über die Kommandozeilenschnittstelle konfigurieren, fügen Sie bitte das Feld manuell hinzu.</p>
+</div>
+<div class="paragraph">
+<p>Beispiel:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>apiVersion: logging.banzaicloud.io/v1beta1
+kind: ClusterFlow
+metadata:
+  name: harvester-event-webhook
+  namespace: cattle-logging-system
+spec:
+  filters:
+  - tag_normaliser: {}
+  match:
+  - select:
+      labels:
+        app.kubernetes.io/name: event-tailer
+  globalOutputRefs:
+    - harvester-event-webhook</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="../networking/best-practices.html">Netzwerk-Best-Practices</a></span>
+  <span class="next"><a href="monitoring.html">Überwachung</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<script src="../../../../_/js/site.js"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+<script src="../../../../_/js/vendor/lunr.js"></script>
+<script src="../../../../_/js/vendor/lunr-languages.js"></script>
+<script src="../../../../_/js/search-ui.js" id="search-ui-script" data-site-root-path="../../../.." data-snippet-length="100" data-stylesheet="../../../../_/css/search.css"></script>
+<script async src="../../../../search-index.js"></script>
+<script src="../../../../_/js/vendor/langSelection.js"></script>
+<script async src="../../../../_/js/vendor/tabs.js"></script>
+
+
+<script src="../../../../_/js/CNLanguageSwitcher.js"></script>
+  </body>
+</html>

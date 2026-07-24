@@ -1,0 +1,1624 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+<title>サードパーティストレージのサポート | SUSE® Virtualization  v1.7</title>
+    <link rel="canonical" href="https://documentation.suse.com/cloudnative/virtualization/v1.7/ja/storage/csidriver.html">
+    <link rel="prev" href="storageclass.html">
+    <link rel="next" href="longhorn-v2-data-engine.html">
+    <meta name="generator" content="Antora 3.1.14">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+<meta http-equiv="last-modified" content="2026-01-02"/>
+<link rel="stylesheet" href="../../../../_/css/search.css">
+<link rel="icon" href="../../../../_/img/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="../../../../_/css/font-styles.css">
+<link rel="stylesheet" href="../../../../_/fonts/css/all.css">
+<link rel="stylesheet" href="../../../../_/css/site-extra.css">
+<link rel="stylesheet" href="../../../../_/css/vendor/tabs.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap&family=SUSE+Mono:ital,wght@0,100..800;1,100..800" rel="stylesheet">
+<link rel="stylesheet" href="../../../../_/css/vendor/light.css">
+<script src="/docserv/res/lightheaded/analytics.js" type="text/javascript"></script>
+<script type="module">
+  import { defineCustomElements, setAssetPath } from 'https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/shared-header.esm.js';
+  defineCustomElements();
+  setAssetPath("https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/assets");
+</script>
+<!-- Default English link -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/en/storage/csidriver.html" hreflang="x-default" rel="alternate"/>
+<!-- Link for the currently processed page -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/ja/storage/csidriver.html" hrefLang="ja-JP" rel="alternate" />
+<!-- Link for the English page -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/en/storage/csidriver.html" hreflang="en-US" rel="alternate" />
+<!-- Link for the Chinese page -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/zh/storage/csidriver.html" hreflang="zh-CN" rel="alternate" />
+<!-- Link for the German page -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/de/storage/csidriver.html" hreflang="de-DE" rel="alternate" />
+<!-- Link for the French page -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/fr/storage/csidriver.html" hreflang="fr-FR" rel="alternate" />
+<!-- Link for the Spanish page -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/es/storage/csidriver.html" hreflang="es-ES" rel="alternate" />
+<!-- Link for the Brazilian Portuguese page -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/pt/storage/csidriver.html" hreflang="pt-BR" rel="alternate" />
+
+<!-- JSON-LD for doc metadata -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "サードパーティストレージのサポート | SUSE Virtualization v1.7",
+  "headline": "サードパーティストレージのサポート",
+  "description": "サードパーティストレージのサポート",
+  "inLanguage": "ja",
+  "dateModified": "2026-01-02T00:00:00Z",
+  "author": {
+    "@type": "Organization",
+    "name": "SUSE Product & Solution Documentation Team",
+    "url": "https://documentation.suse.com"
+  },
+  "mentions": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "SUSE Virtualization",
+      "softwareVersion": "v1.7",
+      "applicationCategory": "Cloud Infrastructure",
+      "operatingSystem": "Linux"
+    }
+  ],
+  "publisher": {
+    "@type": "Organization",
+    "name": "SUSE",
+    "url": "https://documentation.suse.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.suse.com/assets/img/suse-white-logo-green.svg"
+    }
+  }
+}
+</script>
+<!-- end JSON-LD for doc metadata -->
+
+<!-- SUVA - Begin Ask Geeko-->
+<!--
+searchUnifyChatbot ("Ask Geeko") Copyright ©2024 Grazitti Interactive - All Rights Reserved. NOTICE: All information contained herein is, and remains the property of Grazitti Interactive and its suppliers, if any. The intellectual and technical concepts contained herein are proprietary to Grazitti Interactive and its suppliers and may be covered by India, U.S. and Foreign Patents, patents in process, and are protected by trade secret or copyright law. Dissemination of this information or reproduction of this material is strictly forbidden unless prior written permission is obtained from Grazitti Interactive.
+-->
+<meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport"/>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/Allow/an.js?c485cb3c-93d4-4942-99e8-91f3b8ca5636"></script>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/js/index.js?q=gAAAAABp3JBN9VuEJTi5tFafLIMwgMkCPdJS3Qm56lSYx93ir3Twt9hgSvd3OHEt6-nYfSbY3yHq0Zv8PRPsSy4nbqZiaJ4cZvRc6ItVZdvwz9Urf35cH6OUyPOwdA0phlS-zVIznQ2rWW438p-91NlTHuxJuOFpnA=="></script>
+<link rel="stylesheet" href="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/css/index.css">
+<div id="searchUnifyChatbot"></div>
+<!-- SUVA - End Ask Geeko-->
+<!--BEGIN QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+<script type='text/javascript' src="../../../../_/js/qualtrics.js" defer></script>
+<!--END QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<script type="module">import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs'; mermaid.initialize({"startOnLoad":true});</script><shared-header
+language="en"
+languages='{
+    "en": { "label": "English", "url": "https://documentation.suse.com/en-us/" },
+    "de": { "label": "Deutsch", "url": "https://documentation.suse.com/de-de/" },
+    "fr": { "label": "Français", "url": "https://documentation.suse.com/fr-fr/" },
+    "es": { "label": "Español", "url": "https://documentation.suse.com/es-es/" },
+    "zh_CN": { "label": "中文", "url": "https://documentation.suse.com/zh-cn/" },
+    "pt_BR": { "label": "Português Brasileiro", "url": "https://documentation.suse.com/pt-br/" }
+}'
+enable-search='false'>
+</shared-header>
+<div class="body">
+<div class="nav-container" data-component="virtualization" data-version="v1.7">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title">SUSE® Virtualization</h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">概要</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/overview.html">概要</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/deploy-ha-cluster.html">高可用性クラスタをデプロイする</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/deploy-singlenode-cluster.html">シングルノードクラスターをデプロイする</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/glossary.html">用語集</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/document-conventions.html">文書規約</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">インストールおよびセットアップ</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/requirements.html">ハードウェアとネットワークの要件</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">インストールメディア</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/media/net-install.html">ネットインストールISO</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/media/install-binaries-mode.html">バイナリのみをインストールする</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">インストール方法</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/methods/iso-install.html">ISOインストール</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/methods/usb-install.html">USBインストール</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/methods/pxe-boot-install.html">PXEブートインストール</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">設定</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/config/configuration-file.html">設定ファイル</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/config/update-configuration.html">インストール後の設定を更新する</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/config/settings.html">設定</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/config/cloudinitcrd.html">CloudInit CRD</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/post-installation.html">インストール後のタスク</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/management-address.html">管理アドレス</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/external-disk.html">外部ディスクサポート</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/authentication.html">認証</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/airgap.html">エアギャップ(された)環境</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/single-node-clusters.html">シングルノードクラスター</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">アップグレード</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/upgrades.html">アップグレード</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-1-2-to-v1-2-0.html">v1.1.2 から v1.2.0 へのアップグレード（推奨しません）</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-2-0-to-v1-2-1.html">v1.1.2/v1.1.3/v1.2.0 から v1.2.1 へのアップグレード</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-2-1-to-v1-2-2.html">v1.2.1からv1.2.2にアップグレードする</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-2-2-to-v1-3-1.html">v1.2.2/v1.3.0からv1.3.1にアップグレードします。</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-3-1-to-v1-3-2.html">v1.3.1からv1.3.2にアップグレードします</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-3-2-to-v1-4-0.html">v1.3.2からv1.4.0にアップグレードする</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-4-0-to-v1-4-1.html">v1.4.0からv1.4.1にアップグレードする</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-4-1-to-v1-4-2.html">v1.4.1からv1.4.2にアップグレードする</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-4-1-to-v1-4-3.html">v1.4.1またはv1.4.2からv1.4.3にアップグレードします。</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-4-2-to-v1-5-0.html">v1.4.2またはv1.4.3からv1.5.0にアップグレードします。</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-4-2-to-v1-5-1.html">v1.4.2またはv1.4.3からv1.5.1にアップグレードします</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-4-2-to-v1-5-2.html">v1.4.2またはv1.4.3からv1.5.2にアップグレードします</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-5-0-to-v1-5-1.html">v1.5.0からv1.5.1にアップグレードします</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-5-0-to-v1-5-2.html">v1.5.0またはv1.5.1からv1.5.2にアップグレードします。</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-5-x-to-v1-6-x.html">v1.5.xからv1.6.xへのアップグレード</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-6-x-to-v1-6-y.html">v1.6.xからv1.6.yにアップグレードする</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-6-x-to-v1-7-x.html">v1.6.xからv1.7.xにアップグレードする</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-7-x-to-v1-7-y.html">v1.7.xからv1.7.yにアップグレードする</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/troubleshooting.html">トラブルシューティング</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">ホスト</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../hosts/hosts.html">ホスト管理</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../hosts/witness-node.html">ウィットネスノード</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../hosts/vgpu-support.html">vGPUサポート</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">仮想マシン1～2台単位</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/virtual-machines.html">仮想マシン1～2台単位</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">仮想マシンイメージ</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../virtual-machines/vm-images/upload-image.html">画像をアップロード</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../virtual-machines/vm-images/custom-suse-images.html">カスタムSUSE仮想マシンイメージ</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../virtual-machines/vm-images/image-security.html">イメージセキュリティ</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/create-vm.html">仮想マシンを作成します。</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/create-windows-vm.html">Windows仮想マシンを作成する</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/edit-vm.html">仮想マシンを編集</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/access-vm.html">仮想マシンへのアクセス</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/clone-vm.html">仮想マシンをクローンします。</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/backup-restore.html">仮想マシンのバックアップ、スナップショットおよび復元</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/live-migration.html">ライブマイグレーション</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/hotplug-volume.html">ホットプラグボリューム</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/resource-overcommit.html">リソースのオーバーコミット</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/cpu-pinning.html">CPUピンニング</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/cpu-memory-hotplug.html">CPUおよびメモリのホットプラグ</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/nic-hotplug.html">NICホットプラグ</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">ストレージ</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">ボリューム</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="volumes/create-volume.html">ボリュームを作成する</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="volumes/edit-volume.html">ボリュームを編集する</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="volumes/clone-volume.html">ボリュームをクローンする</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="volumes/export-volume.html">ボリュームをイメージにエクスポートします</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="volumes/volume-snapshots.html">ボリュームのスナップショット</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="volumes/volume-security.html">ボリュームセキュリティ</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="storageclass.html">ストレージクラス</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="csidriver.html">サードパーティストレージのサポート</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="longhorn-v2-data-engine.html">Longhorn V2データエンジン</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="storage-validator.html">ストレージバリデーター</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">ネットワーキング</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/cluster-network.html">クラスタネットワーク</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/vm-network.html">VMネットワーク</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/deep-dive.html">ネットワーキングディープダイブ</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/load-balancer.html">ロードバランサ</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/ip-pool.html">IPプール</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/storage-network.html">ストレージネットワーク</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/vm-migration-network.html">VMマイグレーションネットワーク</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/kubeovn-vpc.html">仮想プライベートクラウド</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/vm-isolation.html">仮想マシンの隔離</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/best-practices.html">ネットワーキングのベストプラクティス</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">監視</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../observability/logging.html">ログ記録</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../observability/monitoring.html">監視</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">アドオン</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/add-ons.html">アドオン</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/harvester-seeder.html">ハーベスターシーダー</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/kubeovn-operator.html">Kube-OVNオペレーター（実験的）</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/lvm-local-storage.html">CSIドライバーLVM（実験的）</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/nvidia-driver-toolkit.html">NVIDIAドライバーツールキット</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/pcidevices-controller.html">PCIデバイスコントローラー</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/rancher-vcluster.html">Rancher vCluster（実験的）</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/virtual-machine-auto-balance.html">仮想マシン自動バランス（実験的）</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/vm-dhcp-controller.html">VM DHCPコントローラー (実験的)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/vm-import-controller.html">VMインポートコントローラー</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">統合</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Rancher統合</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/rancher-integration.html">SUSE Rancher Prime 統合</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/virtualization-management.html">仮想化管理</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">ノードドライバー</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../integrations/rancher/node-driver/node-driver.html">Harvester ノード ドライバー</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../integrations/rancher/node-driver/rke2-cluster.html">RKE2 Kubernetes クラスターの作成</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../integrations/rancher/node-driver/k3s-cluster.html">K3s Kubernetes クラスターの作成</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/cloud-provider.html">Harvester Cloud Provider</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/csi-driver.html">Harvester CSI ドライバー</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/resource-quota.html">リソースクォータ</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/rancher-terraform-provider.html">Rancher Terraform</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/import-vm.html">SUSE® Virtualization VM上に構築されたクラスターをインポートします。</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/harvester-ui-extension.html">Harvester UI 拡張機能</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../integrations/terraform/terraform-provider.html">Terraformプロバイダー</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">トラブルシューティング</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/installation.html">インストールに関する問題</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/operating-system.html">オペレーティングシステムに関する問題</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/cluster.html">クラスタの問題</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/virtual-machines.html">仮想マシンの問題</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/monitoring.html">監視の問題</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/logging.html">ログの問題</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/rancher.html">Rancherの問題</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/faq.html">FAQ（よくある質問と答え）</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">開発者コンテンツ</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../developer/addon-development.html">アドオン開発ガイド</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../api.html">API</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">SUSE® Virtualization</span>
+    <span class="version">v1.7</span>
+  </div>
+  <ul class="components">
+        <li class="component">
+          <div class="title"><a href="../../../../admission-controller/1.36/en/introduction.html">Admission Controller</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../admission-controller/1.37/en/introduction.html">1.37-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../admission-controller/1.36/en/introduction.html">1.36</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.35/en/introduction.html">1.35</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.34/en/introduction.html">1.34</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.33/en/introduction.html">1.33</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.32/en/introduction.html">1.32</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.31/en/introduction.html">1.31</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.30/en/introduction.html">1.30</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.29/en/introduction.html">1.29</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.28/en/introduction.html">1.28</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../cluster-api/v0.26/en/index.html">Cluster API</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../cluster-api/v0.28/en/index.html">v0.28-dev</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.27/en/index.html">v0.27-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../cluster-api/v0.26/en/index.html">v0.26</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.25/en/index.html">0.25</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.24/en/index.html">0.24</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.23/en/index.html">0.23</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.22/en/index.html">0.22</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.21/en/index.html">0.21</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.20/en/index.html">0.20</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.19/en/index.html">0.19</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.18/en/index.html">0.18</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.17/en/index.html">0.17</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.16/en/index.html">0.16</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.11/en/index.html">0.11</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../continuous-delivery/next/en/index.html">Continuous Delivery</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../continuous-delivery/next/en/index.html">Next</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.15/en/index.html">v0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.11/en/index.html">0.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.10/en/index.html">0.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.9/en/index.html">0.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../k3s/latest/en/introduction.html">K3s</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../k3s/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../os-manager/1.9/en/index.html">OS Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../os-manager/1.10/en/index.html">1.10-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../os-manager/1.9/en/index.html">1.9</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.8/en/index.html">1.8</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.7/en/index.html">1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.6/en/index.html">1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.5/en/index.html">1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-ai/latest/en/introduction.html">Rancher AI</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-ai/latest/en/introduction.html">latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../turtles/stable/en/index.html">Rancher Turtles</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../turtles/stable/en/index.html">Stable</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rke2/latest/en/introduction.html">RKE2</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rke2/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-observability/latest/en/classic.html">SUSE Observability</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../suse-observability/latest/en/classic.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">SUSE Rancher Developer Access</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">SUSE® Rancher for AWS</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-manager/v2.14/en/about-rancher/what-is-rancher.html">SUSE® Rancher Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.15/en/about-rancher/what-is-rancher.html">v2.15 (Unreleased)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../rancher-manager/v2.14/en/about-rancher/what-is-rancher.html">v2.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.13/en/about-rancher/what-is-rancher.html">v2.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.12/en/about-rancher/what-is-rancher.html">v2.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.11/en/about-rancher/what-is-rancher.html">v2.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.10/en/about-rancher/what-is-rancher.html">v2.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.9/en/about-rancher/what-is-rancher.html">v2.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../security/5.6/en/overview.html">SUSE® Security</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../security/5.6/en/overview.html">5.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.5/en/overview.html">5.5</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.4/en/overview.html">5.4</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.3/en/overview.html">5.3</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../storage/1.11/en/longhorn-documentation.html">SUSE® Storage</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../storage/1.12/en/longhorn-documentation.html">1.12 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../storage/1.11/en/longhorn-documentation.html">1.11 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../storage/1.10/en/longhorn-documentation.html">1.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../storage/1.9/en/longhorn-documentation.html">1.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">SUSE® Virtual Clusters</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/1.2.0/en/release-notes/version-1.2.0.html">v1.2.0 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">v1.1.0-latest</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/1.0.2/en/release-notes/version-1.0.2.html">v1.0.2</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.1/en/introduction.html">v1.0.1</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.0/en/introduction.html">v1.0.0</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component is-current">
+          <div class="title"><a href="../../../v1.8/en/introduction/overview.html">SUSE® Virtualization</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../v1.9/en/introduction/overview.html">v1.9 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../v1.8/en/introduction/overview.html">v1.8 (Latest)</a>
+            </li>
+            <li class="version is-current">
+              <a href="../../en/introduction/overview.html">v1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../v1.6/en/introduction/overview.html">v1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../v1.5/en/introduction/overview.html">v1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../vulnerability-scanner/0.12.0/en/introduction.html">Vulnerability Scanner</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../vulnerability-scanner/0.12.0/en/introduction.html">0.12.0</a>
+            </li>
+            <li class="version">
+              <a href="../../../../vulnerability-scanner/0.11.3/en/introduction.html">0.11.3</a>
+            </li>
+          </ul>
+        </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+<ul>
+    <li>
+  <a class="home-link-dsc" href="https://documentation.suse.com" title="SUSE Documentation Home" aria-label="SUSE Documentation Home"></a>
+    </li>
+    <li>
+      <a href="https://documentation.suse.com/cloudnative/virtualization" title="SUSE Virtualization" aria-label="SUSE Documentation - SUSE Virtualization">
+        SUSE Virtualization
+      </a>
+    </li>
+      <li>
+          ストレージ
+      </li>
+  </ul>
+</nav>
+<div class="page-versions">
+  <button class="version-menu-toggle" title="Show other versions of page">v1.7</button>
+  <div class="version-menu">
+    <a class="version is-missing" href="../../../v1.9/en/introduction/overview.html">v1.9 (Dev)</a>
+    <a class="version is-missing" href="../../../v1.8/en/introduction/overview.html">v1.8 (Latest)</a>
+    <a class="version is-current" href="csidriver.html">v1.7</a>
+    <a class="version is-missing" href="../../../v1.6/en/introduction/overview.html">v1.6</a>
+    <a class="version is-missing" href="../../../v1.5/en/introduction/overview.html">v1.5</a>
+  </div>
+</div>
+      <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <label class="visual-search-label-bc" for="search-input">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+          <input label="Search" aria-label="Search" id="search-input" type="text" placeholder="ドキュメントを検索" >
+          <label class="filter checkbox" style="display: none">
+            <input type="checkbox" data-facet-filter="component:virtualization" checked> Only this project
+          </label>
+        </div>
+      </div>
+</div>
+  <div class="content">
+<aside
+  class="toc sidebar"
+  data-title="このページで" data-levels="2">
+  <div class="toc-menu">
+    <div class="docsurvey-wrapper"><a class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_diCzHC9xxyJyuN0">Documentation survey</a></div>
+    <!-- start qualtrics -->
+    <div id='ZN_8qZUmklKYbBqAYe'><!--DO NOT REMOVE-CONTENTS PLACED HERE--></div>
+    <div id="qualtrics_container"></div>
+    <!-- end qualtrics -->
+  </div>
+</aside>
+
+<aside class="toc sidebar docsurvey-sidebar">
+  <div class="toc-menu">
+    <div class="docsurvey-wrapper"><a class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_diCzHC9xxyJyuN0">Documentation survey</a></div>
+  </div>
+</aside>
+<article class="doc">
+<h1 class="page">サードパーティストレージのサポート</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>SUSE Virtualizationは外部 <a href="https://kubernetes-csi.github.io/docs/introduction.html">コンテナストレージインターフェース（CSI）</a>ドライバーを使用して、ルートボリュームとデータボリュームのプロビジョニングをサポートします。この機能強化により、パフォーマンスの最適化や既存の内部ストレージソリューションとのシームレスな統合など、特定の要件を満たすドライバーを選択できるようになります。</p>
+</div>
+<div class="paragraph">
+<p>SUSE Virtualizationチームは以下のCSIドライバーを検証しました：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Longhorn V2データエンジン：<code>driver.longhorn.io</code></p>
+</li>
+<li>
+<p>LVM：<code>lvm.driver.harvesterhci.io</code></p>
+</li>
+<li>
+<p>NFS: <code>nfs.csi.k8s.io</code></p>
+</li>
+<li>
+<p>Rook（RADOSブロックデバイス）：<code>rook-ceph.rbd.csi.ceph.com</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>これらの検証済みCSIドライバーには、以下の機能があります：</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 11.1111%;">
+<col style="width: 11.1111%;">
+<col style="width: 11.1111%;">
+<col style="width: 11.1111%;">
+<col style="width: 11.1111%;">
+<col style="width: 11.1111%;">
+<col style="width: 11.1111%;">
+<col style="width: 11.1111%;">
+<col style="width: 11.1112%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">ストレージソリューション</th>
+<th class="tableblock halign-left valign-top">VMイメージ</th>
+<th class="tableblock halign-left valign-top">VMルートディスク</th>
+<th class="tableblock halign-left valign-top">VMデータディスク</th>
+<th class="tableblock halign-left valign-top">ボリュームをVMイメージにエクスポート</th>
+<th class="tableblock halign-left valign-top">VMテンプレートジェネレーター</th>
+<th class="tableblock halign-left valign-top">VMライブマイグレーション</th>
+<th class="tableblock halign-left valign-top">VM Snapshot</th>
+<th class="tableblock halign-left valign-top">VMバックアップ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Longhorn V2データエンジン</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#10004;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#10004;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#10004;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#10004;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#10004;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#10004;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#10004;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#10004;</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LVM</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#10004;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#10004;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#10004;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#10004;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#10004;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#10006;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#10004;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#10006;</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NFS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#10004;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#10004;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#10004;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#10004;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#10004;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#10004;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#10006;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#10006;</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Rook（RADOSブロックデバイス）</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#10004;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#10004;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#10004;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#10004;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#10004;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#10004;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#10004;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#10006;</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="注記"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>サードパーティストレージのサポートは、外部コンテナストレージインターフェース（CSI）ドライバーを使用してルートボリュームとデータボリュームをプロビジョニングするサポートに相当します。これは、ストレージベンダーがSUSE Virtualizationでストレージアプライアンスを検証し、相互運用性を高めることができることを意味します。</p>
+</div>
+<div class="paragraph">
+<p>SUSE Virtualizationと互換性があると認定されたエンタープライズグレードのストレージソリューションに関する情報は、 <a href="https://scc.suse.com/home">SUSE Customer Center</a>を通じてアクセスできるSUSE Rancher Primeのドキュメントに記載されています。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_前提条件"><a class="anchor" href="#_前提条件"></a>前提条件</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>SUSE Virtualizationが正常に機能するようにするには、次の機能をサポートするCSIドライバーを使用してください：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>ボリュームの拡張（オンラインリサイズ）</p>
+</li>
+<li>
+<p>スナップショットの作成（ボリュームおよび仮想マシンスナップショット）</p>
+</li>
+<li>
+<p>クローン作成（ボリュームおよび仮想マシンクローン）</p>
+</li>
+<li>
+<p><a href="../virtual-machines/live-migration.html" class="xref page">ライブマイグレーション</a>のための読み書き多数（RWX）ボリュームの使用</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_suse_virtualizationクラスターを作成する"><a class="anchor" href="#_suse_virtualizationクラスターを作成する"></a>SUSE Virtualizationクラスターを作成する</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>SUSE Virtualizationのオペレーティングシステムは不変の設計に従っており、再起動後にほとんどのOSファイルが事前に設定された状態に戻ります。したがって、サードパーティのCSIドライバー用にSUSE Virtualizationクラスターをインストールする前に、追加の設定を行う必要があるかもしれません。</p>
+</div>
+<div class="paragraph">
+<p>一部のCSIドライバーは、ホスト上に追加の永続パスを必要とします。これらのパスを<a href="../installation-setup/config/configuration-file.html#_os_persistent_state_paths" class="xref page"><code>os.persistent_state_paths</code></a>に追加できます。</p>
+</div>
+<div class="paragraph">
+<p>一部のCSIドライバーは、ホスト上に追加のソフトウェアパッケージを必要とします。これらのパッケージは<a href="../installation-setup/config/configuration-file.html#_os_after_install_chroot_commands" class="xref page"><code>os.after_install_chroot_commands</code></a>を使用してインストールできます。</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="注記"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>SUSE Virtualizationをアップグレードすると、`after-install-chroot`ステージでOSに加えた変更が失われます。アップグレードする際に変更を永続化するためには、`after-upgrade-chroot`も設定する必要があります。 <a href="https://rancher.github.io/elemental-toolkit/docs/customizing/runtime_persistent_changes/">ランタイム永続変更</a>を参照してから、SUSE Virtualizationをアップグレードする前に確認してください。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_csiドライバーをインストールしてください"><a class="anchor" href="#_csiドライバーをインストールしてください"></a>CSIドライバーをインストールしてください。</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>SUSE Virtualizationクラスターのインストール完了後、<a href="../troubleshooting/faq.html#_how_can_i_access_the_kubeconfig_file_of_the_harvester_cluster" class="xref page">kubeconfigファイルへのアクセス方法</a>を参照して、クラスターのkubeconfigを取得してください。</p>
+</div>
+<div class="paragraph">
+<p>SUSE Virtualizationクラスターのkubeconfigを使用して、各CSIドライバーのインストール手順に従い、クラスターにサードパーティのCSIドライバーをインストールできます。CSIドライバーのドキュメントも参照して、SUSE Virtualizationクラスターに`StorageClass`と`VolumeSnapshotClass`を作成する必要があります。</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_suse_virtualizationクラスターを設定する"><a class="anchor" href="#_suse_virtualizationクラスターを設定する"></a>SUSE Virtualizationクラスターを設定する</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>SUSE Virtualization の <strong>バックアップとスナップショット</strong> 機能を利用する前に、SUSE Virtualization <a href="../installation-setup/config/settings.html#_csi_driver_config" class="xref page">csi-driver-config</a> 設定を通じていくつかの基本的な構成を設定する必要があります。これらの設定を行うには、次の手順に従ってください：</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>SUSE Virtualization UI にログインし、次に <strong>高度な &#8594; 設定</strong> に移動します。</p>
+</li>
+<li>
+<p><strong>csi-driver-config</strong> を見つけて選択し、次に <strong>⋮ &#8594; 設定を編集</strong> を選択して構成オプションにアクセスします。</p>
+</li>
+<li>
+<p>設定で*プロビジョナー*をサードパーティのCSIドライバーに設定します。</p>
+</li>
+<li>
+<p>次に、<strong>ボリュームスナップショットクラス名</strong> を構成します。この設定は、ボリュームスナップショットまたは VM スナップショットを作成するために使用される <code>VolumeSnapshotClass</code> の名前を指します。</p>
+</li>
+</ol>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/third-party-storage/csi-driver-config-external.png" alt="csi driver config external">
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="注記"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>バックアップは現在、以下のものとのみ動作します：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Longhorn V1 データエンジン</p>
+</li>
+<li>
+<p>Longhorn V2 データエンジン（非ルートディスクのみ）</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>他のストレージプロバイダーを使用している場合は、<strong>バックアップボリュームスナップショットクラス名</strong> の構成をスキップできます。詳細については、 <a href="https://documentation.suse.com/cloudnative/virtualization/v1.4/en/storage/csidriver.html#_virtual_machine_backup_compatibility">仮想マシンバックアップの互換性</a> を参照してください。</p>
+</div>
+<div class="paragraph">
+<p>StorageClass プロビジョナーが CDI の <a href="https://github.com/kubevirt/containerized-data-importer/blob/v1.61.1/pkg/storagecapabilities/storagecapabilities.go#L35-L127">デフォルトアクセスおよびボリュームモードを持つプロビジョナー</a> のリストにない場合は、StorageClass に <code>cdi.harvesterhci.io/storageProfileVolumeModeAccessModes</code> を注釈付けする必要があります。この注釈がないと、Helm のインストールが失敗する可能性があります。StorageClass に注釈を付ける方法については、CSI ドライバーの Helm チャートドキュメントを確認してください。詳細については、<a href="storageclass.html#_containerized_data_importer_cdi_settings" class="xref page">コンテナ化データインポーター (CDI) 設定</a> を参照してください。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_csi_ドライバーを使用する"><a class="anchor" href="#_csi_ドライバーを使用する"></a>CSI ドライバーを使用する</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>CSIドライバーがインストールされ、SUSE Virtualizationクラスターが設定されると、ストレージ管理に関わるタスクで外部ストレージソリューションを使用できます。</p>
+</div>
+<div class="sect2">
+<h3 id="_仮想マシンイメージの作成"><a class="anchor" href="#_仮想マシンイメージの作成"></a>仮想マシンイメージの作成</h3>
+<div class="paragraph">
+<p>外部ストレージソリューションを使用して、仮想マシンイメージを保存および管理できます。</p>
+</div>
+<div class="paragraph">
+<p><a href="../virtual-machines/vm-images/upload-image.html" class="xref page">仮想マシンイメージをアップロードする</a>際には、SUSE Virtualization UI (<strong>イメージ &#8594; 作成</strong>)を使用して、*ストレージ*タブで外部ストレージソリューションのStorageClassを選択する必要があります。次の例では、StorageClassは*nfs-csi*です。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/third-party-storage/create-image-with-nfs-csi.png" alt="create image with nfs csi">
+</div>
+</div>
+<div class="paragraph">
+<p>SUSE Virtualizationは作成したイメージを外部ストレージソリューションに保存します。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/third-party-storage/created-image-with-nfs-csi.png" alt="created image with nfs csi">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_仮想マシンの作成"><a class="anchor" href="#_仮想マシンの作成"></a>仮想マシンの作成</h3>
+<div class="paragraph">
+<p>仮想マシンは外部ストレージ内のルートおよびデータボリュームを使用できます。</p>
+</div>
+<div class="paragraph">
+<p><a href="../virtual-machines/create-vm.html" class="xref page">仮想マシンを作成する</a>際には、SUSE Virtualization UI (<strong>仮想マシン &#8594; 作成</strong>)を使用して、*ボリューム*タブで次の操作を行う必要があります：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>外部ストレージソリューションに保存されている仮想マシンイメージを選択し、必要な設定を構成します。</p>
+</li>
+<li>
+<p>データボリュームを追加します。</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/third-party-storage/various-volumes-for-vm-creating.png" alt="various volumes for vm creating">
+</div>
+</div>
+<div class="paragraph">
+<p>次の例では、ルートボリュームはNFSを使用して作成され、データボリュームはLonghorn V2データエンジンを使用して作成されます。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/third-party-storage/various-volumes-for-vm-created.png" alt="various volumes for vm created">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_ボリュームの作成"><a class="anchor" href="#_ボリュームの作成"></a>ボリュームの作成</h3>
+<div class="paragraph">
+<p>外部ストレージソリューションでボリュームを作成できます。</p>
+</div>
+<div class="paragraph">
+<p><a href="volumes/create-volume.html" class="xref page">ボリュームを作成する</a>際には、SUSE Virtualization UI (<strong>ボリューム &#8594; 作成</strong>)を使用して、次の操作を行う必要があります：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>ストレージクラス</strong>：対象のStorageClassを選択します（例：<strong>nfs-csi</strong>）。</p>
+</li>
+<li>
+<p><strong>ボリュームモード</strong>：対応するボリュームモードを選択します（例：<strong>ファイルシステム</strong>）。</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/third-party-storage/create-fs-volume.png" alt="create fs volume">
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_詳細トピック"><a class="anchor" href="#_詳細トピック"></a>詳細トピック</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_ストレージプロファイル"><a class="anchor" href="#_ストレージプロファイル"></a>ストレージプロファイル</h3>
+<div class="paragraph">
+<p>CDI APIを使用して、データボリュームの定義を簡素化するカスタム <a href="https://github.com/kubevirt/containerized-data-importer/blob/main/doc/storageprofile.md">ストレージプロファイル</a>を作成できます。ストレージプロファイルは、複数のデータボリュームが同じプロビジョナー設定を共有できるようにします。</p>
+</div>
+<div class="paragraph">
+<p>以下はLVMストレージプロファイルの例です：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: cdi.kubevirt.io/v1beta1
+kind: StorageProfile
+metadata:
+  name: lvm-node-1-striped
+spec:
+  claimPropertySets:
+  - accessModes:
+    - ReadWriteOnce
+    volumeMode: Block
+status:
+  claimPropertySets:
+  - accessModes:
+    - ReadWriteOnce
+    volumeMode: Block
+  cloneStrategy: snapshot
+  dataImportCronSourceFormat: pvc
+  provisioner: lvm.driver.harvesterhci.io
+  snapshotClass: lvm-snapshot
+  storageClass: lvm-node-1-striped</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>デフォルトの設定を上書きするフィールドを定義できます。詳細については、CDIドキュメントの <a href="https://github.com/kubevirt/containerized-data-importer/blob/main/doc/storageprofile.md">ストレージプロファイル</a>を参照してください。</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="注意"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>ストレージプロファイルやCDIを直接変更しないでください。代わりに、SUSE Virtualizationコントローラーが<a href="storageclass.html#_containerized_data_importer_cdi_settings" class="xref page">CDIアノテーション</a>を使用してストレージプロファイルの設定を同期し、永続化できるようにしてください。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_制限"><a class="anchor" href="#_制限"></a>制限</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>バックアップサポートは現在SUSE Storageボリュームに制限されています。SUSE Virtualizationは外部ストレージ内のボリュームのバックアップを作成できません。</p>
+</li>
+<li>
+<p>CDIには、SUSE Virtualizationが接続されたPVCを仮想マシンイメージに変換するのを防ぐ制限があります。外部ストレージにボリュームをエクスポートする前に、PVCがワークロードに接続されていないことを確認してください。これにより、結果として得られるイメージが*エクスポート中*の状態でスタックするのを防ぎます。</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/third-party-storage/convert-pvc-to-image-stuck.png" alt="convert pvc to image stuck">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_nfs_csiドライバのデプロイメント"><a class="anchor" href="#_nfs_csiドライバのデプロイメント"></a>NFS CSIドライバのデプロイメント</h3>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="注記"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>NFSサーバーがすでにインストールされ、実行中である場合にのみ、NFS CSIドライバをデプロイできます。
+サーバーがすでに実行中の場合は、<code>squash`オプションを確認してください。KubeVirtがボリュームを適切に同期できるようにするために、リモートルートユーザーのスクワッシング（`no_root_squash`または`no_all_squash</code>）を無効にする必要があります。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><code>csi-driver-nfs</code> Helmチャートを使用してドライバをインストールします。</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">$ helm repo add csi-driver-nfs https://raw.githubusercontent.com/kubernetes-csi/csi-driver-nfs/master/charts
+$ helm install csi-driver-nfs csi-driver-nfs/csi-driver-nfs --namespace kube-system --version v4.10.0</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>NFS用のStorageClassを作成します。</p>
+<div class="paragraph">
+<p>パラメータに関する詳細は、Kubernetes NFS CSIドライバのドキュメントの <a href="https://github.com/kubernetes-csi/csi-driver-nfs/blob/master/docs/driver-parameters.md">ドライバパラメータ：ストレージクラスの使用</a>を参照してください。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: nfs-csi
+provisioner: nfs.csi.k8s.io
+parameters:
+  server: &lt;your-nfs-server-ip&gt;
+  share: &lt;your-nfs-share&gt;
+  # csi.storage.k8s.io/provisioner-secret is only needed for providing mountOptions in DeleteVolume
+  # csi.storage.k8s.io/provisioner-secret-name: "mount-options"
+  # csi.storage.k8s.io/provisioner-secret-namespace: "default"
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
+allowVolumeExpansion: true
+mountOptions:
+  - nfsvers=4.2</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>作成後、StorageClassを使用して仮想マシンイメージ、ルートボリューム、およびデータボリュームを作成できます。</p>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_参考資料"><a class="anchor" href="#_参考資料"></a>参考資料</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://harvesterhci.io/kb/use_rook_ceph_external_storage">Rook Ceph外部ストレージをHarvesterと共に使用する</a></p>
+</li>
+<li>
+<p><a href="https://harvesterhci.io/kb/install_netapp_trident_csi">HarvesterでのNetAppストレージの使用</a></p>
+</li>
+<li>
+<p><a href="https://github.com/harvester/harvester/blob/master/enhancements/20250203-third-party-storage-support.md">サードパーティ製ストレージのサポート</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_当バージョンの注意事項"><a class="anchor" href="#_当バージョンの注意事項"></a>当バージョンの注意事項</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_1_無限の画像ダウンロードループ"><a class="anchor" href="#_1_無限の画像ダウンロードループ"></a>1.無限の画像ダウンロードループ</h3>
+<div class="paragraph">
+<p>画像のStorageClassがLVM CSIドライバーを使用している場合、画像ダウンロードプロセスが無限にループします。この問題は、CDIによって作成され、画像データを一時的に保存するために使用されるスクラッチボリュームに関連しています。この問題があなたの環境に存在する場合、`importer-prime-xxx`ポッドログに次のエラーメッセージが表示されることがあります：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">E0418 01:59:51.843459       1 util.go:98] Unable to write file from dataReader: write /scratch/tmpimage: no space left on device
+E0418 01:59:51.861235       1 data-processor.go:243] write /scratch/tmpimage: no space left on device
+unable to write to file
+kubevirt.io/containerized-data-importer/pkg/importer.streamDataToFile
+    /home/abuild/rpmbuild/BUILD/go/src/kubevirt.io/containerized-data-importer/pkg/importer/util.go:101
+kubevirt.io/containerized-data-importer/pkg/importer.(*HTTPDataSource).Transfer
+    /home/abuild/rpmbuild/BUILD/go/src/kubevirt.io/containerized-data-importer/pkg/importer/http-datasource.go:162
+kubevirt.io/containerized-data-importer/pkg/importer.(*DataProcessor).initDefaultPhases.func2
+    /home/abuild/rpmbuild/BUILD/go/src/kubevirt.io/containerized-data-importer/pkg/importer/data-processor.go:173
+kubevirt.io/containerized-data-importer/pkg/importer.(*DataProcessor).ProcessDataWithPause
+    /home/abuild/rpmbuild/BUILD/go/src/kubevirt.io/containerized-data-importer/pkg/importer/data-processor.go:240
+kubevirt.io/containerized-data-importer/pkg/importer.(*DataProcessor).ProcessData
+    /home/abuild/rpmbuild/BUILD/go/src/kubevirt.io/containerized-data-importer/pkg/importer/data-processor.go:149
+main.handleImport
+    /home/abuild/rpmbuild/BUILD/go/src/kubevirt.io/containerized-data-importer/cmd/cdi-importer/importer.go:188
+main.main
+    /home/abuild/rpmbuild/BUILD/go/src/kubevirt.io/containerized-data-importer/cmd/cdi-importer/importer.go:148
+runtime.main</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>メッセージ`no space left on device`は、スクラッチボリュームを使用して作成されたファイルシステムが画像データを保存するには不十分であることを示しています。CDIは、ターゲットボリュームのサイズに基づいてスクラッチボリュームを作成しますが、ファイルシステムのオーバーヘッドにより一部のスペースが失われます。デフォルトのオーバーヘッド値は`0.055`（5.5%に相当）であり、ほとんどの場合において十分です。ただし、画像サイズが1GB未満で、その仮想サイズが画像サイズに非常に近い場合、デフォルトのオーバーヘッドは不十分である可能性があります。</p>
+</div>
+<div class="paragraph">
+<p>回避策は、次のコマンドを使用してファイルシステムのオーバーヘッドを20%に増加させることです：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell"># kubectl patch cdi cdi --type=merge -p '{"spec":{"config":{"filesystemOverhead":{"global":"0.2"}}}}'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>ファイルシステムのオーバーヘッドが増加すると、画像がダウンロードされるはずです。</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="注記"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>オーバーヘッド値を増加させても、画像PVCサイズには影響しません。画像がインポートされた後、スクラッチボリュームは削除されます。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>関連する問題： <a href="https://github.com/harvester/harvester/issues/7993">#7993</a>（ <a href="https://github.com/harvester/harvester/issues/7993#issuecomment-2790260841">このコメント</a>を参照してください。）</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_2_マルチパスのサポート"><a class="anchor" href="#_2_マルチパスのサポート"></a>2.マルチパスのサポート</h3>
+<div class="paragraph">
+<p>`multipathd`サービスは、デフォルトでSUSE Virtualizationで無効になっています。ただし、一部のサードパーティ製CSIでは、サービスを有効にする必要があります。</p>
+</div>
+<div class="paragraph">
+<p>SUSE Virtualizationをインストールした後、各クラスターのノードにログインし、次のコマンドを実行することで`multipathd`を有効にして開始できます：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">systemctl enable multipathd
+systemctl start multipathd</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>また、各ホストの`/oem`ディレクトリにSUSE® Rancher Prime: OS Manager CloudInitファイルを作成することもできます（例えば、<code>/oem/99-start-multipathd.yaml</code>）次の内容で：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">stages:
+   default:
+   - name: "start multipathd"
+     systemctl:
+       enable:
+         - multipathd
+       start:
+         - multipathd</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>この処理は、<code>CloudInit</code> CRDを使用してHarvesterクラスター全体で自動化できます。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: node.harvesterhci.io/v1beta1
+kind: CloudInit
+metadata:
+  name: start-mutlitpathd
+spec:
+  matchSelector:
+    harvesterhci.io/managed: "true"
+  filename: 99-start-mutlitpathd
+  contents: |
+    stages:
+      default:
+        - name: "start multipathd"
+          systemctl:
+            enable:
+              - multipathd
+            start:
+              - multipathd
+  paused: false</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="storageclass.html">ストレージクラス</a></span>
+  <span class="next"><a href="longhorn-v2-data-engine.html">Longhorn V2データエンジン</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<script src="../../../../_/js/site.js"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+<script src="../../../../_/js/vendor/lunr.js"></script>
+<script src="../../../../_/js/vendor/lunr-languages.js"></script>
+<script src="../../../../_/js/search-ui.js" id="search-ui-script" data-site-root-path="../../../.." data-snippet-length="100" data-stylesheet="../../../../_/css/search.css"></script>
+<script async src="../../../../search-index.js"></script>
+<script src="../../../../_/js/vendor/langSelection.js"></script>
+<script async src="../../../../_/js/vendor/tabs.js"></script>
+
+
+<script src="../../../../_/js/CNLanguageSwitcher.js"></script>
+  </body>
+</html>

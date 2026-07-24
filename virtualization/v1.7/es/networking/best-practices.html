@@ -1,0 +1,1521 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mejores Prácticas de Redes | SUSE® Virtualization  v1.7</title>
+    <link rel="canonical" href="https://documentation.suse.com/cloudnative/virtualization/v1.7/es/networking/best-practices.html">
+    <link rel="prev" href="vm-isolation.html">
+    <link rel="next" href="../observability/logging.html">
+    <meta name="generator" content="Antora 3.1.14">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+<meta http-equiv="last-modified" content="26-12-2025"/>
+<link rel="stylesheet" href="../../../../_/css/search.css">
+<link rel="icon" href="../../../../_/img/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="../../../../_/css/font-styles.css">
+<link rel="stylesheet" href="../../../../_/fonts/css/all.css">
+<link rel="stylesheet" href="../../../../_/css/site-extra.css">
+<link rel="stylesheet" href="../../../../_/css/vendor/tabs.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap&family=SUSE+Mono:ital,wght@0,100..800;1,100..800" rel="stylesheet">
+<link rel="stylesheet" href="../../../../_/css/vendor/light.css">
+<script src="/docserv/res/lightheaded/analytics.js" type="text/javascript"></script>
+<script type="module">
+  import { defineCustomElements, setAssetPath } from 'https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/shared-header.esm.js';
+  defineCustomElements();
+  setAssetPath("https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/assets");
+</script>
+<!-- Default English link -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/en/networking/best-practices.html" hreflang="x-default" rel="alternate"/>
+<!-- Link for the currently processed page -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/es/networking/best-practices.html" hrefLang="es-ES" rel="alternate" />
+<!-- Link for the English page -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/en/networking/best-practices.html" hreflang="en-US" rel="alternate" />
+<!-- Link for the Japanese page -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/ja/networking/best-practices.html" hreflang="ja-JP" rel="alternate" />
+<!-- Link for the Chinese page -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/zh/networking/best-practices.html" hreflang="zh-CN" rel="alternate" />
+<!-- Link for the German page -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/de/networking/best-practices.html" hreflang="de-DE" rel="alternate" />
+<!-- Link for the French page -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/fr/networking/best-practices.html" hreflang="fr-FR" rel="alternate" />
+<!-- Link for the Brazilian Portuguese page -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/pt/networking/best-practices.html" hreflang="pt-BR" rel="alternate" />
+
+<!-- JSON-LD for doc metadata -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Mejores Prácticas de Redes | SUSE Virtualization v1.7",
+  "headline": "Mejores Prácticas de Redes",
+  "description": "Mejores Prácticas de Redes",
+  "inLanguage": "es",
+  "dateModified": "26-12-2025T00:00:00Z",
+  "author": {
+    "@type": "Organization",
+    "name": "SUSE Product & Solution Documentation Team",
+    "url": "https://documentation.suse.com"
+  },
+  "mentions": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "SUSE Virtualization",
+      "softwareVersion": "v1.7",
+      "applicationCategory": "Cloud Infrastructure",
+      "operatingSystem": "Linux"
+    }
+  ],
+  "publisher": {
+    "@type": "Organization",
+    "name": "SUSE",
+    "url": "https://documentation.suse.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.suse.com/assets/img/suse-white-logo-green.svg"
+    }
+  }
+}
+</script>
+<!-- end JSON-LD for doc metadata -->
+
+<!-- SUVA - Begin Ask Geeko-->
+<!--
+searchUnifyChatbot ("Ask Geeko") Copyright ©2024 Grazitti Interactive - All Rights Reserved. NOTICE: All information contained herein is, and remains the property of Grazitti Interactive and its suppliers, if any. The intellectual and technical concepts contained herein are proprietary to Grazitti Interactive and its suppliers and may be covered by India, U.S. and Foreign Patents, patents in process, and are protected by trade secret or copyright law. Dissemination of this information or reproduction of this material is strictly forbidden unless prior written permission is obtained from Grazitti Interactive.
+-->
+<meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport"/>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/Allow/an.js?c485cb3c-93d4-4942-99e8-91f3b8ca5636"></script>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/js/index.js?q=gAAAAABp3JBN9VuEJTi5tFafLIMwgMkCPdJS3Qm56lSYx93ir3Twt9hgSvd3OHEt6-nYfSbY3yHq0Zv8PRPsSy4nbqZiaJ4cZvRc6ItVZdvwz9Urf35cH6OUyPOwdA0phlS-zVIznQ2rWW438p-91NlTHuxJuOFpnA=="></script>
+<link rel="stylesheet" href="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/css/index.css">
+<div id="searchUnifyChatbot"></div>
+<!-- SUVA - End Ask Geeko-->
+<!--BEGIN QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+<script type='text/javascript' src="../../../../_/js/qualtrics.js" defer></script>
+<!--END QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<script type="module">import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs'; mermaid.initialize({"startOnLoad":true});</script><shared-header
+language="en"
+languages='{
+    "en": { "label": "English", "url": "https://documentation.suse.com/en-us/" },
+    "de": { "label": "Deutsch", "url": "https://documentation.suse.com/de-de/" },
+    "fr": { "label": "Français", "url": "https://documentation.suse.com/fr-fr/" },
+    "es": { "label": "Español", "url": "https://documentation.suse.com/es-es/" },
+    "zh_CN": { "label": "中文", "url": "https://documentation.suse.com/zh-cn/" },
+    "pt_BR": { "label": "Português Brasileiro", "url": "https://documentation.suse.com/pt-br/" }
+}'
+enable-search='false'>
+</shared-header>
+<div class="body">
+<div class="nav-container" data-component="virtualization" data-version="v1.7">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title">SUSE® Virtualization</h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Introducción</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/overview.html">Descripción general</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/deploy-ha-cluster.html">Desplegar un clúster de alta disponibilidad</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/deploy-singlenode-cluster.html">Desplegar un clúster de un solo nodo</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/glossary.html">Glosario</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/document-conventions.html">Convenciones de documentos</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Instalación y configuración</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/requirements.html">Requisitos de hardware y red</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Medios de instalación</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/media/net-install.html">ISO de instalación por red</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/media/install-binaries-mode.html">Instalar solo binarios</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Métodos de instalación</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/methods/iso-install.html">Instalación de ISO</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/methods/usb-install.html">Instalación de USB</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/methods/pxe-boot-install.html">Instalación de arranque PXE</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Configuración</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/config/configuration-file.html">Archivo de configuración</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/config/update-configuration.html">Actualizar la configuración después de la instalación</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/config/settings.html">Settings (Configuración posterior al failback)</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/config/cloudinitcrd.html">CloudInit CRD</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/post-installation.html">Tareas posteriores a la instalación</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/management-address.html">Dirección de gestión</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/external-disk.html">Soporte para discos externos</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/authentication.html">Autenticación</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/airgap.html">Entorno aislado</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/single-node-clusters.html">Clústeres de un solo nodo</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Actualizaciones</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/upgrades.html">Actualizaciones</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-1-2-to-v1-2-0.html">Actualizar versión de v1.1.2 a v1.2.0 (no recomendado)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-2-0-to-v1-2-1.html">Actualiza de v1.1.2/v1.1.3/v1.2.0 a v1.2.1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-2-1-to-v1-2-2.html">Actualizar versión de v1.2.1 a v1.2.2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-2-2-to-v1-3-1.html">Actualizar versión de v1.2.2/v1.3.0 a v1.3.1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-3-1-to-v1-3-2.html">Actualiza de v1.3.1 a v1.3.2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-3-2-to-v1-4-0.html">Actualiza de v1.3.2 a v1.4.0</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-4-0-to-v1-4-1.html">Actualiza de v1.4.0 a v1.4.1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-4-1-to-v1-4-2.html">Actualiza de v1.4.1 a v1.4.2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-4-1-to-v1-4-3.html">Actualiza de v1.4.1 o v1.4.2 a v1.4.3</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-4-2-to-v1-5-0.html">Actualiza de v1.4.2 o v1.4.3 a v1.5.0</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-4-2-to-v1-5-1.html">Actualiza de v1.4.2 o v1.4.3 a v1.5.1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-4-2-to-v1-5-2.html">Actualiza de v1.4.2 o v1.4.3 a v1.5.2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-5-0-to-v1-5-1.html">Actualiza la versión de v1.5.0 a v1.5.1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-5-0-to-v1-5-2.html">Actualiza versión de v1.5.0 o v1.5.1 a v1.5.2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-5-x-to-v1-6-x.html">Actualiza de v1.5.x a v1.6.x</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-6-x-to-v1-6-y.html">Actualiza la versión de v1.6.x a v1.6.y</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-6-x-to-v1-7-x.html">Actualiza la versión de v1.6.x a v1.7.x</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-7-x-to-v1-7-y.html">Actualiza de v1.7.x a v1.7.y</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/troubleshooting.html">Solución de problemas</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Hosts</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../hosts/hosts.html">Gestión de hosts</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../hosts/witness-node.html">Nodo Testigo</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../hosts/vgpu-support.html">Soporte de vGPU</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Máquinas virtuales</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/virtual-machines.html">Máquinas virtuales</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Imágenes de máquinas virtuales</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../virtual-machines/vm-images/upload-image.html">Subir imágenes</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../virtual-machines/vm-images/custom-suse-images.html">Imágenes de Máquina Virtual Personalizadas de SUSE</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../virtual-machines/vm-images/image-security.html">Seguridad de la Imagen</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/create-vm.html">Crear una máquina virtual</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/create-windows-vm.html">Crea una máquina virtual de Windows</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/edit-vm.html">Editar una máquina virtual</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/access-vm.html">Acceso a la Máquina Virtual</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/clone-vm.html">Clonar una máquina virtual</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/backup-restore.html">Copia de seguridad, instantánea y restauración de máquinas virtuales</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/live-migration.html">Migración en vivo</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/hotplug-volume.html">Volúmenes Hot-Plug</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/resource-overcommit.html">Sobreasignación de recursos</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/cpu-pinning.html">Fijación de CPU</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/cpu-memory-hotplug.html">Conectar en caliente de CPU y memoria</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/nic-hotplug.html">Conexión en caliente de NIC</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Almacenamiento</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Volúmenes</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../storage/volumes/create-volume.html">Crear un volumen</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../storage/volumes/edit-volume.html">Editar un volumen</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../storage/volumes/clone-volume.html">Clonar un volumen</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../storage/volumes/export-volume.html">Exportar un volumen a una imagen</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../storage/volumes/volume-snapshots.html">Instantáneas de volumen</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../storage/volumes/volume-security.html">Seguridad del volumen</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../storage/storageclass.html">StorageClass</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../storage/csidriver.html">Compatibilidad con almacenamiento de terceros</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../storage/longhorn-v2-data-engine.html">Motor de Datos Longhorn V2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../storage/storage-validator.html">Validador de almacenamiento</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Conectividad</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="cluster-network.html">Red de clúster</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="vm-network.html">Red de máquinas virtuales (VM)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="deep-dive.html">Profundización en redes</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="load-balancer.html">Balanceador de carga</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="ip-pool.html">Grupo de IP</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="storage-network.html">Red de Almacenamiento</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="vm-migration-network.html">Red de migración de VM</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="kubeovn-vpc.html">Nube Privada Virtual</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="vm-isolation.html">Aislamiento de Máquinas Virtuales</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="best-practices.html">Mejores Prácticas de Redes</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Observabilidad</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../observability/logging.html">Registro</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../observability/monitoring.html">Monitorización</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Complementos</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/add-ons.html">Complementos</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/harvester-seeder.html">Harvester Seeder</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/kubeovn-operator.html">Operador Kube-OVN (Experimental)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/lvm-local-storage.html">Controlador CSI LVM (Experimental)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/nvidia-driver-toolkit.html">Kit de herramientas del controlador NVIDIA</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/pcidevices-controller.html">Controlador de dispositivos PCI</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/rancher-vcluster.html">Rancher vCluster (Experimental)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/virtual-machine-auto-balance.html">Balanceo Automático de Máquinas Virtuales (Experimental)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/vm-dhcp-controller.html">Controlador DHCP de VM (Experimental)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/vm-import-controller.html">Controlador de Importación de VM</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Integraciones</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Integración de Rancher</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/rancher-integration.html">SUSE Rancher Prime Integración</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/virtualization-management.html">Gestión de la virtualización</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Controlador de nodo</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../integrations/rancher/node-driver/node-driver.html">Controlador de Nodo Harvester</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../integrations/rancher/node-driver/rke2-cluster.html">Creando un clúster de Kubernetes RKE2</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../integrations/rancher/node-driver/k3s-cluster.html">Creando un clúster de Kubernetes K3s</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/cloud-provider.html">Proveedor de nube Harvester</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/csi-driver.html">Controlador CSI de Harvester</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/resource-quota.html">Cuotas de Recursos</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/rancher-terraform-provider.html">Rancher Terraform</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/import-vm.html">Importar un clúster construido sobre una VM de SUSE® Virtualization</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/harvester-ui-extension.html">Extensión de Harvester UI</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../integrations/terraform/terraform-provider.html">Proveedor de Terraform</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Solución de problemas</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/installation.html">Problemas de instalación</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/operating-system.html">Problemas del sistema operativo</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/cluster.html">Problemas de clúster</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/virtual-machines.html">Problemas de máquinas virtuales</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/monitoring.html">Problemas de monitorización</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/logging.html">Registro de problemas</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/rancher.html">Problemas de Rancher</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/faq.html">Preguntas más frecuentes</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Contenido de desarrollador</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../developer/addon-development.html">Guía de desarrollo de complementos</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../api.html">API</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">SUSE® Virtualization</span>
+    <span class="version">v1.7</span>
+  </div>
+  <ul class="components">
+        <li class="component">
+          <div class="title"><a href="../../../../admission-controller/1.36/en/introduction.html">Admission Controller</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../admission-controller/1.37/en/introduction.html">1.37-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../admission-controller/1.36/en/introduction.html">1.36</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.35/en/introduction.html">1.35</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.34/en/introduction.html">1.34</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.33/en/introduction.html">1.33</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.32/en/introduction.html">1.32</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.31/en/introduction.html">1.31</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.30/en/introduction.html">1.30</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.29/en/introduction.html">1.29</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.28/en/introduction.html">1.28</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../cluster-api/v0.26/en/index.html">Cluster API</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../cluster-api/v0.28/en/index.html">v0.28-dev</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.27/en/index.html">v0.27-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../cluster-api/v0.26/en/index.html">v0.26</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.25/en/index.html">0.25</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.24/en/index.html">0.24</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.23/en/index.html">0.23</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.22/en/index.html">0.22</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.21/en/index.html">0.21</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.20/en/index.html">0.20</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.19/en/index.html">0.19</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.18/en/index.html">0.18</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.17/en/index.html">0.17</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.16/en/index.html">0.16</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.11/en/index.html">0.11</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../continuous-delivery/next/en/index.html">Continuous Delivery</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../continuous-delivery/next/en/index.html">Next</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.15/en/index.html">v0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.11/en/index.html">0.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.10/en/index.html">0.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.9/en/index.html">0.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../k3s/latest/en/introduction.html">K3s</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../k3s/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../os-manager/1.9/en/index.html">OS Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../os-manager/1.10/en/index.html">1.10-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../os-manager/1.9/en/index.html">1.9</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.8/en/index.html">1.8</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.7/en/index.html">1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.6/en/index.html">1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.5/en/index.html">1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-ai/latest/en/introduction.html">Rancher AI</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-ai/latest/en/introduction.html">latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../turtles/stable/en/index.html">Rancher Turtles</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../turtles/stable/en/index.html">Stable</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rke2/latest/en/introduction.html">RKE2</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rke2/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-observability/latest/en/classic.html">SUSE Observability</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../suse-observability/latest/en/classic.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">SUSE Rancher Developer Access</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">SUSE® Rancher for AWS</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-manager/v2.14/en/about-rancher/what-is-rancher.html">SUSE® Rancher Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.15/en/about-rancher/what-is-rancher.html">v2.15 (Unreleased)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../rancher-manager/v2.14/en/about-rancher/what-is-rancher.html">v2.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.13/en/about-rancher/what-is-rancher.html">v2.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.12/en/about-rancher/what-is-rancher.html">v2.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.11/en/about-rancher/what-is-rancher.html">v2.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.10/en/about-rancher/what-is-rancher.html">v2.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.9/en/about-rancher/what-is-rancher.html">v2.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../security/5.6/en/overview.html">SUSE® Security</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../security/5.6/en/overview.html">5.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.5/en/overview.html">5.5</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.4/en/overview.html">5.4</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.3/en/overview.html">5.3</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../storage/1.11/en/longhorn-documentation.html">SUSE® Storage</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../storage/1.12/en/longhorn-documentation.html">1.12 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../storage/1.11/en/longhorn-documentation.html">1.11 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../storage/1.10/en/longhorn-documentation.html">1.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../storage/1.9/en/longhorn-documentation.html">1.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">SUSE® Virtual Clusters</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/1.2.0/en/release-notes/version-1.2.0.html">v1.2.0 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">v1.1.0-latest</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/1.0.2/en/release-notes/version-1.0.2.html">v1.0.2</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.1/en/introduction.html">v1.0.1</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.0/en/introduction.html">v1.0.0</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component is-current">
+          <div class="title"><a href="../../../v1.8/en/introduction/overview.html">SUSE® Virtualization</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../v1.9/en/introduction/overview.html">v1.9 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../v1.8/en/introduction/overview.html">v1.8 (Latest)</a>
+            </li>
+            <li class="version is-current">
+              <a href="../../en/introduction/overview.html">v1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../v1.6/en/introduction/overview.html">v1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../v1.5/en/introduction/overview.html">v1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../vulnerability-scanner/0.12.0/en/introduction.html">Vulnerability Scanner</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../vulnerability-scanner/0.12.0/en/introduction.html">0.12.0</a>
+            </li>
+            <li class="version">
+              <a href="../../../../vulnerability-scanner/0.11.3/en/introduction.html">0.11.3</a>
+            </li>
+          </ul>
+        </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+<ul>
+    <li>
+  <a class="home-link-dsc" href="https://documentation.suse.com" title="SUSE Documentation Home" aria-label="SUSE Documentation Home"></a>
+    </li>
+    <li>
+      <a href="https://documentation.suse.com/cloudnative/virtualization" title="SUSE Virtualization" aria-label="SUSE Documentation - SUSE Virtualization">
+        SUSE Virtualization
+      </a>
+    </li>
+      <li>
+          Conectividad
+      </li>
+  </ul>
+</nav>
+<div class="page-versions">
+  <button class="version-menu-toggle" title="Show other versions of page">v1.7</button>
+  <div class="version-menu">
+    <a class="version is-missing" href="../../../v1.9/en/introduction/overview.html">v1.9 (Dev)</a>
+    <a class="version is-missing" href="../../../v1.8/en/introduction/overview.html">v1.8 (Latest)</a>
+    <a class="version is-current" href="best-practices.html">v1.7</a>
+    <a class="version is-missing" href="../../../v1.6/en/introduction/overview.html">v1.6</a>
+    <a class="version is-missing" href="../../../v1.5/en/introduction/overview.html">v1.5</a>
+  </div>
+</div>
+      <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <label class="visual-search-label-bc" for="search-input">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+          <input label="Search" aria-label="Search" id="search-input" type="text" placeholder="Buscar en los documentos" >
+          <label class="filter checkbox" style="display: none">
+            <input type="checkbox" data-facet-filter="component:virtualization" checked> Only this project
+          </label>
+        </div>
+      </div>
+</div>
+  <div class="content">
+<aside
+  class="toc sidebar"
+  data-title="En esta página" data-levels="2">
+  <div class="toc-menu">
+    <div class="docsurvey-wrapper"><a class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_diCzHC9xxyJyuN0">Documentation survey</a></div>
+    <!-- start qualtrics -->
+    <div id='ZN_8qZUmklKYbBqAYe'><!--DO NOT REMOVE-CONTENTS PLACED HERE--></div>
+    <div id="qualtrics_container"></div>
+    <!-- end qualtrics -->
+  </div>
+</aside>
+
+<aside class="toc sidebar docsurvey-sidebar">
+  <div class="toc-menu">
+    <div class="docsurvey-wrapper"><a class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_diCzHC9xxyJyuN0">Documentation survey</a></div>
+  </div>
+</aside>
+<article class="doc">
+<h1 class="page">Mejores Prácticas de Redes</h1>
+<div class="sect1">
+<h2 id="_reemplazar_nics_ethernet"><a class="anchor" href="#_reemplazar_nics_ethernet"></a>Reemplazar NICs Ethernet</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Es posible que desees reemplazar los NICs Ethernet de un nodo de equipo sin sistema operativo en un clúster de SUSE Virtualization por diversas razones, incluyendo las siguientes:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Mal funcionamiento o daño</p>
+</li>
+<li>
+<p>Capacidad de hardware insuficiente</p>
+</li>
+<li>
+<p>Características faltantes</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Puedes seguir los pasos a continuación y ejecutarlos en cada nodo paso a paso.</p>
+</div>
+<div class="sect2">
+<h3 id="_comprobaciones_previas_al_reemplazo"><a class="anchor" href="#_comprobaciones_previas_al_reemplazo"></a>Comprobaciones Previas al Reemplazo</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Verifica que la versión instalada de SUSE Virtualization sea compatible con los nuevos NICs.</p>
+</li>
+<li>
+<p>Prueba los nuevos NICs en un entorno no productivo.</p>
+</li>
+<li>
+<p>En la pantalla de xref:/virtual-machines/access-vm.adoc#_access_with_the_suse_virtualization_ui[<strong>Máquinas Virtuales</strong> de la interfaz de usuario SUSE Virtualization, verifica que el estado de todas las VMs sea <em>Ejecutándose</em> o <em>Detenidas</em>.</p>
+</li>
+<li>
+<p>En la interfaz de usuario <a href="../troubleshooting/cluster.html#_access_embedded_rancher_and_longhorn_dashboards" class="xref page">integrada SUSE Storage</a>, verifica que el estado de todos los volúmenes SUSE Storage sea <em>Saludable</em>.</p>
+</li>
+<li>
+<p>(Opcional) En la pantalla de <strong>Soporte de Harvester</strong>, genera un <a href="../troubleshooting/cluster.html#_generate_a_support_bundle" class="xref page">paquete de soporte</a> para fines de comparación.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_recopilar_información"><a class="anchor" href="#_recopilar_información"></a>Recopilar Información</h3>
+<div class="paragraph">
+<p>Antes de realizar cualquier acción, es importante recopilar la información y el estado de la red actuales.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Configuración de la red: Por defecto, SUSE Virtualization crea una interfaz de enlace llamada <code>mgmt-bo</code> para la red de gestión. Encima de eso hay una interfaz de puente llamada <code>mgmt-br</code>, que puede usar opcionalmente una VLAN. Cada red de clúster también tiene una nueva interfaz de enlace. Puedes ver los detalles de la conexión actual utilizando la herramienta <code>nmcli</code>.</p>
+<div class="paragraph">
+<p>Ejemplo:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ nmcli
+mgmt-br.2017: connected to vlan-mgmt
+        "mgmt-br.2017"
+        vlan, 5C:B9:01:89:C2:F5, sw, mtu 1500
+        ip4 default
+        inet4 10.115.55.20/21
+        route4 10.115.48.0/21 metric 400
+        route4 default via 10.115.55.254 metric 400
+...
+mgmt-bo: connected to bond-mgmt
+        "mgmt-bo"
+        bond, 5C:B9:01:89:C2:F5, sw, mtu 1500
+        master mgmt-br
+mgmt-br: connected to bridge-mgmt
+        "mgmt-br"
+        bridge, 5C:B9:01:89:C2:F5, sw, mtu 1500
+eno50: connected to bond-slave-eno50
+        "Intel 82599ES SFI/SFP+"
+        ethernet (ixgbe), 5C:B9:01:89:C2:F5, hw, sriov, mtu 1500
+        master mgmt-bo
+...</pre>
+</div>
+</div>
+</li>
+<li>
+<p>NICs físicos: Puedes usar el comando <code>ip link</code> para recuperar información relacionada, incluyendo el estado de cada NIC y el correspondiente maestro (si aplica).</p>
+<div class="paragraph">
+<p>Ejemplo:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>  $ ip link | grep master -1
+
+  2: ens3: &lt;BROADCAST,MULTICAST,SLAVE,UP,LOWER_UP&gt; mtu 1500 qdisc pfifo_fast master mgmt-bo state UP mode DEFAULT group default qlen 1000
+      link/ether 52:54:00:03:3a:e4 brd ff:ff:ff:ff:ff:ff
+  --
+
+  4: mgmt-bo: &lt;BROADCAST,MULTICAST,MASTER,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue master mgmt-br state UP mode DEFAULT group default qlen 1000
+      link/ether 52:54:00:03:3a:e4 brd ff:ff:ff:ff:ff:ff</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Dispositivos PCI: Puedes usar el comando <code>lspci</code> para recuperar una lista de dispositivos, lo que te permite identificar rápidamente las NICs de red. Para recuperar información detallada sobre cada dispositivo, usa el comando <code>lspci -v</code>.</p>
+<div class="paragraph">
+<p>Ejemplo (<code>lspci</code>):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>  $ lspci
+  00:03.0 Ethernet controller: Intel Corporation 82540EM Gigabit Ethernet Controller (rev 03)</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Ejemplo (<code>lspci -v</code>):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>  $ lspci -v
+  00:03.0 Ethernet controller: Intel Corporation 82540EM Gigabit Ethernet Controller (rev 03)
+    Subsystem: Red Hat, Inc. QEMU Virtual Machine
+    Physical Slot: 3
+    Flags: bus master, fast devsel, latency 0, IRQ 11
+    Memory at fc080000 (32-bit, non-prefetchable) [size=128K]
+    I/O ports at c000 [size=64]
+    Expansion ROM at fc000000 [disabled] [size=512K]
+    Kernel driver in use: e1000
+    Kernel modules: e1000</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Registro del núcleo de Linux: Puedes usar el comando <code>dmesg</code> para mostrar los mensajes del núcleo de Linux, que incluyen la mayoría de la información requerida. Si guardas los mensajes en <code>kernel.log</code>, puedes comprobar el estado del controlador y del enlace.</p>
+<div class="paragraph">
+<p>SUSE Virtualization coloca sub-NICs en las interfaces de enlace. En el siguiente ejemplo, se crea una interfaz de enlace adicional llamada <code>data-bo</code> en el clúster.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>  $ grep "(slave" kernel.log  (or: dmesg | grep "(slave")
+
+  Jan 08 00:35:00 localhost kernel: mgmt-bo: (slave eno5): Enslaving as a backup interface with an up link
+  Jan 08 00:35:00 localhost kernel: mgmt-bo: (slave ens4f0): Enslaving as a backup interface with an up link
+  Jan 08 00:37:34 localhost kernel: data-bo: (slave eno6): Enslaving as a backup interface with an up link
+  Jan 08 00:37:35 localhost kernel: data-bo: (slave ens4f1): Enslaving as a backup interface with an up link</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Las NICs son renombradas.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>  $ grep "renamed" kernel.log
+
+  Jan 08 00:34:48 localhost kernel: tg3 0000:02:00.0 eno1: renamed from eth2 // eth2 / eno1 is not used by Harvester
+  Jan 08 00:34:48 localhost kernel: tg3 0000:02:00.3 eno4: renamed from eth6 // eth6 / eno4 is not used by Harvester
+  Jan 08 00:34:48 localhost kernel: tg3 0000:02:00.2 eno3: renamed from eth5 // eth5 / eno3 is not used by Harvester
+  Jan 08 00:34:48 localhost kernel: tg3 0000:02:00.1 eno2: renamed from eth3 // eth3 / eno2 is not used by Harvester
+  Jan 08 00:34:49 localhost kernel: i40e 0000:5d:00.0 eno5: renamed from eth0
+  Jan 08 00:34:49 localhost kernel: i40e 0000:af:00.0 ens4f0: renamed from eth4
+  Jan 08 00:34:49 localhost kernel: i40e 0000:5d:00.1 eno6: renamed from eth1
+  Jan 08 00:34:49 localhost kernel: i40e 0000:af:00.1 ens4f1: renamed from eth2</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>El controlador de NIC de <code>eno5(0000:5d:00.0)</code> es <code>(intel) i40e 10Gbps Full Duplex</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>  $ grep "0000:5d:00.0" kernel.log
+
+  Jan 08 00:34:47 localhost kernel: i40e 0000:5d:00.0: fw 8.71.63306 api 1.11 nvm 10.54.7 [8086:1572] [103c:22fc]
+  Jan 08 00:34:47 localhost kernel: i40e 0000:5d:00.0: MAC address: 48:df:37:24:c2:00
+  Jan 08 00:34:47 localhost kernel: i40e 0000:5d:00.0: FW LLDP is enabled
+  Jan 08 00:34:47 localhost kernel: i40e 0000:5d:00.0 eth0: NIC Link is Up, 10 Gbps Full Duplex, Flow Control: None
+  Jan 08 00:34:47 localhost kernel: i40e 0000:5d:00.0: PCI-Express: Speed 8.0GT/s Width x8
+  Jan 08 00:34:47 localhost kernel: i40e 0000:5d:00.0: Features: PF-id[0] VFs: 64 VSIs: 66 QP: 112 RSS FD_ATR FD_SB NTUPLE DCB VxLAN Geneve PTP VEPA
+  Jan 08 00:34:49 localhost kernel: i40e 0000:5d:00.0 eno5: renamed from eth0</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Las NICs habilitadas son detectadas.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>  $ grep "is Up" kernel.log
+
+  Jan 08 00:34:47 localhost kernel: i40e 0000:5d:00.0 eth0: NIC Link is Up, 10 Gbps Full Duplex, Flow Control: None
+  Jan 08 00:34:48 localhost kernel: i40e 0000:5d:00.1 eth1: NIC Link is Up, 10 Gbps Full Duplex, Flow Control: None
+  Jan 08 00:34:48 localhost kernel: i40e 0000:af:00.0 eth4: NIC Link is Up, 10 Gbps Full Duplex, Flow Control: None
+  Jan 08 00:34:49 localhost kernel: i40e 0000:af:00.1 eth2: NIC Link is Up, 10 Gbps Full Duplex, Flow Control: None</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_habilitar_el_modo_de_mantenimiento"><a class="anchor" href="#_habilitar_el_modo_de_mantenimiento"></a>Habilitar el modo de mantenimiento</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>(Opcional) Detener las VMs que no pueden o no deben ser migradas.</p>
+</li>
+<li>
+<p><a href="../hosts/hosts.html#_node_maintenance" class="xref page">Habilitar el modo de mantenimiento</a> en el nodo objetivo para migrar automáticamente todas las VMs a otros nodos.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Espera a que todo esté listo y luego repite los pasos en la sección <a href="#Pre-Replacement Checks">Pre-verificación</a>.</p>
+</li>
+<li>
+<p>Detener manualmente una VM en las siguientes situaciones:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>La VM no logra migrar.</p>
+</li>
+<li>
+<p>La VM tiene selectores que evitan que migre a otros nodos.</p>
+</li>
+<li>
+<p>La VM tiene hardware especial (por ejemplo, PCI passthrough o vGPUs) que evita que migre a otros nodos.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_opcional_actualizar_la_configuración_de_red"><a class="anchor" href="#_opcional_actualizar_la_configuración_de_red"></a>(Opcional) Actualizar la Configuración de Red</h3>
+<div class="paragraph">
+<p>Hay uno o más <a href="cluster-network.html#_create_a_new_cluster_network" class="xref page">Configuración de Red</a> bajo cada <a href="cluster-network.html#_cluster_network" class="xref page">Red de Clúster</a> en SUSE Virtualization. Cada <code>Network Config</code> está respaldado por un objeto CRD <code>VlanConfig</code>.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Importante"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Actualizar el <code>Network Config</code> es <strong>requerido</strong> si las nuevas NIC se colocarán en diferentes ranuras físicas o tendrán diferentes parámetros de uplink.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Revisa el nodo.</p>
+<div class="paragraph">
+<p>Cuando un nodo de clúster SUSE Virtualization pertenece a un <code>Network Config</code>, el objeto <code>Node</code> tiene una etiqueta con la clave <code>network.harvesterhci.io/vlanconfig</code>.</p>
+</div>
+<div class="paragraph">
+<p>Ejemplo:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre> apiVersion: v1
+ kind: Node
+ metadata:
+   labels:
+     ...
+     network.harvesterhci.io/vlanconfig: vlan123</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Elimina este nodo del <code>Network Config</code>.</p>
+<div class="paragraph">
+<p>Cuando las nuevas NIC se colocan en diferentes ranuras, debes cambiar el <code>Network Config</code> para excluir este nodo. Puedes eliminar la VlanConfig si el objeto <code>Network Config</code> selecciona solo este nodo de <code>nodeSelector</code>.</p>
+</div>
+<div class="paragraph">
+<p>Ejemplo:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre> apiVersion: network.harvesterhci.io/v1beta1
+ kind: VlanConfig
+ spec:
+   clusterNetwork: data
+   nodeSelector:
+     kubernetes.io/hostname: node123  // select one or more nodes
+   uplink:
+     bondOptions:
+       miimon: 100
+       mode: 802.3ad
+     linkAttributes:
+       mtu: 1500
+       txQLen: -1
+     nics:
+     - enp0s1
+     - enp0s2</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Cuando las VMs aún están en ejecución en un nodo afectado, el webhook de red devuelve un error.</p>
+</div>
+</li>
+<li>
+<p>Revisa el objeto <code>Node</code>.</p>
+<div class="paragraph">
+<p>Dependiendo de la situación, la etiqueta <code>network.harvesterhci.io/vlanconfig</code> cambia o se elimina.</p>
+</div>
+</li>
+<li>
+<p>Revisa el objeto <code>VlanStatus</code>.</p>
+<div class="paragraph">
+<p>Dependiendo de la situación, el estado de la condición <code>ready</code> del objeto <code>VlanStatus</code> cambia a <code>"True"</code> o el objeto se elimina.</p>
+</div>
+<div class="paragraph">
+<p>Ejemplo:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre> apiVersion: network.harvesterhci.io/v1beta1
+ kind: VlanStatus
+ metadata:
+ ...
+ status:
+   clusterNetwork: data
+   conditions:
+   - lastUpdateTime: "2024-02-03T18:32:41Z"
+     status: "True"
+     type: ready
+   linkMonitor: public
+   localAreas:
+   - cidr: 10.190.186.0/24
+     vlanID: 2013
+   node: node123
+   vlanConfig: vlan123</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_opcional_drenar_el_nodo"><a class="anchor" href="#_opcional_drenar_el_nodo"></a>(Opcional) Drenar el Nodo</h3>
+<div class="paragraph">
+<p>Puedes encontrar que algunas réplicas de SUSE Storage permanecen activas en el nodo incluso después de completar los procedimientos previamente descritos.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Drena el nodo. (Esto es opcional en SUSE Virtualization.)</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Situación 1: El valor <code>numReplicas</code> de todos los volúmenes es <code>3</code>, lo que significa que cada volumen SUSE Storage tiene tres réplicas activas.</p>
+<div class="paragraph">
+<p>El motor Longhorn reconoce que ya no puede comunicarse con la réplica en el nodo drenado, y luego marca esa réplica como fallida. Ninguna de las réplicas tiene un significado especial para SUSE Storage, por lo que funciona siempre que pueda comunicarse con al menos una réplica.</p>
+</div>
+</li>
+<li>
+<p>Situación 2: Algunos volúmenes SUSE Storage tienen <em>menos</em> de tres réplicas activas, o has adjuntado manualmente volúmenes utilizando la interfaz SUSE Virtualization o la interfaz SUSE Storage.</p>
+<div class="paragraph">
+<p>Debes desvincular manualmente las réplicas o moverlas a otros nodos, y luego <a href="https://documentation.suse.com/cloudnative/storage/1.8/en/troubleshooting-maintenance/maintenance.html#_updating_the_node_os_or_container_runtime">drenar el nodo</a> utilizando el comando <code>kubectl drain --ignore-daemonsets &lt;node name&gt;</code>. La opción <code>--ignore-daemonsets</code> es requerida porque SUSE Storage despliega daemonsets como Longhorn Manager, el plugin Longhorn CSI y la imagen de Longhorn Engine.</p>
+</div>
+<div class="paragraph">
+<p>Las réplicas que se ejecutan en el nodo se detienen y se marcan como <code>Failed</code>. Los procesos de Longhorn Engine que se ejecutan en el nodo se migran junto con el pod a otros nodos. Una vez que el nodo está completamente drenado, no deben quedar réplicas ni procesos de Longhorn Engine ejecutándose en el nodo.</p>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Reabastecer réplicas.</p>
+<div class="paragraph">
+<p>Después de que un nodo se apaga, SUSE Storage no comienza a reconstruir las réplicas en otros nodos hasta que se alcanza el <code>replica-replenishment-wait-interval</code> (valor predeterminado: 600 segundos). Si el nodo vuelve a estar en línea antes de que se alcance el valor del intervalo de espera, SUSE Storage reutiliza las réplicas. De lo contrario, SUSE Storage reconstruye las réplicas en otro nodo.</p>
+</div>
+<div class="paragraph">
+<p>Durante el mantenimiento del sistema, puedes modificar el valor de <a href="https://documentation.suse.com/cloudnative/storage/1.8/en/longhorn-system/settings.html#_replica_replenishment_wait_interval"><code>replica-replenishment-wait-interval</code></a> utilizando la <a href="../troubleshooting/cluster.html#_access_embedded_rancher_and_longhorn_dashboards" class="xref page">interfaz SUSE Storage integrada</a> para habilitar una reconstrucción más rápida de las réplicas.</p>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_reemplazar_las_nics"><a class="anchor" href="#_reemplazar_las_nics"></a>Reemplazar las NICs</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Apagar el nodo.</p>
+</li>
+<li>
+<p>Reemplazar las NICs.</p>
+</li>
+<li>
+<p>Reiniciar el nodo.</p>
+</li>
+<li>
+<p><a href="#Collect Information">[Collect Information]</a> sobre la configuración y el estado de la red actuales.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Si observas alguna anomalía, genera un <a href="../troubleshooting/cluster.html#_generate_a_support_bundle" class="xref page">paquete de soporte</a> para fines de resolución de problemas.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_opcional_actualizar_la_configuración_de_red_de_nuevo"><a class="anchor" href="#_opcional_actualizar_la_configuración_de_red_de_nuevo"></a>(Opcional) Actualizar la configuración de red de nuevo</h3>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Importante"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Actualizar el <code>Network Config</code> es <strong>necesario</strong> si las nuevas NIC se colocarán en diferentes ranuras físicas.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Añadir el nodo al <code>Network Config</code>.</p>
+<div class="paragraph">
+<p>Debes crear un nuevo <code>Network Config</code> o cambiar el <code>Network Config</code> para incluir este nodo.</p>
+</div>
+</li>
+<li>
+<p>Revisa el objeto <code>Node</code>.</p>
+<div class="paragraph">
+<p>La etiqueta <code>network.harvesterhci.io/vlanconfig</code> refleja el <code>Network Config</code> específico utilizado.</p>
+</div>
+</li>
+<li>
+<p>Revisa el objeto <code>VlanStatus</code>.</p>
+<div class="paragraph">
+<p>El estado de la condición <code>ready</code> del objeto <code>VlanStatus</code> cambia a <code>"True"</code>.</p>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_desactivar_el_modo_de_mantenimiento"><a class="anchor" href="#_desactivar_el_modo_de_mantenimiento"></a>Desactivar el modo de mantenimiento</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Espera a que el nodo sea movido de nuevo al clúster.</p>
+</li>
+<li>
+<p>Desactivar el modo de mantenimiento.</p>
+</li>
+<li>
+<p>(Opcional) Iniciar las VMs que detuviste manualmente.</p>
+</li>
+<li>
+<p>(Opcional) <a href="../virtual-machines/live-migration.html#_starting_a_migration" class="xref page">migrar VMs</a> manualmente a este nodo.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_solución_de_problemas"><a class="anchor" href="#_solución_de_problemas"></a>Solución de problemas</h3>
+<div class="paragraph">
+<p>SUSE Virtualization utiliza múltiples pods relacionados con la red y CRDs. Al solucionar problemas, revisa los registros de los pods y el estado de los objetos CRD.</p>
+</div>
+<div class="paragraph">
+<p>Pods:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ kubectl get pods -n harvester-system
+NAME                                                    READY   STATUS    RESTARTS      AGE
+harvester-network-controller-cnf22                      1/1     Running   2 (60m ago)   3d22h  // Network controller agent daemonSet, deployed in each node
+harvester-network-controller-manager-859c4bd874-xcllf   1/1     Running   2 (60m ago)   3d22h  // Network controller
+harvester-network-webhook-56b877d5d5-z42dp              1/1     Running   2 (60m ago)   3d22h</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>CRDs:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>clusternetworks.network.harvesterhci.io
+linkmonitors.network.harvesterhci.io
+vlanconfigs.network.harvesterhci.io
+vlanstatuses.network.harvesterhci.io</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="vm-isolation.html">Aislamiento de Máquinas Virtuales</a></span>
+  <span class="next"><a href="../observability/logging.html">Registro</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<script src="../../../../_/js/site.js"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+<script src="../../../../_/js/vendor/lunr.js"></script>
+<script src="../../../../_/js/vendor/lunr-languages.js"></script>
+<script src="../../../../_/js/search-ui.js" id="search-ui-script" data-site-root-path="../../../.." data-snippet-length="100" data-stylesheet="../../../../_/css/search.css"></script>
+<script async src="../../../../search-index.js"></script>
+<script src="../../../../_/js/vendor/langSelection.js"></script>
+<script async src="../../../../_/js/vendor/tabs.js"></script>
+
+
+<script src="../../../../_/js/CNLanguageSwitcher.js"></script>
+  </body>
+</html>

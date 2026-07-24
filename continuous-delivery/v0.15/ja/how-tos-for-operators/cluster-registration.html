@@ -1,0 +1,1383 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ダウンストリームクラスターの登録 | Continuous Delivery  v0.15</title>
+    <link rel="canonical" href="https://documentation.suse.com/cloudnative/continuous-delivery/v0.15/ja/how-tos-for-operators/cluster-registration.html">
+    <link rel="prev" href="installation.html">
+    <link rel="next" href="cluster-group.html">
+    <meta name="generator" content="Antora 3.1.14">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+<meta http-equiv="last-modified" content="2025-07-23"/>
+<link rel="stylesheet" href="../../../../_/css/search.css">
+<link rel="icon" href="../../../../_/img/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="../../../../_/css/font-styles.css">
+<link rel="stylesheet" href="../../../../_/fonts/css/all.css">
+<link rel="stylesheet" href="../../../../_/css/site-extra.css">
+<link rel="stylesheet" href="../../../../_/css/vendor/tabs.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap&family=SUSE+Mono:ital,wght@0,100..800;1,100..800" rel="stylesheet">
+<link rel="stylesheet" href="../../../../_/css/vendor/light.css">
+<script src="/docserv/res/lightheaded/analytics.js" type="text/javascript"></script>
+<script type="module">
+  import { defineCustomElements, setAssetPath } from 'https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/shared-header.esm.js';
+  defineCustomElements();
+  setAssetPath("https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/assets");
+</script>
+<!-- Default English link -->
+<link href="https://documentation.suse.com/cloudnative/continuous-delivery/v0.15/en/how-tos-for-operators/cluster-registration.html" hreflang="x-default" rel="alternate"/>
+<!-- Link for the currently processed page -->
+<link href="https://documentation.suse.com/cloudnative/continuous-delivery/v0.15/ja/how-tos-for-operators/cluster-registration.html" hrefLang="ja-JP" rel="alternate" />
+<!-- Link for the English page -->
+<link href="https://documentation.suse.com/cloudnative/continuous-delivery/v0.15/en/how-tos-for-operators/cluster-registration.html" hreflang="en-US" rel="alternate" />
+<!-- Link for the Chinese page -->
+<link href="https://documentation.suse.com/cloudnative/continuous-delivery/v0.15/zh/how-tos-for-operators/cluster-registration.html" hreflang="zh-CN" rel="alternate" />
+<!-- Link for the German page -->
+<link href="https://documentation.suse.com/cloudnative/continuous-delivery/v0.15/de/how-tos-for-operators/cluster-registration.html" hreflang="de-DE" rel="alternate" />
+<!-- Link for the French page -->
+<link href="https://documentation.suse.com/cloudnative/continuous-delivery/v0.15/fr/how-tos-for-operators/cluster-registration.html" hreflang="fr-FR" rel="alternate" />
+<!-- Link for the Spanish page -->
+<link href="https://documentation.suse.com/cloudnative/continuous-delivery/v0.15/es/how-tos-for-operators/cluster-registration.html" hreflang="es-ES" rel="alternate" />
+<!-- Link for the Brazilian Portuguese page -->
+<link href="https://documentation.suse.com/cloudnative/continuous-delivery/v0.15/pt/how-tos-for-operators/cluster-registration.html" hreflang="pt-BR" rel="alternate" />
+
+<!-- JSON-LD for doc metadata -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "ダウンストリームクラスターの登録 | SUSE Rancher Prime Continuous Delivery v0.15",
+  "headline": "ダウンストリームクラスターの登録",
+  "description": "ダウンストリームクラスターの登録",
+  "inLanguage": "ja",
+  "dateModified": "2025-07-23T00:00:00Z",
+  "author": {
+    "@type": "Organization",
+    "name": "SUSE Product & Solution Documentation Team",
+    "url": "https://documentation.suse.com"
+  },
+  "mentions": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "SUSE Rancher Prime Continuous Delivery",
+      "softwareVersion": "v0.15",
+      "applicationCategory": "Cloud Infrastructure",
+      "operatingSystem": "Linux"
+    }
+  ],
+  "publisher": {
+    "@type": "Organization",
+    "name": "SUSE",
+    "url": "https://documentation.suse.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.suse.com/assets/img/suse-white-logo-green.svg"
+    }
+  }
+}
+</script>
+<!-- end JSON-LD for doc metadata -->
+
+<!-- SUVA - Begin Ask Geeko-->
+<!--
+searchUnifyChatbot ("Ask Geeko") Copyright ©2024 Grazitti Interactive - All Rights Reserved. NOTICE: All information contained herein is, and remains the property of Grazitti Interactive and its suppliers, if any. The intellectual and technical concepts contained herein are proprietary to Grazitti Interactive and its suppliers and may be covered by India, U.S. and Foreign Patents, patents in process, and are protected by trade secret or copyright law. Dissemination of this information or reproduction of this material is strictly forbidden unless prior written permission is obtained from Grazitti Interactive.
+-->
+<meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport"/>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/Allow/an.js?c485cb3c-93d4-4942-99e8-91f3b8ca5636"></script>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/js/index.js?q=gAAAAABp3JBN9VuEJTi5tFafLIMwgMkCPdJS3Qm56lSYx93ir3Twt9hgSvd3OHEt6-nYfSbY3yHq0Zv8PRPsSy4nbqZiaJ4cZvRc6ItVZdvwz9Urf35cH6OUyPOwdA0phlS-zVIznQ2rWW438p-91NlTHuxJuOFpnA=="></script>
+<link rel="stylesheet" href="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/css/index.css">
+<div id="searchUnifyChatbot"></div>
+<!-- SUVA - End Ask Geeko-->
+<!--BEGIN QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+<script type='text/javascript' src="../../../../_/js/qualtrics.js" defer></script>
+<!--END QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<script type="module">import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs'; mermaid.initialize({"startOnLoad":true});</script><shared-header
+language="en"
+languages='{
+    "en": { "label": "English", "url": "https://documentation.suse.com/en-us/" },
+    "de": { "label": "Deutsch", "url": "https://documentation.suse.com/de-de/" },
+    "fr": { "label": "Français", "url": "https://documentation.suse.com/fr-fr/" },
+    "es": { "label": "Español", "url": "https://documentation.suse.com/es-es/" },
+    "zh_CN": { "label": "中文", "url": "https://documentation.suse.com/zh-cn/" },
+    "pt_BR": { "label": "Português Brasileiro", "url": "https://documentation.suse.com/pt-br/" }
+}'
+enable-search='false'>
+</shared-header>
+<div class="body">
+<div class="nav-container" data-component="continuous-delivery" data-version="v0.15">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title">Continuous Delivery</h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">概要</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../persona.html">主要なペルソナとその役割</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">チュートリアル</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tutorials/quickstart.html">クイックスタート</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tutorials/tut-deployment.html">デプロイメントの作成</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tutorials/uninstall.html">アンインストール</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">説明</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../explanations/architecture.html">アーキテクチャ</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../explanations/concepts.html">コアコンセプト</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../explanations/ref-bundle-stages.html">バンドルライフサイクル</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../explanations/gitrepo-content.html">Gitリポジトリの内容</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../explanations/namespaces.html">ネームスペース</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../explanations/resources-during-deployment.html">デプロイメント中のカスタムリソース</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../explanations/glossary.html">デプロイメント中のカスタムリソース</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">オペレーター向けハウツー</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="installation.html">インストール詳細</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="cluster-registration.html">ダウンストリームクラスタの登録</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="cluster-group.html">クラスタグループの作成</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="multi-user.html">マルチユーザーのセットアップ</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="resource-limits.html">リソース制限の設定</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">ユーザー向けハウツー</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../how-tos-for-users/gitrepo-add.html">GitRepoリソースの作成</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../how-tos-for-users/gitrepo-targets.html">ダウンストリームクラスタへのマッピング</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../how-tos-for-users/bundle-diffs.html">変更されたGitReposを無視するための差分生成</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../how-tos-for-users/webhook.html">ポーリングの代わりにWebhookを使用する</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../how-tos-for-users/imagescan.html">コンテナイメージ参照を更新するためのイメージスキャンの使用</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../how-tos-for-users/bundle-add.html">バンドルリソースの作成</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../how-tos-for-users/observability.html">監視</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../how-tos-for-users/oci-storage.html">OCIストレージ</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../how-tos-for-users/rollout.html">ロールアウト戦略</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../how-tos-for-users/helm-ops.html">ヘルムオプス</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../how-tos-for-users/fetch-helm-oci.html">ヘルムオプスを取得する</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../how-tos-for-users/fine-tune-error.html">エラー検出の微調整</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Fleet CLI</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../how-tos-for-users/install-use-fleet-cli.html">Fleet CLI のインストールと使用</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../how-tos-for-users/validate-fleet-cli.html">Validate Fleet CLI Deployment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">リファレンス</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">CLI</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Fleet</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-cli/fleet.html">fleet</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-cli/fleet_apply.html">fleet apply</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-cli/fleet_bundlediff.html">Fleet bundlediff</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-cli/fleet_deploy.html">Fleet deploy</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-cli/fleet_target.html">Fleet target</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-cli/fleet_gitcloner.html">Fleet gitcloner</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Fleetのトラブルシューティング</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-cli/fleet_analyze.html">Fleet analyze</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-cli/fleet_monitor.html">Fleet monitor</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-cli/fleet_dump.html">Fleet dump</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Fleet Agent</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-agent/fleet-agent.html">fleet-agent</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-agent/fleet-agent_clusterstatus.html">fleet-agent clusterstatus</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-agent/fleet-agent_register.html">fleet-agent register</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">クリーンアップ</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-cli/cleanup/fleet_cleanup.html">Fleet cleanup</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-cli/cleanup/fleet_cleanup_clusterregistration.html">Fleet cluster registration cleanup</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-cli/cleanup/fleet_cleanup_gitjob.html">Fleet gitjob cleanup</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Fleet Controller</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-controller/fleet-controller.html">fleet-controller</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-controller/fleet-controller_agentmanagement.html">fleet-controller agentmanagement</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-controller/fleet-controller_cleanup.html">fleet-controller cleanup</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-controller/fleet-controller_gitjob.html">fleet-gitjob</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">リソースとAPI</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reference/ref-crds.html">カスタムリソース仕様</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reference/ref-crd-schema.html">CRDスキーマ</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reference/ref-gitrepo.html">GitRepoリソース</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reference/ref-bundle.html">バンドルリソース</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reference/ref-resources.html">デプロイされたリソースの一覧</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">構成リファレンス</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reference/ref-fleet-yaml.html">fleet.yaml</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reference/ref-configuration.html">設定</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">ステータスと内部情報</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reference/ref-status-fields.html">クラスターとバンドルの状態</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reference/ref-registration.html">クラスター登録の内部情報</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../troubleshooting.html">トラブルシューティング</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">実験的機能</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../experimental-features/enableexperimental.html">実験的機能を有効にする</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../experimental-features/scheduling.html">スケジューリング</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../experimental-features/experimental-downstream-resource.html">リソースをダウンストリームクラスターに自動伝播する</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/ref-schedule.html">リソース参照のスケジュール</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">変更ログ</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../changelogs/v0.15.0.html">v0.15.0</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Continuous Delivery</span>
+    <span class="version">v0.15</span>
+  </div>
+  <ul class="components">
+        <li class="component">
+          <div class="title"><a href="../../../../admission-controller/1.36/en/introduction.html">Admission Controller</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../admission-controller/1.37/en/introduction.html">1.37-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../admission-controller/1.36/en/introduction.html">1.36</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.35/en/introduction.html">1.35</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.34/en/introduction.html">1.34</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.33/en/introduction.html">1.33</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.32/en/introduction.html">1.32</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.31/en/introduction.html">1.31</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.30/en/introduction.html">1.30</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.29/en/introduction.html">1.29</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.28/en/introduction.html">1.28</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../cluster-api/v0.26/en/index.html">Cluster API</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../cluster-api/v0.28/en/index.html">v0.28-dev</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.27/en/index.html">v0.27-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../cluster-api/v0.26/en/index.html">v0.26</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.25/en/index.html">0.25</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.24/en/index.html">0.24</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.23/en/index.html">0.23</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.22/en/index.html">0.22</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.21/en/index.html">0.21</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.20/en/index.html">0.20</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.19/en/index.html">0.19</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.18/en/index.html">0.18</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.17/en/index.html">0.17</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.16/en/index.html">0.16</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.11/en/index.html">0.11</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component is-current">
+          <div class="title"><a href="../../../next/en/index.html">Continuous Delivery</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../next/en/index.html">Next</a>
+            </li>
+            <li class="version is-current">
+              <a href="../../en/index.html">v0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../v0.11/en/index.html">0.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../v0.10/en/index.html">0.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../v0.9/en/index.html">0.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../k3s/latest/en/introduction.html">K3s</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../k3s/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../os-manager/1.9/en/index.html">OS Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../os-manager/1.10/en/index.html">1.10-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../os-manager/1.9/en/index.html">1.9</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.8/en/index.html">1.8</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.7/en/index.html">1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.6/en/index.html">1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.5/en/index.html">1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-ai/latest/en/introduction.html">Rancher AI</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-ai/latest/en/introduction.html">latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../turtles/stable/en/index.html">Rancher Turtles</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../turtles/stable/en/index.html">Stable</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rke2/latest/en/introduction.html">RKE2</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rke2/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-observability/latest/en/classic.html">SUSE Observability</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../suse-observability/latest/en/classic.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">SUSE Rancher Developer Access</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">SUSE® Rancher for AWS</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-manager/v2.14/en/about-rancher/what-is-rancher.html">SUSE® Rancher Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.15/en/about-rancher/what-is-rancher.html">v2.15 (Unreleased)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../rancher-manager/v2.14/en/about-rancher/what-is-rancher.html">v2.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.13/en/about-rancher/what-is-rancher.html">v2.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.12/en/about-rancher/what-is-rancher.html">v2.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.11/en/about-rancher/what-is-rancher.html">v2.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.10/en/about-rancher/what-is-rancher.html">v2.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.9/en/about-rancher/what-is-rancher.html">v2.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../security/5.6/en/overview.html">SUSE® Security</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../security/5.6/en/overview.html">5.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.5/en/overview.html">5.5</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.4/en/overview.html">5.4</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.3/en/overview.html">5.3</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../storage/1.11/en/longhorn-documentation.html">SUSE® Storage</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../storage/1.12/en/longhorn-documentation.html">1.12 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../storage/1.11/en/longhorn-documentation.html">1.11 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../storage/1.10/en/longhorn-documentation.html">1.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../storage/1.9/en/longhorn-documentation.html">1.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">SUSE® Virtual Clusters</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/1.2.0/en/release-notes/version-1.2.0.html">v1.2.0 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">v1.1.0-latest</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/1.0.2/en/release-notes/version-1.0.2.html">v1.0.2</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.1/en/introduction.html">v1.0.1</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.0/en/introduction.html">v1.0.0</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../virtualization/v1.8/en/introduction/overview.html">SUSE® Virtualization</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../virtualization/v1.9/en/introduction/overview.html">v1.9 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../virtualization/v1.8/en/introduction/overview.html">v1.8 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../virtualization/v1.7/en/introduction/overview.html">v1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../../virtualization/v1.6/en/introduction/overview.html">v1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../virtualization/v1.5/en/introduction/overview.html">v1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../vulnerability-scanner/0.12.0/en/introduction.html">Vulnerability Scanner</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../vulnerability-scanner/0.12.0/en/introduction.html">0.12.0</a>
+            </li>
+            <li class="version">
+              <a href="../../../../vulnerability-scanner/0.11.3/en/introduction.html">0.11.3</a>
+            </li>
+          </ul>
+        </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+<ul>
+    <li>
+  <a class="home-link-dsc" href="https://documentation.suse.com" title="SUSE Documentation Home" aria-label="SUSE Documentation Home"></a>
+    </li>
+    <li>
+      <a href="https://documentation.suse.com/cloudnative/continuous-delivery" title="Continuous Delivery" aria-label="SUSE Documentation - Continuous Delivery">
+        Continuous Delivery
+      </a>
+    </li>
+      <li>
+          オペレーター向けハウツー
+      </li>
+  </ul>
+</nav>
+<div class="page-versions">
+  <button class="version-menu-toggle" title="Show other versions of page">v0.15</button>
+  <div class="version-menu">
+    <a class="version is-missing" href="../../../next/en/index.html">Next</a>
+    <a class="version is-current" href="cluster-registration.html">v0.15</a>
+    <a class="version is-missing" href="../../../v0.14/en/index.html">0.14</a>
+    <a class="version is-missing" href="../../../v0.13/en/index.html">0.13</a>
+    <a class="version is-missing" href="../../../v0.12/en/index.html">0.12</a>
+    <a class="version is-missing" href="../../../v0.11/en/index.html">0.11</a>
+    <a class="version is-missing" href="../../../v0.10/en/index.html">0.10</a>
+    <a class="version is-missing" href="../../../v0.9/en/index.html">0.9</a>
+  </div>
+</div>
+      <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <label class="visual-search-label-bc" for="search-input">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+          <input label="Search" aria-label="Search" id="search-input" type="text" placeholder="ドキュメントを検索" >
+          <label class="filter checkbox" style="display: none">
+            <input type="checkbox" data-facet-filter="component:continuous-delivery" checked> Only this project
+          </label>
+        </div>
+      </div>
+</div>
+  <div class="content">
+<aside
+  class="toc sidebar"
+  data-title="このページで" data-levels="2">
+  <div class="toc-menu">
+    <div class="docsurvey-wrapper"><a class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_diCzHC9xxyJyuN0">Documentation survey</a></div>
+    <!-- start qualtrics -->
+    <div id='ZN_8qZUmklKYbBqAYe'><!--DO NOT REMOVE-CONTENTS PLACED HERE--></div>
+    <div id="qualtrics_container"></div>
+    <!-- end qualtrics -->
+  </div>
+</aside>
+
+<aside class="toc sidebar docsurvey-sidebar">
+  <div class="toc-menu">
+    <div class="docsurvey-wrapper"><a class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_diCzHC9xxyJyuN0">Documentation survey</a></div>
+  </div>
+</aside>
+<article class="doc">
+<h1 class="page">ダウンストリームクラスターの登録</h1>
+<div class="sect1">
+<h2 id="_overview"><a class="anchor" href="#_overview"></a>概要</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>クラスターを登録するための特定の方法が2つあります。これらのスタイルは、*agent-initiated*および*manager-initiated*の登録と呼ばれます。通常はエージェント主導の登録を選択しますが、マネージャー主導の方が適している特定のユースケースもあります。</p>
+</div>
+<div class="sect2">
+<h3 id="_agent_initiated_registration"><a class="anchor" href="#_agent_initiated_registration"></a>エージェント主導の登録</h3>
+<div class="paragraph">
+<p>エージェント主導とは、ダウンストリームクラスターが<a href="#_create_cluster_registration_tokens">クラスター登録トークン</a>とオプションでクライアントIDを使用してエージェントをインストールするパターンを指します。その後、クラスターエージェントはSUSE® Rancher Prime Continuous DeliveryマネージャーにAPIリクエストを行い、登録プロセスを開始します。このプロセスを使用すると、マネージャーはダウンストリームクラスターに対して外部APIリクエストを行うことはなく、したがって直接ネットワークアクセスを持つ必要はありません。</p>
+</div>
+<div class="paragraph">
+<p>これはRancherでは一般的に使用されていません。Rancherはダウンストリームクラスターに対して外部APIリクエストを行う必要がなく、トンネルを使用して接続を提供します。</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_manager_initiated_registration"><a class="anchor" href="#_manager_initiated_registration"></a>マネージャー主導の登録</h3>
+<div class="paragraph">
+<p>マネージャー主導の登録は、既存のKubernetesクラスターをSUSE® Rancher Prime Continuous Deliveryマネージャーに登録し、SUSE® Rancher Prime Continuous DeliveryマネージャーがダウンストリームクラスターにAPIコールを行ってエージェントをデプロイするプロセスです。このスタイルは、Fleetマネージャーが登録プロセスのためにダウンストリームクラスターAPIサーバーと通信できる必要があるため、追加のネットワークアクセス要件を生じる可能性があります。
+クラスターが登録された後、マネージャーがダウンストリームクラスターAPIに連絡する必要はありません。 このスタイルは、 <a href="https://github.com/kubernetes-sigs/cluster-api">cluster-api</a>や <a href="https://github.com/rancher/rancher">Rancher</a>のようなツールを用いて、すべてのKubernetesクラスターの作成をGitOpsで管理する場合に、より適しています。</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">機能</th>
+<th class="tableblock halign-left valign-top">エージェント主導の登録</th>
+<th class="tableblock halign-left valign-top">マネージャー主導の登録（Rancherモード）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>登録イニシエーター</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ダウンストリームクラスターは、エージェントをデプロイすることによって登録プロセスを開始します。</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fleetマネージャー（アップストリームクラスター）が登録プロセスを開始します。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>必要条件:アップストリーム管理者アクション</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>手動の管理者アクション</strong>が必要で、アップストリームに`ClusterRegistrationToken`リソースを作成します。このトークンはエージェントの認証に必要です。</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ダウンストリームクラスターの有効なkubeconfigを含む`Cluster`Kubernetes <strong>Secret</strong>を参照するリソースをFleet Managerで作成する必要があります。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>主要なメカニズム</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">手動で生成された<strong>クラスター登録トークン</strong>を使用して、ダウンストリームクラスターにHelm経由でFleetエージェントをインストールします。</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fleetコントローラーは、提供された<strong>kubeconfig</strong>を使用して、ダウンストリームクラスターのAPIサーバーにAPIコールを行い、エージェントをデプロイします。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>登録ネットワークの方向</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">通信は<strong>管理されたクラスターから</strong>Fleetコントローラー（アップストリーム）に流れます。これは登録資格情報のためのプルメカニズムです。</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">マネージャーはエージェントをデプロイするためにダウンストリームクラスターAPIサーバーへの接続（プッシュ）を開始します。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>ネットワーク要件（マネージャー）</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fleet Managerは <strong>ダウンストリームクラスターAPIへの直接の受信ネットワークアクセス</strong>を必要としません。クラスターはプライベートネットワークやNATの背後で実行できます。</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fleet Managerは登録フェーズ中に<strong>ダウンストリームのクラスターAPIサーバーと直接通信できる</strong>必要があります。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>ネットワーク要件（エージェント）</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ダウンストリームクラスターはFleet Managerへの<strong>外向きHTTPSコール</strong>を行うことができる必要があります。</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ダウンストリームクラスターはFleet Managerへの外向きHTTPSコールを行うことができる必要があります（デプロイ後、通信とデータ同期のため）。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>データ同期（プル）</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">エージェントはFleetコントローラーから設定バンドルとエージェントの更新をプルします（2段階プルモデルの一部）。</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">エージェントはFleetコントローラーから設定バンドルとエージェントの更新をプルします。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>エージェント管理（プッシュ/再デプロイ）</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">アップストリームコントローラーは通常、エージェントデプロイメントに対するプロアクティブな管理アクション（プッシュ）に必要な直接的なネットワークアクセス/資格情報を<strong>持っていません</strong>。</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">初期デプロイメントメカニズムは、マネージャーに明示的なアクセスを付与します。このインフラストラクチャは、管理アクション（例：kubeconfigを使用してデプロイメントをトリガーする）に使用できます。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>エージェント再デプロイ制御フィールド</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">`redeployAgentGeneration`フィールド（`ClusterSpec`上）は、アップストリームコントローラーによって再デプロイをトリガーするために<strong>使用されていません</strong>。マネージャーは、ダウンストリームエージェントデプロイメントを直接操作するために必要なAPIアクセスを持っていません。</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">`redeployAgentGeneration`フィールドは、`ClusterSpec`上でFleet Controllerによってエージェントの再展開を<strong>強制するためにインクリメントできます</strong>。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>エージェント採用登録後</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">トークンを使用して初期登録を行った後、エージェントは`manageagent`コントローラーによって作成されたバンドルを介して標準管理ライフサイクルに組み込まれます。</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Rancherコンテキスト</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">この方法は、Rancherダッシュボードを通じてクラスターを登録する際には<strong>一般的に使用されません</strong>。</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">この方法は、Rancherダッシュボードを介してクラスターを追加する際に<strong>使用されます</strong>（しばしば、ダウンストリームのkubeconfigをアップストリームにプロキシするRancherエージェントを介して）。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>登録後トークンステータス</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">エージェントは成功後に登録トークンを忘れます。再登録のためには新しいトークンを生成する必要があります。</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">該当なし；登録トークン/kubeconfig管理はFleet Managerによって内部的に処理されます。</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_agent_initiated"><a class="anchor" href="#_agent_initiated"></a>エージェント主導</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>ダウンストリームクラスターは、ヘルムを介してエージェントをインストールし、*クラスター登録トークン*とオプションで*クライアントID*または*クラスターラベル*を使用して登録されます。</p>
+</div>
+<div class="paragraph">
+<p>アップストリームのクラスターリソースには+kubecConfigSecret+フィールドがなく、Fleet ManagerはダウンストリームクラスターAPIサーバーと通信する必要がありません。しかし、エージェントのためのバンドルが作成され、エージェントはそのバンドルから更新されます。バンドルは異なる命名スキームを使用するため、ダウンストリームクラスターには2つのHelmチャートが存在することになります。</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="重要"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Fleet Managerを<a href="installation.html#_configuration_for_multi_cluster" class="xref page">マルチクラスター</a>のために設定する必要はありません。Helmを介してインストールするダウンストリームエージェントは、アップストリームクラスターのKubernetes APIに直接接続します。</p>
+</div>
+<div class="paragraph">
+<p>エージェント主導の登録は、通常Rancherでは使用されません。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_cluster_registration_token_and_client_id"><a class="anchor" href="#_cluster_registration_token_and_client_id"></a>クラスター登録トークンとクライアントID</h3>
+<div class="paragraph">
+<p>*クラスター登録トークン*は、ダウンストリームクラスターエージェントが登録プロセスを開始することを許可する資格情報です。これは必須です。
+<a href="../explanations/architecture.html#_security" class="xref page">クラスター登録トークン</a>は、<code>values.yaml`ファイルとして表現され、`helm install`プロセスに渡されます。
+代わりに、トークンを</code>--set token="$token"`を介してhelm installコマンドに直接渡すことができます。</p>
+</div>
+<div class="paragraph">
+<p>エージェントを登録するスタイルは2つあります。このエージェントのためにクラスターを動的に作成することができ、その場合、登録時に*クラスターラベル*を指定したいと思うでしょう。 または、エージェントをSUSE® Rancher Prime Continuous Deliveryマネージャーの事前定義されたクラスターに登録させることができ、その場合は*クライアントID*が必要です。 前者のアプローチは通常最も簡単です。</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_install_agent_for_a_new_cluster"><a class="anchor" href="#_install_agent_for_a_new_cluster"></a>新しいクラスター用にエージェントをインストールする</h3>
+<div class="paragraph">
+<p>SUSE® Rancher Prime Continuous DeliveryエージェントはHelmチャートとしてインストールされます。以下は、そのパラメータを決定し設定する方法の説明です。</p>
+</div>
+<div class="paragraph">
+<p>まず、<a href="#_create_cluster_registration_tokens">クラスター登録トークンの指示</a>に従って、`values.yaml`を取得します。これには、SUSE® Rancher Prime Continuous Deliveryクラスターに対して認証するための登録トークンが含まれています。</p>
+</div>
+<div class="paragraph">
+<p>次に、オプションとして、登録時に新しく作成されたクラスターに割り当てられるラベルを定義できます。登録が完了した後、エージェントはクラスターのラベルを変更することはできません。クラスターラベルを追加するには、以下のHelmコマンドに`--set-string labels.KEY=VALUE`を追加します。ラベル`foo=bar`と`bar=baz`を追加するには、コマンドラインに`--set-string labels.foo=bar --set-string labels.bar=baz`を追加します。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell"># Leave blank if you do not want any labels
+CLUSTER_LABELS="--set-string labels.example=true --set-string labels.env=dev"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>第三に、下流クラスターが接続に使用するために、SUSE® Rancher Prime Continuous DeliveryクラスターのAPIサーバーURLとCAで変数を設定します。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">API_SERVER_URL=https://&lt;API_URL&gt;:6443
+API_SERVER_CA_DATA=...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>APIサーバーがhttpsポート（443）でリスン(する)していない場合、<code>API_SERVER_URL`にはポートを含める必要があります。例えば、`https://&lt;API_URL&gt;:6443`のように。URLは</code>.kube/config`ファイルにあります。</p>
+</div>
+<div class="paragraph">
+<p><code>API_SERVER_CA_DATA`の値は、上流クラスターに接続するための有効なデータを持つ</code>.kube/config`ファイルから取得できます（`certificate-authority-data`キーの下）。また、上流クラスター内から、デフォルトのServiceAccountシークレット名（通常は`default-token-`で始まり、デフォルトのネームスペースにあります）を調べることで取得できます。`ca.crt`キーの下。</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="注意"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>適切なネームスペースとリリース名を使用してください</strong>:
+エージェントチャートのネームスペースは`cattle-fleet-system`で、リリース名は`fleet-agent`でなければなりません。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="注意"></i>
+</td>
+<td class="content">
+<div class="title">Kubectlコンテキスト</div>
+<div class="paragraph">
+<p><strong>正しいクラスターにインストールしていることを確認してください</strong>:
+Helmは`${HOME}/.kube/config`のデフォルトコンテキストを使用してエージェントをデプロイします。<code>--kubeconfig`と</code>--kube-context`を使用して、Helmがインストールするクラスターを変更します。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="注意"></i>
+</td>
+<td class="content">
+<div class="title">SUSE® Rancher Prime Continuous DeliveryRancher内の</div>
+<div class="paragraph">
+<p>RancherはSUSE® Rancher Prime Continuous Delivery用の別々のHelmチャートを持ち、異なるリポジトリを使用します。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>FleetのHelmリポジトリを追加します。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">helm repo add fleet https://rancher.github.io/fleet-helm-charts/</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>最後に、Helmを使用してエージェントをインストールします。</p>
+</div>
+<div id="_tabs_1" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_1_クライアントマシンに" class="tab">
+<p>クライアントマシンに</p>
+</li>
+<li id="_tabs_1_確認" class="tab">
+<p>確認</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_1_クライアントマシンに--panel" class="tabpanel" aria-labelledby="_tabs_1_クライアントマシンに">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">helm -n cattle-fleet-system install --create-namespace --wait \
+    --set clientID="$CLUSTER_CLIENT_ID" \
+    --values values.yaml \
+    fleet-agent fleet/fleet-agent</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_確認--panel" class="tabpanel" aria-labelledby="_tabs_1_確認">
+<div class="paragraph">
+<p>以下のコマンドを実行して、Fleetポッドのステータスを確認できます。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell"># Ensure kubectl is pointing to the right cluster kubectl -n cattle-fleet-system logs -l app=fleet-agent kubectl -n cattle-fleet-system get pods -l app=fleet-agent</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>エージェントは今やデプロイされているはずです。</p>
+</div>
+<div class="paragraph">
+<p>さらに、SUSE® Rancher Prime Continuous Deliveryマネージャーに新しいクラスターが登録されているのが見えるはずです。 以下は、新しいクラスターが`clusters` <a href="../explanations/namespaces.html" class="xref page">ネームスペース</a>に登録されたことを確認する例です。 このコマンドを実行するには、`${HOME}/.kube/config`がFleetマネージャーを指していることを確認してください。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">kubectl -n clusters get clusters.fleet.cattle.io</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>NAME                   BUNDLES-READY   NODES-READY   SAMPLE-NODE             LAST-SEEN              STATUS
+cluster-ab13e54400f1   1/1             1/1           k3d-cluster2-server-0   2020-08-31T19:23:10Z</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_install_agent_for_a_predefined_cluster"><a class="anchor" href="#_install_agent_for_a_predefined_cluster"></a>事前定義されたクラスターのためのエージェントをインストール</h3>
+<div class="paragraph">
+<p>クライアントIDは、既存のラベルとそれにターゲットを絞ったリポジトリを持つSUSE® Rancher Prime Continuous Deliveryマネージャーでクラスターを事前定義する目的で使用されます。
+クライアントIDは必須ではなく、クラスターを管理するための一つのアプローチです。
+*クライアントID*は、クラスターを識別するためのユニークな文字列です。
+この文字列はユーザー生成であり、SUSE® Rancher Prime Continuous Deliveryマネージャーとエージェントには不透明です。 十分にユニークであると想定されています。セキュリティ上の理由から、この値を簡単に推測できるべきではありません。そうでないと、一つのクラスターが別のクラスターを偽装する可能性があります。 クライアントIDはオプションであり、指定されていない場合は、`kube-system`名前空間リソースのUIDフィールドがクライアントIDとして使用されます。登録時に、クライアントIDが`Cluster`リソースのSUSE® Rancher Prime Continuous Deliveryマネージャーに見つかった場合、そのエージェントはその`Cluster`に関連付けられます。 そのクライアントIDを持つ`Cluster`リソースが見つからない場合、新しい`Cluster`リソースが特定のクライアントIDで作成されます。</p>
+</div>
+<div class="paragraph">
+<p>SUSE® Rancher Prime Continuous DeliveryエージェントはHelmチャートとしてインストールされます。ヘルムチャートのインストールに必要なパラメータは、クラスター登録トークンのみであり、これは`values.yaml`ファイルで表され、クライアントIDです。 クライアントIDはオプションです。</p>
+</div>
+<div class="paragraph">
+<p>まず、選択したランダムなクライアントIDで`Cluster`をSUSE® Rancher Prime Continuous Deliveryマネージャーに作成します。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">kind: Cluster
+apiVersion: fleet.cattle.io/v1alpha1
+metadata:
+  name: my-cluster
+  namespace: clusters
+spec:
+  clientID: "really-random"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>次に、[クラスター登録トークンの指示](#create-cluster-registration-tokens)に従って、使用する`values.yaml`ファイルを取得します。</p>
+</div>
+<div class="paragraph">
+<p>次に、クライアントIDを使用するように環境をセットアップします。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">CLUSTER_CLIENT_ID="really-random"</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="注記"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>適切なネームスペースとリリース名を使用してください</strong>:
+エージェントチャートのネームスペースは`cattle-fleet-system`で、リリース名は`fleet-agent`でなければなりません。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="注記"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>正しいクラスターにインストールしていることを確認してください</strong>:
+Helmは`${HOME}/.kube/config`のデフォルトコンテキストを使用してエージェントをデプロイします。<code>--kubeconfig`と</code>--kube-context`を使用して、Helmがインストールするクラスターを変更します。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>FleetのHelmリポジトリを追加します。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">helm repo add fleet https://rancher.github.io/fleet-helm-charts/</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>最後に、Helmを使用してエージェントをインストールします。</p>
+</div>
+<div id="_tabs_2" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_2_クライアントマシンに" class="tab">
+<p>クライアントマシンに</p>
+</li>
+<li id="_tabs_2_確認" class="tab">
+<p>確認</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_2_クライアントマシンに--panel" class="tabpanel" aria-labelledby="_tabs_2_クライアントマシンに">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">helm -n cattle-fleet-system install --create-namespace --wait \
+    --set clientID="$CLUSTER_CLIENT_ID" \
+    --values values.yaml \
+    fleet-agent fleet/fleet-agent</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_2_確認--panel" class="tabpanel" aria-labelledby="_tabs_2_確認">
+<div class="paragraph">
+<p>以下のコマンドを実行して、Fleetポッドのステータスを確認できます。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell"># Ensure kubectl is pointing to the right cluster kubectl -n cattle-fleet-system logs -l app=fleet-agent kubectl -n cattle-fleet-system get pods -l app=fleet-agent</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>エージェントは今やデプロイされているはずです。</p>
+</div>
+<div class="paragraph">
+<p>さらに、SUSE® Rancher Prime Continuous Deliveryマネージャーに新しいクラスターが登録されているのが見えるはずです。 以下は、新しいクラスターが`clusters` <a href="../explanations/namespaces.html" class="xref page">ネームスペース</a>に登録されたことを確認する例です。 このコマンドを実行するには、`${HOME}/.kube/config`がFleetマネージャーを指していることを確認してください。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">kubectl -n clusters get clusters.fleet.cattle.io</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>NAME                   BUNDLES-READY   NODES-READY   SAMPLE-NODE             LAST-SEEN              STATUS
+my-cluster             1/1             1/1           k3d-cluster2-server-0   2020-08-31T19:23:10Z</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_create_cluster_registration_tokens"><a class="anchor" href="#_create_cluster_registration_tokens"></a>クラスター登録トークンを作成します。</h3>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="重要"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>マネージャーが開始した登録には不要です</strong>：
+マネージャーが開始した登録の場合、トークンはSUSE® Rancher Prime Continuous Deliveryマネージャーによって管理され、手動で作成および取得する必要はありません。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>エージェントが開始した登録の場合、ダウンストリームのクラスターには<a href="../explanations/architecture.html#_security" class="xref page">クラスター登録トークン</a>が必要です。
+クラスター登録トークンは、クラスターの新しいアイデンティティを確立するために使用されます。内部的に、クラスター登録トークンは、特定の名前空間内で`ClusterRegistrationRequests`を作成する権限を持つKubernetesサービスアカウントを作成することによって管理されます。 クラスターが登録されると、そのクラスターのために新しい`ServiceAccount`が作成され、クラスターのユニークなアイデンティティとして使用されます。エージェントは、登録後にクラスター登録トークンを忘れるように設計されています。エージェントは成功した登録後にクラスター登録トークンへの参照を保持しませんが、通常は他のシステムブートストラップスクリプトが保持しますのでご注意ください。</p>
+</div>
+<div class="paragraph">
+<p>クラスター登録トークンが忘れられるため、クラスターを再登録する必要がある場合は、新しい登録トークンをクラスターに与える必要があります。</p>
+</div>
+<div class="sect3">
+<h4 id="_token_ttl"><a class="anchor" href="#_token_ttl"></a>トークンのTTL</h4>
+<div class="paragraph">
+<p>クラスター登録トークンは、ネームスペース内の任意のクラスターによって再利用できます。 トークンにはTTLを設定でき、特定の時間が経過した後に期限切れになります。</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_create_a_new_token"><a class="anchor" href="#_create_a_new_token"></a>新しいトークンを作成します。</h4>
+<div class="paragraph">
+<p>`ClusterRegistationToken`はネームスペース型であり、`GitRepo`および`ClusterGroup`リソースを作成するのと同じネームスペースで作成する必要があります。SUSE® Rancher Prime Continuous Deliveryでネームスペースがどのように使用されるかの詳細については、<a href="../explanations/namespaces.html" class="xref page">ネームスペース</a>に関するドキュメントを参照してください。 以下のYAMLで新しいトークンを作成します。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">kind: ClusterRegistrationToken
+apiVersion: "fleet.cattle.io/v1alpha1"
+metadata:
+    name: new-token
+    namespace: clusters
+spec:
+    # A duration string for how long this token is valid for. A value &lt;= 0 or null means infinite time.
+    ttl: 240h</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>`ClusterRegistrationToken`が作成されると、SUSE® Rancher Prime Continuous Deliveryは同じ名前の対応する`Secret`を作成します。
+`Secret`の作成は非同期で行われるため、使用する前に利用可能になるまで待つ必要があります。</p>
+</div>
+<div class="paragraph">
+<p>その方法の一つは、以下のワンライナーを使用することです：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">while ! kubectl --namespace=clusters  get secret new-token; do sleep 5; done</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_obtaining_token_value_agent_values_yaml"><a class="anchor" href="#_obtaining_token_value_agent_values_yaml"></a>トークン値の取得（エージェントのvalues.yaml）</h4>
+<div class="paragraph">
+<p>トークン値には、ダウンストリームクラスターにSUSE® Rancher Prime Continuous Deliveryエージェントをインストールするために`helm install`に渡されることが期待される`values.yaml`ファイルのYAMLコンテンツが含まれています。</p>
+</div>
+<div class="paragraph">
+<p>その値は、上記の`Secret`の`values`フィールドに含まれています。上記の例のYAMLコンテンツを取得するには、以下のワンライナーを実行できます：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">kubectl --namespace clusters get secret new-token -o 'jsonpath={.data.values}' | base64 --decode &gt; values.yaml</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>`values.yaml`が準備できると、TTLの期限が切れるまで、各クラスターがそのを用いて登録を繰り返すことができます。</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_manager_initiated"><a class="anchor" href="#_manager_initiated"></a>マネージャーによる開始</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>マネージャーが開始する登録フローは、SUSE® Rancher Prime Continuous Deliveryマネージャー内に、データフィールドに`value`と呼ばれる有効なkubeconfigファイルを含むKubernetesの`Secret`を参照する`Cluster`リソースを作成することによって実現されます。</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="重要"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>SUSE® Rancher Prime Continuous Deliveryスタンドアロン_Rancherなし_を使用している場合は、<a href="installation.html#_configuration_for_multi_cluster" class="xref page">インストールの詳細</a>に記載されているようにインストールする必要があります。</p>
+</div>
+<div class="paragraph">
+<p>マネージャーが開始した登録は、Rancherダッシュボードからクラスタを追加する際に使用されます。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_create_kubeconfig_secret"><a class="anchor" href="#_create_kubeconfig_secret"></a>Kubeconfigシークレットを作成する</h3>
+<div class="paragraph">
+<p>このシークレットの形式は、 <a href="https://cluster-api.sigs.k8s.io/developer/architecture/controllers/cluster#secrets">形式</a>が <a href="https://github.com/kubernetes-sigs/cluster-api">cluster-api</a>で使用されるkubeconfigシークレットと一致することを意図しています。
+これは、`cluster-api`を使用してSUSE® Rancher Prime Continuous Deliveryに動的に登録されるクラスタを作成できることを意味します。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">title="Kubeconfig Secret Example"
+kind: Secret
+apiVersion: v1
+metadata:
+  name: my-cluster-kubeconfig
+  namespace: clusters
+data:
+  value: YXBpVmVyc2lvbjogdjEKY2x1c3RlcnM6Ci0gY2x1c3RlcjoKICAgIHNlcnZlcjogaHR0cHM6Ly9leGFtcGxlLmNvbTo2NDQzCiAgbmFtZTogY2x1c3Rlcgpjb250ZXh0czoKLSBjb250ZXh0OgogICAgY2x1c3RlcjogY2x1c3RlcgogICAgdXNlcjogdXNlcgogIG5hbWU6IGRlZmF1bHQKY3VycmVudC1jb250ZXh0OiBkZWZhdWx0CmtpbmQ6IENvbmZpZwpwcmVmZXJlbmNlczoge30KdXNlcnM6Ci0gbmFtZTogdXNlcgogIHVzZXI6CiAgICB0b2tlbjogc29tZXRoaW5nCg==</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_create_cluster_resource"><a class="anchor" href="#_create_cluster_resource"></a>クラスタリソースを作成する</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>クラスタリソースはkubeconfigシークレットを参照する必要があります。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">title="Cluster Resource Example"
+apiVersion: fleet.cattle.io/v1alpha1
+kind: Cluster
+metadata:
+  name: my-cluster
+  namespace: clusters
+  labels:
+    demo: "true"
+    env: dev
+spec:
+  kubeConfigSecret: my-cluster-kubeconfig</code></pre>
+</div>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="installation.html">インストール詳細</a></span>
+  <span class="next"><a href="cluster-group.html">クラスタグループの作成</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<script src="../../../../_/js/site.js"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+<script src="../../../../_/js/vendor/lunr.js"></script>
+<script src="../../../../_/js/vendor/lunr-languages.js"></script>
+<script src="../../../../_/js/search-ui.js" id="search-ui-script" data-site-root-path="../../../.." data-snippet-length="100" data-stylesheet="../../../../_/css/search.css"></script>
+<script async src="../../../../search-index.js"></script>
+<script src="../../../../_/js/vendor/langSelection.js"></script>
+<script async src="../../../../_/js/vendor/tabs.js"></script>
+
+
+<script src="../../../../_/js/CNLanguageSwitcher.js"></script>
+  </body>
+</html>

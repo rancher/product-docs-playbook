@@ -1,0 +1,1384 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Génération de différences pour ignorer les GitRepos modifiés | Continuous Delivery  v0.15</title>
+    <link rel="canonical" href="https://documentation.suse.com/cloudnative/continuous-delivery/v0.15/fr/how-tos-for-users/bundle-diffs.html">
+    <link rel="prev" href="gitrepo-targets.html">
+    <link rel="next" href="webhook.html">
+    <meta name="generator" content="Antora 3.1.14">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+<meta http-equiv="last-modified" content="2025-07-23"/>
+<link rel="stylesheet" href="../../../../_/css/search.css">
+<link rel="icon" href="../../../../_/img/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="../../../../_/css/font-styles.css">
+<link rel="stylesheet" href="../../../../_/fonts/css/all.css">
+<link rel="stylesheet" href="../../../../_/css/site-extra.css">
+<link rel="stylesheet" href="../../../../_/css/vendor/tabs.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap&family=SUSE+Mono:ital,wght@0,100..800;1,100..800" rel="stylesheet">
+<link rel="stylesheet" href="../../../../_/css/vendor/light.css">
+<script src="/docserv/res/lightheaded/analytics.js" type="text/javascript"></script>
+<script type="module">
+  import { defineCustomElements, setAssetPath } from 'https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/shared-header.esm.js';
+  defineCustomElements();
+  setAssetPath("https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/assets");
+</script>
+<!-- Default English link -->
+<link href="https://documentation.suse.com/cloudnative/continuous-delivery/v0.15/en/how-tos-for-users/bundle-diffs.html" hreflang="x-default" rel="alternate"/>
+<!-- Link for the currently processed page -->
+<link href="https://documentation.suse.com/cloudnative/continuous-delivery/v0.15/fr/how-tos-for-users/bundle-diffs.html" hrefLang="fr-FR" rel="alternate" />
+<!-- Link for the English page -->
+<link href="https://documentation.suse.com/cloudnative/continuous-delivery/v0.15/en/how-tos-for-users/bundle-diffs.html" hreflang="en-US" rel="alternate" />
+<!-- Link for the Japanese page -->
+<link href="https://documentation.suse.com/cloudnative/continuous-delivery/v0.15/ja/how-tos-for-users/bundle-diffs.html" hreflang="ja-JP" rel="alternate" />
+<!-- Link for the Chinese page -->
+<link href="https://documentation.suse.com/cloudnative/continuous-delivery/v0.15/zh/how-tos-for-users/bundle-diffs.html" hreflang="zh-CN" rel="alternate" />
+<!-- Link for the German page -->
+<link href="https://documentation.suse.com/cloudnative/continuous-delivery/v0.15/de/how-tos-for-users/bundle-diffs.html" hreflang="de-DE" rel="alternate" />
+<!-- Link for the Spanish page -->
+<link href="https://documentation.suse.com/cloudnative/continuous-delivery/v0.15/es/how-tos-for-users/bundle-diffs.html" hreflang="es-ES" rel="alternate" />
+<!-- Link for the Brazilian Portuguese page -->
+<link href="https://documentation.suse.com/cloudnative/continuous-delivery/v0.15/pt/how-tos-for-users/bundle-diffs.html" hreflang="pt-BR" rel="alternate" />
+
+<!-- JSON-LD for doc metadata -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Génération de différences pour ignorer les GitRepos modifiés | SUSE Rancher Prime Continuous Delivery v0.15",
+  "headline": "Génération de différences pour ignorer les GitRepos modifiés",
+  "description": "Génération de différences pour ignorer les GitRepos modifiés",
+  "inLanguage": "fr",
+  "dateModified": "2025-07-23T00:00:00Z",
+  "author": {
+    "@type": "Organization",
+    "name": "SUSE Product & Solution Documentation Team",
+    "url": "https://documentation.suse.com"
+  },
+  "mentions": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "SUSE Rancher Prime Continuous Delivery",
+      "softwareVersion": "v0.15",
+      "applicationCategory": "Cloud Infrastructure",
+      "operatingSystem": "Linux"
+    }
+  ],
+  "publisher": {
+    "@type": "Organization",
+    "name": "SUSE",
+    "url": "https://documentation.suse.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.suse.com/assets/img/suse-white-logo-green.svg"
+    }
+  }
+}
+</script>
+<!-- end JSON-LD for doc metadata -->
+
+<!-- SUVA - Begin Ask Geeko-->
+<!--
+searchUnifyChatbot ("Ask Geeko") Copyright ©2024 Grazitti Interactive - All Rights Reserved. NOTICE: All information contained herein is, and remains the property of Grazitti Interactive and its suppliers, if any. The intellectual and technical concepts contained herein are proprietary to Grazitti Interactive and its suppliers and may be covered by India, U.S. and Foreign Patents, patents in process, and are protected by trade secret or copyright law. Dissemination of this information or reproduction of this material is strictly forbidden unless prior written permission is obtained from Grazitti Interactive.
+-->
+<meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport"/>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/Allow/an.js?c485cb3c-93d4-4942-99e8-91f3b8ca5636"></script>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/js/index.js?q=gAAAAABp3JBN9VuEJTi5tFafLIMwgMkCPdJS3Qm56lSYx93ir3Twt9hgSvd3OHEt6-nYfSbY3yHq0Zv8PRPsSy4nbqZiaJ4cZvRc6ItVZdvwz9Urf35cH6OUyPOwdA0phlS-zVIznQ2rWW438p-91NlTHuxJuOFpnA=="></script>
+<link rel="stylesheet" href="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/css/index.css">
+<div id="searchUnifyChatbot"></div>
+<!-- SUVA - End Ask Geeko-->
+<!--BEGIN QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+<script type='text/javascript' src="../../../../_/js/qualtrics.js" defer></script>
+<!--END QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<script type="module">import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs'; mermaid.initialize({"startOnLoad":true});</script><shared-header
+language="en"
+languages='{
+    "en": { "label": "English", "url": "https://documentation.suse.com/en-us/" },
+    "de": { "label": "Deutsch", "url": "https://documentation.suse.com/de-de/" },
+    "fr": { "label": "Français", "url": "https://documentation.suse.com/fr-fr/" },
+    "es": { "label": "Español", "url": "https://documentation.suse.com/es-es/" },
+    "zh_CN": { "label": "中文", "url": "https://documentation.suse.com/zh-cn/" },
+    "pt_BR": { "label": "Português Brasileiro", "url": "https://documentation.suse.com/pt-br/" }
+}'
+enable-search='false'>
+</shared-header>
+<div class="body">
+<div class="nav-container" data-component="continuous-delivery" data-version="v0.15">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title">Continuous Delivery</h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Présentation</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../persona.html">Personas clés et leurs rôles</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Didacticiels</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tutorials/quickstart.html">Quickstart</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tutorials/tut-deployment.html">Création d&#8217;un déploiement</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tutorials/uninstall.html">Uninstall</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Explications</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../explanations/architecture.html">Architecture</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../explanations/concepts.html">Concepts du noyau</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../explanations/ref-bundle-stages.html">Cycle de vie du bundle</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../explanations/gitrepo-content.html">Contenu du dépôt Git</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../explanations/namespaces.html">Espaces de noms</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../explanations/resources-during-deployment.html">Ressources personnalisées lors du déploiement</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../explanations/glossary.html">Ressources personnalisées lors du déploiement</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Procédures pour les opérateurs</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../how-tos-for-operators/installation.html">Détails de l&#8217;installation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../how-tos-for-operators/cluster-registration.html">Enregistrer des clusters en aval</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../how-tos-for-operators/cluster-group.html">Créer des groupes de clusters</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../how-tos-for-operators/multi-user.html">Configuration multi-utilisateur</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../how-tos-for-operators/resource-limits.html">Configurer les limites de ressources</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Procédures pour les utilisateurs</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="gitrepo-add.html">Créer une ressource GitRepo</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="gitrepo-targets.html">Mapping vers des clusters en aval</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="bundle-diffs.html">Générer des différences pour ignorer les GitRepos modifiés</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="webhook.html">Utiliser des webhooks au lieu du polling</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="imagescan.html">Utiliser l&#8217;analyse d&#8217;image pour mettre à jour les références d&#8217;image de conteneur</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="bundle-add.html">Créer une ressource bundle</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="observability.html">Observabilité</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="oci-storage.html">Stockage OCI</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="rollout.html">Stratégie de déploiement</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="helm-ops.html">Opérations Helm</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="fetch-helm-oci.html">Récupérer Helm Ops</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="fine-tune-error.html">Ajustement fin de la détection d&#8217;erreurs</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Fleet CLI</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="install-use-fleet-cli.html">Installer et utiliser Fleet CLI</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="validate-fleet-cli.html">Valider le déploiement de Fleet CLI</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Référence</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">CLI</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Fleet</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-cli/fleet.html">fleet</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-cli/fleet_apply.html">fleet apply</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-cli/fleet_bundlediff.html">fleet bundlediff</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-cli/fleet_deploy.html">fleet deploy</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-cli/fleet_target.html">fleet target</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-cli/fleet_gitcloner.html">fleet gitcloner</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Dépannage de Fleet</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-cli/fleet_analyze.html">fleet analyze</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-cli/fleet_monitor.html">fleet monitor</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-cli/fleet_dump.html">fleet dump</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Fleet Agent</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-agent/fleet-agent.html">fleet-agent</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-agent/fleet-agent_clusterstatus.html">fleet-agent clusterstatus</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-agent/fleet-agent_register.html">fleet-agent register</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Nettoyage</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-cli/cleanup/fleet_cleanup.html">fleet cleanup</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-cli/cleanup/fleet_cleanup_clusterregistration.html">fleet cluster registration cleanup</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-cli/cleanup/fleet_cleanup_gitjob.html">fleet gitjob cleanup</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Fleet Controller</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-controller/fleet-controller.html">fleet-controller</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-controller/fleet-controller_agentmanagement.html">fleet-controller agentmanagement</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-controller/fleet-controller_cleanup.html">fleet-controller cleanup</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../reference/cli/fleet-controller/fleet-controller_gitjob.html">fleet-gitjob</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Ressources et API</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reference/ref-crds.html">Spécification des Ressources Personnalisées</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reference/ref-crd-schema.html">Schéma CRD</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reference/ref-gitrepo.html">Ressource GitRepo</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reference/ref-bundle.html">Ressource Bundle</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reference/ref-resources.html">Liste des Ressources Déployées</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Référence de configuration :</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reference/ref-fleet-yaml.html">fleet.yaml</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reference/ref-configuration.html">Configuration</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Statut et Internes</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reference/ref-status-fields.html">État du Cluster et du Bundle</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reference/ref-registration.html">Internes de l&#8217;Enregistrement du Cluster</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../troubleshooting.html">Dépannage</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Fonctionnalités Expérimentales</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../experimental-features/enableexperimental.html">Activer les Fonctionnalités Expérimentales</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../experimental-features/scheduling.html">Planification</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../experimental-features/experimental-downstream-resource.html">Propagation automatisée des ressources vers les clusters en aval</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/ref-schedule.html">Référence de planification des ressources</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Changelog</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../changelogs/v0.15.0.html">v0.15.0</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Continuous Delivery</span>
+    <span class="version">v0.15</span>
+  </div>
+  <ul class="components">
+        <li class="component">
+          <div class="title"><a href="../../../../admission-controller/1.36/en/introduction.html">Admission Controller</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../admission-controller/1.37/en/introduction.html">1.37-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../admission-controller/1.36/en/introduction.html">1.36</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.35/en/introduction.html">1.35</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.34/en/introduction.html">1.34</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.33/en/introduction.html">1.33</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.32/en/introduction.html">1.32</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.31/en/introduction.html">1.31</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.30/en/introduction.html">1.30</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.29/en/introduction.html">1.29</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.28/en/introduction.html">1.28</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../cluster-api/v0.26/en/index.html">Cluster API</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../cluster-api/v0.28/en/index.html">v0.28-dev</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.27/en/index.html">v0.27-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../cluster-api/v0.26/en/index.html">v0.26</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.25/en/index.html">0.25</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.24/en/index.html">0.24</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.23/en/index.html">0.23</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.22/en/index.html">0.22</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.21/en/index.html">0.21</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.20/en/index.html">0.20</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.19/en/index.html">0.19</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.18/en/index.html">0.18</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.17/en/index.html">0.17</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.16/en/index.html">0.16</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.11/en/index.html">0.11</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component is-current">
+          <div class="title"><a href="../../../next/en/index.html">Continuous Delivery</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../next/en/index.html">Next</a>
+            </li>
+            <li class="version is-current">
+              <a href="../../en/index.html">v0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../v0.11/en/index.html">0.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../v0.10/en/index.html">0.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../v0.9/en/index.html">0.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../k3s/latest/en/introduction.html">K3s</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../k3s/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../os-manager/1.9/en/index.html">OS Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../os-manager/1.10/en/index.html">1.10-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../os-manager/1.9/en/index.html">1.9</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.8/en/index.html">1.8</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.7/en/index.html">1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.6/en/index.html">1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.5/en/index.html">1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-ai/latest/en/introduction.html">Rancher AI</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-ai/latest/en/introduction.html">latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../turtles/stable/en/index.html">Rancher Turtles</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../turtles/stable/en/index.html">Stable</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rke2/latest/en/introduction.html">RKE2</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rke2/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-observability/latest/en/classic.html">SUSE Observability</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../suse-observability/latest/en/classic.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">SUSE Rancher Developer Access</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">SUSE® Rancher for AWS</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-manager/v2.14/en/about-rancher/what-is-rancher.html">SUSE® Rancher Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.15/en/about-rancher/what-is-rancher.html">v2.15 (Unreleased)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../rancher-manager/v2.14/en/about-rancher/what-is-rancher.html">v2.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.13/en/about-rancher/what-is-rancher.html">v2.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.12/en/about-rancher/what-is-rancher.html">v2.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.11/en/about-rancher/what-is-rancher.html">v2.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.10/en/about-rancher/what-is-rancher.html">v2.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.9/en/about-rancher/what-is-rancher.html">v2.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../security/5.6/en/overview.html">SUSE® Security</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../security/5.6/en/overview.html">5.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.5/en/overview.html">5.5</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.4/en/overview.html">5.4</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.3/en/overview.html">5.3</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../storage/1.11/en/longhorn-documentation.html">SUSE® Storage</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../storage/1.12/en/longhorn-documentation.html">1.12 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../storage/1.11/en/longhorn-documentation.html">1.11 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../storage/1.10/en/longhorn-documentation.html">1.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../storage/1.9/en/longhorn-documentation.html">1.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">SUSE® Virtual Clusters</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/1.2.0/en/release-notes/version-1.2.0.html">v1.2.0 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">v1.1.0-latest</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/1.0.2/en/release-notes/version-1.0.2.html">v1.0.2</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.1/en/introduction.html">v1.0.1</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.0/en/introduction.html">v1.0.0</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../virtualization/v1.8/en/introduction/overview.html">SUSE® Virtualization</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../virtualization/v1.9/en/introduction/overview.html">v1.9 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../virtualization/v1.8/en/introduction/overview.html">v1.8 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../virtualization/v1.7/en/introduction/overview.html">v1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../../virtualization/v1.6/en/introduction/overview.html">v1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../virtualization/v1.5/en/introduction/overview.html">v1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../vulnerability-scanner/0.12.0/en/introduction.html">Vulnerability Scanner</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../vulnerability-scanner/0.12.0/en/introduction.html">0.12.0</a>
+            </li>
+            <li class="version">
+              <a href="../../../../vulnerability-scanner/0.11.3/en/introduction.html">0.11.3</a>
+            </li>
+          </ul>
+        </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+<ul>
+    <li>
+  <a class="home-link-dsc" href="https://documentation.suse.com" title="SUSE Documentation Home" aria-label="SUSE Documentation Home"></a>
+    </li>
+    <li>
+      <a href="https://documentation.suse.com/cloudnative/continuous-delivery" title="Continuous Delivery" aria-label="SUSE Documentation - Continuous Delivery">
+        Continuous Delivery
+      </a>
+    </li>
+      <li>
+          Procédures pour les utilisateurs
+      </li>
+  </ul>
+</nav>
+<div class="page-versions">
+  <button class="version-menu-toggle" title="Show other versions of page">v0.15</button>
+  <div class="version-menu">
+    <a class="version is-missing" href="../../../next/en/index.html">Next</a>
+    <a class="version is-current" href="bundle-diffs.html">v0.15</a>
+    <a class="version is-missing" href="../../../v0.14/en/index.html">0.14</a>
+    <a class="version is-missing" href="../../../v0.13/en/index.html">0.13</a>
+    <a class="version is-missing" href="../../../v0.12/en/index.html">0.12</a>
+    <a class="version is-missing" href="../../../v0.11/en/index.html">0.11</a>
+    <a class="version is-missing" href="../../../v0.10/en/index.html">0.10</a>
+    <a class="version is-missing" href="../../../v0.9/en/index.html">0.9</a>
+  </div>
+</div>
+      <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <label class="visual-search-label-bc" for="search-input">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+          <input label="Search" aria-label="Search" id="search-input" type="text" placeholder="Searchercher dans les documents" >
+          <label class="filter checkbox" style="display: none">
+            <input type="checkbox" data-facet-filter="component:continuous-delivery" checked> Only this project
+          </label>
+        </div>
+      </div>
+</div>
+  <div class="content">
+<aside
+  class="toc sidebar"
+  data-title="Sur cette page" data-levels="2">
+  <div class="toc-menu">
+    <div class="docsurvey-wrapper"><a class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_diCzHC9xxyJyuN0">Documentation survey</a></div>
+    <!-- start qualtrics -->
+    <div id='ZN_8qZUmklKYbBqAYe'><!--DO NOT REMOVE-CONTENTS PLACED HERE--></div>
+    <div id="qualtrics_container"></div>
+    <!-- end qualtrics -->
+  </div>
+</aside>
+
+<aside class="toc sidebar docsurvey-sidebar">
+  <div class="toc-menu">
+    <div class="docsurvey-wrapper"><a class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_diCzHC9xxyJyuN0">Documentation survey</a></div>
+  </div>
+</aside>
+<article class="doc">
+<h1 class="page">Génération de différences pour ignorer les GitRepos modifiés</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>La livraison continue dans Rancher est alimentée par SUSE® Rancher Prime Continuous Delivery. Lorsqu&#8217;un utilisateur ajoute un CR GitRepo, la livraison continue crée les bundles Fleet associés.</p>
+</div>
+<div class="paragraph">
+<p>Vous pouvez accéder à ces bundles en naviguant vers l&#8217;Explorateur de Cluster (interface de tableau de bord) et en sélectionnant la section <code>Bundles</code>.</p>
+</div>
+<div class="paragraph">
+<p>Les graphiques regroupés peuvent avoir certains objets qui sont modifiés à l&#8217;exécution, par exemple dans ValidatingWebhookConfiguration, le <code>caBundle</code> est vide et le certificat CA est injecté par le cluster.</p>
+</div>
+<div class="paragraph">
+<p>Cela conduit à ce que le statut du bundle et du GitRepo associé soit signalé comme "Modifié"</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/ModifiedGitRepo.png" alt="Statique" width="600">
+</div>
+</div>
+<div class="paragraph">
+<p>Bundle associé</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/ModifiedBundle.png" alt="Statique" width="600">
+</div>
+</div>
+<div class="paragraph">
+<p>Les SUSE® Rancher Prime Continuous Delivery bundles prennent en charge la possibilité de spécifier un <a href="http://jsonpatch.com/">correctif jsonPointer</a> personnalisé.</p>
+</div>
+<div class="paragraph">
+<p>Avec le correctif, les utilisateurs peuvent demander à SUSE® Rancher Prime Continuous Delivery d&#8217;ignorer les modifications d&#8217;objets et les objets entiers.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_generating_comparepatches_with_fleet_bundlediff"><a class="anchor" href="#_generating_comparepatches_with_fleet_bundlediff"></a>Génération de comparePatches avec <code>fleet bundlediff</code></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>La commande CLI <code>fleet bundlediff</code> lit les informations de différence déjà présentes dans les champs d&#8217;état <code>Bundle</code> et <code>BundleDeployment</code> et les affiche sous une forme lisible par l&#8217;homme.
+Elle peut également générer un extrait <code>diff:</code> prêt à l&#8217;emploi au format <code>fleet.yaml</code>, afin que vous puissiez accepter la dérive observée sans avoir à construire manuellement des chemins pour JSON Patch.</p>
+</div>
+<div class="sect2">
+<h3 id="_viewing_diffs"><a class="anchor" href="#_viewing_diffs"></a>Visualisation des différences</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"># Show all diffs across all namespaces, grouped by Bundle
+fleet bundlediff
+
+# Show diffs for a specific Bundle
+fleet bundlediff --bundle my-bundle
+
+# Show diffs for a specific BundleDeployment
+fleet bundlediff --bundle-deployment my-bundle-deployment -n cluster-fleet-local-local-abc123
+
+# Output in JSON format
+fleet bundlediff --json</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>La sortie texte par défaut regroupe les résultats par <code>Bundle</code> et liste chaque ressource modifiée ou non prête avec son correctif de fusion JSON&#160;:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Bundle: my-bundle
+BundleDeployments with diffs: 1
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  BundleDeployment: cluster-fleet-local-local-abc123/my-bundle-deployment
+  Modified Resources (1):
+    Resource: ConfigMap.v1 default/my-config
+    Status: Modified
+    Patch:
+    {
+      "metadata": {
+        "annotations": {
+          "timestamp": "2024-01-15T10:30:00Z"
+        }
+      }
+    }</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_generating_a_fleet_yaml_comparepatches_snippet"><a class="anchor" href="#_generating_a_fleet_yaml_comparepatches_snippet"></a>Génération d&#8217;un extrait <code>fleet.yaml</code> <code>comparePatches</code></h3>
+<div class="paragraph">
+<p>Utilisez <code>--fleet-yaml</code> avec <code>--bundle-deployment</code> pour produire un bloc <code>diff:</code> que vous pouvez coller directement dans votre <code>fleet.yaml</code>. La commande convertit le correctif de fusion JSON observé en opérations <code>remove</code> et les fusionne avec tout <code>comparePatches</code> déjà configuré sur le <code>Bundle</code>, de sorte que les ignorés existants restent intacts.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">fleet bundlediff \
+  --fleet-yaml \
+  --bundle-deployment my-bundle-deployment \
+  -n cluster-fleet-local-local-abc123</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Exemple de sortie :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">diff:
+  comparePatches:
+  - apiVersion: v1
+    kind: ConfigMap
+    name: my-config
+    namespace: default
+    operations:
+    - op: remove
+      path: /metadata/annotations/timestamp</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Vous pouvez rediriger la sortie et l&#8217;ajouter à votre <code>fleet.yaml</code> dans Git&#160;:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">fleet bundlediff \
+  --fleet-yaml \
+  --bundle-deployment my-bundle-deployment \
+  -n cluster-fleet-local-local-abc123 &gt;&gt; fleet.yaml</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Après avoir validé et poussé le <code>fleet.yaml</code> mis à jour, SUSE® Rancher Prime Continuous Delivery réconcilie le changement et le bundle passe de <strong>Modifié</strong> à <strong>Prêt</strong>. Le champ lui-même n&#8217;est pas rétabli. SUSE® Rancher Prime Continuous Delivery cesse simplement de le signaler comme dérive.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Le flag <code>--fleet-yaml</code> nécessite <code>--bundle-deployment</code>, car la sortie générée est fusionnée avec le <code>comparePatches</code> existant de <code>Bundle</code> associé.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Voir <a href="../reference/cli/fleet-cli/fleet_bundlediff.html" class="xref page">Fleet bundlediff</a> [SUSE® Rancher Prime Continuous Delivery bundlediff] pour la référence complète du flag.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_ignoring_object_modifications"><a class="anchor" href="#_ignoring_object_modifications"></a>Ignorer les modifications d&#8217;objet</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_simple_example"><a class="anchor" href="#_simple_example"></a>Exemple simple</h3>
+<div class="paragraph">
+<p>Dans cet exemple simple, nous créons un Service et un ConfigMap sur lesquels nous appliquons un bundle diff.</p>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/rancher/fleet-test-data/tree/master/bundle-diffs" class="bare">https://github.com/rancher/fleet-test-data/tree/master/bundle-diffs</a></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_gatekeeper_example"><a class="anchor" href="#_gatekeeper_example"></a>Exemple de Gatekeeper</h3>
+<div class="paragraph">
+<p>Dans cet exemple, nous essayons de déployer opa-gatekeeper en utilisant la livraison continue vers nos clusters.</p>
+</div>
+<div class="paragraph">
+<p>Le bundle opa-gatekeeper associé au GitRepo opa est dans un état modifié.</p>
+</div>
+<div class="paragraph">
+<p>Chaque chemin dans le CR GitRepo a un CR Bundle associé. L&#8217;utilisateur peut voir les Bundles et le diff associé nécessaire dans l&#8217;état du Bundle.</p>
+</div>
+<div class="paragraph">
+<p>Dans notre cas, les différences détectées sont les suivantes&#160;:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">  summary:
+    desiredReady: 1
+    modified: 1
+    nonReadyResources:
+    - bundleState: Modified
+      modifiedStatus:
+      - apiVersion: admissionregistration.k8s.io/v1
+        kind: ValidatingWebhookConfiguration
+        name: gatekeeper-validating-webhook-configuration
+        patch: '{"$setElementOrder/webhooks":[{"name":"validation.gatekeeper.sh"},{"name":"check-ignore-label.gatekeeper.sh"}],"webhooks":[{"clientConfig":{"caBundle":"Cg=="},"name":"validation.gatekeeper.sh","rules":[{"apiGroups":["*"],"apiVersions":["*"],"operations":["CREATE","UPDATE"],"resources":["*"]}]},{"clientConfig":{"caBundle":"Cg=="},"name":"check-ignore-label.gatekeeper.sh","rules":[{"apiGroups":[""],"apiVersions":["*"],"operations":["CREATE","UPDATE"],"resources":["namespaces"]}]}]}'
+      - apiVersion: apps/v1
+        kind: Deployment
+        name: gatekeeper-audit
+        namespace: cattle-gatekeeper-system
+        patch: '{"spec":{"template":{"spec":{"$setElementOrder/containers":[{"name":"manager"}],"containers":[{"name":"manager","resources":{"limits":{"cpu":"1000m"}}}],"tolerations":[]}}}}'
+      - apiVersion: apps/v1
+        kind: Deployment
+        name: gatekeeper-controller-manager
+        namespace: cattle-gatekeeper-system
+        patch: '{"spec":{"template":{"spec":{"$setElementOrder/containers":[{"name":"manager"}],"containers":[{"name":"manager","resources":{"limits":{"cpu":"1000m"}}}],"tolerations":[]}}}}'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Sur la base de ce résumé, il y a trois objets auxquels il faut appliquer un correctif.</p>
+</div>
+<div class="paragraph">
+<p>Nous allons les examiner un par un.</p>
+</div>
+<div class="sect3">
+<h4 id="_1_validatingwebhookconfiguration"><a class="anchor" href="#_1_validatingwebhookconfiguration"></a>1. ValidatingWebhookConfiguration:</h4>
+<div class="paragraph">
+<p>La configuration de webhook de validation gatekeeper-validating-webhook a deux ValidatingWebhooks dans sa spécification.</p>
+</div>
+<div class="paragraph">
+<p>Dans les cas où plus d&#8217;un élément dans le champ nécessite un correctif, ce correctif les désignera comme <code>$setElementOrder/ELEMENTNAME</code>.</p>
+</div>
+<div class="paragraph">
+<p>À partir de ces informations, nous pouvons voir que les deux ValidatingWebhooks en question sont&#160;:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">  "$setElementOrder/webhooks": [
+    {
+      "name": "validation.gatekeeper.sh"
+    },
+    {
+      "name": "check-ignore-label.gatekeeper.sh"
+    }
+  ],</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Dans chaque ValidatingWebhook, les champs qui doivent être ignorés sont les suivants&#160;:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">    {
+      "clientConfig": {
+        "caBundle": "Cg=="
+      },
+      "name": "validation.gatekeeper.sh",
+      "rules": [
+        {
+          "apiGroups": [
+            "*"
+          ],
+          "apiVersions": [
+            "*"
+          ],
+          "operations": [
+            "CREATE",
+            "UPDATE"
+          ],
+          "resources": [
+            "*"
+          ]
+        }
+      ]
+    },</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>et</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">     {
+      "clientConfig": {
+        "caBundle": "Cg=="
+      },
+      "name": "check-ignore-label.gatekeeper.sh",
+      "rules": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "apiVersions": [
+            "*"
+          ],
+          "operations": [
+            "CREATE",
+            "UPDATE"
+          ],
+          "resources": [
+            "namespaces"
+          ]
+        }
+      ]
+    }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>En résumé, nous devons ignorer les champs <code>rules</code> et <code>clientConfig.caBundle</code> dans notre spécification de correctif.</p>
+</div>
+<div class="paragraph">
+<p>Le champ webhook dans la spécification ValidatingWebhookConfiguration est un tableau, donc nous devons adresser les éléments par leurs valeurs d&#8217;index.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/WebhookConfigurationSpec.png" alt="Statique" width="600">
+</div>
+</div>
+<div class="paragraph">
+<p>Sur la base de ces informations, notre bundle diff ressemblerait à ce qui suit&#160;:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">  - apiVersion: admissionregistration.k8s.io/v1
+    kind: ValidatingWebhookConfiguration
+    name: gatekeeper-validating-webhook-configuration
+    operations:
+    - {"op": "remove", "path":"/webhooks/0/clientConfig/caBundle"}
+    - {"op": "remove", "path":"/webhooks/0/rules"}
+    - {"op": "remove", "path":"/webhooks/1/clientConfig/caBundle"}
+    - {"op": "remove", "path":"/webhooks/1/rules"}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_2_deployment_gatekeeper_controller_manager"><a class="anchor" href="#_2_deployment_gatekeeper_controller_manager"></a>2. Déploiement gatekeeper-controller-manager&#160;:</h4>
+<div class="paragraph">
+<p>Le déploiement gatekeeper-controller-manager est modifié car des limites d&#8217;UC et des tolérances sont appliquées (qui ne figurent pas dans le bundle actuel).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "spec": {
+    "template": {
+      "spec": {
+        "$setElementOrder/containers": [
+          {
+            "name": "manager"
+          }
+        ],
+        "containers": [
+          {
+            "name": "manager",
+            "resources": {
+              "limits": {
+                "cpu": "1000m"
+              }
+            }
+          }
+        ],
+        "tolerations": []
+      }
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Dans ce cas, il n&#8217;y a qu&#8217;un seul conteneur dans la spécification du déploiement, et ce conteneur a des limites d&#8217;UC et des tolérances ajoutées.</p>
+</div>
+<div class="paragraph">
+<p>Sur la base de ces informations, notre bundle diff ressemblerait à ce qui suit&#160;:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">  - apiVersion: apps/v1
+    kind: Deployment
+    name: gatekeeper-controller-manager
+    namespace: cattle-gatekeeper-system
+    operations:
+    - {"op": "remove", "path": "/spec/template/spec/containers/0/resources/limits/cpu"}
+    - {"op": "remove", "path": "/spec/template/spec/tolerations"}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_3_deployment_gatekeeper_audit"><a class="anchor" href="#_3_deployment_gatekeeper_audit"></a>3. Déploiement gatekeeper-audit&#160;:</h4>
+<div class="paragraph">
+<p>Le déploiement gatekeeper-audit est modifié de manière similaire au gatekeeper-controller-manager, avec des limites d&#8217;UC et des tolérances supplémentaires appliquées.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "spec": {
+    "template": {
+      "spec": {
+        "$setElementOrder/containers": [
+          {
+            "name": "manager"
+          }
+        ],
+        "containers": [
+          {
+            "name": "manager",
+            "resources": {
+              "limits": {
+                "cpu": "1000m"
+              }
+            }
+          }
+        ],
+        "tolerations": []
+      }
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Tout comme le gatekeeper-controller-manager, il n&#8217;y a qu&#8217;un seul conteneur dans la spécification de déploiement, et celui-ci a des limites d&#8217;UC et des tolérances ajoutées.</p>
+</div>
+<div class="paragraph">
+<p>Sur la base de ces informations, notre bundle diff ressemblerait à ce qui suit&#160;:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">  - apiVersion: apps/v1
+    kind: Deployment
+    name: gatekeeper-audit
+    namespace: cattle-gatekeeper-system
+    operations:
+    - {"op": "remove", "path": "/spec/template/spec/containers/0/resources/limits/cpu"}
+    - {"op": "remove", "path": "/spec/template/spec/tolerations"}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_combining_it_all_together"><a class="anchor" href="#_combining_it_all_together"></a>Combiner le tout</h4>
+<div class="paragraph">
+<p>Nous pouvons maintenant combiner tous ces correctifs comme suit&#160;:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">diff:
+  comparePatches:
+  - apiVersion: apps/v1
+    kind: Deployment
+    name: gatekeeper-audit
+    namespace: cattle-gatekeeper-system
+    operations:
+    - {"op": "remove", "path": "/spec/template/spec/containers/0/resources/limits/cpu"}
+    - {"op": "remove", "path": "/spec/template/spec/tolerations"}
+  - apiVersion: apps/v1
+    kind: Deployment
+    name: gatekeeper-controller-manager
+    namespace: cattle-gatekeeper-system
+    operations:
+    - {"op": "remove", "path": "/spec/template/spec/containers/0/resources/limits/cpu"}
+    - {"op": "remove", "path": "/spec/template/spec/tolerations"}
+  - apiVersion: admissionregistration.k8s.io/v1
+    kind: ValidatingWebhookConfiguration
+    name: gatekeeper-validating-webhook-configuration
+    operations:
+    - {"op": "remove", "path":"/webhooks/0/clientConfig/caBundle"}
+    - {"op": "remove", "path":"/webhooks/0/rules"}
+    - {"op": "remove", "path":"/webhooks/1/clientConfig/caBundle"}
+    - {"op": "remove", "path":"/webhooks/1/rules"}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Nous pouvons maintenant les ajouter directement au bundle pour les tester et également les valider dans le <code>fleet.yaml</code> de votre GitRepo.</p>
+</div>
+<div class="paragraph">
+<p>Une fois ajoutés, le GitRepo devrait être déployé et passer à l&#8217;état "Actif".</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_ignoring_entire_objects"><a class="anchor" href="#_ignoring_entire_objects"></a>Ignorer des objets entiers</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Lors de l&#8217;installation d&#8217;un chart tel que <a href="https://developer.hashicorp.com/consul/docs/k8s/helm">Consul</a>, un job nommé <code>consul-server-acl-init</code> est créé, puis supprimé une fois qu&#8217;il a été exécuté avec succès.</p>
+</div>
+<div class="paragraph">
+<p>Ce chart peut être installé en créant un <code>GitRepo</code> pointant vers un dépôt git en utilisant un <code>fleet.yaml</code> tel que&#160;:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">defaultNamespace: consul
+helm:
+  releaseName: test-consul
+  chart: "consul"
+  repo: "https://helm.releases.hashicorp.com"
+
+  values:
+    global:
+      name: consul
+      acls:
+        manageSystemACLs: true</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>L&#8217;installation de ce chart entraînera que le <code>GitRepo</code> affiche un statut <code>Modified</code>, et le job <code>consul-server-acl-init</code> sera absent une fois que celui-ci aura été complété.</p>
+</div>
+<div class="paragraph">
+<p>Cela peut être remédié avec le bundle diff suivant dans notre <code>fleet.yaml</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">diff:
+  comparePatches:
+  - apiVersion: batch/v1
+    kind: Job
+    namespace: consul
+    name: consul-server-acl-init
+    operations:
+    - {"op":"ignore"}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Dans certains cas, le nom complet du job peut ne pas être connu à l&#8217;avance, par exemple lorsqu&#8217;il est généré.
+De plus, une charge de travail donnée peut créer plusieurs jobs dans le même namespace, ce qui entraînerait généralement un bundle diff par job.</p>
+</div>
+<div class="paragraph">
+<p>Pour faciliter la gestion de ces situations, les jobs peuvent également être ignorés :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>par une expression régulière sur leurs noms, auquel cas le bundle diff ci-dessus pourrait ressembler à :</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>diff:
+  comparePatches:
+  - apiVersion: batch/v1
+    kind: Job
+    namespace: consul
+    name: 'consul-server.*'
+    operations:
+    - {"op":"ignore"}</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>ou en spécifiant un champ <code>name</code> vide, ou en omettant complètement ce champ, auquel cas tous les jobs situés dans cet espace de noms (dans cet exemple dans l&#8217;espace de noms <code>consul</code>) seront ignorés.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Plus d&#8217;informations sur la syntaxe regex prise en charge <a href="https://pkg.go.dev/regexp/syntax">ici</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_horizontal_pod_autoscaling"><a class="anchor" href="#_horizontal_pod_autoscaling"></a>Mise à l&#8217;échelle horizontale des pods</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Lorsqu&#8217;il s&#8217;agit de déploiements ou de StatefulSets référencés par un HPA, les bundle diffs ne sont plus nécessaires pour gérer les mises à jour du nombre de réplicas dans l&#8217;intervalle configuré.
+L&#8217;agent Fleet filtrera automatiquement ces mises à jour ; par conséquent, le déploiement de bundle source ne sera pas considéré <em>modifié</em>.</p>
+</div>
+<div class="paragraph">
+<p>Cependant, si le champ <code>replicas</code> d&#8217;un Deployment ou d&#8217;un StatefulSet est défini à une valeur supérieure ou inférieure à l&#8217;intervalle toléré par un HPA qui le référence, cette modification apparaîtra toujours dans l&#8217;état du déploiement de bundle source.</p>
+</div>
+<div class="paragraph">
+<p>Les champs <code>autoscaling/v1</code> et <code>autoscaling/v2</code> sont tous deux pris en charge.</p>
+</div>
+<div class="paragraph">
+<p>Un champ <code>minReplicas</code> vide dans un HPA sera interprété comme <code>1</code>.</p>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="gitrepo-targets.html">Mapping vers des clusters en aval</a></span>
+  <span class="next"><a href="webhook.html">Utiliser des webhooks au lieu du polling</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<script src="../../../../_/js/site.js"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+<script src="../../../../_/js/vendor/lunr.js"></script>
+<script src="../../../../_/js/vendor/lunr-languages.js"></script>
+<script src="../../../../_/js/search-ui.js" id="search-ui-script" data-site-root-path="../../../.." data-snippet-length="100" data-stylesheet="../../../../_/css/search.css"></script>
+<script async src="../../../../search-index.js"></script>
+<script src="../../../../_/js/vendor/langSelection.js"></script>
+<script async src="../../../../_/js/vendor/tabs.js"></script>
+
+
+<script src="../../../../_/js/CNLanguageSwitcher.js"></script>
+  </body>
+</html>

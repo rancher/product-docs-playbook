@@ -1,0 +1,2094 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+<title>日志记录 | SUSE® Virtualization  v1.7</title>
+    <link rel="canonical" href="https://documentation.suse.com/cloudnative/virtualization/v1.7/zh/observability/logging.html">
+    <link rel="prev" href="../networking/best-practices.html">
+    <link rel="next" href="monitoring.html">
+    <meta name="generator" content="Antora 3.1.14">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+<meta http-equiv="last-modified" content="2025-06-04"/>
+<link rel="stylesheet" href="../../../../_/css/search.css">
+<link rel="icon" href="../../../../_/img/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="../../../../_/css/font-styles.css">
+<link rel="stylesheet" href="../../../../_/fonts/css/all.css">
+<link rel="stylesheet" href="../../../../_/css/site-extra.css">
+<link rel="stylesheet" href="../../../../_/css/vendor/tabs.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap&family=SUSE+Mono:ital,wght@0,100..800;1,100..800" rel="stylesheet">
+<link rel="stylesheet" href="../../../../_/css/vendor/light.css">
+<script src="/docserv/res/lightheaded/analytics.js" type="text/javascript"></script>
+<script type="module">
+  import { defineCustomElements, setAssetPath } from 'https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/shared-header.esm.js';
+  defineCustomElements();
+  setAssetPath("https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/assets");
+</script>
+<!-- Default English link -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/en/observability/logging.html" hreflang="x-default" rel="alternate"/>
+<!-- Link for the currently processed page -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/zh/observability/logging.html" hrefLang="zh-CN" rel="alternate" />
+<!-- Link for the English page -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/en/observability/logging.html" hreflang="en-US" rel="alternate" />
+<!-- Link for the Japanese page -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/ja/observability/logging.html" hreflang="ja-JP" rel="alternate" />
+<!-- Link for the German page -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/de/observability/logging.html" hreflang="de-DE" rel="alternate" />
+<!-- Link for the French page -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/fr/observability/logging.html" hreflang="fr-FR" rel="alternate" />
+<!-- Link for the Spanish page -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/es/observability/logging.html" hreflang="es-ES" rel="alternate" />
+<!-- Link for the Brazilian Portuguese page -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/pt/observability/logging.html" hreflang="pt-BR" rel="alternate" />
+
+<!-- JSON-LD for doc metadata -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "日志记录 | SUSE Virtualization v1.7",
+  "headline": "日志记录",
+  "description": "日志记录",
+  "inLanguage": "zh_CN",
+  "dateModified": "2025-06-04T00:00:00Z",
+  "author": {
+    "@type": "Organization",
+    "name": "SUSE Product & Solution Documentation Team",
+    "url": "https://documentation.suse.com"
+  },
+  "mentions": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "SUSE Virtualization",
+      "softwareVersion": "v1.7",
+      "applicationCategory": "Cloud Infrastructure",
+      "operatingSystem": "Linux"
+    }
+  ],
+  "publisher": {
+    "@type": "Organization",
+    "name": "SUSE",
+    "url": "https://documentation.suse.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.suse.com/assets/img/suse-white-logo-green.svg"
+    }
+  }
+}
+</script>
+<!-- end JSON-LD for doc metadata -->
+
+<!-- SUVA - Begin Ask Geeko-->
+<!--
+searchUnifyChatbot ("Ask Geeko") Copyright ©2024 Grazitti Interactive - All Rights Reserved. NOTICE: All information contained herein is, and remains the property of Grazitti Interactive and its suppliers, if any. The intellectual and technical concepts contained herein are proprietary to Grazitti Interactive and its suppliers and may be covered by India, U.S. and Foreign Patents, patents in process, and are protected by trade secret or copyright law. Dissemination of this information or reproduction of this material is strictly forbidden unless prior written permission is obtained from Grazitti Interactive.
+-->
+<meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport"/>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/Allow/an.js?c485cb3c-93d4-4942-99e8-91f3b8ca5636"></script>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/js/index.js?q=gAAAAABp3JBN9VuEJTi5tFafLIMwgMkCPdJS3Qm56lSYx93ir3Twt9hgSvd3OHEt6-nYfSbY3yHq0Zv8PRPsSy4nbqZiaJ4cZvRc6ItVZdvwz9Urf35cH6OUyPOwdA0phlS-zVIznQ2rWW438p-91NlTHuxJuOFpnA=="></script>
+<link rel="stylesheet" href="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/css/index.css">
+<div id="searchUnifyChatbot"></div>
+<!-- SUVA - End Ask Geeko-->
+<!--BEGIN QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+<script type='text/javascript' src="../../../../_/js/qualtrics.js" defer></script>
+<!--END QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<script type="module">import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs'; mermaid.initialize({"startOnLoad":true});</script><shared-header
+language="en"
+languages='{
+    "en": { "label": "English", "url": "https://documentation.suse.com/en-us/" },
+    "de": { "label": "Deutsch", "url": "https://documentation.suse.com/de-de/" },
+    "fr": { "label": "Français", "url": "https://documentation.suse.com/fr-fr/" },
+    "es": { "label": "Español", "url": "https://documentation.suse.com/es-es/" },
+    "zh_CN": { "label": "中文", "url": "https://documentation.suse.com/zh-cn/" },
+    "pt_BR": { "label": "Português Brasileiro", "url": "https://documentation.suse.com/pt-br/" }
+}'
+enable-search='false'>
+</shared-header>
+<div class="body">
+<div class="nav-container" data-component="virtualization" data-version="v1.7">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title">SUSE® Virtualization</h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">简介</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/overview.html">概述</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/deploy-ha-cluster.html">部署高可用性集群</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/deploy-singlenode-cluster.html">部署单节点集群</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/glossary.html">词汇表</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/document-conventions.html">文档约定</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">安装和设置</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/requirements.html">硬件和网络要求</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">安装媒体</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/media/net-install.html">网络安装 ISO</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/media/install-binaries-mode.html">仅安装二进制文件</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">安装方法</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/methods/iso-install.html">ISO 安装</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/methods/usb-install.html">USB安装</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/methods/pxe-boot-install.html">PXE 引导安装</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">配置</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/config/configuration-file.html">配置文件</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/config/update-configuration.html">安装后更新配置</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/config/settings.html">设置</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/config/cloudinitcrd.html">CloudInit CRD</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/post-installation.html">安装后任务</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/management-address.html">管理地址</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/external-disk.html">外部磁盘支持</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/authentication.html">身份验证</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/airgap.html">隔离的环境</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/single-node-clusters.html">单节点集群</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">升级</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/upgrades.html">升级</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-1-2-to-v1-2-0.html">从 v1.1.2 升级到 v1.2.0（不推荐）</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-2-0-to-v1-2-1.html">从 v1.1.2/v1.1.3/v1.2.0 升级到 v1.2.1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-2-1-to-v1-2-2.html">从 v1.2.1 升级到 v1.2.2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-2-2-to-v1-3-1.html">从 v1.2.2/v1.3.0 升级到 v1.3.1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-3-1-to-v1-3-2.html">从 v1.3.1 升级到 v1.3.2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-3-2-to-v1-4-0.html">从 v1.3.2 升级到 v1.4.0</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-4-0-to-v1-4-1.html">从 v1.4.0 升级到 v1.4.1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-4-1-to-v1-4-2.html">从 v1.4.1 升级到 v1.4.2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-4-1-to-v1-4-3.html">从 v1.4.1 或 v1.4.2 升级到 v1.4.3</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-4-2-to-v1-5-0.html">从 v1.4.2 或 v1.4.3 升级到 v1.5.0</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-4-2-to-v1-5-1.html">从 v1.4.2 或 v1.4.3 升级到 v1.5.1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-4-2-to-v1-5-2.html">从 v1.4.2 或 v1.4.3 升级到 v1.5.2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-5-0-to-v1-5-1.html">从 v1.5.0 升级到 v1.5.1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-5-0-to-v1-5-2.html">从 v1.5.0 或 v1.5.1 升级到 v1.5.2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-5-x-to-v1-6-x.html">从 v1.5.x 升级到 v1.6.x</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-6-x-to-v1-6-y.html">从 v1.6.x 升级到 v1.6.y</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-6-x-to-v1-7-x.html">从 v1.6.x 升级到 v1.7.x</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-7-x-to-v1-7-y.html">从 v1.7.x 升级到 v1.7.y</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/troubleshooting.html">查错</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">主机</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../hosts/hosts.html">主机管理</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../hosts/witness-node.html">见证节点</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../hosts/vgpu-support.html">vGPU支持</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">虚拟机</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/virtual-machines.html">虚拟机</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">虚拟机镜像</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../virtual-machines/vm-images/upload-image.html">上传镜像</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../virtual-machines/vm-images/custom-suse-images.html">自定义 SUSE 虚拟机映像</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../virtual-machines/vm-images/image-security.html">图像安全</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/create-vm.html">创建虚拟机</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/create-windows-vm.html">创建一个 Windows 虚拟机</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/edit-vm.html">编辑虚拟机</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/access-vm.html">访问虚拟机</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/clone-vm.html">克隆虚拟机</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/backup-restore.html">虚拟机备份、快照和恢复</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/live-migration.html">实时迁移</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/hotplug-volume.html">热插拔卷</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/resource-overcommit.html">资源超额分配</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/cpu-pinning.html">处理器绑定</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/cpu-memory-hotplug.html">CPU 和内存热插拔</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/nic-hotplug.html">NIC 热插拔</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">存储</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">卷</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../storage/volumes/create-volume.html">创建卷</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../storage/volumes/edit-volume.html">编辑卷</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../storage/volumes/clone-volume.html">克隆一个卷</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../storage/volumes/export-volume.html">将卷导出为镜像</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../storage/volumes/volume-snapshots.html">卷快照</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../storage/volumes/volume-security.html">卷安全</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../storage/storageclass.html">StorageClass</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../storage/csidriver.html">第三方存储支持</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../storage/longhorn-v2-data-engine.html">Longhorn V2 数据引擎</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../storage/storage-validator.html">存储验证器</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">网络</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/cluster-network.html">群集网络</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/vm-network.html">VM 网络</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/deep-dive.html">网络深入探讨</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/load-balancer.html">负载均衡器</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/ip-pool.html">IP池</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/storage-network.html">存储网络</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/vm-migration-network.html">虚拟机迁移网络</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/kubeovn-vpc.html">虚拟私有云</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/vm-isolation.html">虚拟机隔离</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/best-practices.html">网络最佳实践</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">可观测性</span>
+<ul class="nav-list">
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="logging.html">日志记录</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="monitoring.html">监控</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">附加组件</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/add-ons.html">附加组件</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/harvester-seeder.html">Harvester Seeder</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/kubeovn-operator.html">Kube-OVN Operator（实验性）</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/lvm-local-storage.html">CSI 驱动程序 LVM（实验性）</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/nvidia-driver-toolkit.html">NVIDIA 驱动工具包</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/pcidevices-controller.html">PCI设备控制器</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/rancher-vcluster.html">Rancher vCluster（实验性）</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/virtual-machine-auto-balance.html">虚拟机自动平衡（实验性）</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/vm-dhcp-controller.html">VM DHCP 控制器（实验性）</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/vm-import-controller.html">虚拟机导入控制器</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">集成</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Rancher 集成</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/rancher-integration.html">SUSE Rancher Prime 集成</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/virtualization-management.html">虚拟化管理</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">节点驱动</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../integrations/rancher/node-driver/node-driver.html">Harvester节点驱动程序</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../integrations/rancher/node-driver/rke2-cluster.html">创建 RKE2 Kubernetes 集群</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../integrations/rancher/node-driver/k3s-cluster.html">创建 K3s Kubernetes 集群</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/cloud-provider.html">Harvester 云提供商</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/csi-driver.html">Harvester CSI 驱动程序</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/resource-quota.html">资源配额</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/rancher-terraform-provider.html">Rancher Terraform</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/import-vm.html">导入基于SUSE® Virtualization虚拟机的集群</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/harvester-ui-extension.html">Harvester UI 扩展</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../integrations/terraform/terraform-provider.html">Terraform Provider</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">查错</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/installation.html">安装问题</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/operating-system.html">操作系统问题</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/cluster.html">集群问题</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/virtual-machines.html">虚拟机问题</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/monitoring.html">监控问题</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/logging.html">日志问题</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/rancher.html">Rancher 问题：</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/faq.html">常见问题</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">开发者内容</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../developer/addon-development.html">附加产品开发指南</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../api.html">API</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">SUSE® Virtualization</span>
+    <span class="version">v1.7</span>
+  </div>
+  <ul class="components">
+        <li class="component">
+          <div class="title"><a href="../../../../admission-controller/1.36/en/introduction.html">Admission Controller</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../admission-controller/1.37/en/introduction.html">1.37-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../admission-controller/1.36/en/introduction.html">1.36</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.35/en/introduction.html">1.35</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.34/en/introduction.html">1.34</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.33/en/introduction.html">1.33</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.32/en/introduction.html">1.32</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.31/en/introduction.html">1.31</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.30/en/introduction.html">1.30</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.29/en/introduction.html">1.29</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.28/en/introduction.html">1.28</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../cluster-api/v0.26/en/index.html">Cluster API</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../cluster-api/v0.28/en/index.html">v0.28-dev</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.27/en/index.html">v0.27-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../cluster-api/v0.26/en/index.html">v0.26</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.25/en/index.html">0.25</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.24/en/index.html">0.24</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.23/en/index.html">0.23</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.22/en/index.html">0.22</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.21/en/index.html">0.21</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.20/en/index.html">0.20</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.19/en/index.html">0.19</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.18/en/index.html">0.18</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.17/en/index.html">0.17</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.16/en/index.html">0.16</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.11/en/index.html">0.11</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../continuous-delivery/next/en/index.html">Continuous Delivery</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../continuous-delivery/next/en/index.html">Next</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.15/en/index.html">v0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.11/en/index.html">0.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.10/en/index.html">0.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.9/en/index.html">0.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../k3s/latest/en/introduction.html">K3s</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../k3s/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../os-manager/1.9/en/index.html">OS Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../os-manager/1.10/en/index.html">1.10-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../os-manager/1.9/en/index.html">1.9</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.8/en/index.html">1.8</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.7/en/index.html">1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.6/en/index.html">1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.5/en/index.html">1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-ai/latest/en/introduction.html">Rancher AI</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-ai/latest/en/introduction.html">latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../turtles/stable/en/index.html">Rancher Turtles</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../turtles/stable/en/index.html">Stable</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rke2/latest/en/introduction.html">RKE2</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rke2/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-observability/latest/en/classic.html">SUSE Observability</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../suse-observability/latest/en/classic.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">SUSE Rancher Developer Access</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">SUSE® Rancher for AWS</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-manager/v2.14/en/about-rancher/what-is-rancher.html">SUSE® Rancher Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.15/en/about-rancher/what-is-rancher.html">v2.15 (Unreleased)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../rancher-manager/v2.14/en/about-rancher/what-is-rancher.html">v2.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.13/en/about-rancher/what-is-rancher.html">v2.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.12/en/about-rancher/what-is-rancher.html">v2.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.11/en/about-rancher/what-is-rancher.html">v2.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.10/en/about-rancher/what-is-rancher.html">v2.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.9/en/about-rancher/what-is-rancher.html">v2.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../security/5.6/en/overview.html">SUSE® Security</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../security/5.6/en/overview.html">5.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.5/en/overview.html">5.5</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.4/en/overview.html">5.4</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.3/en/overview.html">5.3</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../storage/1.11/en/longhorn-documentation.html">SUSE® Storage</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../storage/1.12/en/longhorn-documentation.html">1.12 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../storage/1.11/en/longhorn-documentation.html">1.11 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../storage/1.10/en/longhorn-documentation.html">1.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../storage/1.9/en/longhorn-documentation.html">1.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">SUSE® Virtual Clusters</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/1.2.0/en/release-notes/version-1.2.0.html">v1.2.0 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">v1.1.0-latest</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/1.0.2/en/release-notes/version-1.0.2.html">v1.0.2</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.1/en/introduction.html">v1.0.1</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.0/en/introduction.html">v1.0.0</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component is-current">
+          <div class="title"><a href="../../../v1.8/en/introduction/overview.html">SUSE® Virtualization</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../v1.9/en/introduction/overview.html">v1.9 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../v1.8/en/introduction/overview.html">v1.8 (Latest)</a>
+            </li>
+            <li class="version is-current">
+              <a href="../../en/introduction/overview.html">v1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../v1.6/en/introduction/overview.html">v1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../v1.5/en/introduction/overview.html">v1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../vulnerability-scanner/0.12.0/en/introduction.html">Vulnerability Scanner</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../vulnerability-scanner/0.12.0/en/introduction.html">0.12.0</a>
+            </li>
+            <li class="version">
+              <a href="../../../../vulnerability-scanner/0.11.3/en/introduction.html">0.11.3</a>
+            </li>
+          </ul>
+        </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+<ul>
+    <li>
+  <a class="home-link-dsc" href="https://documentation.suse.com" title="SUSE Documentation Home" aria-label="SUSE Documentation Home"></a>
+    </li>
+    <li>
+      <a href="https://documentation.suse.com/cloudnative/virtualization" title="SUSE Virtualization" aria-label="SUSE Documentation - SUSE Virtualization">
+        SUSE Virtualization
+      </a>
+    </li>
+      <li>
+          可观测性
+      </li>
+  </ul>
+</nav>
+<div class="page-versions">
+  <button class="version-menu-toggle" title="Show other versions of page">v1.7</button>
+  <div class="version-menu">
+    <a class="version is-missing" href="../../../v1.9/en/introduction/overview.html">v1.9 (Dev)</a>
+    <a class="version is-missing" href="../../../v1.8/en/introduction/overview.html">v1.8 (Latest)</a>
+    <a class="version is-current" href="logging.html">v1.7</a>
+    <a class="version is-missing" href="../../../v1.6/en/introduction/overview.html">v1.6</a>
+    <a class="version is-missing" href="../../../v1.5/en/introduction/overview.html">v1.5</a>
+  </div>
+</div>
+      <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <label class="visual-search-label-bc" for="search-input">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+          <input label="Search" aria-label="Search" id="search-input" type="text" placeholder="搜索文档" >
+          <label class="filter checkbox" style="display: none">
+            <input type="checkbox" data-facet-filter="component:virtualization" checked> Only this project
+          </label>
+        </div>
+      </div>
+</div>
+  <div class="content">
+<aside
+  class="toc sidebar"
+  data-title="在此页面上" data-levels="2">
+  <div class="toc-menu">
+    <div class="docsurvey-wrapper"><a class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_diCzHC9xxyJyuN0">Documentation survey</a></div>
+    <!-- start qualtrics -->
+    <div id='ZN_8qZUmklKYbBqAYe'><!--DO NOT REMOVE-CONTENTS PLACED HERE--></div>
+    <div id="qualtrics_container"></div>
+    <!-- end qualtrics -->
+  </div>
+</aside>
+
+<aside class="toc sidebar docsurvey-sidebar">
+  <div class="toc-menu">
+    <div class="docsurvey-wrapper"><a class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_diCzHC9xxyJyuN0">Documentation survey</a></div>
+  </div>
+</aside>
+<article class="doc">
+<h1 class="page">日志记录</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>了解在`Harvester Cluster`中发生/已经发生的事情是很重要的。</p>
+</div>
+<div class="paragraph">
+<p><code>Harvester`在集群启动后立即收集`cluster running log</code>、kubernetes `audit`和`event`日志，这对于监控、记录、审计和故障排除非常有帮助。</p>
+</div>
+<div class="paragraph">
+<p>`Harvester`支持将这些日志发送到各种类型的日志服务器。</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="注意"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>日志数据的大小与集群规模、工作负载和其他因素有关。`Harvester`不使用持久存储在集群内部存储日志数据。用户需要设置日志服务器以相应地接收日志。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>日志功能现在通过一个附加产品实现，并在新安装中默认禁用。</p>
+</div>
+<div class="paragraph">
+<p>用户可以在安装后通过Harvester UI启用/禁用`rancher-logging` <a href="../add-ons/add-ons.html" class="xref page">附加产品</a>。</p>
+</div>
+<div class="paragraph">
+<p>用户还可以通过自定义<a href="../installation-setup/config/configuration-file.html#_install_addons" class="xref page">配置文件</a>在他们的Harvester安装中启用/禁用`rancher-logging`附加产品。</p>
+</div>
+<div class="paragraph">
+<p>对于从版本v1.1.x升级的Harvester集群，日志功能会自动转换为附加产品，并保持启用状态。</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_高级体系结构"><a class="anchor" href="#_高级体系结构"></a>高级体系结构</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Harvester和Rancher都使用 <a href="https://kube-logging.dev/docs/#overview">日志操作员</a>来管理内部日志基础设施的特定组件和操作。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/logging/logging-operator.png" alt="logging operator">
+</div>
+</div>
+<div class="paragraph">
+<p>在Harvester的实践中，<code>Logging</code>、`Audit`和`Event`共享一个架构，`Logging`是基础设施，而`Audit`和`Event`则在其之上。</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_日志记录"><a class="anchor" href="#_日志记录"></a>日志记录</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Harvester日志基础设施允许您将Harvester日志聚合到外部服务中，例如 <a href="https://www.graylog.org">Graylog</a>、 <a href="https://www.elastic.co/elasticsearch/">Elasticsearch</a>、 <a href="https://www.splunk.com/">Splunk</a>、 <a href="https://grafana.com/oss/loki/">Grafana Loki</a>等。</p>
+</div>
+<div class="sect2">
+<h3 id="_收集的日志"><a class="anchor" href="#_收集的日志"></a>收集的日志</h3>
+<div class="paragraph">
+<p>请参见下面收集的日志列表：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>来自所有集群的日志`Pods`</p>
+</li>
+<li>
+<p>来自每个`node`的内核日志</p>
+</li>
+<li>
+<p>来自每个节点的选定systemd服务的日志</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>rke2-server</code></p>
+</li>
+<li>
+<p><code>rke2-agent</code></p>
+</li>
+<li>
+<p><code>rancherd</code></p>
+</li>
+<li>
+<p><code>rancher-system-agent</code></p>
+</li>
+<li>
+<p><code>NetworkManager</code></p>
+</li>
+<li>
+<p><code>iscsid</code></p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="注意"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>用户能够配置和修改聚合日志的发送位置，以及一些基本的过滤。不支持更改收集哪些日志。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_配置日志资源"><a class="anchor" href="#_配置日志资源"></a>配置日志资源</h3>
+<div class="paragraph">
+<p>在日志操作员下方是 <a href="https://www.fluentd.org/">Fluentd</a> 和 <a href="https://fluentbit.io/">Fluent Bit</a>，它们负责日志收集和路由。如果需要，您可以修改分配给这些组件的资源数量。</p>
+</div>
+<div class="sect3">
+<h4 id="_从用户界面"><a class="anchor" href="#_从用户界面"></a>从用户界面</h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>转到 <strong>高级</strong> &gt; <strong>附加产品</strong> 页面并选择 <strong>rancher-logging</strong> 附加产品。</p>
+</li>
+<li>
+<p>在 <strong>Fluentbit</strong> 标签下，修改资源请求和限制。</p>
+</li>
+<li>
+<p>在 <strong>Fluentd</strong> 标签下，修改资源请求和限制。</p>
+</li>
+<li>
+<p>配置完 <strong>rancher-logging</strong> 附加产品的设置后，选择 <strong>保存</strong>。</p>
+</li>
+</ol>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/logging/modify-logging-resources-from-addon.png" alt="modify logging resources from addon">
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="注意"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>只有在启用 <strong>rancher-logging</strong> 附加产品时，用户界面配置才可见。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_从命令行界面"><a class="anchor" href="#_从命令行界面"></a>从命令行界面</h4>
+<div class="paragraph">
+<p>您可以使用以下 <code>kubectl</code> 命令来更改 <code>rancher-logging</code> 附加产品的资源配置： <code>kubectl edit addons.harvesterhci.io -n cattle-logging-system rancher-logging</code>。</p>
+</div>
+<div class="paragraph">
+<p>资源路径和默认值如下。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>apiVersion: harvesterhci.io/v1beta1
+kind: Addon
+metadata:
+  name: rancher-logging
+  namespace: cattle-logging-system
+spec:
+  valuesContent: |
+    fluentbit:
+      resources:
+        limits:
+          cpu: 200m
+          memory: 200Mi
+        requests:
+          cpu: 50m
+          memory: 50Mi
+    fluentd:
+      resources:
+        limits:
+          cpu: 1000m
+          memory: 800Mi
+        requests:
+          cpu: 100m
+          memory: 200Mi</pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="注意"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>即使在附加产品禁用时，您仍然可以进行配置调整。但是，这些更改仅在您重新启用附加产品时生效。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_悬挂资源检查"><a class="anchor" href="#_悬挂资源检查"></a>悬挂资源检查</h4>
+<div class="paragraph">
+<p>启用 <strong>rancher-logging</strong> 附加产品时，您可能会遇到以下错误：</p>
+</div>
+<div class="paragraph">
+<p>您还可能会观察到与该附加产品相关的部署未完全推出。</p>
+</div>
+<div class="paragraph">
+<p>为防止错误再次发生，请在启用附加产品之前执行以下操作：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>更新或删除受影响的悬挂资源。</p>
+</li>
+<li>
+<p>向附加产品添加注释 <code>harvesterhci.io/skipRancherLoggingAddonWebhookCheck: "true"</code>。</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_配置日志目标"><a class="anchor" href="#_配置日志目标"></a>配置日志目标</h3>
+<div class="paragraph">
+<p>日志操作由 <a href="https://kube-logging.dev/docs/#overview">日志操作员</a> 支持，并通过 Fluentd 资源进行控制，特别是 <a href="https://kube-logging.dev/docs/configuration/flow/">流和集群流</a> 以及 <a href="https://kube-logging.dev/docs/configuration/output/">输出和集群输出</a>。您可以通过将这些 CRD 应用到 Harvester 集群来路由和过滤日志。</p>
+</div>
+<div class="paragraph">
+<p>在将新的 <code>Outputs</code> 和 <code>Flows</code> 应用到集群时，日志操作员可能需要一些时间才能有效应用它们。因此，请允许几分钟时间以便日志开始流动。</p>
+</div>
+<div class="sect3">
+<h4 id="_集群与命名空间"><a class="anchor" href="#_集群与命名空间"></a>集群与命名空间</h4>
+<div class="paragraph">
+<p>路由日志时需要理解的一件重要事情是 <code>ClusterFlow</code> 与 <code>Flow</code> 以及 <code>ClusterOutput</code> 与 <code>Output</code> 之间的区别。每个的集群版本和非集群版本之间的主要区别在于，非集群版本是名称空间的。</p>
+</div>
+<div class="paragraph">
+<p>这最大的影响是 <code>Flows</code> 只能访问同一名称空间内的 <code>Outputs</code>，但仍然可以访问任何 <code>ClusterOutput</code>。</p>
+</div>
+<div class="paragraph">
+<p>有关更多信息，请参见文档：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://kube-logging.dev/docs/configuration/flow/">流和集群流</a></p>
+</li>
+<li>
+<p><a href="https://kube-logging.dev/docs/configuration/output/">输出和集群输出</a></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_从用户界面_2"><a class="anchor" href="#_从用户界面_2"></a>从用户界面</h4>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="注意"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>UI 图像适用于 <code>Output</code> 和 <code>Flow</code>，其配置过程与其集群对应物几乎相同。任何差异将在下面的步骤中说明。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_创建输出"><a class="anchor" href="#_创建输出"></a>创建输出</h5>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>选择创建新的 <code>Output</code> 或 <code>ClusterOutput</code> 的选项。</p>
+</li>
+<li>
+<p>如果创建 <code>Output</code>，请选择所需的名称空间。</p>
+</li>
+<li>
+<p>为资源添加名称。</p>
+</li>
+<li>
+<p>选择日志类型。</p>
+</li>
+<li>
+<p>选择日志输出类型。</p>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/logging/create-output.png" alt="create output">
+</div>
+</div>
+</li>
+<li>
+<p>如有必要，请配置输出缓冲区。</p>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/logging/create-output-buffer.png" alt="create output buffer">
+</div>
+</div>
+</li>
+<li>
+<p>添加任何标签或注释。</p>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/logging/create-output-labels-and-annotations.png" alt="create output labels and annotations">
+</div>
+</div>
+</li>
+<li>
+<p>完成后，点击 <code>Create</code> 在右下角。</p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="注意"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>根据所选输出（Splunk、Elasticsearch等），表单中将有额外的字段需要指定。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect5">
+<h6 id="_输出"><a class="anchor" href="#_输出"></a>输出</h6>
+<div class="paragraph">
+<p>表单显示所选 <a href="https://kube-logging.dev/docs/configuration/plugins/outputs/">输出</a>可用的字段。</p>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_输出缓冲区"><a class="anchor" href="#_输出缓冲区"></a>输出缓冲区</h6>
+<div class="paragraph">
+<p>编辑器允许您使用各种 <a href="https://kube-logging.dev/docs/configuration/plugins/outputs/buffer/">字段</a>描述首选的输出缓冲区行为。</p>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_标签和注释"><a class="anchor" href="#_标签和注释"></a>标签和注释</h6>
+<div class="paragraph">
+<p>您可以将标签和注释附加到创建的资源上。</p>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_创建流程"><a class="anchor" href="#_创建流程"></a>创建流程</h5>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>选择创建新的 <code>Flow</code> 或 <code>ClusterFlow</code> 的选项。</p>
+</li>
+<li>
+<p>如果创建`Flow`，请选择所需的名称空间。</p>
+</li>
+<li>
+<p>为资源添加名称。</p>
+</li>
+<li>
+<p>选择要包含或排除其日志的节点。</p>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/logging/create-flow-matches.png" alt="create flow matches">
+</div>
+</div>
+</li>
+<li>
+<p>选择目标`Outputs`和`ClusterOutputs`。</p>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/logging/create-flow-outputs.png" alt="create flow outputs">
+</div>
+</div>
+</li>
+<li>
+<p>如有需要，添加任何过滤器。</p>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/logging/create-flow-filters.png" alt="create flow filters">
+</div>
+</div>
+</li>
+<li>
+<p>完成后，点击`Create`在左下角。</p>
+</li>
+</ol>
+</div>
+<div class="sect5">
+<h6 id="_匹配"><a class="anchor" href="#_匹配"></a>匹配</h6>
+<div class="paragraph">
+<p>匹配项允许您过滤要包含在`Flow`中的日志。该表单仅允许您包含或排除节点日志，但如有需要，您可以通过选择`Edit as YAML`添加资源支持的其他匹配规则。</p>
+</div>
+<div class="paragraph">
+<p>有关匹配指令的更多信息，请参见 <a href="https://kube-logging.dev/docs/configuration/log-routing/#match-statement">匹配语句</a>。</p>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_输出_2"><a class="anchor" href="#_输出_2"></a>输出</h6>
+<div class="paragraph">
+<p>输出允许您选择一个或多个`OutputRefs`以将聚合日志发送到。在创建或编辑 <code>Flow</code> / <code>ClusterFlow</code> 时，用户必须至少选择一个 <code>Output</code>。</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="注意"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>必须至少有一个现有的 <code>ClusterOutput</code> 或 <code>Output</code> 可以附加到流程，否则您将无法创建/编辑该流程。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_过滤器"><a class="anchor" href="#_过滤器"></a>过滤器</h6>
+<div class="paragraph">
+<p>过滤器允许您转换、处理和变更日志。有关更多信息，请参见支持的 <a href="https://kube-logging.dev/docs/configuration/plugins/filters/">过滤器</a> 列表。</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_从命令行界面_2"><a class="anchor" href="#_从命令行界面_2"></a>从命令行界面</h4>
+<div class="paragraph">
+<p>要通过命令行配置日志路由，您只需定义相关资源的 YAML 文件：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml"># elasticsearch-logging.yaml
+apiVersion: logging.banzaicloud.io/v1beta1
+kind: Output
+metadata:
+   name: elasticsearch-example
+   namespace: fleet-local
+   labels:
+      example-label: elasticsearch-example
+   annotations:
+      example-annotation: elasticsearch-example
+spec:
+   elasticsearch:
+      host: &lt;url-to-elasticsearch-server&gt;
+      port: 9200
+---
+apiVersion: logging.banzaicloud.io/v1beta1
+kind: Flow
+metadata:
+   name: elasticsearch-example
+   namespace: fleet-local
+spec:
+   match:
+      - select: {}
+   globalOutputRefs:
+      - elasticsearch-example</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>然后应用它们：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f elasticsearch-logging.yaml</code></pre>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_引用机密"><a class="anchor" href="#_引用机密"></a>引用机密</h5>
+<div class="paragraph">
+<p>您可以使用以下任一方法定义机密值（YAML 格式）：</p>
+</div>
+<div class="paragraph">
+<p>最简单的方法是使用 <code>value</code> 键，它是所需机密的简单字符串值。此方法仅应在测试中使用，绝不应在生产中使用：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">aws_key_id:
+  value: "secretvalue"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>接下来是使用 <code>valueFrom</code>，它允许通过名称和键对引用机密中的特定值：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">aws_key_id:
+   valueFrom:
+      secretKeyRef:
+         name: &lt;kubernetes-secret-name&gt;
+         key: &lt;kubernetes-secret-key&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>某些插件需要从文件中读取，而不是仅仅接收机密中的值（这通常适用于 CA 证书文件）。在这些情况下，您需要使用 <code>mountFrom</code>，它将机密作为文件挂载到底层 <code>fluentd</code> 部署，并将插件指向该文件。<code>valueFrom</code> 和 <code>mountFrom</code> 对象看起来相同：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">tls_cert_path:
+   mountFrom:
+      secretKeyRef:
+         name: &lt;kubernetes-secret-name&gt;
+         key: &lt;kubernetes-secret-key&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>有关更多信息，请参见 <a href="https://kube-logging.dev/docs/configuration/plugins/outputs/secret/">机密定义</a>。</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_示例_outputs"><a class="anchor" href="#_示例_outputs"></a>示例 <code>Outputs</code></h3>
+<div id="_tabs_1" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_1_elasticsearch" class="tab">
+<p>Elasticsearch</p>
+</li>
+<li id="_tabs_1_graylog" class="tab">
+<p>Graylog</p>
+</li>
+<li id="_tabs_1_splunk" class="tab">
+<p>Splunk</p>
+</li>
+<li id="_tabs_1_loki" class="tab">
+<p>Loki</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_1_elasticsearch--panel" class="tabpanel" aria-labelledby="_tabs_1_elasticsearch">
+<div class="paragraph">
+<p>对于最简单的部署，您可以使用 docker 在本地系统上部署 Elasticsearch：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">sudo docker run --name elasticsearch -p 9200:9200 -p 9300:9300 -e xpack.security.enabled=false -e node.name=es01 -e discovery.type=single-node -it docker.elastic.co/elasticsearch/elasticsearch:8.16.6</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="注意"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>要使用 SUSE Virtualization v1.5.0，确保 Elasticsearch 服务器运行版本 8.11.0 或更高版本。</p>
+</div>
+<div class="paragraph">
+<p>当 <code>rancher-logging-root-fluentd-0</code> pod 报告错误，例如 <code>#0 unexpected error error_class=Elastic::Transport::Transport::Error error="no address for http (Resolv::ResolvError)" Client can’t recognise the server.</code> 时，您必须升级 Elasticsearch。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>确保您已将 <code>vm.max_map_count</code> 设置为 &gt;= 262144，否则上述 docker 命令将失败。一旦 Elasticsearch 服务器启动，您可以为 <code>ClusterOutput</code> 和 <code>ClusterFlow</code> 创建 yaml 文件：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">cat &lt;&lt; EOF &gt; elasticsearch-example.yaml
+apiVersion: logging.banzaicloud.io/v1beta1
+kind: ClusterOutput
+metadata:
+  name: elasticsearch-example
+  namespace: cattle-logging-system
+spec:
+  elasticsearch:
+    host: 192.168.0.119
+    port: 9200
+    buffer:
+      timekey: 1m
+      timekey_wait: 30s
+      timekey_use_utc: true
+---
+apiVersion: logging.banzaicloud.io/v1beta1
+kind: ClusterFlow
+metadata:
+  name: elasticsearch-example
+  namespace: cattle-logging-system
+spec:
+  match:
+    - select: {}
+  globalOutputRefs:
+    - elasticsearch-example
+EOF</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>并应用该文件：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">kubectl apply -f elasticsearch-example.yaml</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>在允许日志操作员应用资源后，您可以测试日志是否正在流动：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">$ curl localhost:9200/fluentd/_search
+{
+  "took": 1,
+  "timed_out": false,
+  "_shards": {
+    "total": 5,
+    "successful": 5,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": 11603,
+    "max_score": 1,
+    "hits": [
+      {
+        "_index": "fluentd",
+        "_type": "fluentd",
+        "_id": "yWHr0oMBXcBggZRJgagY",
+        "_score": 1,
+        "_source": {
+          "stream": "stderr",
+          "logtag": "F",
+          "message": "I1013 02:29:43.020384       1 csi_handler.go:248] Attaching \"csi-974b4a6d2598d8a7a37b06d06557c428628875e077dabf8f32a6f3aa2750961d\"",
+          "kubernetes": {
+            "pod_name": "csi-attacher-5d4cc8cfc8-hd4nb",
+            "namespace_name": "longhorn-system",
+            "pod_id": "c63c2014-9556-40ce-a8e1-22c55de12e70",
+            "labels": {
+              "app": "csi-attacher",
+              "pod-template-hash": "5d4cc8cfc8"
+            },
+            "annotations": {
+              "cni.projectcalico.org/containerID": "857df09c8ede7b8dee786a8c8788e8465cca58f0b4d973c448ed25bef62660cf",
+              "cni.projectcalico.org/podIP": "10.52.0.15/32",
+              "cni.projectcalico.org/podIPs": "10.52.0.15/32",
+              "k8s.v1.cni.cncf.io/network-status": "[{\n    \"name\": \"k8s-pod-network\",\n    \"ips\": [\n        \"10.52.0.15\"\n    ],\n    \"default\": true,\n    \"dns\": {}\n}]",
+              "k8s.v1.cni.cncf.io/networks-status": "[{\n    \"name\": \"k8s-pod-network\",\n    \"ips\": [\n        \"10.52.0.15\"\n    ],\n    \"default\": true,\n    \"dns\": {}\n}]",
+              "kubernetes.io/psp": "global-unrestricted-psp"
+            },
+            "host": "harvester-node-0",
+            "container_name": "csi-attacher",
+            "docker_id": "f10e4449492d4191376d3e84e39742bf077ff696acbb1e5f87c9cfbab434edae",
+            "container_hash": "sha256:03e115718d258479ce19feeb9635215f98e5ad1475667b4395b79e68caf129a6",
+            "container_image": "docker.io/longhornio/csi-attacher:v3.4.0"
+          }
+        }
+      },
+
+      ...
+
+    ]
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_graylog--panel" class="tabpanel" aria-labelledby="_tabs_1_graylog">
+<div class="paragraph">
+<p>您可以按照 <a href="https://github.com/w13915984028/harvester-develop-summary/blob/main/integrate-harvester-logging-with-log-servers.md#integrate-harvester-logging-with-graylog">这里</a>的说明通过 <a href="https://www.graylog.org/">Graylog</a>部署和查看集群日志：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: logging.banzaicloud.io/v1beta1
+kind: ClusterFlow
+metadata:
+  name: "all-logs-gelf-hs"
+  namespace: "cattle-logging-system"
+spec:
+  globalOutputRefs:
+    - "example-gelf-hs"
+---
+apiVersion: logging.banzaicloud.io/v1beta1
+kind: ClusterOutput
+metadata:
+  name: "example-gelf-hs"
+  namespace: "cattle-logging-system"
+spec:
+  gelf:
+    host: "192.168.122.159"
+    port: 12202
+    protocol: "udp"</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_splunk--panel" class="tabpanel" aria-labelledby="_tabs_1_splunk">
+<div class="paragraph">
+<p>您可以按照 <a href="https://github.com/w13915984028/harvester-develop-summary/blob/main/test-log-event-audit-with-splunk.md">这里</a>的说明通过 <a href="https://www.splunk.com/">Splunk</a>部署和查看集群日志。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: logging.banzaicloud.io/v1beta1
+kind: ClusterOutput
+metadata:
+  name: harvester-logging-splunk
+  namespace: cattle-logging-system
+spec:
+ splunkHec:
+    hec_host: 192.168.122.101
+    hec_port: 8088
+    insecure_ssl: true
+    index: harvester-log-index
+    hec_token:
+      valueFrom:
+        secretKeyRef:
+          key: HECTOKEN
+          name: splunk-hec-token2
+    buffer:
+      chunk_limit_size: 3MB
+      timekey: 2m
+      timekey_wait: 1m
+---
+apiVersion: logging.banzaicloud.io/v1beta1
+kind: ClusterFlow
+metadata:
+   name: harvester-logging-splunk
+   namespace: cattle-logging-system
+spec:
+   filters:
+      - tag_normaliser: {}
+   match:
+   globalOutputRefs:
+      - harvester-logging-splunk</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_loki--panel" class="tabpanel" aria-labelledby="_tabs_1_loki">
+<div class="paragraph">
+<p>您可以按照 <a href="https://github.com/joshmeranda/harvester/blob/logging/enhancements/20220525-system-logging.md">logging HEP</a>中的说明通过 <a href="https://grafana.com/oss/loki/">Grafana Loki</a>部署和查看集群日志。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: logging.banzaicloud.io/v1beta1
+kind: ClusterFlow
+metadata:
+  name: harvester-loki
+  namespace: cattle-logging-system
+spec:
+  match:
+    - select: {}
+  globalOutputRefs:
+    - harvester-loki
+---
+apiVersion: logging.banzaicloud.io/v1beta1
+kind: ClusterOutput
+metadata:
+  name: harvester-loki
+  namespace: cattle-logging-system
+spec:
+  loki:
+    url: http://loki-stack.cattle-logging-system.svc:3100
+    extra_labels:
+      logOutput: harvester-loki</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_audit"><a class="anchor" href="#_audit"></a>Audit</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Harvester收集Kubernetes `audit`并能够将`audit`发送到各种类型的日志服务器。</p>
+</div>
+<div class="paragraph">
+<p>指导`kube-apiserver`的策略文件是 <a href="https://github.com/harvester/harvester-installer/blob/5991dcf6307aa5da79c5d6926566541f48105778/pkg/config/templates/rke2-92-harvester-kube-audit-policy.yaml">这里</a>。</p>
+</div>
+<div class="sect2">
+<h3 id="_审计定义"><a class="anchor" href="#_审计定义"></a>审计定义</h3>
+<div class="paragraph">
+<p>在`kubernetes`中， <a href="https://kubernetes.io/docs/tasks/debug/debug-cluster/audit/">审计</a>数据由`kube-apiserver`根据定义的策略生成。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>...
+Audit policy
+Audit policy defines rules about what events should be recorded and what data they should include. The audit policy object structure is defined in the audit.k8s.io API group. When an event is processed, it's compared against the list of rules in order. The first matching rule sets the audit level of the event. The defined audit levels are:
+
+None - don't log events that match this rule.
+Metadata - log request metadata (requesting user, timestamp, resource, verb, etc.) but not request or response body.
+Request - log event metadata and request body but not response body. This does not apply for non-resource requests.
+RequestResponse - log event metadata, request and response bodies. This does not apply for non-resource requests.</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_审计日志格式"><a class="anchor" href="#_审计日志格式"></a>审计日志格式</h3>
+<div class="sect3">
+<h4 id="_kubernetes中的审计日志格式"><a class="anchor" href="#_kubernetes中的审计日志格式"></a>Kubernetes中的审计日志格式</h4>
+<div class="paragraph">
+<p>Kubernetes apiserver以以下JSON格式将审计日志记录到本地文件中。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+"kind":"Event",
+"apiVersion":"audit.k8s.io/v1",
+"level":"Metadata",
+"auditID":"13d0bf83-7249-417b-b386-d7fc7c024583",
+"stage":"RequestReceived",
+"requestURI":"/apis/flowcontrol.apiserver.k8s.io/v1beta2/prioritylevelconfigurations?fieldManager=api-priority-and-fairness-config-producer-v1",
+"verb":"create",
+"user":{"username":"system:apiserver","uid":"d311c1fe-2d96-4e54-a01b-5203936e1046","groups":["system:masters"]},
+"sourceIPs":["::1"],
+"userAgent":"kube-apiserver/v1.24.7+rke2r1 (linux/amd64) kubernetes/e6f3597",
+"objectRef":{"resource":"prioritylevelconfigurations",
+"apiGroup":"flowcontrol.apiserver.k8s.io",
+"apiVersion":"v1beta2"},
+"requestReceivedTimestamp":"2022-10-19T18:55:07.244781Z",
+"stageTimestamp":"2022-10-19T18:55:07.244781Z"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_发送到日志服务器之前的审计日志格式"><a class="anchor" href="#_发送到日志服务器之前的审计日志格式"></a>发送到日志服务器之前的审计日志格式</h4>
+<div class="paragraph">
+<p>Harvester在将`audit`日志发送到日志服务器之前保持不变。</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_审计日志输出集群输出"><a class="anchor" href="#_审计日志输出集群输出"></a>审计日志输出/集群输出</h3>
+<div class="paragraph">
+<p>要输出与审计相关的日志，<code>Output</code>/<code>ClusterOutput`要求`loggingRef`的值为`harvester-kube-audit-log-ref</code>。</p>
+</div>
+<div class="paragraph">
+<p>当您从Harvester仪表板进行配置时，字段会自动添加。</p>
+</div>
+<div class="paragraph">
+<p>从`Audit Only`下拉列表中选择类型`Type`。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/logging/cluster-output-type.png" alt="cluster output type">
+</div>
+</div>
+<div class="paragraph">
+<p>当您从CLI进行配置时，请手动添加字段。</p>
+</div>
+<div class="paragraph">
+<p>示例：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>apiVersion: logging.banzaicloud.io/v1beta1
+kind: ClusterOutput
+metadata:
+  name: "harvester-audit-webhook"
+  namespace: "cattle-logging-system"
+spec:
+  http:
+    endpoint: "http://192.168.122.159:8096/"
+    open_timeout: 3
+    format:
+      type: "json"
+    buffer:
+      chunk_limit_size: 3MB
+      timekey: 2m
+      timekey_wait: 1m
+  loggingRef: harvester-kube-audit-log-ref   # this reference is fixed and must be here</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_审计日志流集群流"><a class="anchor" href="#_审计日志流集群流"></a>审计日志流/集群流</h3>
+<div class="paragraph">
+<p>要路由与审计相关的日志，<code>Flow</code>/<code>ClusterFlow`需要`loggingRef`的值为`harvester-kube-audit-log-ref</code>。</p>
+</div>
+<div class="paragraph">
+<p>当您从Harvester仪表板进行配置时，字段会自动添加。</p>
+</div>
+<div class="paragraph">
+<p>选择类型`Audit`。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/logging/cluster-flow-type.png" alt="cluster flow type">
+</div>
+</div>
+<div class="paragraph">
+<p>当您从CLI进行配置时，请手动添加字段。</p>
+</div>
+<div class="paragraph">
+<p>示例：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>apiVersion: logging.banzaicloud.io/v1beta1
+kind: ClusterFlow
+metadata:
+  name: "harvester-audit-webhook"
+  namespace: "cattle-logging-system"
+spec:
+  globalOutputRefs:
+    - "harvester-audit-webhook"
+  loggingRef: harvester-kube-audit-log-ref  # this reference is fixed and must be here</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_harvester"><a class="anchor" href="#_harvester"></a>Harvester</h3>
+
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_活动"><a class="anchor" href="#_活动"></a>活动</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Harvester收集Kubernetes `event`并能够将`event`发送到各种类型的日志服务器。</p>
+</div>
+<div class="sect2">
+<h3 id="_事件定义"><a class="anchor" href="#_事件定义"></a>事件定义</h3>
+<div class="paragraph">
+<p>Kubernetes `events`是显示集群内部发生情况的对象，例如调度程序做出的决策或某些Pod为何被驱逐出节点。所有核心组件和扩展（操作员/控制器）可以通过API服务器创建事件。</p>
+</div>
+<div class="paragraph">
+<p>事件与各个组件生成的日志消息没有直接关系，并且不受日志详细程度的影响。当组件创建事件时，它通常会发出相应的日志消息。事件在短时间内（通常在一小时后）由API服务器进行垃圾回收，这意味着它们可以用来理解正在发生的问题，但您必须收集它们以调查过去的事件。</p>
+</div>
+<div class="paragraph">
+<p>当某些事情未按预期工作时，事件是查看应用程序和基础设施操作的第一件事。如果故障是早期事件的结果，或者在进行事后分析时，保留它们更长时间是至关重要的。</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_事件日志格式"><a class="anchor" href="#_事件日志格式"></a>事件日志格式</h3>
+<div class="sect3">
+<h4 id="_kubernetes中的事件日志格式"><a class="anchor" href="#_kubernetes中的事件日志格式"></a>Kubernetes中的事件日志格式</h4>
+<div class="paragraph">
+<p>一个`kubernetes event`示例：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2022-08-24T11:17:35Z",
+            "involvedObject": {
+                "apiVersion": "kubevirt.io/v1",
+                "kind": "VirtualMachineInstance",
+                "name": "vm-ide-1",
+                "namespace": "default",
+                "resourceVersion": "604601",
+                "uid": "1bd4133f-5aa3-4eda-bd26-3193b255b480"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2022-08-24T11:17:35Z",
+            "message": "VirtualMachineInstance defined.",
+            "metadata": {
+                "creationTimestamp": "2022-08-24T11:17:35Z",
+                "name": "vm-ide-1.170e43cbdd833b62",
+                "namespace": "default",
+                "resourceVersion": "604626",
+                "uid": "0114f4e7-1d4a-4201-b0e5-8cc8ede202f4"
+            },
+            "reason": "Created",
+            "reportingComponent": "",
+            "reportingInstance": "",
+            "source": {
+                "component": "virt-handler",
+                "host": "harv1"
+            },
+            "type": "Normal"
+        },</pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_发送到日志服务器之前的事件日志格式"><a class="anchor" href="#_发送到日志服务器之前的事件日志格式"></a>发送到日志服务器之前的事件日志格式</h4>
+<div class="paragraph">
+<p>每个`event log`的格式为：<code>{"stream":"","logtag":"F","message":"","kubernetes":{""}}</code>。<code>kubernetes event</code> 在 <code>message</code> 字段中。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>{
+"stream":"stdout",
+
+"logtag":"F",
+
+"message":"{
+\\"verb\\":\\"ADDED\\",
+
+\\"event\\":{\\"metadata\\":{\\"name\\":\\"vm-ide-1.170e446c3f890433\\",\\"namespace\\":\\"default\\",\\"uid\\":\\"0b44b6c7-b415-4034-95e5-a476fcec547f\\",\\"resourceVersion\\":\\"612482\\",\\"creationTimestamp\\":\\"2022-08-24T11:29:04Z\\",\\"managedFields\\":[{\\"manager\\":\\"virt-controller\\",\\"operation\\":\\"Update\\",\\"apiVersion\\":\\"v1\\",\\"time\\":\\"2022-08-24T11:29:04Z\\"}]},\\"involvedObject\\":{\\"kind\\":\\"VirtualMachineInstance\\",\\"namespace\\":\\"default\\",\\"name\\":\\"vm-ide-1\\",\\"uid\\":\\"1bd4133f-5aa3-4eda-bd26-3193b255b480\\",\\"apiVersion\\":\\"kubevirt.io/v1\\",\\"resourceVersion\\":\\"612477\\"},\\"reason\\":\\"SuccessfulDelete\\",\\"message\\":\\"Deleted PodDisruptionBudget kubevirt-disruption-budget-hmmgd\\",\\"source\\":{\\"component\\":\\"disruptionbudget-controller\\"},\\"firstTimestamp\\":\\"2022-08-24T11:29:04Z\\",\\"lastTimestamp\\":\\"2022-08-24T11:29:04Z\\",\\"count\\":1,\\"type\\":\\"Normal\\",\\"eventTime\\":null,\\"reportingComponent\\":\\"\\",\\"reportingInstance\\":\\"\\"}
+}",
+
+"kubernetes":{"pod_name":"harvester-default-event-tailer-0","namespace_name":"cattle-logging-system","pod_id":"d3453153-58c9-456e-b3c3-d91242580df3","labels":{"app.kubernetes.io/instance":"harvester-default-event-tailer","app.kubernetes.io/name":"event-tailer","controller-revision-hash":"harvester-default-event-tailer-747b9d4489","statefulset.kubernetes.io/pod-name":"harvester-default-event-tailer-0"},"annotations":{"cni.projectcalico.org/containerID":"aa72487922ceb4420ebdefb14a81f0d53029b3aec46ed71a8875ef288cde4103","cni.projectcalico.org/podIP":"10.52.0.178/32","cni.projectcalico.org/podIPs":"10.52.0.178/32","k8s.v1.cni.cncf.io/network-status":"[{\\n    \\"name\\": \\"k8s-pod-network\\",\\n    \\"ips\\": [\\n        \\"10.52.0.178\\"\\n    ],\\n    \\"default\\": true,\\n    \\"dns\\": {}\\n}]","k8s.v1.cni.cncf.io/networks-status":"[{\\n    \\"name\\": \\"k8s-pod-network\\",\\n    \\"ips\\": [\\n        \\"10.52.0.178\\"\\n    ],\\n    \\"default\\": true,\\n    \\"dns\\": {}\\n}]","kubernetes.io/psp":"global-unrestricted-psp"},"host":"harv1","container_name":"harvester-default-event-tailer-0","docker_id":"455064de50cc4f66e3dd46c074a1e4e6cfd9139cb74d40f5ba00b4e3e2a7ab2d","container_hash":"docker.io/banzaicloud/eventrouter@sha256:6353d3f961a368d95583758fa05e8f4c0801881c39ed695bd4e8283d373a4262","container_image":"docker.io/banzaicloud/eventrouter:v0.1.0"}
+
+}</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_事件日志输出集群输出"><a class="anchor" href="#_事件日志输出集群输出"></a>事件日志输出/集群输出</h3>
+<div class="paragraph">
+<p>事件与 <code>Output</code>/<code>ClusterOutput</code> 共享 <code>Logging</code>。</p>
+</div>
+<div class="paragraph">
+<p>从 <code>Logging/Event</code> 下拉列表中选择 <code>Type</code>。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/logging/cluster-output-type.png" alt="cluster output type">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_事件日志流集群流"><a class="anchor" href="#_事件日志流集群流"></a>事件日志流/集群流</h3>
+<div class="paragraph">
+<p>与正常的日志记录 <code>Flow</code>/<code>ClusterFlow</code> 相比，<code>Event</code> 相关的 <code>Flow</code>/<code>ClusterFlow</code> 多了一个匹配字段，其值为 <code>event-tailer</code>。</p>
+</div>
+<div class="paragraph">
+<p>当您从Harvester仪表板进行配置时，字段会自动添加。</p>
+</div>
+<div class="paragraph">
+<p>从 <code>Event</code> 下拉列表中选择 <code>Type</code>。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/logging/cluster-flow-type.png" alt="cluster flow type">
+</div>
+</div>
+<div class="paragraph">
+<p>当您从CLI进行配置时，请手动添加字段。</p>
+</div>
+<div class="paragraph">
+<p>示例：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>apiVersion: logging.banzaicloud.io/v1beta1
+kind: ClusterFlow
+metadata:
+  name: harvester-event-webhook
+  namespace: cattle-logging-system
+spec:
+  filters:
+  - tag_normaliser: {}
+  match:
+  - select:
+      labels:
+        app.kubernetes.io/name: event-tailer
+  globalOutputRefs:
+    - harvester-event-webhook</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="../networking/best-practices.html">网络最佳实践</a></span>
+  <span class="next"><a href="monitoring.html">监控</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<script src="../../../../_/js/site.js"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+<script src="../../../../_/js/vendor/lunr.js"></script>
+<script src="../../../../_/js/vendor/lunr-languages.js"></script>
+<script src="../../../../_/js/search-ui.js" id="search-ui-script" data-site-root-path="../../../.." data-snippet-length="100" data-stylesheet="../../../../_/css/search.css"></script>
+<script async src="../../../../search-index.js"></script>
+<script src="../../../../_/js/vendor/langSelection.js"></script>
+<script async src="../../../../_/js/vendor/tabs.js"></script>
+
+
+<script src="../../../../_/js/CNLanguageSwitcher.js"></script>
+  </body>
+</html>

@@ -1,0 +1,2087 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+<title>虚拟机备份、快照和恢复 | SUSE® Virtualization  v1.7</title>
+    <link rel="canonical" href="https://documentation.suse.com/cloudnative/virtualization/v1.7/zh/virtual-machines/backup-restore.html">
+    <link rel="prev" href="clone-vm.html">
+    <link rel="next" href="live-migration.html">
+    <meta name="generator" content="Antora 3.1.14">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+<meta http-equiv="last-modified" content="2026-01-08"/>
+<link rel="stylesheet" href="../../../../_/css/search.css">
+<link rel="icon" href="../../../../_/img/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="../../../../_/css/font-styles.css">
+<link rel="stylesheet" href="../../../../_/fonts/css/all.css">
+<link rel="stylesheet" href="../../../../_/css/site-extra.css">
+<link rel="stylesheet" href="../../../../_/css/vendor/tabs.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap&family=SUSE+Mono:ital,wght@0,100..800;1,100..800" rel="stylesheet">
+<link rel="stylesheet" href="../../../../_/css/vendor/light.css">
+<script src="/docserv/res/lightheaded/analytics.js" type="text/javascript"></script>
+<script type="module">
+  import { defineCustomElements, setAssetPath } from 'https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/shared-header.esm.js';
+  defineCustomElements();
+  setAssetPath("https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/assets");
+</script>
+<!-- Default English link -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/en/virtual-machines/backup-restore.html" hreflang="x-default" rel="alternate"/>
+<!-- Link for the currently processed page -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/zh/virtual-machines/backup-restore.html" hrefLang="zh-CN" rel="alternate" />
+<!-- Link for the English page -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/en/virtual-machines/backup-restore.html" hreflang="en-US" rel="alternate" />
+<!-- Link for the Japanese page -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/ja/virtual-machines/backup-restore.html" hreflang="ja-JP" rel="alternate" />
+<!-- Link for the German page -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/de/virtual-machines/backup-restore.html" hreflang="de-DE" rel="alternate" />
+<!-- Link for the French page -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/fr/virtual-machines/backup-restore.html" hreflang="fr-FR" rel="alternate" />
+<!-- Link for the Spanish page -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/es/virtual-machines/backup-restore.html" hreflang="es-ES" rel="alternate" />
+<!-- Link for the Brazilian Portuguese page -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/pt/virtual-machines/backup-restore.html" hreflang="pt-BR" rel="alternate" />
+
+<!-- JSON-LD for doc metadata -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "虚拟机备份、快照和恢复 | SUSE Virtualization v1.7",
+  "headline": "虚拟机备份、快照和恢复",
+  "description": "虚拟机备份、快照和恢复",
+  "inLanguage": "zh_CN",
+  "dateModified": "2026-01-08T00:00:00Z",
+  "author": {
+    "@type": "Organization",
+    "name": "SUSE Product & Solution Documentation Team",
+    "url": "https://documentation.suse.com"
+  },
+  "mentions": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "SUSE Virtualization",
+      "softwareVersion": "v1.7",
+      "applicationCategory": "Cloud Infrastructure",
+      "operatingSystem": "Linux"
+    }
+  ],
+  "publisher": {
+    "@type": "Organization",
+    "name": "SUSE",
+    "url": "https://documentation.suse.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.suse.com/assets/img/suse-white-logo-green.svg"
+    }
+  }
+}
+</script>
+<!-- end JSON-LD for doc metadata -->
+
+<!-- SUVA - Begin Ask Geeko-->
+<!--
+searchUnifyChatbot ("Ask Geeko") Copyright ©2024 Grazitti Interactive - All Rights Reserved. NOTICE: All information contained herein is, and remains the property of Grazitti Interactive and its suppliers, if any. The intellectual and technical concepts contained herein are proprietary to Grazitti Interactive and its suppliers and may be covered by India, U.S. and Foreign Patents, patents in process, and are protected by trade secret or copyright law. Dissemination of this information or reproduction of this material is strictly forbidden unless prior written permission is obtained from Grazitti Interactive.
+-->
+<meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport"/>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/Allow/an.js?c485cb3c-93d4-4942-99e8-91f3b8ca5636"></script>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/js/index.js?q=gAAAAABp3JBN9VuEJTi5tFafLIMwgMkCPdJS3Qm56lSYx93ir3Twt9hgSvd3OHEt6-nYfSbY3yHq0Zv8PRPsSy4nbqZiaJ4cZvRc6ItVZdvwz9Urf35cH6OUyPOwdA0phlS-zVIznQ2rWW438p-91NlTHuxJuOFpnA=="></script>
+<link rel="stylesheet" href="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/css/index.css">
+<div id="searchUnifyChatbot"></div>
+<!-- SUVA - End Ask Geeko-->
+<!--BEGIN QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+<script type='text/javascript' src="../../../../_/js/qualtrics.js" defer></script>
+<!--END QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<script type="module">import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs'; mermaid.initialize({"startOnLoad":true});</script><shared-header
+language="en"
+languages='{
+    "en": { "label": "English", "url": "https://documentation.suse.com/en-us/" },
+    "de": { "label": "Deutsch", "url": "https://documentation.suse.com/de-de/" },
+    "fr": { "label": "Français", "url": "https://documentation.suse.com/fr-fr/" },
+    "es": { "label": "Español", "url": "https://documentation.suse.com/es-es/" },
+    "zh_CN": { "label": "中文", "url": "https://documentation.suse.com/zh-cn/" },
+    "pt_BR": { "label": "Português Brasileiro", "url": "https://documentation.suse.com/pt-br/" }
+}'
+enable-search='false'>
+</shared-header>
+<div class="body">
+<div class="nav-container" data-component="virtualization" data-version="v1.7">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title">SUSE® Virtualization</h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">简介</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/overview.html">概述</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/deploy-ha-cluster.html">部署高可用性集群</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/deploy-singlenode-cluster.html">部署单节点集群</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/glossary.html">词汇表</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/document-conventions.html">文档约定</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">安装和设置</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/requirements.html">硬件和网络要求</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">安装媒体</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/media/net-install.html">网络安装 ISO</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/media/install-binaries-mode.html">仅安装二进制文件</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">安装方法</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/methods/iso-install.html">ISO 安装</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/methods/usb-install.html">USB安装</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/methods/pxe-boot-install.html">PXE 引导安装</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">配置</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/config/configuration-file.html">配置文件</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/config/update-configuration.html">安装后更新配置</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/config/settings.html">设置</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/config/cloudinitcrd.html">CloudInit CRD</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/post-installation.html">安装后任务</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/management-address.html">管理地址</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/external-disk.html">外部磁盘支持</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/authentication.html">身份验证</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/airgap.html">隔离的环境</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/single-node-clusters.html">单节点集群</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">升级</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/upgrades.html">升级</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-1-2-to-v1-2-0.html">从 v1.1.2 升级到 v1.2.0（不推荐）</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-2-0-to-v1-2-1.html">从 v1.1.2/v1.1.3/v1.2.0 升级到 v1.2.1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-2-1-to-v1-2-2.html">从 v1.2.1 升级到 v1.2.2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-2-2-to-v1-3-1.html">从 v1.2.2/v1.3.0 升级到 v1.3.1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-3-1-to-v1-3-2.html">从 v1.3.1 升级到 v1.3.2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-3-2-to-v1-4-0.html">从 v1.3.2 升级到 v1.4.0</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-4-0-to-v1-4-1.html">从 v1.4.0 升级到 v1.4.1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-4-1-to-v1-4-2.html">从 v1.4.1 升级到 v1.4.2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-4-1-to-v1-4-3.html">从 v1.4.1 或 v1.4.2 升级到 v1.4.3</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-4-2-to-v1-5-0.html">从 v1.4.2 或 v1.4.3 升级到 v1.5.0</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-4-2-to-v1-5-1.html">从 v1.4.2 或 v1.4.3 升级到 v1.5.1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-4-2-to-v1-5-2.html">从 v1.4.2 或 v1.4.3 升级到 v1.5.2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-5-0-to-v1-5-1.html">从 v1.5.0 升级到 v1.5.1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-5-0-to-v1-5-2.html">从 v1.5.0 或 v1.5.1 升级到 v1.5.2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-5-x-to-v1-6-x.html">从 v1.5.x 升级到 v1.6.x</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-6-x-to-v1-6-y.html">从 v1.6.x 升级到 v1.6.y</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-6-x-to-v1-7-x.html">从 v1.6.x 升级到 v1.7.x</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-7-x-to-v1-7-y.html">从 v1.7.x 升级到 v1.7.y</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/troubleshooting.html">查错</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">主机</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../hosts/hosts.html">主机管理</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../hosts/witness-node.html">见证节点</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../hosts/vgpu-support.html">vGPU支持</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">虚拟机</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="virtual-machines.html">虚拟机</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">虚拟机镜像</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="vm-images/upload-image.html">上传镜像</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="vm-images/custom-suse-images.html">自定义 SUSE 虚拟机映像</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="vm-images/image-security.html">图像安全</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="create-vm.html">创建虚拟机</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="create-windows-vm.html">创建一个 Windows 虚拟机</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="edit-vm.html">编辑虚拟机</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="access-vm.html">访问虚拟机</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="clone-vm.html">克隆虚拟机</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="backup-restore.html">虚拟机备份、快照和恢复</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="live-migration.html">实时迁移</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="hotplug-volume.html">热插拔卷</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="resource-overcommit.html">资源超额分配</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="cpu-pinning.html">处理器绑定</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="cpu-memory-hotplug.html">CPU 和内存热插拔</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="nic-hotplug.html">NIC 热插拔</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">存储</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">卷</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../storage/volumes/create-volume.html">创建卷</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../storage/volumes/edit-volume.html">编辑卷</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../storage/volumes/clone-volume.html">克隆一个卷</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../storage/volumes/export-volume.html">将卷导出为镜像</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../storage/volumes/volume-snapshots.html">卷快照</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../storage/volumes/volume-security.html">卷安全</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../storage/storageclass.html">StorageClass</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../storage/csidriver.html">第三方存储支持</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../storage/longhorn-v2-data-engine.html">Longhorn V2 数据引擎</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../storage/storage-validator.html">存储验证器</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">网络</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/cluster-network.html">群集网络</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/vm-network.html">VM 网络</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/deep-dive.html">网络深入探讨</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/load-balancer.html">负载均衡器</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/ip-pool.html">IP池</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/storage-network.html">存储网络</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/vm-migration-network.html">虚拟机迁移网络</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/kubeovn-vpc.html">虚拟私有云</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/vm-isolation.html">虚拟机隔离</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/best-practices.html">网络最佳实践</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">可观测性</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../observability/logging.html">日志记录</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../observability/monitoring.html">监控</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">附加组件</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/add-ons.html">附加组件</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/harvester-seeder.html">Harvester Seeder</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/kubeovn-operator.html">Kube-OVN Operator（实验性）</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/lvm-local-storage.html">CSI 驱动程序 LVM（实验性）</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/nvidia-driver-toolkit.html">NVIDIA 驱动工具包</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/pcidevices-controller.html">PCI设备控制器</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/rancher-vcluster.html">Rancher vCluster（实验性）</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/virtual-machine-auto-balance.html">虚拟机自动平衡（实验性）</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/vm-dhcp-controller.html">VM DHCP 控制器（实验性）</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/vm-import-controller.html">虚拟机导入控制器</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">集成</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Rancher 集成</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/rancher-integration.html">SUSE Rancher Prime 集成</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/virtualization-management.html">虚拟化管理</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">节点驱动</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../integrations/rancher/node-driver/node-driver.html">Harvester节点驱动程序</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../integrations/rancher/node-driver/rke2-cluster.html">创建 RKE2 Kubernetes 集群</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../integrations/rancher/node-driver/k3s-cluster.html">创建 K3s Kubernetes 集群</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/cloud-provider.html">Harvester 云提供商</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/csi-driver.html">Harvester CSI 驱动程序</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/resource-quota.html">资源配额</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/rancher-terraform-provider.html">Rancher Terraform</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/import-vm.html">导入基于SUSE® Virtualization虚拟机的集群</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/harvester-ui-extension.html">Harvester UI 扩展</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../integrations/terraform/terraform-provider.html">Terraform Provider</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">查错</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/installation.html">安装问题</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/operating-system.html">操作系统问题</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/cluster.html">集群问题</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/virtual-machines.html">虚拟机问题</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/monitoring.html">监控问题</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/logging.html">日志问题</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/rancher.html">Rancher 问题：</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/faq.html">常见问题</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">开发者内容</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../developer/addon-development.html">附加产品开发指南</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../api.html">API</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">SUSE® Virtualization</span>
+    <span class="version">v1.7</span>
+  </div>
+  <ul class="components">
+        <li class="component">
+          <div class="title"><a href="../../../../admission-controller/1.36/en/introduction.html">Admission Controller</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../admission-controller/1.37/en/introduction.html">1.37-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../admission-controller/1.36/en/introduction.html">1.36</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.35/en/introduction.html">1.35</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.34/en/introduction.html">1.34</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.33/en/introduction.html">1.33</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.32/en/introduction.html">1.32</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.31/en/introduction.html">1.31</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.30/en/introduction.html">1.30</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.29/en/introduction.html">1.29</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.28/en/introduction.html">1.28</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../cluster-api/v0.26/en/index.html">Cluster API</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../cluster-api/v0.28/en/index.html">v0.28-dev</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.27/en/index.html">v0.27-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../cluster-api/v0.26/en/index.html">v0.26</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.25/en/index.html">0.25</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.24/en/index.html">0.24</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.23/en/index.html">0.23</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.22/en/index.html">0.22</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.21/en/index.html">0.21</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.20/en/index.html">0.20</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.19/en/index.html">0.19</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.18/en/index.html">0.18</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.17/en/index.html">0.17</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.16/en/index.html">0.16</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.11/en/index.html">0.11</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../continuous-delivery/next/en/index.html">Continuous Delivery</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../continuous-delivery/next/en/index.html">Next</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.15/en/index.html">v0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.11/en/index.html">0.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.10/en/index.html">0.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.9/en/index.html">0.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../k3s/latest/en/introduction.html">K3s</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../k3s/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../os-manager/1.9/en/index.html">OS Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../os-manager/1.10/en/index.html">1.10-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../os-manager/1.9/en/index.html">1.9</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.8/en/index.html">1.8</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.7/en/index.html">1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.6/en/index.html">1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.5/en/index.html">1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-ai/latest/en/introduction.html">Rancher AI</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-ai/latest/en/introduction.html">latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../turtles/stable/en/index.html">Rancher Turtles</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../turtles/stable/en/index.html">Stable</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rke2/latest/en/introduction.html">RKE2</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rke2/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-observability/latest/en/classic.html">SUSE Observability</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../suse-observability/latest/en/classic.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">SUSE Rancher Developer Access</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">SUSE® Rancher for AWS</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-manager/v2.14/en/about-rancher/what-is-rancher.html">SUSE® Rancher Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.15/en/about-rancher/what-is-rancher.html">v2.15 (Unreleased)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../rancher-manager/v2.14/en/about-rancher/what-is-rancher.html">v2.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.13/en/about-rancher/what-is-rancher.html">v2.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.12/en/about-rancher/what-is-rancher.html">v2.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.11/en/about-rancher/what-is-rancher.html">v2.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.10/en/about-rancher/what-is-rancher.html">v2.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.9/en/about-rancher/what-is-rancher.html">v2.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../security/5.6/en/overview.html">SUSE® Security</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../security/5.6/en/overview.html">5.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.5/en/overview.html">5.5</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.4/en/overview.html">5.4</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.3/en/overview.html">5.3</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../storage/1.11/en/longhorn-documentation.html">SUSE® Storage</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../storage/1.12/en/longhorn-documentation.html">1.12 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../storage/1.11/en/longhorn-documentation.html">1.11 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../storage/1.10/en/longhorn-documentation.html">1.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../storage/1.9/en/longhorn-documentation.html">1.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">SUSE® Virtual Clusters</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/1.2.0/en/release-notes/version-1.2.0.html">v1.2.0 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">v1.1.0-latest</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/1.0.2/en/release-notes/version-1.0.2.html">v1.0.2</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.1/en/introduction.html">v1.0.1</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.0/en/introduction.html">v1.0.0</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component is-current">
+          <div class="title"><a href="../../../v1.8/en/introduction/overview.html">SUSE® Virtualization</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../v1.9/en/introduction/overview.html">v1.9 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../v1.8/en/introduction/overview.html">v1.8 (Latest)</a>
+            </li>
+            <li class="version is-current">
+              <a href="../../en/introduction/overview.html">v1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../v1.6/en/introduction/overview.html">v1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../v1.5/en/introduction/overview.html">v1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../vulnerability-scanner/0.12.0/en/introduction.html">Vulnerability Scanner</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../vulnerability-scanner/0.12.0/en/introduction.html">0.12.0</a>
+            </li>
+            <li class="version">
+              <a href="../../../../vulnerability-scanner/0.11.3/en/introduction.html">0.11.3</a>
+            </li>
+          </ul>
+        </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+<ul>
+    <li>
+  <a class="home-link-dsc" href="https://documentation.suse.com" title="SUSE Documentation Home" aria-label="SUSE Documentation Home"></a>
+    </li>
+    <li>
+      <a href="https://documentation.suse.com/cloudnative/virtualization" title="SUSE Virtualization" aria-label="SUSE Documentation - SUSE Virtualization">
+        SUSE Virtualization
+      </a>
+    </li>
+      <li>
+          虚拟机
+      </li>
+  </ul>
+</nav>
+<div class="page-versions">
+  <button class="version-menu-toggle" title="Show other versions of page">v1.7</button>
+  <div class="version-menu">
+    <a class="version is-missing" href="../../../v1.9/en/introduction/overview.html">v1.9 (Dev)</a>
+    <a class="version is-missing" href="../../../v1.8/en/introduction/overview.html">v1.8 (Latest)</a>
+    <a class="version is-current" href="backup-restore.html">v1.7</a>
+    <a class="version is-missing" href="../../../v1.6/en/introduction/overview.html">v1.6</a>
+    <a class="version is-missing" href="../../../v1.5/en/introduction/overview.html">v1.5</a>
+  </div>
+</div>
+      <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <label class="visual-search-label-bc" for="search-input">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+          <input label="Search" aria-label="Search" id="search-input" type="text" placeholder="搜索文档" >
+          <label class="filter checkbox" style="display: none">
+            <input type="checkbox" data-facet-filter="component:virtualization" checked> Only this project
+          </label>
+        </div>
+      </div>
+</div>
+  <div class="content">
+<aside
+  class="toc sidebar"
+  data-title="在此页面上" data-levels="2">
+  <div class="toc-menu">
+    <div class="docsurvey-wrapper"><a class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_diCzHC9xxyJyuN0">Documentation survey</a></div>
+    <!-- start qualtrics -->
+    <div id='ZN_8qZUmklKYbBqAYe'><!--DO NOT REMOVE-CONTENTS PLACED HERE--></div>
+    <div id="qualtrics_container"></div>
+    <!-- end qualtrics -->
+  </div>
+</aside>
+
+<aside class="toc sidebar docsurvey-sidebar">
+  <div class="toc-menu">
+    <div class="docsurvey-wrapper"><a class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_diCzHC9xxyJyuN0">Documentation survey</a></div>
+  </div>
+</aside>
+<article class="doc">
+<h1 class="page">虚拟机备份、快照和恢复</h1>
+<div class="sect1">
+<h2 id="_虚拟机备份和恢复"><a class="anchor" href="#_虚拟机备份和恢复"></a>虚拟机备份和恢复</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>虚拟机备份是在*虚拟机*页面创建的。虚拟机备份卷将存储在*备份目标*（NFS或S3服务器）中，可以用于恢复新的虚拟机或替换现有的虚拟机。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/vm/vm-backup.png" alt="vm backup">
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="注意"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>必须配置备份目标。有关详细信息，请访问 <a href="#Configure Backup Target">[Configure Backup Target]</a>。如果未设置备份目标，将提示您配置一个。</p>
+</div>
+<div class="paragraph">
+<p>备份支持目前仅限于SUSE Storage卷。SUSE Virtualization无法创建外部存储中卷的备份。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_配置备份目标"><a class="anchor" href="#_配置备份目标"></a>配置备份目标</h3>
+<div class="paragraph">
+<p>备份目标是用于访问SUSE Virtualization中的备份存储的端点。备份存储是一个NFS服务器或S3兼容服务器，用于存储虚拟机卷的备份。备份目标可以在`Settings &gt; backup-target`处设置。</p>
+</div>
+<div class="paragraph">
+<p>下表概述了所有备份目标的共同参数。</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">参数</th>
+<th class="tableblock halign-left valign-top">类型</th>
+<th class="tableblock halign-left valign-top">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Type</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">字符串</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">存储虚拟机使用的卷备份的服务器类型。您可以选择`NFS`或`S3`。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Refresh Interval</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUSE Virtualization在与备份存储同步备份之前等待的秒数。当值为`0`时，仅在所有备份卷处于`Ready`状态时才会同步备份。</p></td>
+</tr>
+</tbody>
+</table>
+<div id="_tabs_1" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_1_s3" class="tab">
+<p>S3</p>
+</li>
+<li id="_tabs_1_nfs" class="tab">
+<p>NFS</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_1_s3--panel" class="tabpanel" aria-labelledby="_tabs_1_s3">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">参数</th>
+<th class="tableblock halign-left valign-top">类型</th>
+<th class="tableblock halign-left valign-top">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Endpoint</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">字符串</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">（可选）用于访问S3服务器的端点的主机名或IP地址</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>BucketName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">字符串</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">S3桶的名称</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>BucketRegion</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">字符串</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">创建S3桶的AWS区域</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>AccessKeyID</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">字符串</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">您用于验证对AWS服务请求的访问密钥的第一部分（例如，<code>AKIAIOSFODNN7EXAMPLE</code>）</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>SecretAccessKey</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">字符串</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">您用于验证对 AWS 服务请求的访问密钥的第二部分（例如，<code>wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY</code>）</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">证书</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">字符串</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">S3 服务器的自签名 SSL 证书</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">VirtualHostedStyle</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">使用虚拟主机样式 URL 的选项，其中存储桶名称是 URL 中域名的一部分（<code>bucket.example.com</code>）</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="_tabs_1_nfs--panel" class="tabpanel" aria-labelledby="_tabs_1_nfs">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">参数</th>
+<th class="tableblock halign-left valign-top">类型</th>
+<th class="tableblock halign-left valign-top">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">端点</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">字符串</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://longhorn.io/docs/1.8.0/snapshots-and-backups/backup-and-restore/set-backup-target/#set-up-nfs-backupstore">NFS 服务器</a> 的 URL</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_创建虚拟机备份"><a class="anchor" href="#_创建虚拟机备份"></a>创建虚拟机备份</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>设置备份目标后，请转到 <code>Virtual Machines</code> 页面。</p>
+</li>
+<li>
+<p>单击虚拟机操作的 <code>Take Backup</code> 以创建新的虚拟机备份。</p>
+</li>
+<li>
+<p>设置自定义备份名称，然后单击 <code>Create</code> 创建新的虚拟机备份。</p>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/vm/create-backup.png" alt="create backup">
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>*结果：*备份已创建。您将收到通知消息，您也可以转到 <code>Backup &amp; Snapshot &gt; VM Backups</code> 页面查看所有虚拟机备份。</p>
+</div>
+<div class="paragraph">
+<p>备份完成后，<code>State</code> 将设置为 <code>Ready</code>。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/vm/vm-backup-results.png" alt="vm backup results">
+</div>
+</div>
+<div class="paragraph">
+<p>用户可以使用此备份恢复新的虚拟机或替换现有的虚拟机。</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="注意"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>运行 Ubuntu 16.04 之后版本的虚拟机，其网络配置默认可能由 <code>netplan</code> 管理。在创建备份之前，您必须停止虚拟机，编辑配置（<strong>Edit Config &#8594; 高级选项</strong>），然后重新启动虚拟机。以下 <code>network</code> 设置可作为 DHCP 配置的参考。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">network:
+  ethernets:
+    enp1s0:
+      dhcp4: true
+      dhcp6: true
+      dhcp-identifier: mac
+  version: 2</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>恢复的虚拟机保留原始虚拟机的机器 ID。如果未指定 <code>dhcp-identifier: mac</code>，恢复的虚拟机将从 DHCP 服务器接收相同的 IP 地址，因为 <code>netplan</code> 默认使用机器 ID 作为 DHCP 客户端标识符。这就是为什么您必须在创建运行 Ubuntu 的虚拟机备份之前配置 <code>network</code> 设置。未能这样做可能会导致意外行为和潜在的网络冲突。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="小心"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>从 v1.7.0 开始，SUSE Virtualization 支持 Longhorn V2 数据引擎卷的备份和快照。</p>
+</div>
+<div class="paragraph">
+<p>但是，删除虚拟机的最新备份或启用 SUSE Storage 设置 <a href="https://documentation.suse.com/cloudnative/storage/latest/en/longhorn-system/settings.html#_auto_cleanup_snapshot_when_delete_backup">删除备份时自动清理快照</a> 会阻止对相关卷的所有后续操作。这是一个 <a href="https://github.com/longhorn/longhorn/issues/9064">已知问题</a>，影响卷快照、备份和实时迁移等操作。</p>
+</div>
+<div class="paragraph">
+<p>目前没有可行的解决方法。解决被阻塞状态需要删除受影响的卷，以恢复 Longhorn Manager 的功能。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_使用备份恢复新的虚拟机"><a class="anchor" href="#_使用备份恢复新的虚拟机"></a>使用备份恢复新的虚拟机</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>访问`VM Backups`页面。</p>
+</li>
+<li>
+<p>点击右上角的`Restore Backup`按钮。</p>
+</li>
+<li>
+<p>指定新的虚拟机名称并点击`Create`。</p>
+</li>
+<li>
+<p>将使用备份卷和元数据恢复新的虚拟机，您可以从`Virtual Machines`页面访问它。</p>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/vm/restore-vm.png" alt="restore vm">
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_使用备份替换现有虚拟机"><a class="anchor" href="#_使用备份替换现有虚拟机"></a>使用备份替换现有虚拟机</h3>
+<div class="paragraph">
+<p>您可以使用相同虚拟机备份目标的备份替换现有虚拟机。</p>
+</div>
+<div class="paragraph">
+<p>您可以选择删除或保留之前的卷。默认情况下，所有之前的卷都会被删除。</p>
+</div>
+<div class="paragraph">
+<p>*要求：*虚拟机必须存在，并且需要处于关闭状态。</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>访问`VM Backups`页面。</p>
+</li>
+<li>
+<p>点击右上角的`Restore Backup`按钮。</p>
+</li>
+<li>
+<p>单击 <code>Replace Existing</code>。</p>
+</li>
+<li>
+<p>您可以从`Virtual Machines`页面查看恢复过程。</p>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/vm/vm-restore-existing.png" alt="vm restore existing">
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_在另一个suse_virtualization集群上恢复新的虚拟机"><a class="anchor" href="#_在另一个suse_virtualization集群上恢复新的虚拟机"></a>在另一个SUSE Virtualization集群上恢复新的虚拟机</h3>
+<div class="paragraph">
+<p>用户现在可以通过利用虚拟机元数据和内容备份功能，在另一个集群上恢复新的虚拟机。</p>
+</div>
+<div class="sect3">
+<h4 id="_先决条件"><a class="anchor" href="#_先决条件"></a>先决条件</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>v1.4.0及更高版本：控制器会自动将虚拟机镜像与新集群同步，除非新集群上已经存在同名或同显示名的虚拟机镜像。</p>
+</li>
+<li>
+<p>早于v1.4.0：您必须在<a href="#Upload the same virtual machine images to a new cluster">新集群</a>上上传和配置虚拟机镜像。确保镜像名称和配置相同，以便可以恢复虚拟机。</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_将相同的虚拟机镜像上传到新集群"><a class="anchor" href="#_将相同的虚拟机镜像上传到新集群"></a>将相同的虚拟机镜像上传到新集群。</h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>从现有集群下载虚拟机镜像。</p>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/vm/download-vm-image.png" alt="download vm image">
+</div>
+</div>
+</li>
+<li>
+<p>解压下载的镜像。</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ gzip -d &lt;image.gz&gt;</pre>
+</div>
+</div>
+</li>
+<li>
+<p>在一个可以被新集群访问的服务器上托管该镜像。</p>
+<div class="paragraph">
+<p>示例（简单的HTTP服务器）：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ python -m http.server</pre>
+</div>
+</div>
+</li>
+<li>
+<p>检查现有镜像名称（通常以`image-`开头），并在新集群上创建相同的名称。</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">$ kubectl get vmimages -A
+NAMESPACE   NAME                               DISPLAY-NAME                              SIZE         AGE
+default     image-79hdq                        focal-server-cloudimg-amd64.img           566886400    5h36m
+default     image-l7924                        harvester-v1.0.0-rc2-amd64.iso            3964551168   137m
+default     image-lvqxn                        opensuse-leap-15.3.x86_64-nocloud.qcow2   568524800    5h35m</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>在新集群中应用一个`VirtualMachineImage` YAML，名称和配置相同。</p>
+<div class="paragraph">
+<p>示例：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ cat &lt;&lt;EOF | kubectl apply -f -
+apiVersion: harvesterhci.io/v1beta1
+kind: VirtualMachineImage
+metadata:
+  name: image-79hdq
+  namespace: default
+spec:
+  displayName: focal-server-cloudimg-amd64.img
+  pvcName: ""
+  pvcNamespace: ""
+  sourceType: download
+  url: https://&lt;server-ip-to-host-image&gt;:8000/&lt;image-name&gt;
+EOF</pre>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="重要"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>SUSE Virtualization 只能在旧集群和新集群的镜像名称和配置相同的情况下恢复虚拟机。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_在新集群中恢复一个新的虚拟机"><a class="anchor" href="#_在新集群中恢复一个新的虚拟机"></a>在新集群中恢复一个新的虚拟机。</h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>在新集群中设置相同的备份目标。备份控制器将自动将备份元数据同步到新集群。</p>
+</li>
+<li>
+<p>访问`VM Backups`页面。</p>
+</li>
+<li>
+<p>选择同步的虚拟机备份元数据，并选择使用指定的虚拟机名称恢复一个新的虚拟机。</p>
+</li>
+<li>
+<p>将使用备份卷和元数据恢复一个新的虚拟机。您可以从`Virtual Machines`页面访问它。</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_虚拟机快照与恢复"><a class="anchor" href="#_虚拟机快照与恢复"></a>虚拟机快照与恢复</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>虚拟机快照是在*虚拟机*页面创建的。虚拟机快照卷将存储在集群中，可以用于恢复新的虚拟机或替换现有的虚拟机。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/vm/vm-snapshot.png" alt="vm snapshot">
+</div>
+</div>
+<div class="sect2">
+<h3 id="_创建虚拟机快照"><a class="anchor" href="#_创建虚拟机快照"></a>创建虚拟机快照</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>访问`Virtual Machines`页面。</p>
+</li>
+<li>
+<p>单击虚拟机操作的`Take VM Snapshot`以创建新的虚拟机快照。</p>
+</li>
+<li>
+<p>设置自定义快照名称，然后点击`Create`以创建新的虚拟机快照。</p>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/vm/create-snapshot.png" alt="create snapshot">
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>*结果：*快照已创建。您也可以访问`Backup &amp; Snapshot &gt; virtual machine Snapshots`页面查看所有虚拟机快照。</p>
+</div>
+<div class="paragraph">
+<p>一旦快照完成，<code>State`将被设置为`Ready</code>。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/vm/vm-snapshot-results.png" alt="vm snapshot results">
+</div>
+</div>
+<div class="paragraph">
+<p>用户可以使用此快照恢复新的虚拟机或替换现有的虚拟机。</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="注意"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>运行 Ubuntu 16.04 及更高版本的虚拟机的网络配置默认可能由 <code>netplan</code> 管理。在创建备份之前，您必须停止虚拟机，编辑配置（<strong>Edit Config &#8594; 高级选项</strong>），然后重新启动虚拟机。以下 <code>network</code> 设置可作为 DHCP 配置的参考。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">network:
+  ethernets:
+    enp1s0:
+      dhcp4: true
+      dhcp6: true
+      dhcp-identifier: mac
+  version: 2</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>恢复的虚拟机保留原始虚拟机的机器 ID。如果未指定 <code>dhcp-identifier: mac</code>，恢复的虚拟机将从 DHCP 服务器接收相同的 IP 地址，因为 <code>netplan</code> 默认使用机器 ID 作为 DHCP 客户端标识符。这就是为什么您必须在创建运行 Ubuntu 的虚拟机备份之前配置 <code>network</code> 设置。未能这样做可能会导致意外行为和潜在的网络冲突。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="小心"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>从 v1.7.0 开始，SUSE Virtualization 支持 Longhorn V2 数据引擎卷的备份和快照。</p>
+</div>
+<div class="paragraph">
+<p>然而，删除虚拟机的最新备份会阻止对相关卷的所有后续操作。这是一个 <a href="https://github.com/longhorn/longhorn/issues/9064">已知问题</a>，影响卷快照、备份和实时迁移等操作。</p>
+</div>
+<div class="paragraph">
+<p>目前没有可行的解决方法。解决被阻塞状态需要删除受影响的卷，以恢复 Longhorn Manager 的功能。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_使用快照恢复新的虚拟机"><a class="anchor" href="#_使用快照恢复新的虚拟机"></a>使用快照恢复新的虚拟机</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>访问`VM Snapshots`页面。</p>
+</li>
+<li>
+<p>点击右上角的`Restore Snapshot`按钮。</p>
+</li>
+<li>
+<p>指定新的虚拟机名称并点击`Create`。</p>
+</li>
+<li>
+<p>将使用快照卷和元数据恢复新的虚拟机，您可以从`Virtual Machines`页面访问它。</p>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/vm/restore-vm-snapshot.png" alt="restore vm snapshot">
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_使用快照替换现有虚拟机"><a class="anchor" href="#_使用快照替换现有虚拟机"></a>使用快照替换现有虚拟机</h3>
+<div class="paragraph">
+<p>您可以使用快照替换现有的虚拟机。</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="注意"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>您只能选择保留之前的卷。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>访问`VM Snapshots`页面。</p>
+</li>
+<li>
+<p>点击右上角的`Restore Snapshot`按钮。</p>
+</li>
+<li>
+<p>单击 <code>Replace Existing</code>。</p>
+</li>
+<li>
+<p>您可以从`Virtual Machines`页面查看恢复过程。</p>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/vm/restore-vm-snapshot-existing.png" alt="restore vm snapshot existing">
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_虚拟机快照空间管理"><a class="anchor" href="#_虚拟机快照空间管理"></a>虚拟机快照空间管理</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>每当您创建新的虚拟机备份或快照时，卷会在集群中消耗额外的磁盘空间。为此，您可以在名称空间和虚拟机级别配置空间使用限制。配置的值表示所有备份和快照可以使用的最大磁盘空间。默认情况下没有设置限制。</p>
+</div>
+<div class="sect2">
+<h3 id="_在名称空间级别配置快照空间使用限制"><a class="anchor" href="#_在名称空间级别配置快照空间使用限制"></a>在名称空间级别配置快照空间使用限制</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>转到*名称空间*屏幕。</p>
+</li>
+<li>
+<p>找到目标名称空间，然后选择*⋮ &#8594; 编辑配额*。</p>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/vm/edit-quota-namespace.png" alt="edit quota namespace">
+</div>
+</div>
+</li>
+<li>
+<p>指定名称空间中所有快照可以消耗的最大磁盘空间，然后点击*保存*。</p>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/vm/edit-quota-namespace-save.png" alt="edit quota namespace save">
+</div>
+</div>
+</li>
+<li>
+<p>验证配置的值是否显示在*名称空间*屏幕上。</p>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/vm/edit-quota-namespace-read.png" alt="edit quota namespace read">
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_在虚拟机级别配置快照空间使用限制"><a class="anchor" href="#_在虚拟机级别配置快照空间使用限制"></a>在虚拟机级别配置快照空间使用限制</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>转到*虚拟机*屏幕。</p>
+</li>
+<li>
+<p>找到目标虚拟机，然后选择*⋮ &#8594; 编辑虚拟机配额*。</p>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/vm/edit-quota-vm.png" alt="edit quota vm">
+</div>
+</div>
+</li>
+<li>
+<p>指定虚拟机所有快照可以消耗的最大总磁盘空间，然后点击*保存*。</p>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/vm/edit-quota-vm-save.png" alt="edit quota vm save">
+</div>
+</div>
+</li>
+<li>
+<p>验证配置的值是否显示在虚拟机详细信息屏幕的*配额*选项卡上。</p>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/vm/edit-quota-vm-read.png" alt="edit quota vm read">
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_虚拟机备份和快照的文件系统冻结"><a class="anchor" href="#_虚拟机备份和快照的文件系统冻结"></a>虚拟机备份和快照的文件系统冻结</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>当来宾虚拟机与*QEMU来宾代理*连接时，SUSE Virtualization控制器通过Kubevirt的 <a href="https://github.com/kubevirt/kubevirt/blob/main/docs/freeze.md#virt-freezer">virt-freezer</a>应用程序执行文件系统冻结操作，以确保在虚拟机备份和快照期间文件系统的一致性。</p>
+</div>
+<div class="paragraph">
+<p>此功能对于具有高I/O活动或需要时间点一致性保证的关键数据的虚拟机特别有价值。</p>
+</div>
+<div class="sect2">
+<h3 id="_先决条件_2"><a class="anchor" href="#_先决条件_2"></a>先决条件</h3>
+<div class="paragraph">
+<p>文件系统冻结和解冻功能取决于虚拟机配置，_不受SUSE Virtualization_控制。您必须确保虚拟机配置正确，并支持所需的libvirt命令。</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>红帽企业Linux (RHEL)</strong> 和 <strong>SUSE Linux Enterprise (SLE) Micro</strong>：这些系统默认可能缺乏足够的权限进行文件系统冻结操作。您可能需要创建自定义SELinux策略。</p>
+</li>
+<li>
+<p><strong>Windows</strong>：这些系统仅在启用卷影复制服务 (VSS) 时才可进行文件系统冻结操作。</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="注意"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>当触发virt-freezer应用程序时，KubeVirt与QEMU来宾代理通信以转换特定于操作系统的调用。Linux系统使用fsfreeze系统调用，而Windows系统使用VSS API。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_验证文件系统冻结兼容性"><a class="anchor" href="#_验证文件系统冻结兼容性"></a>验证文件系统冻结兼容性</h3>
+<div class="paragraph">
+<p>要验证您的虚拟机是否支持文件系统冻结操作，请执行以下步骤：</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>访问虚拟机的 virt-launcher <code>compute</code> 容器。</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">POD=$(kubectl get pods -n default \
+  -l vm.kubevirt.io/name=vm1 \
+  -o jsonpath='{.items[0].metadata.name}')
+kubectl exec -it $POD -n default -c compute -- bash</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>尝试使用 virt-freezer 应用程序冻结文件系统，该应用程序可在 <code>compute</code> 容器中获得：</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">virt-freezer --freeze --namespace &lt;VM namespace&gt; --name &lt;VM name&gt;</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>验证冻结操作的结果。</p>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="重要"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>请勿跳过此步骤。此外，您必须在执行任何其他操作之前解冻虚拟机文件系统。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_故障排除文件系统冻结问题"><a class="anchor" href="#_故障排除文件系统冻结问题"></a>故障排除文件系统冻结问题</h3>
+<div class="sect3">
+<h4 id="_由于权限不足导致的文件系统冻结错误"><a class="anchor" href="#_由于权限不足导致的文件系统冻结错误"></a>由于权限不足导致的文件系统冻结错误</h4>
+<div class="paragraph">
+<p>某些 Linux 发行套件上的 <code>Failed to freeze filesystem</code> 错误可能导致备份或快照失败。</p>
+</div>
+<div class="paragraph">
+<p>当 SELinux 拒绝对 QEMU Guest Agent (<code>qemu-ga</code>) 的读取访问时，通常会发生此问题。您可以使用以下步骤验证原因：</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>[验证您的虚拟机是否支持文件系统冻结操作](#verifying-filesystem-freeze-compatibility)。</p>
+</li>
+<li>
+<p>检查系统日志中的 SELinux <code>Permission denied</code> 错误。</p>
+<div class="paragraph">
+<p>如果您看到类似以下的消息，SELinux 正在阻止所需的访问：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-console hljs" data-lang="console">{"component":"freezer","level":"error","msg":"Freezing VMI failed","reason":"server error. command Freeze failed: \"LibvirtError(Code=1, Domain=10, Message='internal error: unable to execute QEMU agent command 'guest-fsfreeze-freeze': failed to open /data: Permission denied')\""}</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>要解决此问题，您必须创建并安装自定义 SELinux 策略模块。此解决方案已被验证可在 <strong>RHEL</strong> 和 <strong>SLE Micro</strong> 上工作。</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="小心"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>使用 <code>audit2allow</code> 可能会授予广泛的权限，因为它允许日志中找到的所有操作。仔细审查生成的策略，或考虑使用适当的 SELinux 标签挂载卷以增强安全性。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>从审计日志生成自定义 SELinux 策略模块。</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">grep qemu-ga /var/log/audit/audit.log | audit2allow -M my_qemu_ga</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>安装生成的策略模块。</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">semodule -i my_qemu_ga.pp</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>重复步骤 1 和 2，直到 <strong>virt-freezer</strong> 能够成功冻结文件系统。</p>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="重要"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>在执行其他操作之前，您必须解冻虚拟机文件系统。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">virt-freezer --unfreeze --namespace &lt;VM namespace&gt; --name &lt;VM name&gt;</code></pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_计划的虚拟机备份和快照"><a class="anchor" href="#_计划的虚拟机备份和快照"></a>计划的虚拟机备份和快照</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>SUSE Virtualization 支持按计划创建虚拟机备份和快照，并可以选择保留特定数量的备份和快照。您可以在运行时暂停、恢复和更新计划。</p>
+</div>
+<div class="sect2">
+<h3 id="_创建虚拟机计划"><a class="anchor" href="#_创建虚拟机计划"></a>创建虚拟机计划</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>转到 <strong>虚拟机计划</strong> 屏幕，然后单击 <strong>创建计划</strong>。</p>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/vm/create-schedule.png" alt="create schedule">
+</div>
+</div>
+</li>
+<li>
+<p>配置以下设置：</p>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/vm/configure-schedule.png" alt="configure schedule">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>类型</strong>：选择 <strong>备份</strong> 或 <strong>快照</strong>。</p>
+</li>
+<li>
+<p><strong>名称空间</strong> 和 <strong>虚拟机名称</strong>：指定源虚拟机的名称空间和名称。</p>
+</li>
+<li>
+<p><strong>定时计划</strong>：指定 cron 表达式（由空白字符分隔的字段组成的字符串），以定义调度属性。</p>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="重要"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>备份或快照创建间隔必须为 <strong>至少一小时</strong>。频繁删除备份或快照会导致较大的 I/O 负载。</p>
+</div>
+<div class="paragraph">
+<p>如果两个计划具有相同的粒度级别，则每次迭代的时间偏移量必须为 <strong>至少 10 分钟</strong>。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p><strong>保留</strong>：指定要保留的最新备份或快照的数量。</p>
+<div class="paragraph">
+<p>当超过此值时，SUSE Virtualization 控制器会删除最旧的备份或快照，并且 Longhorn 开始快照清理。</p>
+</div>
+</li>
+<li>
+<p><strong>最大故障次数</strong>：指定允许连续失败的备份或快照创建尝试的最大次数。</p>
+<div class="paragraph">
+<p>当超过此值时，SUSE Virtualization 控制器会暂停计划。</p>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>单击*创建*。</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_检查虚拟机计划的状态"><a class="anchor" href="#_检查虚拟机计划的状态"></a>检查虚拟机计划的状态</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>转到*虚拟机计划*屏幕。</p>
+</li>
+<li>
+<p>找到目标计划，然后单击名称以打开详细信息屏幕。</p>
+</li>
+<li>
+<p>在*基本信息*选项卡上，验证设置是否正确。</p>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/vm/check-schedule-basic.png" alt="check schedule basic">
+</div>
+</div>
+</li>
+<li>
+<p>在*备份*选项卡上，检查根据计划创建的备份或快照的状态。</p>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/vm/check-schedule-backups.png" alt="check schedule backups">
+</div>
+</div>
+<div class="paragraph">
+<p>标记为*准备就绪*的备份和快照可以用于恢复源虚拟机。有关详细信息，请参见<a href="#Virtual Machine Backup &amp; Restore">[Virtual Machine Backup &amp; Restore]</a>和<a href="#Virtual Machine Snapshot &amp; Restore">[Virtual Machine Snapshot &amp; Restore]</a>。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/vm/check-schedule-restore.png" alt="check schedule restore">
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_编辑虚拟机计划"><a class="anchor" href="#_编辑虚拟机计划"></a>编辑虚拟机计划</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>转到*虚拟机计划*屏幕。</p>
+</li>
+<li>
+<p>找到目标计划，然后选择*⋮ &#8594; 编辑配置*。</p>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/vm/edit-schedule-config.png" alt="edit schedule config">
+</div>
+</div>
+</li>
+<li>
+<p>编辑*定时计划*、*保留*或*最大故障次数*值。</p>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/vm/edit-schedule-parameters.png" alt="edit schedule parameters">
+</div>
+</div>
+</li>
+<li>
+<p>单击*保存*以应用更改。</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_暂停或恢复虚拟机计划"><a class="anchor" href="#_暂停或恢复虚拟机计划"></a>暂停或恢复虚拟机计划</h3>
+<div class="paragraph">
+<p>您可以暂停活动计划并恢复已暂停的计划。</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>转到*虚拟机计划*屏幕。</p>
+</li>
+<li>
+<p>找到目标计划，然后选择*⋮ &#8594; 暂停*或*恢复*。</p>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/vm/suspend-resume-schedule.png" alt="suspend resume schedule">
+</div>
+</div>
+<div class="paragraph">
+<p>当连续失败的备份或快照创建尝试次数超过*最大故障次数*时，计划会自动暂停。</p>
+</div>
+<div class="paragraph">
+<p>如果备份目标不可达，SUSE Virtualization不允许您恢复已暂停的计划以进行备份创建。</p>
+</div>
+</li>
+</ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="注意"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>如果计划因超过*最大故障次数*而自动暂停，您必须在验证备份或快照可以成功创建后显式恢复该计划。例如，当备份目标在一段时间的断开连接后再次可达时，您可以先手动创建备份并检查结果。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_虚拟机操作和suse_virtualization升级"><a class="anchor" href="#_虚拟机操作和suse_virtualization升级"></a>虚拟机操作和SUSE Virtualization升级</h3>
+<div class="paragraph">
+<p>在您升级SUSE Virtualization之前，请确保没有虚拟机备份或快照正在使用，并且所有虚拟机计划都已暂停。当升级尝试被拒绝时，SUSE Virtualization UI显示以下错误消息：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>在升级尝试期间，虚拟机备份或快照正在创建、删除或使用。</p>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/vm/upgrade-vmbackup.png" alt="upgrade vmbackup">
+</div>
+</div>
+</li>
+<li>
+<p>虚拟机计划在升级尝试期间处于活动状态。</p>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/vm/upgrade-svmbackup.png" alt="upgrade svmbackup">
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>为了避免此类问题，SUSE计划在升级过程开始之前自动暂停所有虚拟机计划。暂停的计划将在升级完成后自动恢复。有关更多信息，请参见 <a href="https://github.com/harvester/harvester/issues/6759">Issue #6759</a>。</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="小心"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>SUSE Storage具有一个类似的功能，称为 <a href="https://longhorn.io/docs/1.10.0/snapshots-and-backups/scheduling-backups-and-snapshots/">定期快照和备份</a>，它使用定期作业为SUSE Storage卷创建周期性快照或备份。此功能未集成到SUSE Virtualization中，因为它与某些操作（例如，虚拟机附加和集群升级）冲突。定期SUSE Storage快照和备份作业也可能在SUSE Virtualization不知情的情况下产生大量I/O，并在某些情况下甚至使集群不稳定。</p>
+</div>
+<div class="paragraph">
+<p>为了获得最佳效果，请在SUSE Virtualization中使用<a href="#Scheduled virtual machine backups and snapshots">计划的虚拟机备份和快照</a>功能，该功能具有在可能的情况下减轻大量I/O的保护机制。再次强调，SUSE Virtualization不支持定期SUSE Storage快照和备份。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="clone-vm.html">克隆虚拟机</a></span>
+  <span class="next"><a href="live-migration.html">实时迁移</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<script src="../../../../_/js/site.js"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+<script src="../../../../_/js/vendor/lunr.js"></script>
+<script src="../../../../_/js/vendor/lunr-languages.js"></script>
+<script src="../../../../_/js/search-ui.js" id="search-ui-script" data-site-root-path="../../../.." data-snippet-length="100" data-stylesheet="../../../../_/css/search.css"></script>
+<script async src="../../../../search-index.js"></script>
+<script src="../../../../_/js/vendor/langSelection.js"></script>
+<script async src="../../../../_/js/vendor/tabs.js"></script>
+
+
+<script src="../../../../_/js/CNLanguageSwitcher.js"></script>
+  </body>
+</html>

@@ -1,0 +1,1459 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Limpieza de instancias huérfanas | SUSE® Storage  1.12 (Dev)</title>
+    <link rel="canonical" href="https://documentation.suse.com/cloudnative/storage/1.11/es/data-integrity-recovery/orphaned-instance-cleanup.html">
+    <link rel="prev" href="orphaned-data-cleanup.html">
+    <link rel="next" href="disaster-recovery-volumes.html">
+    <meta name="generator" content="Antora 3.1.14">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+<meta http-equiv="last-modified" content="2025-06-27"/>
+<link rel="stylesheet" href="../../../../_/css/search.css">
+<link rel="icon" href="../../../../_/img/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="../../../../_/css/font-styles.css">
+<link rel="stylesheet" href="../../../../_/fonts/css/all.css">
+<link rel="stylesheet" href="../../../../_/css/site-extra.css">
+<link rel="stylesheet" href="../../../../_/css/vendor/tabs.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap&family=SUSE+Mono:ital,wght@0,100..800;1,100..800" rel="stylesheet">
+<link rel="stylesheet" href="../../../../_/css/vendor/light.css">
+<script src="/docserv/res/lightheaded/analytics.js" type="text/javascript"></script>
+<script type="module">
+  import { defineCustomElements, setAssetPath } from 'https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/shared-header.esm.js';
+  defineCustomElements();
+  setAssetPath("https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/assets");
+</script>
+<!-- Default English link -->
+<link href="https://documentation.suse.com/cloudnative/storage/1.12/en/data-integrity-recovery/orphaned-instance-cleanup.html" hreflang="x-default" rel="alternate"/>
+<!-- Link for the currently processed page -->
+<link href="https://documentation.suse.com/cloudnative/storage/1.12/es/data-integrity-recovery/orphaned-instance-cleanup.html" hrefLang="es-ES" rel="alternate" />
+<!-- Link for the English page -->
+<link href="https://documentation.suse.com/cloudnative/storage/1.12/en/data-integrity-recovery/orphaned-instance-cleanup.html" hreflang="en-US" rel="alternate" />
+<!-- Link for the Japanese page -->
+<link href="https://documentation.suse.com/cloudnative/storage/1.12/ja/data-integrity-recovery/orphaned-instance-cleanup.html" hreflang="ja-JP" rel="alternate" />
+<!-- Link for the Chinese page -->
+<link href="https://documentation.suse.com/cloudnative/storage/1.12/zh/data-integrity-recovery/orphaned-instance-cleanup.html" hreflang="zh-CN" rel="alternate" />
+<!-- Link for the German page -->
+<link href="https://documentation.suse.com/cloudnative/storage/1.12/de/data-integrity-recovery/orphaned-instance-cleanup.html" hreflang="de-DE" rel="alternate" />
+<!-- Link for the French page -->
+<link href="https://documentation.suse.com/cloudnative/storage/1.12/fr/data-integrity-recovery/orphaned-instance-cleanup.html" hreflang="fr-FR" rel="alternate" />
+<!-- Link for the Brazilian Portuguese page -->
+<link href="https://documentation.suse.com/cloudnative/storage/1.12/pt/data-integrity-recovery/orphaned-instance-cleanup.html" hreflang="pt-BR" rel="alternate" />
+
+<!-- JSON-LD for doc metadata -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Limpieza de instancias huérfanas | SUSE Storage 1.12",
+  "headline": "Limpieza de instancias huérfanas",
+  "description": "Limpieza de instancias huérfanas",
+  "inLanguage": "es",
+  "dateModified": "2025-06-27T00:00:00Z",
+  "author": {
+    "@type": "Organization",
+    "name": "SUSE Product & Solution Documentation Team",
+    "url": "https://documentation.suse.com"
+  },
+  "mentions": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "SUSE Storage",
+      "softwareVersion": "1.12",
+      "applicationCategory": "Cloud Infrastructure",
+      "operatingSystem": "Linux"
+    }
+  ],
+  "publisher": {
+    "@type": "Organization",
+    "name": "SUSE",
+    "url": "https://documentation.suse.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.suse.com/assets/img/suse-white-logo-green.svg"
+    }
+  }
+}
+</script>
+<!-- end JSON-LD for doc metadata -->
+
+<!-- SUVA - Begin Ask Geeko-->
+<!--
+searchUnifyChatbot ("Ask Geeko") Copyright ©2024 Grazitti Interactive - All Rights Reserved. NOTICE: All information contained herein is, and remains the property of Grazitti Interactive and its suppliers, if any. The intellectual and technical concepts contained herein are proprietary to Grazitti Interactive and its suppliers and may be covered by India, U.S. and Foreign Patents, patents in process, and are protected by trade secret or copyright law. Dissemination of this information or reproduction of this material is strictly forbidden unless prior written permission is obtained from Grazitti Interactive.
+-->
+<meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport"/>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/Allow/an.js?c485cb3c-93d4-4942-99e8-91f3b8ca5636"></script>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/js/index.js?q=gAAAAABp3JBN9VuEJTi5tFafLIMwgMkCPdJS3Qm56lSYx93ir3Twt9hgSvd3OHEt6-nYfSbY3yHq0Zv8PRPsSy4nbqZiaJ4cZvRc6ItVZdvwz9Urf35cH6OUyPOwdA0phlS-zVIznQ2rWW438p-91NlTHuxJuOFpnA=="></script>
+<link rel="stylesheet" href="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/css/index.css">
+<div id="searchUnifyChatbot"></div>
+<!-- SUVA - End Ask Geeko-->
+<!--BEGIN QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+<script type='text/javascript' src="../../../../_/js/qualtrics.js" defer></script>
+<!--END QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<script type="module">import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs'; mermaid.initialize({"startOnLoad":true});</script><shared-header
+language="en"
+languages='{
+    "en": { "label": "English", "url": "https://documentation.suse.com/en-us/" },
+    "de": { "label": "Deutsch", "url": "https://documentation.suse.com/de-de/" },
+    "fr": { "label": "Français", "url": "https://documentation.suse.com/fr-fr/" },
+    "es": { "label": "Español", "url": "https://documentation.suse.com/es-es/" },
+    "zh_CN": { "label": "中文", "url": "https://documentation.suse.com/zh-cn/" },
+    "pt_BR": { "label": "Português Brasileiro", "url": "https://documentation.suse.com/pt-br/" }
+}'
+enable-search='false'>
+</shared-header>
+<div class="body">
+<div class="nav-container" data-component="storage" data-version="1.12">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title">SUSE® Storage</h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../longhorn-documentation.html">SUSE® Storage Descripción general</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../introduction/introduction.html">Introducción</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/concepts.html">Arquitectura y Conceptos</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/terminology.html">terminología</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/document-conventions.html">Convenciones de documentos</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../important-notes.html">Notas importantes</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../v1-v2-volume-behavior-and-feature-parity.html">V1 and V2 Volume Behavior and Feature Parity</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Instalación y configuración</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/requirements.html">Requisitos</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/best-practices.html">Mejores prácticas</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../installation-setup/installation/installation.html">Instalación</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/installation/install-using-argocd.html">Instala SUSE Storage usando Argo CD</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/installation/install-using-fleet.html">Instalar SUSE Storage utilizando Fleet</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/installation/install-using-flux.html">Instalar SUSE® Storage utilizando Flux</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/installation/install-using-helm.html">Instalar SUSE Storage utilizando Helm</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/installation/install-using-helm-controller.html">Instalar SUSE Storage utilizando el controlador de Helm</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/installation/helm-values.html">Valores de Helm</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/installation/install-using-rancher.html">Instalar SUSE Storage utilizando Rancher</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/installation/rancher-windows-cluster.html">Rancher Clúster de Windows</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/installation/airgapped-environment.html">Instalar SUSE Storage en un entorno aislado.</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Configuración del sistema operativo y la distribución</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/os-distro/gke.html">Google Kubernetes Engine (GKE)</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/os-distro/k3s.html">K3s</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/setup-performance-scalability-sizing-guidelines.html">Configuración, Rendimiento, Escalabilidad y Directrices de Dimensionamiento</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/uninstallation.html">Desinstalación</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../upgrades/upgrades.html">Actualizaciones</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Actualizaciones de componentes</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../upgrades/longhorn-components/auto-upgrade-engine.html">Actualizar automáticamente el Longhorn Engine</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../upgrades/longhorn-components/instance-manager-pods-during-upgrade.html">Pods del gestor de instancias durante la actualización de versión</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../upgrades/longhorn-components/manually-upgrade-engine.html">Actualiza manualmente el Longhorn Engine</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../upgrades/longhorn-components/upgrade-longhorn-manager.html">Actualizar Longhorn Manager</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Actualizaciones de Kubernetes</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../upgrades/kubernetes/upgrade-k8s-on-aks.html">Actualiza la versión de Kubernetes en Azure Kubernetes Service (AKS)</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../upgrades/kubernetes/upgrade-k8s-on-eks.html">Actualiza la versión de Kubernetes en Amazon Elastic Kubernetes Service (Amazon EKS)</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../upgrades/kubernetes/upgrade-k8s-on-gke.html">Actualiza la versión de Kubernetes en Google Kubernetes Engine (GKE)</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Migración</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../migration/migration.html">Migrando a SUSE Storage</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">SUSE® Storage</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../longhorn-system/system-access/system-access.html">Acceso al sistema</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../longhorn-system/system-access/longhorn-ui.html">Accede a la interfaz de usuario</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../longhorn-system/system-access/create-ingress.html">Crea un Ingress con autenticación básica (nginx)</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../longhorn-system/system-access/longhorn-ingress-traefik.html">Crear un Ingress con Autenticación Básica (Traefik)</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../longhorn-system/system-access/longhorn-cli.html">Interfaz de línea de comandos (CLI)</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../longhorn-system/system-access/install-longhorn-cli.html">Instala la CLI</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../longhorn-system/system-access/longhorn-httproute.html">Crea un HTTPRoute con Gateway API</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../longhorn-system/system-access/longhorn-python-client.html">Cliente de Python</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../longhorn-system/networking/networking.html">Conectividad</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../longhorn-system/networking/storage-network.html">Red de Almacenamiento</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../longhorn-system/components/csi-pod-antiaffinity-preset.html">Anti-afinidad de pods del componente CSI</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../longhorn-system/mtls-support.html">Soporte de TLS mutuo (mTLS)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../longhorn-system/customize-default-settings.html">Personalizar la configuración predeterminada</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../longhorn-system/settings.html">Settings (Configuración posterior al failback)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Motor de datos V2 (Vista técnica)</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../longhorn-system/v2-data-engine/v2-data-engine.html">Motor de Datos V2 (Vista previa técnica)</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../longhorn-system/v2-data-engine/features/features.html">Características del motor de datos V2</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../longhorn-system/v2-data-engine/features/selective-engine-activation.html">Activación selectiva del motor de datos V2</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../longhorn-system/v2-data-engine/features/ublk-frontend-support.html">Soporte de UBLK front end</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../longhorn-system/v2-data-engine/features/node-disk-support.html">Soporte de Disco de Nodo</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../longhorn-system/v2-data-engine/features/replica-rebuild-qos.html">Reconstrucción de réplica QoS</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../longhorn-system/v2-data-engine/features/interrupt-mode.html">Modo de interrupción</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../longhorn-system/v2-data-engine/features/volume-expansion.html">Expansión de volumen</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../longhorn-system/v2-data-engine/features/volume-clone.html">Clonación de Volumen</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../longhorn-system/v2-data-engine/prerequisites.html">Requisitos previos</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../longhorn-system/v2-data-engine/quick-start-guide.html">Quick Start Guide (Guía de inicio rápido)</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../longhorn-system/v2-data-engine/performance.html">Rendimiento</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../longhorn-system/examples-resources.html">Ejemplos de recursos de Kubernetes que utilizan SUSE® Storage</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../longhorn-system/migrate-flexvolume.html">Migra del controlador Flexvolume a CSI</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Nodos</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../nodes/node-space-usage.html">Uso del espacio del nodo</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../nodes/default-disk-and-node-config.html">Configurar los ajustes predeterminados de nodos y discos</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../nodes/storage-tags.html">Etiquetas de almacenamiento</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../nodes/multiple-disks.html">Múltiples discos</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../nodes/disks-or-nodes-eviction.html">Desalojo de réplicas en discos o nodos deshabilitados</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../nodes/scheduling.html">Programación</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../nodes/node-conditions.html">Condiciones del nodo</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../nodes/node-selector.html">Selector de nodo</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../nodes/taints-tolerations.html">Taints y Tolerations</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../nodes/priority-class.html">Clase de Prioridad</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../nodes/topology-aware-provisioning.html">Provisionamiento consciente de la topología</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../nodes/graceful-node-removal.html">Graceful Node Removal</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Kubernetes gestionado</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../nodes/managed-kubernetes/aks-managed-node-groups.html">Grupos de nodos gestionados en Azure Kubernetes Service (AKS)</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../nodes/managed-kubernetes/eks-managed-node-pools.html">Grupos de nodos gestionados en Amazon Elastic Kubernetes Service (Amazon EKS)</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../nodes/managed-kubernetes/gke-managed-node-pools.html">Grupos de nodos gestionados en Google Kubernetes Engine (GKE)</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Volúmenes</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/create-volumes.html">Crear volúmenes</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/pvc-ownership-and-permission.html">Propiedad y Permiso de PVC</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/rwx-volumes.html">Volúmenes ReadWriteMany (RWX)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/clone-volumes.html">Clonar volúmenes</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/containerized-data-importer.html">SUSE Storage con CDI Importaciones</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/detach-volumes.html">Desacoplar volúmenes</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/delete-volumes.html">Eliminar volúmenes</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/use-as-iscsi-target.html">Utiliza un volumen como objetivo iSCSI</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/identify-workloads.html">Identificar cargas de trabajo que utilizan un volumen</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/volume-size.html">Tamaño del volumen</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/volume-expansion.html">Expansión de volumen</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/volume-attachment.html">SUSE Storage VolumeAttachment</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/trim-filesystem.html">Recortar el sistema de archivos</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/volume-conditions.html">Condiciones del volumen</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/volume-encryption.html">Cifrado de volúmenes</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/storageclass-parameters.html">Parámetros de StorageClass</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../volumes/backing-images/backing-images.html">Imágenes de respaldo</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../volumes/backing-images/backing-image-encryption.html">Cifrado de Imagen de Respaldo</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">V2 Data Engine</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../v2-data-engine/configurable-cpu-cores.html">Configurable CPU Cores</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../v2-data-engine/interrupt-mode.html">Interrupt Mode</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../v2-data-engine/selective-engine-activation.html">Selective V2 Data Engine Activation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../v2-data-engine/ublk-frontend-support.html">UBLK Front-end Support (Experimental)</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Alta disponibilidad</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../high-availability/automatic-replica-balancing.html">Balanceo automático de réplicas</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../high-availability/replica-rebuilding.html">Replica Rebuilding</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../high-availability/fast-replica-rebuilding.html">Reconstrucción rápida de réplicas</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../high-availability/offline-replica-rebuilding.html">Reconstrucción de réplicas fuera de línea</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../high-availability/revision_counter.html">Contador de Revisión</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../high-availability/data-locality.html">Localidad de datos</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../high-availability/kubernetes-cluster-autoscaler.html">Soporte de Kubernetes Cluster Autoscaler (Experimental)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../high-availability/rwx-volume-fast-failover.html">Failover rápido de volúmenes RWX (Experimental)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../high-availability/volume-recovery.html">Recuperación de volumen</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../high-availability/node-failure.html">Gestión de fallos de nodo</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Instantáneas y copias de seguridad</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../snapshots-backups/volume-snapshots-backups/volume-snapshots-backups.html">Instantáneas y copias de seguridad de volúmenes</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/volume-snapshots-backups/create-snapshot.html">Crear una instantánea</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/volume-snapshots-backups/snapshot-space-management.html">Gestión del espacio de instantáneas</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/volume-snapshots-backups/configure-backup-target.html">Configurar un destino de copia de seguridad</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/volume-snapshots-backups/create-backup.html">Crear una copia de seguridad</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/volume-snapshots-backups/sync-backup-volumes-manually.html">Sincronizar manualmente los volúmenes de copia de seguridad</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/volume-snapshots-backups/create-recurring-backup-snapshot-job.html">Crear un trabajo de instantánea o copia de seguridad recurrente</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/volume-snapshots-backups/restore-volume-from-backup.html">Restaurar un volumen desde una copia de seguridad</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/volume-snapshots-backups/restore-recurring-job-from-backup.html">Restaurar un trabajo recurrente desde una copia de seguridad</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/volume-snapshots-backups/restore-volume-statefulset.html">Restaura un volumen para un StatefulSet de Kubernetes</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../snapshots-backups/csi-snapshots/csi-snapshots.html">Instantáneas CSI</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/csi-snapshots/csi-snapshot-longhorn-backing-image.html">Instantánea de volumen CSI asociada a una BackingImage de SUSE® Storage</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/csi-snapshots/csi-snapshot-longhorn-backup.html">Instantánea de volumen CSI asociada con una copia de seguridad de SUSE® Storage</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/csi-snapshots/csi-snapshot-longhorn-snapshot.html">Instantánea de volumen CSI asociada a una instantánea de SUSE® Storage</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/csi-snapshots/enable-csi-snapshot-creation.html">Habilitar la creación de instantáneas CSI en un clúster</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../snapshots-backups/system-backups/system-backups.html">Copias de seguridad del sistema SUSE® Storage</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/system-backups/restore-to-cluster-using-rancher-snapshot.html">Restaura el sistema SUSE® Storage en un clúster utilizando una instantánea de Rancher</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/system-backups/restore-to-new-cluster-using-velero.html">Restaura el SUSE® Storage System en un nuevo clúster utilizando Velero</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/system-backups/create-system-backup.html">Crear una SUSE Storage copia de seguridad del sistema</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/system-backups/restore-system.html">Restaura el sistema SUSE® Storage</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../snapshots-backups/backing-image-backups.html">Copia de seguridad de la imagen de respaldo</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../snapshots-backups/restore-cluster-rancher-snapshot.html">Restaurar un clúster utilizando una instantánea de Rancher</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Integridad y recuperación de datos</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="snapshot-data-integrity-check.html">Comprobación de la integridad de los datos de la instantánea</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="on-demand-snapshot-data-integrity.html">On-Demand Snapshot Checksum Calculation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="orphaned-data-cleanup.html">Limpieza de datos huérfanos</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="orphaned-instance-cleanup.html">Limpieza de instancias huérfanas</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="disaster-recovery-volumes.html">Volúmenes de recuperación ante desastres</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Recuperación de datos</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="data-recovery/identify-corrupted-replicas.html">Identificar réplicas corruptas</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="data-recovery/retrieve-volume-data-from-replica.html">Recuperar datos de volumen de una única réplica</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="data-recovery/recover-from-data-errors.html">Identificar y recuperarse de errores de datos.</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="data-recovery/recover-from-full-disk.html">Recuperación de un disco lleno</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="data-recovery/recover-without-system.html">Recuperar de una copia de seguridad de SUSE® Storage sin el sistema instalado</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Observabilidad</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../observability/configure-prometheus-grafana.html">Configurar Prometheus y Grafana para Monitorizar SUSE® Storage</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../observability/alert-rule-examples.html">Ejemplos de reglas de alerta</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../observability/longhorn-metrics.html">Métricas de SUSE® Storage para la monitorización</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../observability/disk-health.html">Monitorización de la salud del disco</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../observability/integrate-with-rancher-monitoring.html">Integra las métricas de SUSE® Storage en el sistema de monitoreo de Rancher.</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../observability/kubelet-volume-metrics.html">Métricas de volumen de Kubelet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Solución de problemas y mantenimiento</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting-maintenance/support-bundle.html">Paquete de soporte</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting-maintenance/troubleshooting.html">Solución de problemas</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting-maintenance/v2-data-engine-issues.html">Solución de problemas</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting-maintenance/maintenance.html">Guía de Mantenimiento de Nodos y Actualización de Kubernetes</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Glosario</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../glossary/glossary.html">Glossary/Terminologies</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">SUSE® Storage</span>
+    <span class="version">1.12 (Dev)</span>
+  </div>
+  <ul class="components">
+        <li class="component">
+          <div class="title"><a href="../../../../admission-controller/1.36/en/introduction.html">Admission Controller</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../admission-controller/1.37/en/introduction.html">1.37-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../admission-controller/1.36/en/introduction.html">1.36</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.35/en/introduction.html">1.35</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.34/en/introduction.html">1.34</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.33/en/introduction.html">1.33</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.32/en/introduction.html">1.32</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.31/en/introduction.html">1.31</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.30/en/introduction.html">1.30</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.29/en/introduction.html">1.29</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.28/en/introduction.html">1.28</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../cluster-api/v0.26/en/index.html">Cluster API</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../cluster-api/v0.28/en/index.html">v0.28-dev</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.27/en/index.html">v0.27-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../cluster-api/v0.26/en/index.html">v0.26</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.25/en/index.html">0.25</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.24/en/index.html">0.24</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.23/en/index.html">0.23</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.22/en/index.html">0.22</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.21/en/index.html">0.21</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.20/en/index.html">0.20</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.19/en/index.html">0.19</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.18/en/index.html">0.18</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.17/en/index.html">0.17</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.16/en/index.html">0.16</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.11/en/index.html">0.11</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../continuous-delivery/next/en/index.html">Continuous Delivery</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../continuous-delivery/next/en/index.html">Next</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.15/en/index.html">v0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.11/en/index.html">0.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.10/en/index.html">0.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.9/en/index.html">0.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../k3s/latest/en/introduction.html">K3s</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../k3s/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../os-manager/1.9/en/index.html">OS Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../os-manager/1.10/en/index.html">1.10-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../os-manager/1.9/en/index.html">1.9</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.8/en/index.html">1.8</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.7/en/index.html">1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.6/en/index.html">1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.5/en/index.html">1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-ai/latest/en/introduction.html">Rancher AI</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-ai/latest/en/introduction.html">latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../turtles/stable/en/index.html">Rancher Turtles</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../turtles/stable/en/index.html">Stable</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rke2/latest/en/introduction.html">RKE2</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rke2/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-observability/latest/en/classic.html">SUSE Observability</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../suse-observability/latest/en/classic.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">SUSE Rancher Developer Access</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">SUSE® Rancher for AWS</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-manager/v2.14/en/about-rancher/what-is-rancher.html">SUSE® Rancher Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.15/en/about-rancher/what-is-rancher.html">v2.15 (Unreleased)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../rancher-manager/v2.14/en/about-rancher/what-is-rancher.html">v2.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.13/en/about-rancher/what-is-rancher.html">v2.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.12/en/about-rancher/what-is-rancher.html">v2.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.11/en/about-rancher/what-is-rancher.html">v2.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.10/en/about-rancher/what-is-rancher.html">v2.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.9/en/about-rancher/what-is-rancher.html">v2.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../security/5.6/en/overview.html">SUSE® Security</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../security/5.6/en/overview.html">5.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.5/en/overview.html">5.5</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.4/en/overview.html">5.4</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.3/en/overview.html">5.3</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component is-current">
+          <div class="title"><a href="../../../1.11/en/longhorn-documentation.html">SUSE® Storage</a></div>
+          <ul class="versions">
+            <li class="version is-current">
+              <a href="../../en/longhorn-documentation.html">1.12 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../1.11/en/longhorn-documentation.html">1.11 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../1.10/en/longhorn-documentation.html">1.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../1.9/en/longhorn-documentation.html">1.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">SUSE® Virtual Clusters</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/1.2.0/en/release-notes/version-1.2.0.html">v1.2.0 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">v1.1.0-latest</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/1.0.2/en/release-notes/version-1.0.2.html">v1.0.2</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.1/en/introduction.html">v1.0.1</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.0/en/introduction.html">v1.0.0</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../virtualization/v1.8/en/introduction/overview.html">SUSE® Virtualization</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../virtualization/v1.9/en/introduction/overview.html">v1.9 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../virtualization/v1.8/en/introduction/overview.html">v1.8 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../virtualization/v1.7/en/introduction/overview.html">v1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../../virtualization/v1.6/en/introduction/overview.html">v1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../virtualization/v1.5/en/introduction/overview.html">v1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../vulnerability-scanner/0.12.0/en/introduction.html">Vulnerability Scanner</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../vulnerability-scanner/0.12.0/en/introduction.html">0.12.0</a>
+            </li>
+            <li class="version">
+              <a href="../../../../vulnerability-scanner/0.11.3/en/introduction.html">0.11.3</a>
+            </li>
+          </ul>
+        </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+<ul>
+    <li>
+  <a class="home-link-dsc" href="https://documentation.suse.com" title="SUSE Documentation Home" aria-label="SUSE Documentation Home"></a>
+    </li>
+    <li>
+      <a href="https://documentation.suse.com/cloudnative/storage" title="SUSE Storage" aria-label="SUSE Documentation - SUSE Storage">
+        SUSE Storage
+      </a>
+    </li>
+      <li>
+          Integridad y recuperación de datos
+      </li>
+  </ul>
+</nav>
+<div class="page-versions">
+  <button class="version-menu-toggle" title="Show other versions of page">1.12 (Dev)</button>
+  <div class="version-menu">
+    <a class="version is-current" href="orphaned-instance-cleanup.html">1.12 (Dev)</a>
+    <a class="version" href="../../../1.11/es/data-integrity-recovery/orphaned-instance-cleanup.html">1.11 (Latest)</a>
+    <a class="version is-missing" href="../../../1.10/en/longhorn-documentation.html">1.10</a>
+    <a class="version is-missing" href="../../../1.9/en/longhorn-documentation.html">1.9</a>
+  </div>
+</div>
+      <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <label class="visual-search-label-bc" for="search-input">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+          <input label="Search" aria-label="Search" id="search-input" type="text" placeholder="Buscar en los documentos" >
+          <label class="filter checkbox" style="display: none">
+            <input type="checkbox" data-facet-filter="component:storage" checked> Only this project
+          </label>
+        </div>
+      </div>
+</div>
+  <div class="content">
+<aside
+  class="toc sidebar"
+  data-title="En esta página" data-levels="2">
+  <div class="toc-menu">
+    <div class="docsurvey-wrapper"><a class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_diCzHC9xxyJyuN0">Documentation survey</a></div>
+    <!-- start qualtrics -->
+    <div id='ZN_8qZUmklKYbBqAYe'><!--DO NOT REMOVE-CONTENTS PLACED HERE--></div>
+    <div id="qualtrics_container"></div>
+    <!-- end qualtrics -->
+  </div>
+</aside>
+
+<aside class="toc sidebar docsurvey-sidebar">
+  <div class="toc-menu">
+    <div class="docsurvey-wrapper"><a class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_diCzHC9xxyJyuN0">Documentation survey</a></div>
+  </div>
+</aside>
+<article class="doc">
+            <div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Aviso"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Esta es documentación inédita para SUSE® Storage 1.12 (Dev).</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+                <h1 class="page">Limpieza de instancias huérfanas</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>SUSE Storage puede identificar y limpiar instancias huérfanas en cada nodo.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_instancia_huérfana_de_tiempo_de_ejecución"><a class="anchor" href="#_instancia_huérfana_de_tiempo_de_ejecución"></a>Instancia huérfana de tiempo de ejecución</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Cuando una interrupción de red afecta a un nodo SUSE Storage, puede dejar atrás instancias de tiempo de ejecución de motor o réplica que ya no son rastreadas por el sistema SUSE Storage. Los Recursos Personalizados (CRs) correspondientes de motor y réplica pueden ser eliminados o reprogramados a otro nodo durante la interrupción. Cuando el nodo se recupera, el sistema SUSE Storage ya no rastrea estas instancias de tiempo de ejecución. Estas instancias, como los procesos de motor y réplica para volúmenes v1, se llaman instancias huérfanas. Las instancias huérfanas continúan consumiendo recursos del nodo como CPU y memoria.</p>
+</div>
+<div class="paragraph">
+<p>SUSE Storage soporta la detección y limpieza de instancias huérfanas. Identifica estas instancias y crea recursos <code>orphan</code> que las describen. Por defecto, SUSE Storage no elimina automáticamente los recursos <code>orphan</code>. Los usuarios pueden activar la eliminación de instancias huérfanas manualmente o configurar SUSE Storage para eliminarlas automáticamente.</p>
+</div>
+<div class="paragraph">
+<p>Cuando la eliminación automática de huérfanas está habilitada, SUSE Storage elimina automáticamente los Recursos Personalizados (CRs) huérfanos y sus directorios asociados después del retraso definido por la configuración <code>orphan-resource-auto-deletion-grace-period</code>. Si un usuario elimina manualmente un CR huérfano, la eliminación ocurre inmediatamente y no respeta este período de gracia.</p>
+</div>
+<div class="sect2">
+<h3 id="_ejemplo"><a class="anchor" href="#_ejemplo"></a>Ejemplo</h3>
+<div class="paragraph">
+<p>El siguiente ejemplo demuestra cómo gestionar instancias huérfanas utilizando <code>kubectl</code>.</p>
+</div>
+<div class="sect3">
+<h4 id="_gestionar_instancias_huérfanas_a_través_de_kubectl"><a class="anchor" href="#_gestionar_instancias_huérfanas_a_través_de_kubectl"></a>Gestionar instancias huérfanas a través de <code>kubectl</code></h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Introducir nodos en los que se están ejecutando procesos de instancias huérfanas</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Instancia de réplica huérfana en el nodo <code>worker1</code></p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">Name:         instance-manager-8ff396d6d3744979b32abafc6346781c
+Namespace:    longhorn-system
+Kind:         InstanceManager
+...
+Status:
+  Instance Replicas:
+    pvc-569e44c0-b352-4aca-bf14-2cf7a6cfe86f-r-05660b73: # This instance might be an orphan
+      Spec:
+        Data Engine:  v1
+        Name:         pvc-569e44c0-b352-4aca-bf14-2cf7a6cfe86f-r-05660b73
+      Status:
+        Conditions:       &lt;nil&gt;
+        Endpoint:
+        Error Msg:
+        Listen:
+        Port End:         10020
+        Port Start:       10011
+        Resource Version: 0
+        State:            running
+        Target Port End:  0
+        Target Port Start:0
+        Type:             replica
+...</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Instancia de motor huérfana en el nodo <code>worker2</code></p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">Name:         instance-manager-b87f10b867cec1dca2b814f5e78bcc90
+Namespace:    longhorn-system
+Kind:         InstanceManager
+...
+Status:
+  Instance Engines:
+    pvc-569e44c0-b352-4aca-bf14-2cf7a6cfe86f-e-0: # This instance might be an orphan
+      Spec:
+        Data Engine:  v1
+        Name:         pvc-569e44c0-b352-4aca-bf14-2cf7a6cfe86f-e-0
+      Status:
+        Conditions:
+          Filesystem Read Only: false
+        Endpoint:
+        Error Msg:
+        Listen:
+        Port End:             10020
+        Port Start:           10020
+        Resource Version:     0
+        State:                running
+        Target Port End:      10020
+        Target Port Start:    10020
+        Type:                 engine
+...</code></pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>SUSE Storage detecta las instancias huérfanas y crea recursos <code>orphan</code> que describen dichas instancias.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">NAME                                                              TYPE                NODE
+orphan-1807009489e50534c35c350e22680449c97deca4e5d3b72f4591976145f8bc41  engine-instance     worker2
+orphan-a91aa42ab5eda6b8b9fe1116d5b5f5673e5108d89be3db6fd18a275913463eef  replica-instance    worker1</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Puedes ver la lista de <code>orphan</code> recursos creados por el sistema SUSE Storage ejecutando <code>kubectl -n longhorn-system get orphan</code>.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"># kubectl -n longhorn-system get orphan</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Obtén la información detallada de una de las instancias de réplica huérfanas en <code>spec.parameters</code> mediante <code>kubectl -n longhorn-system get orphan &lt;name&gt;</code>.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: longhorn.io/v1beta2
+kind: Orphan
+metadata:
+  creationTimestamp: "2025-05-02T06:07:32Z"
+  finalizers:
+  - longhorn.io
+  generation: 1
+  labels:
+    longhorn.io/component: orphan
+    longhorn.io/managed-by: longhorn-manager
+    longhorn.io/orphan-type: replica-instance
+    longhornnode: worker1
+    longhornreplica: pvc-569e44c0-b352-4aca-bf14-2cf7a6cfe86f-r-05660b73
+  # ... (representing other omitted metadata fields)
+spec:
+  dataEngine: v1
+  nodeID: worker1
+  orphanType: replica-instance
+  parameters:
+    InstanceManager: instance-manager-8ff396d6d3744979b32abafc6346781c
+    InstanceName: pvc-569e44c0-b352-4aca-bf14-2cf7a6cfe86f-r-05660b73
+status:
+  conditions:
+  - lastProbeTime: ""
+    lastTransitionTime: "2025-05-02T06:06:39Z"
+    message: ""
+    reason: running
+    status: "True"
+    type: InstanceExist
+  - lastProbeTime: ""
+    lastTransitionTime: "2025-05-02T06:06:39Z"
+    message: ""
+    reason: ""
+    status: "False"
+    type: Error
+  ownerID: worker1</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Obtén la información detallada de una de las instancias de motor huérfanas en <code>spec.parameters</code> mediante <code>kubectl -n longhorn-system get orphan &lt;name&gt;</code>.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: longhorn.io/v1beta2
+kind: Orphan
+metadata:
+  creationTimestamp: "2025-05-02T06:47:25Z"
+  finalizers:
+  - longhorn.io
+  generation: 1
+  labels:
+    longhorn.io/component: orphan
+    longhorn.io/managed-by: longhorn-manager
+    longhorn.io/orphan-type: engine-instance
+    longhornengine: pvc-569e44c0-b352-4aca-bf14-2cf7a6cfe86f-e-0
+    longhornnode: worker2
+  # ... (representing other omitted metadata fields)
+spec:
+  dataEngine: v1
+  nodeID: worker2
+  orphanType: engine-instance
+  parameters:
+    InstanceManager: instance-manager-b87f10b867cec1dca2b814f5e78bcc90
+    InstanceName: pvc-569e44c0-b352-4aca-bf14-2cf7a6cfe86f-e-0
+status:
+  conditions:
+  - lastProbeTime: ""
+    lastTransitionTime: "2025-05-02T06:47:25Z"
+    message: ""
+    reason: running
+    status: "True"
+    type: InstanceExist
+  - lastProbeTime: ""
+    lastTransitionTime: "2025-05-02T06:47:25Z"
+    message: ""
+    reason: ""
+    status: "False"
+    type: Error
+  ownerID: worker2</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Puedes eliminar un recurso <code>orphan</code> ejecutando <code>kubectl -n longhorn-system delete orphan &lt;name&gt;</code>. La instancia huérfana correspondiente también será eliminada.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"># kubectl -n longhorn-system delete orphan orphan-a91aa42ab5eda6b8b9fe1116d5b5f5673e5108d89be3db6fd18a275913463eef
+
+# kubectl -n longhorn-system get orphan -l "longhorn.io/orphan-type in (engine-instance,replica-instance)"
+NAME                                                                      TYPE               NODE
+orphan-1807009489e50534c35c350e22680449c97deca4e5d3b72f4591976145f8bc41   engine-instance    worker2</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>La instancia huérfana es eliminada.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"># kubectl -n longhorn-system describe instancemanager -l "longhorn.io/node=worker1"
+    Name:         instance-manager-8ff396d6d3744979b32abafc6346781c
+    Namespace:    longhorn-system
+    Kind:         InstanceManager
+    ...
+    Status:
+      Instance Replicas:
+    ...</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Por defecto, SUSE Storage no elimina automáticamente las instancias huérfanas. Puedes habilitar la eliminación automática configurando la opción <code>orphan-resource-auto-deletion</code>.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"># kubectl -n longhorn-system edit settings.longhorn.io orphan-resource-auto-deletion</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Luego, añade <code>instance</code> a la lista incluyéndolo como uno de los elementos separados por punto y coma.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">NAME                            VALUE      APPLIED   AGE
+orphan-resource-auto-deletion   instance   true      45h</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Después de habilitar la eliminación automática y esperar un tiempo, los recursos y procesos <code>orphan</code> se eliminan automáticamente.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"># kubectl -n longhorn-system get orphan -l "longhorn.io/orphan-type in (engine-instance,replica-instance)"
+No resources found in longhorn-system namespace.</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Las instancias huérfanas se eliminan del gestor de instancias.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"># kubectl -n longhorn-system describe instancemanager -l "longhorn.io/node=worker1"
+Name:         instance-manager-8ff396d6d3744979b32abafc6346781c
+Namespace:    longhorn-system
+Kind:         InstanceManager
+...
+Status:
+  Instance Replicas:
+...
+
+# kubectl -n longhorn-system describe instancemanager -l "longhorn.io/node=worker2"
+Name:         instance-manager-b87f10b867cec1dca2b814f5e78bcc90
+Namespace:    longhorn-system
+Kind:         InstanceManager
+...
+Status:
+  Instance Engines:
+    ...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Además, puedes eliminar todas las instancias huérfanas en el nodo especificado ejecutando:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"># kubectl -n longhorn-system delete orphan -l "longhorn.io/orphan-type in (engine-instance,replica-instance),longhornnode=&lt;node name&gt;"</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_gestionar_instancias_huérfanas_a_través_de_la_interfaz_suse_storage"><a class="anchor" href="#_gestionar_instancias_huérfanas_a_través_de_la_interfaz_suse_storage"></a>Gestionar instancias huérfanas a través de la interfaz SUSE Storage</h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>En la barra de navegación superior, selecciona <strong>Avanzado &gt; Recursos Huérfanos &gt; Instancias</strong>.</p>
+</li>
+<li>
+<p>Revisa la lista de instancias huérfanas, que muestra información relevante de las instancias.</p>
+</li>
+<li>
+<p>Para eliminar una instancia huérfana específica, selecciona <strong>Operación &gt; Eliminar</strong> para esa instancia.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Por defecto, SUSE Storage no elimina automáticamente las instancias huérfanas solo a través de esta operación manual de la interfaz. Para habilitar la eliminación automática de instancias huérfanas, o para configurar opciones relacionadas con datos huérfanos generales, navega a <strong>Configuración &gt; Huérfano</strong> y configura las opciones relevantes. (Consulta la sección <code>kubectl</code> para detalles sobre la configuración específica <code>orphan-resource-auto-deletion</code> para CRs de instancia si gestionas a través de configuraciones de backend).</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_excepciones"><a class="anchor" href="#_excepciones"></a>Excepciones</h3>
+<div class="paragraph">
+<p>SUSE Storage no crea un recurso <code>orphan</code> en los siguientes escenarios:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>La instancia de motor o réplica huérfana se reprograma de nuevo en su nodo original y se rastrea correctamente otra vez.</p>
+</li>
+<li>
+<p>La instancia de motor o réplica está en un estado transitorio, como migrando, iniciando o terminando.</p>
+</li>
+<li>
+<p>El nodo donde se estaba ejecutando la instancia es expulsado del clúster de Kubernetes.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="orphaned-data-cleanup.html">Limpieza de datos huérfanos</a></span>
+  <span class="next"><a href="disaster-recovery-volumes.html">Volúmenes de recuperación ante desastres</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<script src="../../../../_/js/site.js"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+<script src="../../../../_/js/vendor/lunr.js"></script>
+<script src="../../../../_/js/vendor/lunr-languages.js"></script>
+<script src="../../../../_/js/search-ui.js" id="search-ui-script" data-site-root-path="../../../.." data-snippet-length="100" data-stylesheet="../../../../_/css/search.css"></script>
+<script async src="../../../../search-index.js"></script>
+<script src="../../../../_/js/vendor/langSelection.js"></script>
+<script async src="../../../../_/js/vendor/tabs.js"></script>
+
+
+<script src="../../../../_/js/CNLanguageSwitcher.js"></script>
+  </body>
+</html>

@@ -1,0 +1,1761 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VPC NAT Gateway | SUSE® Virtualization  v1.9 (Dev)</title>
+    <link rel="canonical" href="https://documentation.suse.com/cloudnative/virtualization/v1.8/en/networking/vpc-nat-gateway.html">
+    <link rel="prev" href="kubeovn-vpc.html">
+    <link rel="next" href="vm-isolation.html">
+    <meta name="generator" content="Antora 3.1.14">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+<meta http-equiv="last-modified" content="2026-05-11"/>
+<link rel="stylesheet" href="../../../../_/css/search.css">
+<link rel="icon" href="../../../../_/img/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="../../../../_/css/font-styles.css">
+<link rel="stylesheet" href="../../../../_/fonts/css/all.css">
+<link rel="stylesheet" href="../../../../_/css/site-extra.css">
+<link rel="stylesheet" href="../../../../_/css/vendor/tabs.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap&family=SUSE+Mono:ital,wght@0,100..800;1,100..800" rel="stylesheet">
+<link rel="stylesheet" href="../../../../_/css/vendor/light.css">
+<script src="/docserv/res/lightheaded/analytics.js" type="text/javascript"></script>
+<script type="module">
+  import { defineCustomElements, setAssetPath } from 'https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/shared-header.esm.js';
+  defineCustomElements();
+  setAssetPath("https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/assets");
+</script>
+<!-- Default English link -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.9/en/networking/vpc-nat-gateway.html" hreflang="x-default" rel="alternate"/>
+<!-- Link for the currently processed page -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.9/en/networking/vpc-nat-gateway.html" hrefLang="en-US" rel="alternate" />
+
+<!-- JSON-LD for doc metadata -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "VPC NAT Gateway | SUSE Virtualization v1.9",
+  "headline": "VPC NAT Gateway",
+  "description": "VPC NAT Gateway",
+  "inLanguage": "en",
+  "dateModified": "2026-05-11T00:00:00Z",
+  "author": {
+    "@type": "Organization",
+    "name": "SUSE Product & Solution Documentation Team",
+    "url": "https://documentation.suse.com"
+  },
+  "mentions": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "SUSE Virtualization",
+      "softwareVersion": "v1.9",
+      "applicationCategory": "Cloud Infrastructure",
+      "operatingSystem": "Linux"
+    }
+  ],
+  "publisher": {
+    "@type": "Organization",
+    "name": "SUSE",
+    "url": "https://documentation.suse.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.suse.com/assets/img/suse-white-logo-green.svg"
+    }
+  }
+}
+</script>
+<!-- end JSON-LD for doc metadata -->
+
+<!-- SUVA - Begin Ask Geeko-->
+<!--
+searchUnifyChatbot ("Ask Geeko") Copyright ©2024 Grazitti Interactive - All Rights Reserved. NOTICE: All information contained herein is, and remains the property of Grazitti Interactive and its suppliers, if any. The intellectual and technical concepts contained herein are proprietary to Grazitti Interactive and its suppliers and may be covered by India, U.S. and Foreign Patents, patents in process, and are protected by trade secret or copyright law. Dissemination of this information or reproduction of this material is strictly forbidden unless prior written permission is obtained from Grazitti Interactive.
+-->
+<meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport"/>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/Allow/an.js?c485cb3c-93d4-4942-99e8-91f3b8ca5636"></script>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/js/index.js?q=gAAAAABp3JBN9VuEJTi5tFafLIMwgMkCPdJS3Qm56lSYx93ir3Twt9hgSvd3OHEt6-nYfSbY3yHq0Zv8PRPsSy4nbqZiaJ4cZvRc6ItVZdvwz9Urf35cH6OUyPOwdA0phlS-zVIznQ2rWW438p-91NlTHuxJuOFpnA=="></script>
+<link rel="stylesheet" href="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/css/index.css">
+<div id="searchUnifyChatbot"></div>
+<!-- SUVA - End Ask Geeko-->
+<!--BEGIN QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+<script type='text/javascript' src="../../../../_/js/qualtrics.js" defer></script>
+<!--END QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<script type="module">import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs'; mermaid.initialize({"startOnLoad":true});</script><shared-header
+language="en"
+languages='{
+    "en": { "label": "English", "url": "https://documentation.suse.com/en-us/" },
+    "de": { "label": "Deutsch", "url": "https://documentation.suse.com/de-de/" },
+    "fr": { "label": "Français", "url": "https://documentation.suse.com/fr-fr/" },
+    "es": { "label": "Español", "url": "https://documentation.suse.com/es-es/" },
+    "zh_CN": { "label": "中文", "url": "https://documentation.suse.com/zh-cn/" },
+    "pt_BR": { "label": "Português Brasileiro", "url": "https://documentation.suse.com/pt-br/" }
+}'
+enable-search='false'>
+</shared-header>
+<div class="body">
+<div class="nav-container" data-component="virtualization" data-version="v1.9">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title">SUSE® Virtualization</h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Introduction</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/overview.html">Overview</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/deploy-ha-cluster.html">Deploy a High-Availability Cluster</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/deploy-singlenode-cluster.html">Deploy a Single-Node Cluster</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/glossary.html">Glossary</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/document-conventions.html">Document Conventions</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Installation and Setup</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/requirements.html">Hardware and Network Requirements</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Installation Media</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/media/net-install.html">Net Install ISO</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/media/install-binaries-mode.html">Install Binaries Only</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Installation Methods</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/methods/iso-install.html">ISO Installation</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/methods/usb-install.html">USB Installation</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/methods/pxe-boot-install.html">PXE Boot Installation</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Configuration</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/config/configuration-file.html">Configuration File</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/config/update-configuration.html">Update the Configuration After Installation</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/config/settings.html">Settings</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/config/cloudinitcrd.html">CloudInit CRD</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/post-installation.html">Post-Installation Tasks</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/management-address.html">Management Address</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/external-disk.html">External Disk Support</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/authentication.html">Authentication</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/airgap.html">Air-Gapped Environment</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/single-node-clusters.html">Single-Node Clusters</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Upgrades</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/upgrades.html">Upgrades</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-5-0-to-v1-5-1.html">Upgrade from v1.5.0 to v1.5.1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-5-0-to-v1-5-2.html">Upgrade from v1.5.0 or v1.5.1 to v1.5.2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-5-x-to-v1-6-x.html">Upgrade from v1.5.x to v1.6.x</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-6-x-to-v1-6-y.html">Upgrade from v1.6.x to v1.6.y</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-6-x-to-v1-7-x.html">Upgrade from v1.6.x to v1.7.x</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-7-x-to-v1-7-y.html">Upgrade from v1.7.x to v1.7.y</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-7-x-to-v1-8-x.html">Upgrade from v1.7.x to v1.8.x</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/troubleshooting.html">Troubleshooting</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Hosts</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../hosts/hosts.html">Host Management</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../hosts/witness-node.html">Witness Node</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../hosts/vgpu-support.html">vGPU Support</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Virtual Machines</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/virtual-machines.html">Virtual Machines</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Virtual Machine Images</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../virtual-machines/vm-images/upload-image.html">Upload Images</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../virtual-machines/vm-images/custom-suse-images.html">Custom SUSE Virtual Machine Images</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../virtual-machines/vm-images/image-security.html">Image Security</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/create-vm.html">Create a Virtual Machine</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/create-windows-vm.html">Create a Windows Virtual Machine</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/edit-vm.html">Edit a Virtual Machine</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/access-vm.html">Access to the Virtual Machine</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/clone-vm.html">Clone a Virtual Machine</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/backup-restore.html">Virtual Machine Backup, Snapshot &amp; Restore</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/live-migration.html">Live Migration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/hotplug-volume.html">Hot-Plug Volumes</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/resource-overcommit.html">Resource Overcommit</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/cpu-pinning.html">CPU Pinning</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/cpu-memory-hotplug.html">CPU and Memory Hotplug</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/nic-hotplug.html">NIC Hotplug</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/cpu-model-selection.html">CPU Model Selection</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../virtual-machines/cdrom-hotplug.html">CD-ROM Hotplug</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Storage</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../storage/storage.html">Storage</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Volumes</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../storage/volumes/create-volume.html">Create a Volume</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../storage/volumes/edit-volume.html">Edit a Volume</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../storage/volumes/clone-volume.html">Clone a Volume</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../storage/volumes/export-volume.html">Export a Volume to Image</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../storage/volumes/volume-snapshots.html">Volume Snapshots</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../storage/volumes/volume-security.html">Volume Security</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../storage/storageclass.html">StorageClass</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../storage/csidriver.html">Third-Party Storage Support</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../storage/longhorn-v2-data-engine.html">Longhorn V2 Data Engine</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../storage/disk-filter-auto-provision.html">Disk Filtering and Automatic Provisioning</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../storage/storage-migration.html">Storage Migration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../storage/storage-validator.html">Storage Validator</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Networking</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="cluster-network.html">Cluster Network</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="vm-network.html">VM Network</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="deep-dive.html">Networking Deep Dive</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="load-balancer.html">Load Balancer</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="ip-pool.html">IP Pool</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="storage-network.html">Storage Network</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="rwx-network.html">RWX Network</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="vm-migration-network.html">VM Migration Network</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="kubeovn-vpc.html">Virtual Private Cloud</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="vpc-nat-gateway.html">VPC NAT Gateway</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="vm-isolation.html">Virtual Machine Isolation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="host-network-config.html">Host Network Configuration and Underlay Selection</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="pure-underlay.html">Pure Underlay Networking</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="best-practices.html">Networking Best Practices</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Security and Resilience</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../security-resilience/pod-security-standards.html">Cluster Pod Security Standards</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../security-resilience/ha-principles.html">High Availability Principles</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../security-resilience/failure-domains.html">Cluster Architecture and Failure Domains</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Observability</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../observability/logging.html">Logging</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../observability/monitoring.html">Monitoring</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Add-ons</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/add-ons.html">Add-ons</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/harvester-seeder.html">Harvester Seeder</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/kubeovn-operator.html">Kube-OVN Operator (Experimental)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/lvm-local-storage.html">CSI Driver LVM (Experimental)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/nvidia-driver-toolkit.html">NVIDIA Driver Toolkit</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/pcidevices-controller.html">PCI Devices Controller</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/rancher-vcluster.html">Rancher vCluster (Experimental)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/suse-observability-agent.html">SUSE Observability Agent (Experimental)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/virtual-machine-auto-balance.html">Virtual Machine Auto Balance (Experimental)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/vm-dhcp-controller.html">VM DHCP Controller (Experimental)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/vm-import-controller.html">VM Import Controller</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/upgrade-manager.html">Upgrade Manager</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Integrations</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Rancher Integration</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/rancher-integration.html">SUSE Rancher Prime Integration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/virtualization-management.html">Virtualization Management</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/rancher-rbac.html">Rancher Role-Based Access Control</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Node Driver</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../integrations/rancher/node-driver/node-driver.html">Harvester Node Driver</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../integrations/rancher/node-driver/rke2-cluster.html">Creating an RKE2 Kubernetes Cluster</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../integrations/rancher/node-driver/k3s-cluster.html">Creating a K3s Kubernetes Cluster</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/cloud-provider.html">Harvester Cloud Provider</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/csi-driver.html">Harvester CSI Driver</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/resource-quota.html">Resource Quotas</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/rancher-terraform-provider.html">Rancher Terraform</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/import-vm.html">Import a Cluster Built on a SUSE® Virtualization VM</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/harvester-ui-extension.html">Harvester UI Extension</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../integrations/terraform/terraform-provider.html">Terraform Provider</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Troubleshooting</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/installation.html">Installation Issues</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/operating-system.html">Operating System Issues</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/cluster.html">Cluster Issues</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/virtual-machines.html">Virtual Machine Issues</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/monitoring.html">Monitoring Issues</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/logging.html">Logging Issues</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/rancher.html">SUSE Rancher Prime Issues</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/admin-access.html">Password Recovery for UI and Console User Accounts</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/ssh-users.html">Creating Users with SSH Access to Harvester Nodes</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/faq.html">FAQ</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Developer Content</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../developer/addon-development.html">Add-on Development Guide</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../api.html">API</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">SUSE® Virtualization</span>
+    <span class="version">v1.9 (Dev)</span>
+  </div>
+  <ul class="components">
+        <li class="component">
+          <div class="title"><a href="../../../../admission-controller/1.36/en/introduction.html">Admission Controller</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../admission-controller/1.37/en/introduction.html">1.37-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../admission-controller/1.36/en/introduction.html">1.36</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.35/en/introduction.html">1.35</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.34/en/introduction.html">1.34</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.33/en/introduction.html">1.33</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.32/en/introduction.html">1.32</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.31/en/introduction.html">1.31</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.30/en/introduction.html">1.30</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.29/en/introduction.html">1.29</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.28/en/introduction.html">1.28</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../cluster-api/v0.26/en/index.html">Cluster API</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../cluster-api/v0.28/en/index.html">v0.28-dev</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.27/en/index.html">v0.27-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../cluster-api/v0.26/en/index.html">v0.26</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.25/en/index.html">0.25</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.24/en/index.html">0.24</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.23/en/index.html">0.23</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.22/en/index.html">0.22</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.21/en/index.html">0.21</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.20/en/index.html">0.20</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.19/en/index.html">0.19</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.18/en/index.html">0.18</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.17/en/index.html">0.17</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.16/en/index.html">0.16</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.11/en/index.html">0.11</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../continuous-delivery/next/en/index.html">Continuous Delivery</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../continuous-delivery/next/en/index.html">Next</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.15/en/index.html">v0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.11/en/index.html">0.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.10/en/index.html">0.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.9/en/index.html">0.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../k3s/latest/en/introduction.html">K3s</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../k3s/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../os-manager/1.9/en/index.html">OS Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../os-manager/1.10/en/index.html">1.10-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../os-manager/1.9/en/index.html">1.9</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.8/en/index.html">1.8</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.7/en/index.html">1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.6/en/index.html">1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.5/en/index.html">1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-ai/latest/en/introduction.html">Rancher AI</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-ai/latest/en/introduction.html">latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../turtles/stable/en/index.html">Rancher Turtles</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../turtles/stable/en/index.html">Stable</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rke2/latest/en/introduction.html">RKE2</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rke2/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-observability/latest/en/classic.html">SUSE Observability</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../suse-observability/latest/en/classic.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">SUSE Rancher Developer Access</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">SUSE® Rancher for AWS</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-manager/v2.14/en/about-rancher/what-is-rancher.html">SUSE® Rancher Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.15/en/about-rancher/what-is-rancher.html">v2.15 (Unreleased)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../rancher-manager/v2.14/en/about-rancher/what-is-rancher.html">v2.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.13/en/about-rancher/what-is-rancher.html">v2.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.12/en/about-rancher/what-is-rancher.html">v2.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.11/en/about-rancher/what-is-rancher.html">v2.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.10/en/about-rancher/what-is-rancher.html">v2.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.9/en/about-rancher/what-is-rancher.html">v2.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../security/5.6/en/overview.html">SUSE® Security</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../security/5.6/en/overview.html">5.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.5/en/overview.html">5.5</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.4/en/overview.html">5.4</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.3/en/overview.html">5.3</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../storage/1.11/en/longhorn-documentation.html">SUSE® Storage</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../storage/1.12/en/longhorn-documentation.html">1.12 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../storage/1.11/en/longhorn-documentation.html">1.11 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../storage/1.10/en/longhorn-documentation.html">1.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../storage/1.9/en/longhorn-documentation.html">1.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">SUSE® Virtual Clusters</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/1.2.0/en/release-notes/version-1.2.0.html">v1.2.0 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">v1.1.0-latest</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/1.0.2/en/release-notes/version-1.0.2.html">v1.0.2</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.1/en/introduction.html">v1.0.1</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.0/en/introduction.html">v1.0.0</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component is-current">
+          <div class="title"><a href="../../../v1.8/en/introduction/overview.html">SUSE® Virtualization</a></div>
+          <ul class="versions">
+            <li class="version is-current">
+              <a href="../introduction/overview.html">v1.9 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../v1.8/en/introduction/overview.html">v1.8 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../v1.7/en/introduction/overview.html">v1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../v1.6/en/introduction/overview.html">v1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../v1.5/en/introduction/overview.html">v1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../vulnerability-scanner/0.12.0/en/introduction.html">Vulnerability Scanner</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../vulnerability-scanner/0.12.0/en/introduction.html">0.12.0</a>
+            </li>
+            <li class="version">
+              <a href="../../../../vulnerability-scanner/0.11.3/en/introduction.html">0.11.3</a>
+            </li>
+          </ul>
+        </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+<ul>
+    <li>
+  <a class="home-link-dsc" href="https://documentation.suse.com" title="SUSE Documentation Home" aria-label="SUSE Documentation Home"></a>
+    </li>
+    <li>
+      <a href="https://documentation.suse.com/cloudnative/virtualization" title="SUSE Virtualization" aria-label="SUSE Documentation - SUSE Virtualization">
+        SUSE Virtualization
+      </a>
+    </li>
+      <li>
+          Networking
+      </li>
+  </ul>
+</nav>
+<div class="page-versions">
+  <button class="version-menu-toggle" title="Show other versions of page">v1.9 (Dev)</button>
+  <div class="version-menu">
+    <a class="version is-current" href="vpc-nat-gateway.html">v1.9 (Dev)</a>
+    <a class="version" href="../../../v1.8/en/networking/vpc-nat-gateway.html">v1.8 (Latest)</a>
+    <a class="version is-missing" href="../../../v1.7/en/introduction/overview.html">v1.7</a>
+    <a class="version is-missing" href="../../../v1.6/en/introduction/overview.html">v1.6</a>
+    <a class="version is-missing" href="../../../v1.5/en/introduction/overview.html">v1.5</a>
+  </div>
+</div>
+  <div class="edit-this-page"><a href="https://github.com/rancher/harvester-product-docs/edit/main/versions/v1.9/modules/en/pages/networking/vpc-nat-gateway.adoc"><strong>Edit</strong></a></div>
+        <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <label class="visual-search-label-bc" for="search-input">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+          <input label="Search" aria-label="Search" id="search-input" type="text" placeholder="Search the docs" >
+          <label class="filter checkbox" style="display: none">
+            <input type="checkbox" data-facet-filter="component:virtualization" checked> Only this project
+          </label>
+        </div>
+      </div>
+</div>
+  <div class="content">
+<aside
+  class="toc sidebar"
+  data-title="On this page" data-levels="2">
+  <div class="toc-menu">
+    <div class="docsurvey-wrapper"><a class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_diCzHC9xxyJyuN0">Documentation survey</a></div>
+    <!-- start qualtrics -->
+    <div id='ZN_8qZUmklKYbBqAYe'><!--DO NOT REMOVE-CONTENTS PLACED HERE--></div>
+    <div id="qualtrics_container"></div>
+    <!-- end qualtrics -->
+  </div>
+</aside>
+
+<aside class="toc sidebar docsurvey-sidebar">
+  <div class="toc-menu">
+    <div class="docsurvey-wrapper"><a class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_diCzHC9xxyJyuN0">Documentation survey</a></div>
+  </div>
+</aside>
+<article class="doc">
+    <div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>This is unreleased documentation for SUSE® Virtualization v1.9 (Dev).</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+                        <h1 class="page">VPC NAT Gateway</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>All features that use Kube-OVN are considered experimental. For more information about experimental features, see <a href="../introduction/document-conventions.html#_feature_labels" class="xref page">Feature Labels</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Kube-OVN supports network address translation (NAT) via Kubernetes custom resource definitions (CRDs), not just IP tables directly. For example, resources such as OvnEip, OvnSnatRule, and OvnDnatRule (or their iptables-based equivalents) are used to define NAT behavior declaratively.</p>
+</div>
+<div class="paragraph">
+<p>In SUSE Virtualization, virtual machine orchestration (compute, storage, virtual machine lifecycle, L2 VLAN-based networking, and underlay networking) is handled by SUSE Virtualization. Overlay networking (including routing, NAT, subnets, and VPC) is handled by Kube-OVN. This separation allows for more scalable, flexible, and clean networking.</p>
+</div>
+<div class="paragraph">
+<p>NAT provides the following benefits:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>External connectivity or inbound access</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Source NAT (SNAT) allows virtual machines and pods in a private overlay network or VPC to access external networks (for example, the internet) by translating their internal source IP to a public (or external network-shared) IP.</p>
+</li>
+<li>
+<p>Destination NAT (DNAT) allows external hosts to access internal virtual machines and pods by mapping a public IP or port to an internal private IP or port. This is useful when you want to access an internal virtual machine via SSH.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Flexible networking for VPCs and overlay networks</p>
+<div class="paragraph">
+<p>When using SNAT or DNAT with Kube-OVN, you can build isolated private subnets and VPCs while still allowing controlled egress (outbound) or ingress (inbound) traffic. This is especially relevant for virtual machine workloads managed by SUSE Virtualization, which may require virtual machines to access the internet or to expose services externally.</p>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_kube_ovn_as_secondary_cni"><a class="anchor" href="#_kube_ovn_as_secondary_cni"></a>Kube-OVN as secondary CNI</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In SUSE Virtualization v1.6.x and v1.7.x, outbound and inbound connectivity for virtual machines works only when they are attached to subnets created on a default VPC (<code>ovn-cluster</code>) with the <code>natOutgoing</code> setting set to <code>true</code>.</p>
+</div>
+<div class="paragraph">
+<p>With the introduction of Kube-OVN as the secondary CNI in SUSE Virtualization v1.8.0, outbound and inbound connectivity for virtual machines also works on subnets created on custom VPCs using the VPC NAT gateway functionality.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_sample_configuration"><a class="anchor" href="#_sample_configuration"></a>Sample configuration</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_creating_a_network_attachment_definition_tenant_or_internal_network"><a class="anchor" href="#_creating_a_network_attachment_definition_tenant_or_internal_network"></a>Creating a network attachment definition (tenant or internal network)</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: k8s.cni.cncf.io/v1
+kind: NetworkAttachmentDefinition
+metadata:
+  labels:
+    network.harvesterhci.io/ready: "true"
+    network.harvesterhci.io/type: OverlayNetwork
+  name: vswitchinternal
+  namespace: default
+spec:
+  config: '{"cniVersion":"0.3.1","name":"vswitchinternal","type":"kube-ovn","server_socket":
+    "/run/openvswitch/kube-ovn-daemon.sock", "provider": "vswitchinternal.default.ovn"}'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_creating_a_network_attachment_definition_external_network"><a class="anchor" href="#_creating_a_network_attachment_definition_external_network"></a>Creating a network attachment definition (external network)</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">kubectl get net-attach-def vswitchexternal1 -o yaml
+apiVersion: k8s.cni.cncf.io/v1
+kind: NetworkAttachmentDefinition
+metadata:
+  labels:
+    network.harvesterhci.io/ready: "true"
+    network.harvesterhci.io/type: OverlayNetwork
+  name: vswitchexternal
+  namespace: kube-system
+spec:
+  config: '{"cniVersion":"0.3.1","name":"vswitchexternal","master": "eno50","type":"kube-ovn","server_socket":
+    "/run/openvswitch/kube-ovn-daemon.sock", "provider": "vswitchexternal.kube-system.ovn"}'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_creating_a_custom_vpc"><a class="anchor" href="#_creating_a_custom_vpc"></a>Creating a custom VPC</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: kubeovn.io/v1
+kind: Vpc
+metadata:
+  name: custom-vpc
+spec: {}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_creating_a_subnet_using_the_internal_or_tenant_network_in_custom_vpc"><a class="anchor" href="#_creating_a_subnet_using_the_internal_or_tenant_network_in_custom_vpc"></a>Creating a subnet using the internal or tenant network in <code>custom-vpc</code></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: kubeovn.io/v1
+kind: Subnet
+metadata:
+  name: subnetinternal
+spec:
+  cidrBlock: 172.20.10.0/24
+  default: false
+  enableLb: true
+  excludeIps:
+  - 172.20.10.1
+  gateway: 172.20.10.1
+  gatewayNode: ""
+  natOutgoing: true
+  private: false
+  protocol: IPv4
+  provider: vswitchinternal.default.ovn
+  vpc: custom-vpc</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_creating_a_subnet_using_the_external_network"><a class="anchor" href="#_creating_a_subnet_using_the_external_network"></a>Creating a subnet using the external network</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: kubeovn.io/v1
+kind: Subnet
+metadata:
+  name: subnetexternal
+spec:
+  cidrBlock: 10.115.48.0/21
+  default: false
+  enableLb: true
+  excludeIps:
+  - 10.115.55.254
+  gateway: 10.115.55.254
+  gatewayNode: ""
+  natOutgoing: true
+  private: false
+  protocol: IPv4
+  provider: vswitchexternal.kube-system.ovn
+  vpc: custom-vpc</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_creating_the_vpc_nat_gateway_configuration"><a class="anchor" href="#_creating_the_vpc_nat_gateway_configuration"></a>Creating the VPC NAT gateway configuration</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">kind: VpcNatGateway
+apiVersion: kubeovn.io/v1
+metadata:
+  annotations:
+    k8s.v1.cni.cncf.io/networks: default/vswitchinternal
+  name: gw1
+spec:
+  vpc: custom-vpc
+  subnet: subnetinternal
+  lanIp: 172.20.10.254
+  externalSubnets:
+    - subnetexternal</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_verifying_if_a_new_vpc_nat_gateway_statefulset_was_created"><a class="anchor" href="#_verifying_if_a_new_vpc_nat_gateway_statefulset_was_created"></a>Verifying if a new VPC NAT gateway StatefulSet was created</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">kubectl get statefulset -n kube-system vpc-nat-gw-gw1 -o yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  creationTimestamp: "2026-03-06T22:33:47Z"
+  generation: 1
+  labels:
+    app: vpc-nat-gw-gw1
+    ovn.kubernetes.io/vpc-nat-gw: "true"
+  name: vpc-nat-gw-gw1
+  namespace: kube-system
+  resourceVersion: "12139577"
+  uid: cb48e680-95e8-408d-be47-23499ad0ac5c
+spec:
+  persistentVolumeClaimRetentionPolicy:
+    whenDeleted: Retain
+    whenScaled: Retain
+  podManagementPolicy: OrderedReady
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: vpc-nat-gw-gw1
+      ovn.kubernetes.io/vpc-nat-gw: "true"
+  serviceName: ""
+  template:
+    metadata:
+      annotations:
+        externalvswitch.kube-system.ovn.kubernetes.io/routes: '[{"dst":"0.0.0.0/0","gw":"10.115.55.254"}]'
+        internalvswitch.default.ovn.kubernetes.io/ip_address: 172.20.10.254
+        internalvswitch.default.ovn.kubernetes.io/logical_switch: internalsubnet
+        internalvswitch.default.ovn.kubernetes.io/routes: '[{"dst":"10.55.0.0/16","gw":"172.20.10.1"},{"dst":"10.115.48.0/21","gw":"172.20.10.1"}]'
+        internalvswitch.default.ovn.kubernetes.io/vpc_nat_gw: gw1
+        k8s.v1.cni.cncf.io/networks: default/internalvswitch, kube-system/externalvswitch
+        ovn.kubernetes.io/ip_address: 172.20.10.254
+        ovn.kubernetes.io/logical_switch: internalsubnet
+        ovn.kubernetes.io/vpc_nat_gw: gw1
+      labels:
+        app: vpc-nat-gw-gw1
+        ovn.kubernetes.io/vpc-nat-gw: "true"
+    spec:
+      affinity: {}
+      containers:
+      - command:
+        - sleep
+        - infinity
+        env:
+        - name: GATEWAY_V4
+          value: 10.115.55.254
+        - name: GATEWAY_V6
+        image: docker.io/kubeovn/vpc-nat-gateway:v1.15.0
+        imagePullPolicy: IfNotPresent
+        lifecycle:
+          postStart:
+            exec:
+              command:
+              - sh
+              - -c
+              - sysctl -w net.ipv4.ip_forward=1
+        name: vpc-nat-gw
+        resources: {}
+        securityContext:
+          allowPrivilegeEscalation: true
+          privileged: true
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 0
+  updateStrategy:
+    type: RollingUpdate
+status:
+  availableReplicas: 1
+  collisionCount: 0
+  currentReplicas: 1
+  currentRevision: vpc-nat-gw-gw1-98ff96d76
+  observedGeneration: 1
+  readyReplicas: 1
+  replicas: 1
+  updateRevision: vpc-nat-gw-gw1-98ff96d76
+  updatedReplicas: 1</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_verifying_if_a_new_vpc_nat_gateway_pod_was_created"><a class="anchor" href="#_verifying_if_a_new_vpc_nat_gateway_pod_was_created"></a>Verifying if a new VPC NAT gateway pod was created</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">kubectl describe pod vpc-nat-gw-gw1-0 -n kube-system
+Name:             vpc-nat-gw-gw1-0
+Namespace:        kube-system
+Priority:         0
+Service Account:  default
+Node:             hp-46/10.115.14.70
+Start Time:       Fri, 06 Mar 2026 22:33:47 +0000
+Labels:           app=vpc-nat-gw-gw1
+                  apps.kubernetes.io/pod-index=0
+                  controller-revision-hash=vpc-nat-gw-gw1-98ff96d76
+                  ovn.kubernetes.io/vpc-nat-gw=true
+                  statefulset.kubernetes.io/pod-name=vpc-nat-gw-gw1-0
+Annotations:      cni.projectcalico.org/containerID: 3cf564b6124aae048a097bd9777dd3ac583b293357cb819a85146515e2ba1e52
+                  cni.projectcalico.org/podIP: 10.52.1.66/32
+                  cni.projectcalico.org/podIPs: 10.52.1.66/32
+                  externalvswitch.kube-system.ovn.kubernetes.io/allocated: true
+                  externalvswitch.kube-system.ovn.kubernetes.io/cidr: 10.115.48.0/21
+                  externalvswitch.kube-system.ovn.kubernetes.io/gateway: 10.115.55.254
+                  externalvswitch.kube-system.ovn.kubernetes.io/ip_address: 10.115.48.1
+                  externalvswitch.kube-system.ovn.kubernetes.io/logical_router: commonvpc
+                  externalvswitch.kube-system.ovn.kubernetes.io/logical_switch: externalsubnet
+                  externalvswitch.kube-system.ovn.kubernetes.io/mac_address: fe:01:4a:61:43:6e
+                  externalvswitch.kube-system.ovn.kubernetes.io/pod_nic_type: veth-pair
+                  externalvswitch.kube-system.ovn.kubernetes.io/routed: true
+                  externalvswitch.kube-system.ovn.kubernetes.io/routes: [{"dst":"0.0.0.0/0","gw":"10.115.55.254"}]
+                  internalvswitch.default.ovn.kubernetes.io/allocated: true
+                  internalvswitch.default.ovn.kubernetes.io/cidr: 172.20.10.0/24
+                  internalvswitch.default.ovn.kubernetes.io/gateway: 172.20.10.1
+                  internalvswitch.default.ovn.kubernetes.io/ip_address: 172.20.10.254
+                  internalvswitch.default.ovn.kubernetes.io/logical_router: commonvpc
+                  internalvswitch.default.ovn.kubernetes.io/logical_switch: internalsubnet
+                  internalvswitch.default.ovn.kubernetes.io/mac_address: d6:2d:c1:95:45:15
+                  internalvswitch.default.ovn.kubernetes.io/pod_nic_type: veth-pair
+                  internalvswitch.default.ovn.kubernetes.io/routed: true
+                  internalvswitch.default.ovn.kubernetes.io/routes: [{"dst":"10.55.0.0/16","gw":"172.20.10.1"},{"dst":"10.115.48.0/21","gw":"172.20.10.1"}]
+                  internalvswitch.default.ovn.kubernetes.io/vpc_cidrs: ["172.20.10.0/24"]
+                  internalvswitch.default.ovn.kubernetes.io/vpc_nat_gw: gw1
+                  k8s.v1.cni.cncf.io/network-status:
+                    [{
+                        "name": "k8s-pod-network",
+                        "interface": "eth0",
+                        "ips": [
+                            "10.52.1.66"
+                        ],
+                        "mac": "be:86:12:cc:e3:30",
+                        "default": true,
+                        "dns": {}
+                    },{
+                        "name": "default/internalvswitch",
+                        "interface": "net1",
+                        "ips": [
+                            "172.20.10.254"
+                        ],
+                        "mac": "d6:2d:c1:95:45:15",
+                        "dns": {}
+                    },{
+                        "name": "kube-system/externalvswitch",
+                        "interface": "net2",
+                        "ips": [
+                            "10.115.48.1"
+                        ],
+                        "mac": "fe:01:4a:61:43:6e",
+                        "dns": {},
+                        "gateway": [
+                            "10.115.55.254"
+                        ]
+                    }]
+                  k8s.v1.cni.cncf.io/networks: default/internalvswitch, kube-system/externalvswitch
+                  ovn.kubernetes.io/ip_address: 172.20.10.254
+                  ovn.kubernetes.io/logical_switch: internalsubnet
+                  ovn.kubernetes.io/vpc_nat_gw: gw1
+                  ovn.kubernetes.io/vpc_nat_gw_init: true
+Status:           Running
+IP:               10.52.1.66
+IPs:
+  IP:           10.52.1.66
+Controlled By:  StatefulSet/vpc-nat-gw-gw1
+Containers:
+  vpc-nat-gw:
+    Container ID:  containerd://efcab898c60ad94ee5d79a598f96d5b0becf65c2ae917d6f02246b227be40eca
+    Image:         docker.io/kubeovn/vpc-nat-gateway:v1.15.0
+    Image ID:      docker.io/kubeovn/vpc-nat-gateway@sha256:4c090dffaaf5c44593883bfa15a4524e860ac4d7c32555d98284aa8fa042ba6a
+    Port:          &lt;none&gt;
+    Host Port:     &lt;none&gt;
+    Command:
+      sleep
+      infinity
+    State:          Running
+      Started:      Fri, 06 Mar 2026 22:34:01 +0000
+    Ready:          True
+    Restart Count:  0
+    Environment:
+      GATEWAY_V4:  10.115.55.254
+      GATEWAY_V6:
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-qgb7d (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   True
+  Initialized                 True
+  Ready                       True
+  ContainersReady             True
+  PodScheduled                True
+Volumes:
+  kube-api-access-qgb7d:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   BestEffort
+Node-Selectors:              &lt;none&gt;
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:                      &lt;none&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_checking_the_vpc_nat_gateway_pod_for_interfaces"><a class="anchor" href="#_checking_the_vpc_nat_gateway_pod_for_interfaces"></a>Checking the VPC NAT gateway pod for interfaces</h3>
+<div class="paragraph">
+<p>In this example, <code>net1</code> is attached to the internal network, while <code>net2</code> is attached to the external network.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">kubectl exec -it vpc-nat-gw-gw1-0 -n kube-system -- /bin/bash
+vpc-nat-gw-gw1-0:/kube-ovn# ip addr show
+1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host proto kernel_lo
+       valid_lft forever preferred_lft forever
+2: eth0@if4949: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1450 qdisc noqueue state UP group default qlen 1000
+    link/ether be:86:12:cc:e3:30 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+    inet 10.52.1.66/32 scope global eth0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::bc86:12ff:fecc:e330/64 scope link proto kernel_ll
+       valid_lft forever preferred_lft forever
+4950: net1@if4951: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1450 qdisc noqueue state UP group default
+    link/ether d6:2d:c1:95:45:15 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+    inet 172.20.10.254/24 brd 172.20.10.255 scope global net1
+       valid_lft forever preferred_lft forever
+    inet6 fe80::d42d:c1ff:fe95:4515/64 scope link proto kernel_ll
+       valid_lft forever preferred_lft forever
+4952: net2@if4953: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1450 qdisc noqueue state UP group default
+    link/ether fe:01:4a:61:43:6e brd ff:ff:ff:ff:ff:ff link-netnsid 0
+    inet 10.115.48.1/21 brd 10.115.55.255 scope global net2
+       valid_lft forever preferred_lft forever
+    inet 10.115.55.200/21 scope global secondary net2
+       valid_lft forever preferred_lft forever
+    inet6 fe80::fc01:4aff:fe61:436e/64 scope link proto kernel_ll
+       valid_lft forever preferred_lft forever
+vpc-nat-gw-gw1-0:/kube-ovn# ip route show
+default via 10.115.55.254 dev net2
+10.55.0.0/16 via 172.20.10.1 dev net1
+10.115.48.0/21 dev net2 proto kernel scope link src 10.115.48.1
+169.254.1.1 dev eth0 scope link
+172.20.10.0/24 dev net1 proto kernel scope link src 172.20.10.254</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_creating_a_provider_network_and_physical_interface"><a class="anchor" href="#_creating_a_provider_network_and_physical_interface"></a>Creating a provider network and physical interface</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: kubeovn.io/v1
+kind: ProviderNetwork
+metadata:
+  name: pn1
+spec:
+  defaultInterface: eno50</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_creating_a_vlan_network_attached_to_a_provider_network"><a class="anchor" href="#_creating_a_vlan_network_attached_to_a_provider_network"></a>Creating a VLAN network attached to a provider network</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: kubeovn.io/v1
+kind: Vlan
+metadata:
+  name: vlan2017
+spec:
+  id: 2017
+  provider: pn1</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_editing_a_subnet_to_use_a_specific_vlan"><a class="anchor" href="#_editing_a_subnet_to_use_a_specific_vlan"></a>Editing a subnet to use a specific VLAN</h3>
+<div class="paragraph">
+<p>This attaches the subnet to the provider network underlay.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: kubeovn.io/v1
+kind: Subnet
+metadata:
+  name: subnetexternal
+spec:
+  cidrBlock: 10.115.48.0/21
+  default: false
+  enableLb: true
+  excludeIps:
+  - 10.115.55.254
+  gateway: 10.115.55.254
+  gatewayNode: ""
+  natOutgoing: true
+  private: false
+  protocol: IPv4
+  provider: vswitchexternal.kube-system.ovn
+  vlan: vlan2017
+  vpc: custom-vpc</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_verifying_the_provider_network_bridge_and_external_subnet_attached_to_the_ovs"><a class="anchor" href="#_verifying_the_provider_network_bridge_and_external_subnet_attached_to_the_ovs"></a>Verifying the provider network bridge and external subnet attached to the OVS</h3>
+<div class="paragraph">
+<p>In this example, the provider network bridge is <code>br-pn1</code> and the external subnet attached on the OVS is  <code>patch-localnet.externalsubnet-to-br-int</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">kubectl exec -it ovs-ovn-q92zk -n kube-system -- /bin/bash
+Defaulted container "openvswitch" out of: openvswitch, hostpath-init (init)
+nobody@hp-65:/kube-ovn$ ovs-vsctl show
+54ef5649-9fe6-4944-865b-30a591c95121
+    Bridge br-pn1
+        Port br-pn1
+            Interface br-pn1
+                type: internal
+        Port patch-localnet.externalsubnet-to-br-int
+            Interface patch-localnet.externalsubnet-to-br-int
+                type: patch
+                options: {peer=patch-br-int-to-localnet.externalsubnet}
+        Port eno50
+            trunks: [0, 2017]
+            Interface eno50
+    Bridge br-int
+        fail_mode: secure
+        datapath_type: system
+        Port br-int
+            Interface br-int
+                type: internal
+        Port "6159403e_net1_h"
+            Interface "6159403e_net1_h"
+        Port mirror0
+            Interface mirror0
+                type: internal
+        Port ovn0
+            Interface ovn0
+                type: internal
+        Port patch-br-int-to-localnet.externalsubnet
+            Interface patch-br-int-to-localnet.externalsubnet
+                type: patch
+                options: {peer=patch-localnet.externalsubnet-to-br-int}
+        Port "7e8b0_37a8eec_h"
+            Interface "7e8b0_37a8eec_h"
+        Port "6159403e_net2_h"
+            Interface "6159403e_net2_h"
+    ovs_version: "3.5.3"</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_snat_for_external_connectivity_from_overlay_virtual_machines"><a class="anchor" href="#_snat_for_external_connectivity_from_overlay_virtual_machines"></a>SNAT for external connectivity from overlay virtual machines</h3>
+<div class="sect3">
+<h4 id="_creating_an_elastic_ip_eip_resource"><a class="anchor" href="#_creating_an_elastic_ip_eip_resource"></a>Creating an elastic IP (EIP) resource</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: kubeovn.io/v1
+kind: IptablesEIP
+metadata:
+  name: my-eip
+spec:
+  natGwDp: gw1 # Name of your VpcNatGateway
+  externalSubnet: subnetexternal
+  v4ip: 10.115.55.200 #random public ip from external subnet</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_creating_a_snat_resource"><a class="anchor" href="#_creating_a_snat_resource"></a>Creating a SNAT resource</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: kubeovn.io/v1
+kind: IptablesSnatRule
+metadata:
+  name: my-snat
+spec:
+  eip: my-eip
+  internalCIDR: 172.20.10.0/24 #internal subnet CIDR</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_verifying_the_eip_status"><a class="anchor" href="#_verifying_the_eip_status"></a>Verifying the EIP status</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">kubectl get eip
+NAME     IP              MAC                 NAT         NATGWDP   READY
+my-eip   10.115.55.200   52:1b:4f:1d:14:ce   dnat,snat   gw1       true</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_verifying_the_snat_filter_iptable_rule"><a class="anchor" href="#_verifying_the_snat_filter_iptable_rule"></a>Verifying the SNAT filter iptable rule</h4>
+<div class="paragraph">
+<p>This rule is created inside the VPC NAT gateway pod.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">vpc-nat-gw-gw1-0:/kube-ovn# iptables-legacy-save -t nat
+# Generated by iptables-save v1.8.11 on Sat Mar  7 00:28:34 2026
+*nat
+:PREROUTING ACCEPT [2949:373475]
+:INPUT ACCEPT [107:31097]
+:OUTPUT ACCEPT [0:0]
+:POSTROUTING ACCEPT [1:60]
+:DNAT_FILTER - [0:0]
+:EXCLUSIVE_DNAT - [0:0]
+:EXCLUSIVE_SNAT - [0:0]
+:SHARED_DNAT - [0:0]
+:SHARED_SNAT - [0:0]
+:SNAT_FILTER - [0:0]
+-A PREROUTING -j DNAT_FILTER
+-A POSTROUTING -j SNAT_FILTER
+-A SHARED_SNAT -s 172.20.10.0/24 -o net2 -j SNAT --to-source 10.115.55.200 --random-fully
+-A SNAT_FILTER -j EXCLUSIVE_SNAT
+-A SNAT_FILTER -j SHARED_SNAT
+COMMIT</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_attaching_a_virtual_machine_to_the_overlay_network_and_adding_a_default_route"><a class="anchor" href="#_attaching_a_virtual_machine_to_the_overlay_network_and_adding_a_default_route"></a>Attaching a virtual machine to the overlay network and adding a default route</h4>
+<div class="paragraph">
+<p>The virtual machine is created and attached to the <code>vswitchinternal</code> overlay network, and a default route is added in the guest operating system. In this example, <code>172.20.10.254</code> is the IP address of the <code>net1</code> interface on the VPC NAT gateway pod.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">ip route add default via 172.20.10.254 dev enp1s0</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The virtual machine running on the guest operating system must be able to successfully ping <code>8.8.8.8</code>.</p>
+</div>
+<div class="paragraph">
+<p>Traffic from the virtual machine enters the NAT gateway pod via the <code>net1</code> interface. Based on the configured routing, it is directed to the <code>net2</code> interface, where an iptables SNAT rule translates the subnet&#8217;s private IP <code>172.20.10.0/24</code> to <code>10.115.55.200</code> for external connectivity.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/networking/kubeovnSNATFlow.png" alt="Kube-OVN SNAT flow">
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_dnat_for_inbound_access_external_to_overlay_vms"><a class="anchor" href="#_dnat_for_inbound_access_external_to_overlay_vms"></a>DNAT for inbound access (external to overlay VMs)</h3>
+<div class="sect3">
+<h4 id="_creating_a_dnat_resource_with_the_same_eip_as_the_snat_resource"><a class="anchor" href="#_creating_a_dnat_resource_with_the_same_eip_as_the_snat_resource"></a>Creating a DNAT resource with the same EIP as the SNAT resource</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">kind: IptablesDnatRule
+apiVersion: kubeovn.io/v1
+metadata:
+  name: dnat01
+spec:
+  eip: my-eip
+  externalPort: '8888'
+  internalIp: 172.20.10.2 #IP of the overlay VM
+  internalPort: '80'
+  protocol: tcp</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_checking_the_dnat_filter_in_the_vpc_nat_gateway_pod"><a class="anchor" href="#_checking_the_dnat_filter_in_the_vpc_nat_gateway_pod"></a>Checking the DNAT filter in the VPC NAT gateway pod</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">vpc-nat-gw-gw1-0:/kube-ovn# iptables-legacy -t nat -L -n -v 2&gt;/dev/null | grep -E "DNAT"
+ 3051  392K DNAT_FILTER  all  --  *      *       0.0.0.0/0            0.0.0.0/0
+Chain DNAT_FILTER (1 references)
+ 3051  392K EXCLUSIVE_DNAT  all  --  *      *       0.0.0.0/0            0.0.0.0/0
+ 3051  392K SHARED_DNAT  all  --  *      *       0.0.0.0/0            0.0.0.0/0
+Chain EXCLUSIVE_DNAT (1 references)
+Chain SHARED_DNAT (1 references)
+    1    60 DNAT       tcp  --  *      *       0.0.0.0/0            10.115.55.200        tcp dpt:8888 to:172.20.10.2:80</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_installing_nginx_on_a_virtual_machine_attached_to_the_overlay_network"><a class="anchor" href="#_installing_nginx_on_a_virtual_machine_attached_to_the_overlay_network"></a>Installing NGINX on a virtual machine attached to the overlay network</h4>
+<div class="paragraph">
+<p>The virtual machine is created and attached to the overlay network in the <code>subnetinternal</code> subnet, and NGINX is installed on the virtual machine for checking of inbound access.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">sudo apt update
+sudo apt install nginx -y
+sudo systemctl status nginx
+
+test nginx locally on the VM
+curl http://127.0.0.1</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To validate the DNAT configuration, run the following command from an external host.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">curl -k http://10.115.55.200:8888</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The request should return a valid response from the internal service.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/networking/kubeovnDNATFlow.png" alt="Kube-OVN DNAT flow">
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="kubeovn-vpc.html">Virtual Private Cloud</a></span>
+  <span class="next"><a href="vm-isolation.html">Virtual Machine Isolation</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<script src="../../../../_/js/site.js"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+<script src="../../../../_/js/vendor/lunr.js"></script>
+<script src="../../../../_/js/vendor/lunr-languages.js"></script>
+<script src="../../../../_/js/search-ui.js" id="search-ui-script" data-site-root-path="../../../.." data-snippet-length="100" data-stylesheet="../../../../_/css/search.css"></script>
+<script async src="../../../../search-index.js"></script>
+<script src="../../../../_/js/vendor/langSelection.js"></script>
+<script async src="../../../../_/js/vendor/tabs.js"></script>
+
+
+<script src="../../../../_/js/CNLanguageSwitcher.js"></script>
+  </body>
+</html>

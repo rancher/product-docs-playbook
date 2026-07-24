@@ -1,0 +1,1335 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SUSE Storageへの移行 | SUSE® Storage  1.11 (Latest)</title>
+    <link rel="canonical" href="https://documentation.suse.com/cloudnative/storage/1.11/ja/migration/migration.html">
+    <link rel="prev" href="../upgrades/kubernetes/upgrade-k8s-on-gke.html">
+    <link rel="next" href="../longhorn-system/system-access/system-access.html">
+    <meta name="generator" content="Antora 3.1.14">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+<meta http-equiv="last-modified" content="2026-01-28"/>
+<link rel="stylesheet" href="../../../../_/css/search.css">
+<link rel="icon" href="../../../../_/img/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="../../../../_/css/font-styles.css">
+<link rel="stylesheet" href="../../../../_/fonts/css/all.css">
+<link rel="stylesheet" href="../../../../_/css/site-extra.css">
+<link rel="stylesheet" href="../../../../_/css/vendor/tabs.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap&family=SUSE+Mono:ital,wght@0,100..800;1,100..800" rel="stylesheet">
+<link rel="stylesheet" href="../../../../_/css/vendor/light.css">
+<script src="/docserv/res/lightheaded/analytics.js" type="text/javascript"></script>
+<script type="module">
+  import { defineCustomElements, setAssetPath } from 'https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/shared-header.esm.js';
+  defineCustomElements();
+  setAssetPath("https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/assets");
+</script>
+<!-- Default English link -->
+<link href="https://documentation.suse.com/cloudnative/storage/1.11/en/migration/migration.html" hreflang="x-default" rel="alternate"/>
+<!-- Link for the currently processed page -->
+<link href="https://documentation.suse.com/cloudnative/storage/1.11/ja/migration/migration.html" hrefLang="ja-JP" rel="alternate" />
+<!-- Link for the English page -->
+<link href="https://documentation.suse.com/cloudnative/storage/1.11/en/migration/migration.html" hreflang="en-US" rel="alternate" />
+<!-- Link for the Chinese page -->
+<link href="https://documentation.suse.com/cloudnative/storage/1.11/zh/migration/migration.html" hreflang="zh-CN" rel="alternate" />
+<!-- Link for the German page -->
+<link href="https://documentation.suse.com/cloudnative/storage/1.11/de/migration/migration.html" hreflang="de-DE" rel="alternate" />
+<!-- Link for the French page -->
+<link href="https://documentation.suse.com/cloudnative/storage/1.11/fr/migration/migration.html" hreflang="fr-FR" rel="alternate" />
+<!-- Link for the Spanish page -->
+<link href="https://documentation.suse.com/cloudnative/storage/1.11/es/migration/migration.html" hreflang="es-ES" rel="alternate" />
+<!-- Link for the Brazilian Portuguese page -->
+<link href="https://documentation.suse.com/cloudnative/storage/1.11/pt/migration/migration.html" hreflang="pt-BR" rel="alternate" />
+
+<!-- JSON-LD for doc metadata -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "SUSE Storageへの移行 | SUSE Storage 1.11",
+  "headline": "SUSE Storageへの移行",
+  "description": "SUSE Storageへの移行",
+  "inLanguage": "ja",
+  "dateModified": "2026-01-28T00:00:00Z",
+  "author": {
+    "@type": "Organization",
+    "name": "SUSE Product & Solution Documentation Team",
+    "url": "https://documentation.suse.com"
+  },
+  "mentions": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "SUSE Storage",
+      "softwareVersion": "1.11",
+      "applicationCategory": "Cloud Infrastructure",
+      "operatingSystem": "Linux"
+    }
+  ],
+  "publisher": {
+    "@type": "Organization",
+    "name": "SUSE",
+    "url": "https://documentation.suse.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.suse.com/assets/img/suse-white-logo-green.svg"
+    }
+  }
+}
+</script>
+<!-- end JSON-LD for doc metadata -->
+
+<!-- SUVA - Begin Ask Geeko-->
+<!--
+searchUnifyChatbot ("Ask Geeko") Copyright ©2024 Grazitti Interactive - All Rights Reserved. NOTICE: All information contained herein is, and remains the property of Grazitti Interactive and its suppliers, if any. The intellectual and technical concepts contained herein are proprietary to Grazitti Interactive and its suppliers and may be covered by India, U.S. and Foreign Patents, patents in process, and are protected by trade secret or copyright law. Dissemination of this information or reproduction of this material is strictly forbidden unless prior written permission is obtained from Grazitti Interactive.
+-->
+<meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport"/>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/Allow/an.js?c485cb3c-93d4-4942-99e8-91f3b8ca5636"></script>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/js/index.js?q=gAAAAABp3JBN9VuEJTi5tFafLIMwgMkCPdJS3Qm56lSYx93ir3Twt9hgSvd3OHEt6-nYfSbY3yHq0Zv8PRPsSy4nbqZiaJ4cZvRc6ItVZdvwz9Urf35cH6OUyPOwdA0phlS-zVIznQ2rWW438p-91NlTHuxJuOFpnA=="></script>
+<link rel="stylesheet" href="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/css/index.css">
+<div id="searchUnifyChatbot"></div>
+<!-- SUVA - End Ask Geeko-->
+<!--BEGIN QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+<script type='text/javascript' src="../../../../_/js/qualtrics.js" defer></script>
+<!--END QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<script type="module">import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs'; mermaid.initialize({"startOnLoad":true});</script><shared-header
+language="en"
+languages='{
+    "en": { "label": "English", "url": "https://documentation.suse.com/en-us/" },
+    "de": { "label": "Deutsch", "url": "https://documentation.suse.com/de-de/" },
+    "fr": { "label": "Français", "url": "https://documentation.suse.com/fr-fr/" },
+    "es": { "label": "Español", "url": "https://documentation.suse.com/es-es/" },
+    "zh_CN": { "label": "中文", "url": "https://documentation.suse.com/zh-cn/" },
+    "pt_BR": { "label": "Português Brasileiro", "url": "https://documentation.suse.com/pt-br/" }
+}'
+enable-search='false'>
+</shared-header>
+<div class="body">
+<div class="nav-container" data-component="storage" data-version="1.11">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title">SUSE® Storage</h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../longhorn-documentation.html">SUSE® Storage 概要</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../introduction/introduction.html">概要</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/concepts.html">アーキテクチャと概念</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/terminology.html">用語集</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/document-conventions.html">文書規約</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../important-notes.html">重要注意事項</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">インストールおよびセットアップ</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/requirements.html">要件</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/best-practices.html">ベストプラクティス</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../installation-setup/installation/installation.html">インストール</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/installation/install-using-argocd.html">Argo CDを使用してSUSE Storageをインストールします。</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/installation/install-using-fleet.html">SUSE StorageをFleetでインストールする</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/installation/install-using-flux.html">Fluxを使用してSUSE® Storageをインストールします。</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/installation/install-using-helm.html">Helmを使用してSUSE Storageをインストールします。</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/installation/install-using-helm-controller.html">Helmコントローラーを使用してSUSE Storageをインストールする</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/installation/helm-values.html">ヘルムの値</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/installation/install-using-rancher.html">Rancherを使ったSUSE Storageのインストール</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/installation/rancher-windows-cluster.html">Rancher Windows クラスター</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/installation/airgapped-environment.html">SUSE Storageをエアギャップ環境にインストールする</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">オペレーティングシステムとディストリビューションの設定</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/os-distro/gke.html">Google Kubernetes Engine (GKE)</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/os-distro/k3s.html">K3s</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/setup-performance-scalability-sizing-guidelines.html">セットアップ、パフォーマンス、スケーラビリティ、およびサイズ設定のガイドライン</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/uninstallation.html">アンインストール</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../upgrades/upgrades.html">アップグレード</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">コンポーネントのアップグレード</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../upgrades/longhorn-components/auto-upgrade-engine.html">Longhorn Engineを自動的にアップグレードする</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../upgrades/longhorn-components/instance-manager-pods-during-upgrade.html">アップグレード時のインスタンスマネージャーポッド</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../upgrades/longhorn-components/manually-upgrade-engine.html">Longhorn Engineを手動でアップグレードする</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../upgrades/longhorn-components/upgrade-longhorn-manager.html">Longhorn Managerのアップグレード</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Kubernetesのアップグレード</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../upgrades/kubernetes/upgrade-k8s-on-aks.html">Azure Kubernetes Service (AKS) の Kubernetes をアップグレードする</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../upgrades/kubernetes/upgrade-k8s-on-eks.html">Amazon Elastic Kubernetes Service (Amazon EKS) で Kubernetes をアップグレードする</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../upgrades/kubernetes/upgrade-k8s-on-gke.html">Google Kubernetes Engine (GKE)でKubernetesをアップグレードする</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">マイグレーション</span>
+<ul class="nav-list">
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="migration.html">SUSE Storageへの移行</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">SUSE® Storageシステム</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../longhorn-system/system-access/system-access.html">システムアクセス</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../longhorn-system/system-access/longhorn-ui.html">ユーザーインターフェイスにアクセスする</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../longhorn-system/system-access/create-ingress.html">Basic Authentication（nginx）を使用してIngressを作成する</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../longhorn-system/system-access/longhorn-ingress-traefik.html">ベーシック認証付きIngressの作成（Traefik）</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../longhorn-system/system-access/longhorn-cli.html">コマンドラインインタフェース（CLI）</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../longhorn-system/system-access/install-longhorn-cli.html">CLIをインストールします</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../longhorn-system/system-access/longhorn-httproute.html">HTTPRouteをGateway APIで作成する</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../longhorn-system/system-access/longhorn-python-client.html">Pythonクライアント</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../longhorn-system/networking/networking.html">ネットワーキング</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../longhorn-system/networking/storage-network.html">ストレージネットワーク</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../longhorn-system/components/csi-pod-antiaffinity-preset.html">CSIコンポーネントポッドのアンチアフィニティ</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../longhorn-system/mtls-support.html">相互TLS（mTLS）サポート</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../longhorn-system/customize-default-settings.html">デフォルト設定のカスタマイズ</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../longhorn-system/settings.html">設定</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">V2データエンジン（技術プレビュー）</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../longhorn-system/v2-data-engine/v2-data-engine.html">V2データエンジン（テクニカルプレビュー）</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../longhorn-system/v2-data-engine/features/features.html">V2データエンジンの機能</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../longhorn-system/v2-data-engine/features/selective-engine-activation.html">選択的V2データエンジンの有効化</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../longhorn-system/v2-data-engine/features/ublk-frontend-support.html">UBLK フロントエンド サポート</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../longhorn-system/v2-data-engine/features/node-disk-support.html">ノードディスクのサポート</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../longhorn-system/v2-data-engine/features/replica-rebuild-qos.html">レプリカ再構築QoS</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../longhorn-system/v2-data-engine/features/interrupt-mode.html">割り込みモード</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../longhorn-system/v2-data-engine/features/volume-expansion.html">ボリュームの拡張</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../longhorn-system/v2-data-engine/features/volume-clone.html">ボリュームクローン</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../longhorn-system/v2-data-engine/prerequisites.html">前提条件</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../longhorn-system/v2-data-engine/quick-start-guide.html">Quick Start Guide</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../longhorn-system/v2-data-engine/performance.html">パフォーマンス</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../longhorn-system/examples-resources.html">SUSE® Storage を使用する Kubernetes リソースの例</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../longhorn-system/migrate-flexvolume.html">FlexvolumeドライバーからCSIに移行する</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">ノード</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../nodes/node-space-usage.html">ノードのスペース使用状況</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../nodes/default-disk-and-node-config.html">デフォルトのノードおよびディスクの設定</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../nodes/storage-tags.html">ストレージタグ</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../nodes/multiple-disks.html">複数のディスク</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../nodes/disks-or-nodes-eviction.html">無効化されたディスクまたはノード上のレプリカを退避する</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../nodes/scheduling.html">スケジューリング</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../nodes/node-conditions.html">ノード条件</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../nodes/node-selector.html">ノードセレクター</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../nodes/taints-tolerations.html">テイントとトレランス</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../nodes/priority-class.html">優先クラス</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../nodes/topology-aware-provisioning.html">トポロジー対応プロビジョニング</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">マネージドKubernetes</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../nodes/managed-kubernetes/aks-managed-node-groups.html">Azure Kubernetes Service (AKS) の管理ノードグループ</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../nodes/managed-kubernetes/eks-managed-node-pools.html">Amazon Elastic Kubernetes Service (Amazon EKS) の管理ノードプール</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../nodes/managed-kubernetes/gke-managed-node-pools.html">Google Kubernetes Engine (GKE) の管理ノードプール</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">ボリューム</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/create-volumes.html">ボリュームの作成</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/pvc-ownership-and-permission.html">PVCの所有権と権限</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/rwx-volumes.html">ReadWriteMany (RWX) ボリューム</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/clone-volumes.html">ボリュームのクローン作成</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/containerized-data-importer.html">SUSE Storage とCDIインポート</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/detach-volumes.html">ボリュームを切り離す</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/delete-volumes.html">ボリュームを削除する</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/use-as-iscsi-target.html">ボリュームをiSCSIターゲットとして使用する</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/identify-workloads.html">ボリュームを使用しているワークロードを特定する</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/volume-size.html">ボリュームサイズ</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/volume-expansion.html">ボリュームの拡張</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/volume-attachment.html">SUSE Storage ボリュームアタッチメント</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/trim-filesystem.html">ファイルシステムをトリムする</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/volume-conditions.html">ボリューム条件</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/volume-encryption.html">ボリューム暗号化</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../volumes/storageclass-parameters.html">ストレージクラスのパラメータ</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../volumes/backing-images/backing-images.html">バックイメージ</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../volumes/backing-images/backing-image-encryption.html">バックイメージの暗号化</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">高可用性</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../high-availability/automatic-replica-balancing.html">自動レプリカバランシング</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../high-availability/replica-rebuilding.html">レプリカ再構築</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../high-availability/fast-replica-rebuilding.html">高速レプリカ再構築</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../high-availability/offline-replica-rebuilding.html">オフラインレプリカ再構築</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../high-availability/revision_counter.html">リビジョンカウンター</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../high-availability/data-locality.html">データのローカリティ</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../high-availability/kubernetes-cluster-autoscaler.html">Kubernetesクラスターオートスケーラーサポート（実験的）</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../high-availability/rwx-volume-fast-failover.html">RWXボリュームのファストフェールオーバー（実験的）</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../high-availability/volume-recovery.html">ボリューム回復</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../high-availability/node-failure.html">ノードエラー管理</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">スナップショットとバックアップ</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../snapshots-backups/volume-snapshots-backups/volume-snapshots-backups.html">ボリュームスナップショットとバックアップ</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/volume-snapshots-backups/create-snapshot.html">スナップショットの作成</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/volume-snapshots-backups/snapshot-space-management.html">スナップショットスペース管理</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/volume-snapshots-backups/configure-backup-target.html">バックアップターゲットを設定する</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/volume-snapshots-backups/create-backup.html">バックアップを作成する</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/volume-snapshots-backups/sync-backup-volumes-manually.html">バックアップボリュームの手動同期</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/volume-snapshots-backups/create-recurring-backup-snapshot-job.html">定期スナップショットまたはバックアップジョブを作成する</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/volume-snapshots-backups/restore-volume-from-backup.html">バックアップからボリュームを復元する</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/volume-snapshots-backups/restore-recurring-job-from-backup.html">バックアップから定期ジョブを復元する</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/volume-snapshots-backups/restore-volume-statefulset.html">Kubernetes StatefulSetのボリュームを復元する</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../snapshots-backups/csi-snapshots/csi-snapshots.html">CSI Snapshots</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/csi-snapshots/csi-snapshot-longhorn-backing-image.html">SUSE® Storage のバックイメージに関連付けられた CSI スナップショット</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/csi-snapshots/csi-snapshot-longhorn-backup.html">SUSE® Storageバックアップに関連付けられたCSIボリュームスナップショット</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/csi-snapshots/csi-snapshot-longhorn-snapshot.html">SUSE® Storageスナップショットに関連付けられたCSIボリュームスナップショット</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/csi-snapshots/enable-csi-snapshot-creation.html">クラスター上でCSIスナップショットの作成を有効にします。</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../snapshots-backups/system-backups/system-backups.html">SUSE® Storageシステムのバックアップ</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/system-backups/restore-to-cluster-using-rancher-snapshot.html">Rancherスナップショットを使用して、SUSE® Storageをクラスターに復元します。</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/system-backups/restore-to-new-cluster-using-velero.html">Veleroを使用してSUSE® Storageシステムを新しいクラスターに復元する</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/system-backups/create-system-backup.html">SUSE Storage システムバックアップを作成する</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../snapshots-backups/system-backups/restore-system.html">SUSE® Storageシステムを復元する</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../snapshots-backups/backing-image-backups.html">バックアップイメージのバックアップ</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../snapshots-backups/restore-cluster-rancher-snapshot.html">Rancherスナップショットを使用してクラスターを復元する</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">データの整合性と復旧</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../data-integrity-recovery/snapshot-data-integrity-check.html">スナップショットデータの整合性チェック</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../data-integrity-recovery/orphaned-data-cleanup.html">孤立したデータのクリーンアップ</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../data-integrity-recovery/orphaned-instance-cleanup.html">孤立したインスタンスのクリーンアップ</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../data-integrity-recovery/disaster-recovery-volumes.html">障害復旧ボリューム</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">データ復旧</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../data-integrity-recovery/data-recovery/identify-corrupted-replicas.html">破損したレプリカを特定する</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../data-integrity-recovery/data-recovery/retrieve-volume-data-from-replica.html">単一のレプリカからボリュームデータを取得する</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../data-integrity-recovery/data-recovery/recover-from-data-errors.html">データエラーを特定し、回復する</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../data-integrity-recovery/data-recovery/recover-from-full-disk.html">フルディスクからの回復</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../data-integrity-recovery/data-recovery/recover-without-system.html">システムがインストールされていない状態でSUSE® Storageバックアップから復元する</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">監視</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../observability/configure-prometheus-grafana.html">SUSE® Storageを監視するためにPrometheusとGrafanaを設定する</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../observability/alert-rule-examples.html">アラートルールの例</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../observability/longhorn-metrics.html">SUSE® Storage の監視用メトリクス</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../observability/disk-health.html">ディスクヘルスモニタリング</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../observability/integrate-with-rancher-monitoring.html">Rancher監視システムにSUSE® Storage Metricsを統合します。</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../observability/kubelet-volume-metrics.html">Kubeletボリュームメトリクス</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">トラブルシューティングとメンテナンス</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting-maintenance/support-bundle.html">サポートバンドル</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting-maintenance/troubleshooting.html">トラブルシューティング</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting-maintenance/v2-data-engine-issues.html">トラブルシューティング</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting-maintenance/maintenance.html">ノードメンテナンスおよびKubernetesアップグレードガイド</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">用語集</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../glossary/glossary.html">用語集/用語</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">SUSE® Storage</span>
+    <span class="version">1.11 (Latest)</span>
+  </div>
+  <ul class="components">
+        <li class="component">
+          <div class="title"><a href="../../../../admission-controller/1.36/en/introduction.html">Admission Controller</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../admission-controller/1.37/en/introduction.html">1.37-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../admission-controller/1.36/en/introduction.html">1.36</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.35/en/introduction.html">1.35</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.34/en/introduction.html">1.34</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.33/en/introduction.html">1.33</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.32/en/introduction.html">1.32</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.31/en/introduction.html">1.31</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.30/en/introduction.html">1.30</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.29/en/introduction.html">1.29</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.28/en/introduction.html">1.28</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../cluster-api/v0.26/en/index.html">Cluster API</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../cluster-api/v0.28/en/index.html">v0.28-dev</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.27/en/index.html">v0.27-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../cluster-api/v0.26/en/index.html">v0.26</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.25/en/index.html">0.25</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.24/en/index.html">0.24</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.23/en/index.html">0.23</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.22/en/index.html">0.22</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.21/en/index.html">0.21</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.20/en/index.html">0.20</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.19/en/index.html">0.19</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.18/en/index.html">0.18</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.17/en/index.html">0.17</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.16/en/index.html">0.16</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.11/en/index.html">0.11</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../continuous-delivery/next/en/index.html">Continuous Delivery</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../continuous-delivery/next/en/index.html">Next</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.15/en/index.html">v0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.11/en/index.html">0.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.10/en/index.html">0.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.9/en/index.html">0.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../k3s/latest/en/introduction.html">K3s</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../k3s/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../os-manager/1.9/en/index.html">OS Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../os-manager/1.10/en/index.html">1.10-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../os-manager/1.9/en/index.html">1.9</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.8/en/index.html">1.8</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.7/en/index.html">1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.6/en/index.html">1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.5/en/index.html">1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-ai/latest/en/introduction.html">Rancher AI</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-ai/latest/en/introduction.html">latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../turtles/stable/en/index.html">Rancher Turtles</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../turtles/stable/en/index.html">Stable</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rke2/latest/en/introduction.html">RKE2</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rke2/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-observability/latest/en/classic.html">SUSE Observability</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../suse-observability/latest/en/classic.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">SUSE Rancher Developer Access</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">SUSE® Rancher for AWS</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-manager/v2.14/en/about-rancher/what-is-rancher.html">SUSE® Rancher Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.15/en/about-rancher/what-is-rancher.html">v2.15 (Unreleased)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../rancher-manager/v2.14/en/about-rancher/what-is-rancher.html">v2.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.13/en/about-rancher/what-is-rancher.html">v2.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.12/en/about-rancher/what-is-rancher.html">v2.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.11/en/about-rancher/what-is-rancher.html">v2.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.10/en/about-rancher/what-is-rancher.html">v2.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.9/en/about-rancher/what-is-rancher.html">v2.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../security/5.6/en/overview.html">SUSE® Security</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../security/5.6/en/overview.html">5.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.5/en/overview.html">5.5</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.4/en/overview.html">5.4</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.3/en/overview.html">5.3</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component is-current">
+          <div class="title"><a href="../../en/longhorn-documentation.html">SUSE® Storage</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../1.12/en/longhorn-documentation.html">1.12 (Dev)</a>
+            </li>
+            <li class="version is-current is-latest">
+              <a href="../../en/longhorn-documentation.html">1.11 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../1.10/en/longhorn-documentation.html">1.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../1.9/en/longhorn-documentation.html">1.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">SUSE® Virtual Clusters</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/1.2.0/en/release-notes/version-1.2.0.html">v1.2.0 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">v1.1.0-latest</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/1.0.2/en/release-notes/version-1.0.2.html">v1.0.2</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.1/en/introduction.html">v1.0.1</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.0/en/introduction.html">v1.0.0</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../virtualization/v1.8/en/introduction/overview.html">SUSE® Virtualization</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../virtualization/v1.9/en/introduction/overview.html">v1.9 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../virtualization/v1.8/en/introduction/overview.html">v1.8 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../virtualization/v1.7/en/introduction/overview.html">v1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../../virtualization/v1.6/en/introduction/overview.html">v1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../virtualization/v1.5/en/introduction/overview.html">v1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../vulnerability-scanner/0.12.0/en/introduction.html">Vulnerability Scanner</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../vulnerability-scanner/0.12.0/en/introduction.html">0.12.0</a>
+            </li>
+            <li class="version">
+              <a href="../../../../vulnerability-scanner/0.11.3/en/introduction.html">0.11.3</a>
+            </li>
+          </ul>
+        </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+<ul>
+    <li>
+  <a class="home-link-dsc" href="https://documentation.suse.com" title="SUSE Documentation Home" aria-label="SUSE Documentation Home"></a>
+    </li>
+    <li>
+      <a href="https://documentation.suse.com/cloudnative/storage" title="SUSE Storage" aria-label="SUSE Documentation - SUSE Storage">
+        SUSE Storage
+      </a>
+    </li>
+      <li>
+          マイグレーション
+      </li>
+  </ul>
+</nav>
+<div class="page-versions">
+  <button class="version-menu-toggle" title="Show other versions of page">1.11 (Latest)</button>
+  <div class="version-menu">
+    <a class="version" href="../../../1.12/ja/migration/migration.html">1.12 (Dev)</a>
+    <a class="version is-current" href="migration.html">1.11 (Latest)</a>
+    <a class="version is-missing" href="../../../1.10/en/longhorn-documentation.html">1.10</a>
+    <a class="version is-missing" href="../../../1.9/en/longhorn-documentation.html">1.9</a>
+  </div>
+</div>
+      <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <label class="visual-search-label-bc" for="search-input">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+          <input label="Search" aria-label="Search" id="search-input" type="text" placeholder="ドキュメントを検索" >
+          <label class="filter checkbox" style="display: none">
+            <input type="checkbox" data-facet-filter="component:storage" checked> Only this project
+          </label>
+        </div>
+      </div>
+</div>
+  <div class="content">
+<aside
+  class="toc sidebar"
+  data-title="このページで" data-levels="2">
+  <div class="toc-menu">
+    <div class="docsurvey-wrapper"><a class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_diCzHC9xxyJyuN0">Documentation survey</a></div>
+    <!-- start qualtrics -->
+    <div id='ZN_8qZUmklKYbBqAYe'><!--DO NOT REMOVE-CONTENTS PLACED HERE--></div>
+    <div id="qualtrics_container"></div>
+    <!-- end qualtrics -->
+  </div>
+</aside>
+
+<aside class="toc sidebar docsurvey-sidebar">
+  <div class="toc-menu">
+    <div class="docsurvey-wrapper"><a class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_diCzHC9xxyJyuN0">Documentation survey</a></div>
+  </div>
+</aside>
+<article class="doc">
+<h1 class="page">SUSE Storageへの移行</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="警告"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>アップグレードを実行する前に、<a href="../snapshots-backups/system-backups/create-system-backup.html" class="xref page">Longhornシステムバックアップ</a>を作成することをお勧めします。これにより、ボリュームやバックイメージなどのすべての重要なリソースがバックアップされ、問題が発生した場合に復元できることが保証されます。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_前提条件"><a class="anchor" href="#_前提条件"></a>前提条件</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_ツール"><a class="anchor" href="#_ツール"></a>[ツール]</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://helm.sh/docs/">Helm</a> v3.0以上が必要です。</p>
+</li>
+<li>
+<p><a href="../longhorn-system/system-access/longhorn-cli.html" class="xref page">Longhornコマンドラインツール</a>を使用して、SUSE Storage環境の潜在的な問題を確認できます。</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_認証"><a class="anchor" href="#_認証"></a>認証</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>SUSE Application Collection OCIチャートリポジトリでHelmを認証するには、 <a href="https://docs.apps.rancher.io/get-started/authentication/#helm">Helm認証ドキュメント</a>を参照してください。</p>
+</li>
+<li>
+<p>Kubernetesがレジストリからイメージをプルできるようにするには、 <a href="https://docs.apps.rancher.io/get-started/authentication/#kubernetes">Kubernetes認証ドキュメント</a>に従ってシークレットを作成し、`global.imagePullSecrets`チャート値を設定してください。</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_helm経由でデプロイされたlonghornをsuse_storageに移行する"><a class="anchor" href="#_helm経由でデプロイされたlonghornをsuse_storageに移行する"></a>Helm経由でデプロイされたLonghornをSUSE Storageに移行する</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>既存のLonghornインストールがHelm経由でデプロイされている場合、`helm list --all-namespaces`を実行することで確認できます。デフォルトでは、Longhornをインストールするために使用されるHelmリリースは`longhorn`という名前ですが、ユーザーによって定義されたカスタム名である可能性もあります。</p>
+</div>
+<div class="paragraph">
+<p>次に、アップグレード中に適用したいカスタマイズ設定を含む`values.yaml`ファイルをオプションで作成します。</p>
+</div>
+<div class="paragraph">
+<p>SUSE Storageチャートを使用してSUSE Storageへのアップグレードを進めます：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">helm upgrade longhorn oci://dp.apps.rancher.io/charts/suse-storage \
+    --namespace longhorn-system \
+    --version &lt;version&gt; \ # Replace with the version you would like to upgrade to
+    --set global.imagePullSecrets=&lt;PULL_IMAGE_SECRET&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>オプションで、カスタマイズ設定を含む`values.yaml`ファイルがある場合は、`-f`フラグと共にそれを含めます：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">helm upgrade longhorn oci://dp.apps.rancher.io/charts/suse-storage \
+    --namespace longhorn-system \
+    --version &lt;version&gt; \ # Replace with the version you would like to upgrade to
+    --set global.imagePullSecrets=&lt;PULL_IMAGE_SECRET&gt; \
+    -f values.yaml</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_rancher_apps_marketplace経由でデプロイされたlonghornをsuse_storageに移行する"><a class="anchor" href="#_rancher_apps_marketplace経由でデプロイされたlonghornをsuse_storageに移行する"></a>Rancher Apps Marketplace経由でデプロイされたLonghornをSUSE Storageに移行する</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>既存のLonghornインストールがRancher Apps Marketplace経由でデプロイされている場合、`helm list --all-namespaces | grep longhorn`を実行するとLonghornに関連付けられた2つのHelmリリースが表示されます。</p>
+</div>
+<div class="paragraph">
+<p>以下の例は、<strong>Rancherチャート経由でインストールされたLonghorn v1.10.1をSUSE Storage v1.10.1</strong>に移行するものです。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">$ helm list --all-namespaces | grep longhorn
+longhorn                                             longhorn-system        1           2025-11-12 02:58:40.877484249 +0000 UTC    deployed    108.2.0+up1.10.1                                                                                   v1.10.1
+longhorn-crd                                         longhorn-system        1           2025-11-12 02:58:38.192579711 +0000 UTC    deployed    longhorn-crd-108.2.0+up1.10.1                                                                               v1.10.1</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>既存のRancher LonghornインストールをSUSE Storageに移行するには、CRDを削除せずに`longhorn-crd` Helmリリースを削除し、以下の手順に従って`longhorn` Helmリリースをアップグレードする必要があります。</p>
+</div>
+<div class="sect2">
+<h3 id="_crdを保持しながらlonghorn_crd_helmリリースを削除する"><a class="anchor" href="#_crdを保持しながらlonghorn_crd_helmリリースを削除する"></a>CRDを保持しながら`longhorn-crd` Helmリリースを削除する</h3>
+<div class="paragraph">
+<p>Longhorn CRD自体を保持しながら、システムから`longhorn-crd` Helmリリースを削除するには、以下の手順に従ってください：</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>現在の`longhorn-crd` Helmリリースのバージョンを確認します：</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">helm list --all-namespaces | grep longhorn-crd</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>出力には、`longhorn-crd`リリースの詳細が表示されます。例えば：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">longhorn-crd                                         longhorn-system        1           2025-11-12 02:58:38.192579711 +0000 UTC    deployed    longhorn-crd-108.2.0+up1.10.1+up1.11.0                                                                               v1.10.1</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>この例では、リリースバージョンは`108.2.0+up1.10.1`です。</p>
+</div>
+</li>
+<li>
+<p>現在のリリースに一致する`longhorn-crd`チャートの特定のバージョンを含む`rancher/charts`リポジトリをクローンします（例えば、Longhorn v1.10.1の場合は`108.2.0+up1.10.1`）：</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">git clone https://github.com/rancher/charts.git</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>クローンしたリポジトリ内の`longhorn-crd`チャートバージョンに対応するディレクトリに移動します。</p>
+</div>
+<div class="paragraph">
+<p>または、この<a href="../_attachments/download-longhorn-crd-chart.sh">スクリプト</a>を実行して`longhorn-crd`チャートに対して処理を行うことができます。</p>
+</div>
+<div class="paragraph">
+<p>コマンド`bash ./download-longhorn-crd-chart.sh 108.2.0+up1.10.1`を実行した後、`longhorn-crd`チャートがローカルディレクトリ`108.2.0+up1.10.1`にダウンロードされます。次に、`108.2.0+up1.10.1/Chart.yaml`を開いてチャートバージョンが`108.2.0+up1.10.1`と一致していることを確認します。</p>
+</div>
+</li>
+<li>
+<p>クローンした`longhorn-crd`チャート内の`templates/crds.yaml`にある*各カスタムリソース定義（CRD）*に`helm.sh/resource-policy: keep`アノテーションを手動でパッチします。これにより、リリースがアンインストールされるときにHelmがCRDを削除しないことが保証されます。
+または、<a href="../_attachments/patch-resource-policy-annotation.sh">スクリプト</a>を使用してアノテーションを自動的にパッチできます：</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">bash ./patch-resource-policy-annotation.sh 108.2.0+up1.10.1/templates/crds.yaml</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>CRDが正しくパッチされていることを確認するには、次を実行します：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">vimdiff /tmp/crds.yaml.original 108.2.0+up1.10.1/templates/crds.yaml</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>ローカルでパッチされたチャートを使用して`longhorn-crd` Helmリリースをアップグレードします：</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">helm upgrade longhorn-crd -n longhorn-system ./108.2.0+up1.10.1</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>システムから`longhorn-crd` Helmリリースをアンインストールします。適用されたパッチにより、CRDはそのまま残ります。</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">helm uninstall longhorn-crd --namespace longhorn-system</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>longhorn-crd</code> HelmリリースをアンインストールしてもCRDが保持されていることが確認できます。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">$ helm uninstall longhorn-crd --namespace longhorn-system
+These resources were kept due to the resource policy:
+[CustomResourceDefinition] backingimagedatasources.longhorn.io
+[CustomResourceDefinition] backingimagemanagers.longhorn.io
+[CustomResourceDefinition] nodes.longhorn.io
+[CustomResourceDefinition] orphans.longhorn.io
+[CustomResourceDefinition] recurringjobs.longhorn.io
+[CustomResourceDefinition] replicas.longhorn.io
+[CustomResourceDefinition] settings.longhorn.io
+[CustomResourceDefinition] sharemanagers.longhorn.io
+[CustomResourceDefinition] snapshots.longhorn.io
+[CustomResourceDefinition] supportbundles.longhorn.io
+[CustomResourceDefinition] systembackups.longhorn.io
+[CustomResourceDefinition] systemrestores.longhorn.io
+[CustomResourceDefinition] backingimages.longhorn.io
+[CustomResourceDefinition] volumeattachments.longhorn.io
+[CustomResourceDefinition] volumes.longhorn.io
+[CustomResourceDefinition] backupbackingimages.longhorn.io
+[CustomResourceDefinition] backups.longhorn.io
+[CustomResourceDefinition] backuptargets.longhorn.io
+[CustomResourceDefinition] backupvolumes.longhorn.io
+[CustomResourceDefinition] engineimages.longhorn.io
+[CustomResourceDefinition] engines.longhorn.io
+[CustomResourceDefinition] instancemanagers.longhorn.io</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_longhorn_crd内のlonghorn_crdをlonghornに置き換えます"><a class="anchor" href="#_longhorn_crd内のlonghorn_crdをlonghornに置き換えます"></a>Longhorn CRD内の`longhorn-crd`を`longhorn`に置き換えます。</h3>
+<div class="paragraph">
+<p><code>longhorn-crd</code> Helmリリースがアンインストールされ、CRDが保持されていることを確認した後、メインの`longhorn` Helmチャートの準備のために既存のLonghorn CRDの所有権ラベルを更新する必要があります。置き換えを実行するために<a href="../_attachments/migrate-crd-ownership.sh">シェルスクリプト</a>を適用します。</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_suse_storageにアップグレードします"><a class="anchor" href="#_suse_storageにアップグレードします"></a>SUSE Storageにアップグレードします。</h3>
+<div class="paragraph">
+<p>CRDが準備された後、LonghornインストールをSUSE Storageにアップグレードする手続きを進めることができます：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">helm upgrade longhorn oci://dp.apps.rancher.io/charts/suse-storage \
+    --namespace longhorn-system \
+    --version &lt;version&gt; \ # Replace with the version you would like to upgrade to
+    --set global.imagePullSecrets=&lt;PULL_IMAGE_SECRET&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>オプションで、カスタマイズ設定を含む`values.yaml`ファイルがある場合は、`-f`フラグと共にそれを含めます：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">helm upgrade longhorn oci://dp.apps.rancher.io/charts/suse-storage \
+    --namespace longhorn-system \
+    --version &lt;version&gt; \ # Replace with the version you would like to upgrade to
+    --set global.imagePullSecrets=&lt;PULL_IMAGE_SECRET&gt; \
+    -f values.yaml</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="../upgrades/kubernetes/upgrade-k8s-on-gke.html">Google Kubernetes Engine (GKE)でKubernetesをアップグレードする</a></span>
+  <span class="next"><a href="../longhorn-system/system-access/system-access.html">システムアクセス</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<script src="../../../../_/js/site.js"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+<script src="../../../../_/js/vendor/lunr.js"></script>
+<script src="../../../../_/js/vendor/lunr-languages.js"></script>
+<script src="../../../../_/js/search-ui.js" id="search-ui-script" data-site-root-path="../../../.." data-snippet-length="100" data-stylesheet="../../../../_/css/search.css"></script>
+<script async src="../../../../search-index.js"></script>
+<script src="../../../../_/js/vendor/langSelection.js"></script>
+<script async src="../../../../_/js/vendor/tabs.js"></script>
+
+
+<script src="../../../../_/js/CNLanguageSwitcher.js"></script>
+  </body>
+</html>

@@ -1,0 +1,1999 @@
+<!DOCTYPE html>
+<html lang="pt_BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Como o Monitoramento Funciona | SUSE® Rancher for AWS  Latest</title>
+    <link rel="canonical" href="https://documentation.suse.com/cloudnative/rancher-srfa/latest/pt/observability/monitoring-and-dashboards/how-monitoring-works.html">
+    <link rel="prev" href="built-in-dashboards.html">
+    <link rel="next" href="promql-expressions.html">
+    <meta name="generator" content="Antora 3.1.14">
+    <link rel="stylesheet" href="../../../../../_/css/site.css">
+<meta http-equiv="last-modified" content="2026-03-23"/>
+<link rel="stylesheet" href="../../../../../_/css/search.css">
+<link rel="icon" href="../../../../../_/img/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="../../../../../_/css/font-styles.css">
+<link rel="stylesheet" href="../../../../../_/fonts/css/all.css">
+<link rel="stylesheet" href="../../../../../_/css/site-extra.css">
+<link rel="stylesheet" href="../../../../../_/css/vendor/tabs.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap&family=SUSE+Mono:ital,wght@0,100..800;1,100..800" rel="stylesheet">
+<link rel="stylesheet" href="../../../../../_/css/vendor/light.css">
+<script src="/docserv/res/lightheaded/analytics.js" type="text/javascript"></script>
+<script type="module">
+  import { defineCustomElements, setAssetPath } from 'https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/shared-header.esm.js';
+  defineCustomElements();
+  setAssetPath("https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/assets");
+</script>
+<!-- Default English link -->
+<link href="https://documentation.suse.com/cloudnative/rancher-srfa/latest/en/observability/monitoring-and-dashboards/how-monitoring-works.html" hreflang="x-default" rel="alternate"/>
+<!-- Link for the currently processed page -->
+<link href="https://documentation.suse.com/cloudnative/rancher-srfa/latest/pt/observability/monitoring-and-dashboards/how-monitoring-works.html" hrefLang="pt-BR" rel="alternate" />
+<!-- Link for the English page -->
+<link href="https://documentation.suse.com/cloudnative/rancher-srfa/latest/en/observability/monitoring-and-dashboards/how-monitoring-works.html" hreflang="en-US" rel="alternate" />
+<!-- Link for the Japanese page -->
+<link href="https://documentation.suse.com/cloudnative/rancher-srfa/latest/ja/observability/monitoring-and-dashboards/how-monitoring-works.html" hreflang="ja-JP" rel="alternate" />
+<!-- Link for the Chinese page -->
+<link href="https://documentation.suse.com/cloudnative/rancher-srfa/latest/zh/observability/monitoring-and-dashboards/how-monitoring-works.html" hreflang="zh-CN" rel="alternate" />
+<!-- Link for the German page -->
+<link href="https://documentation.suse.com/cloudnative/rancher-srfa/latest/de/observability/monitoring-and-dashboards/how-monitoring-works.html" hreflang="de-DE" rel="alternate" />
+<!-- Link for the French page -->
+<link href="https://documentation.suse.com/cloudnative/rancher-srfa/latest/fr/observability/monitoring-and-dashboards/how-monitoring-works.html" hreflang="fr-FR" rel="alternate" />
+<!-- Link for the Spanish page -->
+<link href="https://documentation.suse.com/cloudnative/rancher-srfa/latest/es/observability/monitoring-and-dashboards/how-monitoring-works.html" hreflang="es-ES" rel="alternate" />
+
+<!-- JSON-LD for doc metadata -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Como o Monitoramento Funciona | SUSE Rancher for AWS latest",
+  "headline": "Como o Monitoramento Funciona",
+  "description": "Como o Monitoramento Funciona",
+  "inLanguage": "pt_BR",
+  "dateModified": "2026-03-23T00:00:00Z",
+  "author": {
+    "@type": "Organization",
+    "name": "SUSE Product & Solution Documentation Team",
+    "url": "https://documentation.suse.com"
+  },
+  "mentions": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "SUSE Rancher for AWS",
+      "softwareVersion": "latest",
+      "applicationCategory": "Cloud Infrastructure",
+      "operatingSystem": "Linux"
+    }
+  ],
+  "publisher": {
+    "@type": "Organization",
+    "name": "SUSE",
+    "url": "https://documentation.suse.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.suse.com/assets/img/suse-white-logo-green.svg"
+    }
+  }
+}
+</script>
+<!-- end JSON-LD for doc metadata -->
+
+<!-- SUVA - Begin Ask Geeko-->
+<!--
+searchUnifyChatbot ("Ask Geeko") Copyright ©2024 Grazitti Interactive - All Rights Reserved. NOTICE: All information contained herein is, and remains the property of Grazitti Interactive and its suppliers, if any. The intellectual and technical concepts contained herein are proprietary to Grazitti Interactive and its suppliers and may be covered by India, U.S. and Foreign Patents, patents in process, and are protected by trade secret or copyright law. Dissemination of this information or reproduction of this material is strictly forbidden unless prior written permission is obtained from Grazitti Interactive.
+-->
+<meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport"/>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/Allow/an.js?c485cb3c-93d4-4942-99e8-91f3b8ca5636"></script>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/js/index.js?q=gAAAAABp3JBN9VuEJTi5tFafLIMwgMkCPdJS3Qm56lSYx93ir3Twt9hgSvd3OHEt6-nYfSbY3yHq0Zv8PRPsSy4nbqZiaJ4cZvRc6ItVZdvwz9Urf35cH6OUyPOwdA0phlS-zVIznQ2rWW438p-91NlTHuxJuOFpnA=="></script>
+<link rel="stylesheet" href="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/css/index.css">
+<div id="searchUnifyChatbot"></div>
+<!-- SUVA - End Ask Geeko-->
+<!--BEGIN QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+<script type='text/javascript' src="../../../../../_/js/qualtrics.js" defer></script>
+<!--END QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+    <script>var uiRootPath = '../../../../../_'</script>
+  </head>
+  <body class="article">
+<script type="module">import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs'; mermaid.initialize({"startOnLoad":true});</script><shared-header
+language="en"
+languages='{
+    "en": { "label": "English", "url": "https://documentation.suse.com/en-us/" },
+    "de": { "label": "Deutsch", "url": "https://documentation.suse.com/de-de/" },
+    "fr": { "label": "Français", "url": "https://documentation.suse.com/fr-fr/" },
+    "es": { "label": "Español", "url": "https://documentation.suse.com/es-es/" },
+    "zh_CN": { "label": "中文", "url": "https://documentation.suse.com/zh-cn/" },
+    "pt_BR": { "label": "Português Brasileiro", "url": "https://documentation.suse.com/pt-br/" }
+}'
+enable-search='false'>
+</shared-header>
+<div class="body">
+<div class="nav-container" data-component="rancher-srfa" data-version="latest">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title">SUSE® Rancher for AWS</h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../release-notes.html">Notas de versão</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../release-notes/v2.14.3.html">Release v2.14.3</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../release-notes/v2.14.2.html">Release v2.14.2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../release-notes/v2.14.1.html">Release v2.14.1</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Sobre o Rancher</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../about-rancher/what-is-rancher.html">O que é o comando SUSE Rancher for AWS?</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../about-rancher/prime.html">Cloud Native</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../about-rancher/overview.html">Visão Geral</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../about-rancher/architecture/architecture.html">SUSE Rancher for AWS Arquitetura</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../about-rancher/architecture/recommendations.html">Recomendações de Arquitetura</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../about-rancher/architecture/communicating-with-downstream-clusters.html">Comunicando-se com clusters de usuários descendentes</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../about-rancher/architecture/rancher-server-and-components.html">SUSE Rancher for AWS Servidor e Componentes</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../about-rancher/concepts.html">Conceitos do Kubernetes</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../about-rancher/glossary.html">Glossário</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../rancher-admin/rancher-admin.html">Administração do Rancher</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Gerenciamento de usuários</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../rancher-admin/users/authn-and-authz/authn-and-authz.html">Configurando a Autenticação</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../rancher-admin/users/authn-and-authz/manage-users-and-groups.html">Usuários e grupos</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../rancher-admin/users/authn-and-authz/create-local-users.html">Autenticação Local</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Autenticação Externa</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../rancher-admin/users/authn-and-authz/jwt-authentication.html">Autenticação com JSON Web Token (JWT)</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../rancher-admin/users/authn-and-authz/configure-generic-oidc.html">Configurar OIDC Genérico</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../rancher-admin/users/authn-and-authz/configure-oidc-provider.html">Configure o Rancher como um provedor OIDC.</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../rancher-admin/users/authn-and-authz/configure-active-directory.html">Configurar Active Directory (AD)</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../rancher-admin/users/authn-and-authz/configure-amazon-cognito.html">Configure Amazon Cognito</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../rancher-admin/users/authn-and-authz/configure-azure-ad.html">Configurar Azure AD</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../rancher-admin/users/authn-and-authz/configure-freeipa.html">Configure o FreeIPA</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../rancher-admin/users/authn-and-authz/configure-github.html">Configurar o GitHub</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../rancher-admin/users/authn-and-authz/configure-github-app.html">Configurar o GitHub App</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../rancher-admin/users/authn-and-authz/configure-google-oauth.html">Configurar o Google OAuth</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../rancher-admin/users/authn-and-authz/configure-keycloak-oidc.html">Configurar Keycloak (OIDC)</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../rancher-admin/users/authn-and-authz/configure-keycloak-saml.html">Configurar Keycloak (SAML)</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../rancher-admin/users/authn-and-authz/configure-okta-saml.html">Configurar Okta (SAML)</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../rancher-admin/users/authn-and-authz/configure-pingidentity.html">Configurar PingIdentity (SAML)</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../rancher-admin/users/authn-and-authz/microsoft-ad-federation-service-saml/microsoft-ad-federation-service-saml.html">Configurando o Microsoft Active Directory Federation Service (SAML)</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="6">
+    <a class="nav-link" href="../../rancher-admin/users/authn-and-authz/microsoft-ad-federation-service-saml/ms-adfs-for-rancher.html">1. Configurando o Microsoft AD FS para SUSE Rancher for AWS</a>
+  </li>
+  <li class="nav-item" data-depth="6">
+    <a class="nav-link" href="../../rancher-admin/users/authn-and-authz/microsoft-ad-federation-service-saml/rancher-for-ms-adfs.html">2. Configurando SUSE Rancher for AWS para Microsoft AD FS</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../rancher-admin/users/authn-and-authz/openldap/openldap.html">Configurando o OpenLDAP</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="6">
+    <a class="nav-link" href="../../rancher-admin/users/authn-and-authz/openldap/reference.html">Referência de Configuração do OpenLDAP</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../rancher-admin/users/authn-and-authz/shibboleth-saml/shibboleth-saml.html">Configurando Shibboleth (SAML)</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="6">
+    <a class="nav-link" href="../../rancher-admin/users/authn-and-authz/shibboleth-saml/group-permissions.html">Permissões de Grupo com Shibboleth e OpenLDAP</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../rancher-admin/users/authn-and-authz/manage-role-based-access-control-rbac/manage-role-based-access-control-rbac.html">Gerenciando o Controle de Acesso com Base em Função (RBAC)</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../rancher-admin/users/authn-and-authz/manage-role-based-access-control-rbac/global-permissions.html">Permissões globais</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../rancher-admin/users/authn-and-authz/manage-role-based-access-control-rbac/global-resources.html">Recursos Globais</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../rancher-admin/users/authn-and-authz/manage-role-based-access-control-rbac/cluster-and-project-roles.html">Funções de Cluster e Projeto</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../rancher-admin/users/authn-and-authz/manage-role-based-access-control-rbac/custom-roles.html">Funções Personalizadas</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../rancher-admin/users/authn-and-authz/manage-role-based-access-control-rbac/locked-roles.html">Papéis Bloqueados</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../rancher-admin/users/authn-and-authz/enable-user-retention.html">Habilitando a Retenção de Usuários</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../rancher-admin/users/settings/settings.html">Configurações do usuário</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../rancher-admin/users/settings/api-keys.html">Chaves de API</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../rancher-admin/users/settings/user-preferences.html">Preferências do Usuário</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../rancher-admin/users/settings/manage-cloud-credentials.html">Gerenciando Credenciais de Nuvem</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">CLI</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../rancher-admin/cli/kubectl.html">Utilitário kubectl</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../rancher-admin/cli/rancher-cli.html">SUSE Rancher for AWS CLI</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../cluster-deployment/cluster-deployment.html">Implantação de cluster</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../cluster-deployment/node-requirements.html">Requisitos do Nó para SUSE Rancher for AWSClusters Gerenciados pelo</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../cluster-deployment/production-checklist/production-checklist.html">Lista de Verificação para Clusters Prontos para Produção</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../cluster-deployment/production-checklist/recommended-cluster-architecture.html">Arquitetura Recomendada do Cluster</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../cluster-deployment/production-checklist/roles-for-nodes-in-kubernetes.html">Funções dos nós no Kubernetes</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../cluster-deployment/production-checklist/tips-to-set-up-containers.html">Dicas para Configurar Contêineres</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../cluster-deployment/hosted-kubernetes/hosted-kubernetes.html">Configurando Clusters a partir de Provedores de Kubernetes Hospedados</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../cluster-deployment/hosted-kubernetes/eks/eks.html">Criando um Cluster EKS</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../cluster-deployment/hosted-kubernetes/eks/configuration.html">Referência de Configuração do Cluster EKS</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../cluster-deployment/hosted-kubernetes/sync-clusters.html">Sincronizando Clusters Hospedados</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../cluster-deployment/launch-kubernetes-with-rancher.html">Lançando Kubernetes com SUSE Rancher for AWS</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../cluster-deployment/about-rancher-agents.html">SUSE Rancher for AWS Agentes</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../cluster-deployment/dual-stack.html">Dual-stack IPv4/IPv6</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../cluster-deployment/enable-cluster-agent-scheduling-customization.html">Habilitando a Personalização do Agendamento do Agente de Cluster</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../cluster-deployment/infra-providers/infra-providers.html">Lançando Kubernetes em Novos Nós em um Provedor de Infraestrutura</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../cluster-deployment/infra-providers/aws/aws.html">Criando um cluster Amazon EC2</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../cluster-deployment/infra-providers/aws/machine-configuration.html">Referência de Configuração da Máquina EC2</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../cluster-deployment/infra-providers/aws/node-template-configuration.html">Configuração do Modelo de Nó EC2</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../cluster-deployment/custom-clusters/custom-clusters.html">Iniciando o Kubernetes em Nós Personalizados Existentes</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Configuração</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../cluster-deployment/configuration/k3s.html">SUSE® Rancher Prime: K3s Referência de Configuração do Cluster</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">RKE2</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../cluster-deployment/configuration/rke2.html">SUSE® Rancher Prime: RKE2 Referência de Configuração do Cluster</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../cluster-deployment/configuration/capi-infrastructure-providers.html">Configurando Provedores de Infraestrutura CAPI Nativos para Provisionar Clusters RKE2</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../cluster-deployment/register-existing-clusters.html">Registrando Clusters Existentes</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../cluster-deployment/register-existing-clusters-troubleshooting.html">Clusters Registrados</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../cluster-admin/manage-clusters/manage-clusters.html">Administração de cluster</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Gerenciar clusters</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../cluster-admin/best-practices/disconnected-clusters.html">Melhores Práticas para Clusters Desconectados</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../cluster-admin/manage-clusters/access-clusters/access-clusters.html">Acesso a Clusters</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../cluster-admin/manage-clusters/access-clusters/add-users-to-clusters.html">Adicionando Usuários a Clusters</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../cluster-admin/manage-clusters/access-clusters/authorized-cluster-endpoint.html">Como o endpoint de cluster autorizado funciona</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../cluster-admin/manage-clusters/access-clusters/use-kubectl-and-kubeconfig.html">Acesse um Cluster com Kubectl e kubeconfig</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../cluster-admin/manage-clusters/clean-cluster-nodes.html">Removendo Componentes do Kubernetes dos Nós</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../cluster-admin/manage-clusters/persistent-storage/manage-persistent-storage.html">Crie volumes persistentes e classes de armazenamento do Kubernetes.</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../cluster-admin/manage-clusters/persistent-storage/about-glusterfs-volumes.html">GlusterFS Volumes</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../cluster-admin/manage-clusters/persistent-storage/about-persistent-storage.html">Como o Armazenamento Persistente Funciona</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../cluster-admin/manage-clusters/persistent-storage/dynamically-provision-new-storage.html">Provisionamento Dinâmico de Novo Armazenamento em SUSE Rancher for AWS</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../cluster-admin/manage-clusters/persistent-storage/install-iscsi-volumes.html">Volumes iSCSI</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../cluster-admin/manage-clusters/persistent-storage/set-up-existing-storage.html">Configurando Armazenamento Existente</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../cluster-admin/manage-clusters/persistent-storage/use-external-ceph-driver.html">Usando um Driver Ceph Externo</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../cluster-admin/manage-clusters/persistent-storage/examples/nfs-storage.html">Armazenamento NFS</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="../../cluster-admin/manage-clusters/persistent-storage/examples/persistent-storage-in-amazon-ebs.html">Criando Armazenamento Persistente no EBS da Amazon</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../cluster-admin/manage-clusters/persistent-storage/examples/examples.html">Exemplos de Provisionamento de Armazenamento</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../cluster-admin/manage-clusters/install-cluster-autoscaler/install-cluster-autoscaler.html">Dimensionador Automático de Cluster</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../cluster-admin/manage-clusters/install-cluster-autoscaler/use-aws-ec2-auto-scaling-groups.html">Cluster Autoscaler com Grupos de Auto Scaling do AWS EC2</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../cluster-admin/manage-clusters/cluster-templates.html">Modelos de cluster</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../cluster-admin/manage-clusters/nodes-and-machine-pools.html">Nós e Pools de Máquinas</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../cluster-admin/manage-clusters/projects-and-namespaces.html">Projetos e namespaces do Kubernetes com SUSE Rancher for AWS</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../cluster-admin/manage-clusters/rotate-certificates.html">Rotação de Certificado</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../cluster-admin/manage-clusters/rotate-encryption-key.html">Rotação de Chaves de Criptografia de Segredos</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../cluster-admin/kubernetes-resources/kubernetes-resources-setup.html">Configuração de Recursos do Kubernetes</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../cluster-admin/kubernetes-resources/workloads-and-pods/workloads-and-pods.html">Workloads e Pods do Kubernetes</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../cluster-admin/kubernetes-resources/workloads-and-pods/deploy-workloads.html">Implantando Cargas de Trabalho</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../cluster-admin/kubernetes-resources/workloads-and-pods/add-a-sidecar.html">Adicionando um Sidecar</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../cluster-admin/kubernetes-resources/workloads-and-pods/upgrade-workloads.html">Fazendo upgrade das cargas de trabalho</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../cluster-admin/kubernetes-resources/workloads-and-pods/roll-back-workloads.html">Rollback de Cargas de Trabalho</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../cluster-admin/kubernetes-resources/horizontal-pod-autoscaler/horizontal-pod-autoscaler.html">Autoscaler Horizontal de Pods</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../cluster-admin/kubernetes-resources/horizontal-pod-autoscaler/about-hpas.html">Informações básicas sobre HPAs</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../cluster-admin/kubernetes-resources/horizontal-pod-autoscaler/manage-hpas-with-ui.html">Gerenciando HPAs com a SUSE Rancher for AWS interface</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../cluster-admin/kubernetes-resources/horizontal-pod-autoscaler/manage-hpas-with-kubectl.html">Gerenciando HPAs com kubectl</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../cluster-admin/kubernetes-resources/horizontal-pod-autoscaler/test-hpas-with-kubectl.html">Testando HPAs com kubectl</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../cluster-admin/kubernetes-resources/load-balancer-and-ingress-controller/load-balancer-and-ingress-controller.html">Configuração de Balanceadores de Carga e Controladores de Ingress dentro de SUSE Rancher for AWS</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../cluster-admin/kubernetes-resources/load-balancer-and-ingress-controller/layer-4-and-layer-7-load-balancing.html">Balanceamento de Carga de Camada 4 e Camada 7</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../cluster-admin/kubernetes-resources/load-balancer-and-ingress-controller/add-ingresses.html">Adicionando Ingresses</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../cluster-admin/kubernetes-resources/load-balancer-and-ingress-controller/ingress-configuration.html">Configurando um Ingress</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../cluster-admin/kubernetes-resources/load-balancer-and-ingress-controller/guide-to-ingress-retirement.html">Guia para a Aposentadoria do Ingress NGINX</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../cluster-admin/kubernetes-resources/create-services.html">Serviços</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../cluster-admin/kubernetes-resources/configmaps.html">ConfigMaps</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../cluster-admin/kubernetes-resources/kubernetes-and-docker-registries.html">Registro de imagens de contêiner e Registro do Kubernetes</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../cluster-admin/backups-and-restore/backups-and-restore.html">Atualizando e Revertendo o Kubernetes</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../cluster-admin/backups-and-restore/backups-without-uprading-rancher.html">Atualizando o Kubernetes sem fazer upgrade do SUSE Rancher for AWS</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../cluster-admin/backups-and-restore/backups.html">Fazendo backup de um cluster</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../cluster-admin/backups-and-restore/restore.html">Restaurando um cluster a partir do backup</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../cluster-admin/namespaces.html">Namespaces</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../cluster-admin/project-admin/project-admin.html">Administração de Projetos</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../cluster-admin/project-admin/add-users-to-projects.html">Adicionando Usuários a Projetos</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../cluster-admin/project-admin/project-resource-quotas/project-resource-quotas.html">Cotas de Recursos do Projeto</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../cluster-admin/project-admin/project-resource-quotas/resource-quotas-in-projects.html">Como as cotas de recursos funcionam em SUSE Rancher for AWS projetos</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../cluster-admin/project-admin/project-resource-quotas/override-default-limit-in-namespaces.html">Substituindo o limite padrão para um namespace</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../cluster-admin/project-admin/project-resource-quotas/resource-quota-types.html">Referência de Tipo de Cota de Recursos</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../../cluster-admin/project-admin/project-resource-quotas/set-container-default-resource-limits.html">Definindo Limites de Recursos Padrão para Contêiner</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../cluster-admin/helm-charts-in-rancher/helm-charts-in-rancher.html">Charts e Apps do Helm</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../cluster-admin/helm-charts-in-rancher/create-apps.html">Criando Apps</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../cluster-admin/helm-charts-in-rancher/oci-repositories.html">Usando Repositórios de Gráficos Helm Baseados em OCI</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Segurança</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../security/security-overview.html">SUSE Rancher for AWS Guias de Segurança</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../security/cves.html">Avisos de Segurança e CVEs</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../security/rancher-security-best-practices.html">SUSE Rancher for AWS Melhores Práticas de Segurança</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../security/rancher-webhook/rancher-webhook.html">SUSE Rancher for AWS Webhook</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../security/rancher-webhook/expired-webhook-certificate-rotation.html">Rotação de Certificados de Webhook Expirados</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../security/rancher-webhook/hardening.html">Proteção do SUSE Rancher for AWS Webhook</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../security/selinux-rpm/selinux-rpm.html">SELinux RPM</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../security/selinux-rpm/about-rancher-selinux.html">Sobre o rancher-selinux</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../security/selinux-rpm/about-rke2-selinux.html">Sobre o rke2-selinux</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../security/selinux-rpm/about-k3s-selinux.html">Sobre o k3s-selinux</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../security/compliance-scans/compliance-scans.html">Escaneamentos de conformidade</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../security/compliance-scans/rbac-for-compliance-scans.html">Controle de acesso com base em função</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../security/compliance-scans/how-to.html">Guias de Varredura de Conformidade</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../security/compliance-scans/install-rancher-compliance.html">Instale SUSE Rancher for AWS Conformidade</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../security/compliance-scans/uninstall-rancher-compliance.html">Desinstalar SUSE Rancher for AWS Compliance</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../security/compliance-scans/configuration-reference.html">Configuração</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../security/compliance-scans/custom-benchmark.html">Criando uma Versão de Benchmark Personalizada para Executar uma Varredura em Cluster</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../security/compliance-scans/run-a-scan.html">Executar uma Varredura</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../security/compliance-scans/run-a-scan-periodically-on-a-schedule.html">Executar uma varredura periodicamente em um agendamento</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../security/compliance-scans/view-reports.html">Ver Relatórios</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../security/compliance-scans/enable-alerting-for-rancher-compliance.html">Ativar Alertas para SUSE Rancher for AWS Compliance</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../security/compliance-scans/configure-alerts-for-periodic-scan-on-a-schedule.html">Configurar Alertas para Varredura Periódica em um Horário</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../security/compliance-scans/create-a-custom-compliance-version-to-run.html">Crie uma Versão de Conformidade Personalizada para Executar uma Varredura de Cluster</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../security/psa-pss.html">Padrões de Segurança de Pod (PSS) e Admissão de Segurança de Pod (PSA)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../security/psact.html">Modelos de Configuração de Admissão de Segurança de Pod (PSA)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../security/sample-psact.html">Sample PodSecurityConfiguration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../security/secrets-hub.html">Segredos</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../security/open-ports-with-firewalld.html">Abrindo Portas com firewalld</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../security/encrypting-http.html">Criptografando a Comunicação HTTP</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Observabilidade</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../rancher-cluster-tools.html">Ferramentas de Cluster para Log, Monitoramento e Visibilidade</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../rancher-project-tools.html">Ferramentas de Projeto para Registro, Monitoramento e Visibilidade</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../logging/logging.html">SUSE Rancher for AWS Integração com serviços de registro</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../logging/logging-architecture.html">Arquitetura de registro</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../logging/best-practices.html">Práticas recomendadas de logs</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../logging/rbac-for-logging.html">Controle de acesso com base em função para logging</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../logging/logging-helm-chart-options.html">Opções do Helm Chart do rancher-logging</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../logging/enable-api-audit-log.html">Habilitando o Log de Auditoria da API para Registrar Eventos do Sistema</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../logging/enable-api-audit-log-in-downstream-clusters.html">Habilitando o Log de Auditoria da API em Clusters Downstream</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../logging/taints-and-tolerations.html">Trabalhando com Taints e Tolerations</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Configuração de Recurso Personalizado</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../logging/custom-resource-configuration/flows-and-clusterflows.html">Fluxos e ClusterFlows</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../logging/custom-resource-configuration/outputs-and-clusteroutputs.html">Saídas e ClusterOutputs</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../logging/troubleshooting.html">Solução de problemas</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="monitoring-and-dashboards.html">Monitoramento e Painéis</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="best-practices.html">Melhores Práticas de Monitoramento</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="built-in-dashboards.html">Painéis Integrados</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="3">
+    <a class="nav-link" href="how-monitoring-works.html">Como o Monitoramento Funciona</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="promql-expressions.html">Referência de Expressão PromQL</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="rbac-for-monitoring.html">Controle de acesso com base em função</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="windows-support.html">Suporte a Cluster do Windows para Monitoramento V2</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="enable-monitoring.html">Habilitar Monitoramento</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="uninstall-monitoring.html">Desinstalar Monitoramento</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="set-up-monitoring-for-workloads.html">Configurando o Monitoramento para uma Workload</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="configuration/examples.html">Exemplos de Configuração de Monitoramento</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="configuration/helm-chart-options.html">Opções do Helm Chart</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="configuration/receivers.html">Configuração do Receptor</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="configuration/routes.html">Configuração de Rota</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="configuration/servicemonitors-and-podmonitors.html">Configuração do ServiceMonitor e PodMonitor</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="configuration/advanced/advanced.html">Configuração Avançada</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="configuration/advanced/alertmanager.html">Configuração do Alertmanager</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="configuration/advanced/prometheus.html">Configuração do Prometheus</a>
+  </li>
+  <li class="nav-item" data-depth="5">
+    <a class="nav-link" href="configuration/advanced/prometheusrules.html">Configurando PrometheusRules</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="configuration/configuration.html">Guias de configuração de monitoramento</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="configuration/debug-high-memory-usage.html">Depurando Alto Uso de Memória</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="customizing-dashboard/create-persistent-grafana-dashboard.html">Painéis Persistentes do Grafana</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="customizing-dashboard/customize-grafana-dashboard.html">Personalizando Painéis do Grafana</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="prometheus-federator/prometheus-federator.html">Prometheus Federator</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="prometheus-federator/rbac.html">Controle de acesso com base em função</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="prometheus-federator/enable-prometheus-federator.html">Habilitar o Federador Prometheus</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="prometheus-federator/uninstall-prometheus-federator.html">Desinstalar o Federador Prometheus</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="prometheus-federator/set-up-workloads.html">Configurando o Federador Prometheus para uma Carga de Trabalho</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="prometheus-federator/customize-grafana-dashboards.html">Personalizando Painéis do Grafana</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="prometheus-federator/install-project-monitors.html">Instalando Monitores de Projeto</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../istio/istio.html">Istio</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../istio/rbac.html">Controle de acesso com base em função</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../istio/cpu-and-memory-allocations.html">Alocações de CPU e Memória</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../istio/disable-istio.html">Desabilitando o Istio</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../istio/configuration/configuration.html">Opções de configuração</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../istio/configuration/selectors-and-scrape-configurations.html">Seletores e Configurações de Scrape</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../istio/configuration/project-network-isolation.html">Etapas adicionais para o isolamento da rede do projeto</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../istio/configuration/install-istio-on-rke2-cluster.html">Etapas Adicionais para Instalar o Istio em clusters SUSE® Rancher Prime: RKE2 e SUSE® Rancher Prime: K3s</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../istio/guides/enable-istio-in-cluster.html">Ativar o Istio no Cluster</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../istio/guides/enable-istio-in-namespace.html">Habilitar o Istio em um Namespace</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../istio/guides/set-up-traffic-management.html">Configure os componentes do Istio para gerenciamento de tráfego</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../istio/guides/guides.html">Guias de Configuração do Istio</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../istio/guides/generate-and-view-traffic.html">Gerar e visualizar tráfego do Istio</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../istio/guides/set-up-istio-gateway.html">Configure o Gateway do Istio</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../istio/guides/use-istio-sidecar.html">Adicione Implantações e Serviços com o Sidecar Istio</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">API</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../api/quickstart.html">Guia de início rápido da RK-API</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Fluxos de Trabalho</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../api/workflows/kubeconfigs.html">Kubeconfigs</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../api/workflows/projects.html">Projetos</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../api/workflows/tokens.html">Tokens</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../api/workflows/users.html">Usuários</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../api/reference.html">Referência da API</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../api/api-tokens.html">Usando Tokens de API</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../api/extension-apiserver.html">Servidor de API de Extensão</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../api/v3-rancher-api-guide.html">Guia da API v3 SUSE Rancher for AWS anterior</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Solução de problemas</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../troubleshooting/general-troubleshooting.html">Solução Geral de Problemas</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../../troubleshooting/kubernetes-components/kubernetes-components.html">Componentes do Kubernetes</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../troubleshooting/kubernetes-components/troubleshooting-controlplane-nodes.html">Solução de Problemas de Nós do Controlplane</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../troubleshooting/kubernetes-components/troubleshooting-etcd-nodes.html">Solução de Problemas de Nós etcd</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../troubleshooting/kubernetes-components/troubleshooting-nginx-proxy.html">Solução de Problemas de nginx-proxy</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../troubleshooting/kubernetes-components/troubleshooting-worker-nodes-and-generic-components.html">Solução de Problemas com Nós de Trabalho e Componentes Genéricos</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../troubleshooting/other-troubleshooting-tips/user-id-tracking-in-audit-logs.html">Rastreamento de ID de Usuário em Logs de Auditoria</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../troubleshooting/other-troubleshooting-tips/networking.html">Projeto de Rede</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../troubleshooting/other-troubleshooting-tips/kubernetes-resources.html">Kubernetes Resources</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../troubleshooting/other-troubleshooting-tips/dns.html">DNS</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">FAQs</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../faq/general-faq.html">FAQ Geral</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../faq/deprecated-features.html">Recursos descontinuados em SUSE Rancher for AWS</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../faq/install-and-configure-kubectl.html">Instalando e configurando o kubectl</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../faq/technical-items.html">Perguntas Frequentes Técnicas</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../faq/security.html">Perguntas Frequentes sobre Segurança</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../faq/container-network-interface-providers.html">Provedores de Interface de Rede de Contêiner (CNI)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../faq/rancher-is-no-longer-needed.html">SUSE Rancher for AWS não é mais necessário</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../contribute-to-rancher.html">Contribuindo para SUSE Rancher for AWS</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">SUSE® Rancher for AWS</span>
+    <span class="version">Latest</span>
+  </div>
+  <ul class="components">
+        <li class="component">
+          <div class="title"><a href="../../../../../admission-controller/1.36/en/introduction.html">Admission Controller</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../../admission-controller/1.37/en/introduction.html">1.37-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../../admission-controller/1.36/en/introduction.html">1.36</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../admission-controller/1.35/en/introduction.html">1.35</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../admission-controller/1.34/en/introduction.html">1.34</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../admission-controller/1.33/en/introduction.html">1.33</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../admission-controller/1.32/en/introduction.html">1.32</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../admission-controller/1.31/en/introduction.html">1.31</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../admission-controller/1.30/en/introduction.html">1.30</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../admission-controller/1.29/en/introduction.html">1.29</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../admission-controller/1.28/en/introduction.html">1.28</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../cluster-api/v0.26/en/index.html">Cluster API</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.28/en/index.html">v0.28-dev</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.27/en/index.html">v0.27-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../../cluster-api/v0.26/en/index.html">v0.26</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.25/en/index.html">0.25</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.24/en/index.html">0.24</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.23/en/index.html">0.23</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.22/en/index.html">0.22</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.21/en/index.html">0.21</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.20/en/index.html">0.20</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.19/en/index.html">0.19</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.18/en/index.html">0.18</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.17/en/index.html">0.17</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.16/en/index.html">0.16</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.11/en/index.html">0.11</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../continuous-delivery/next/en/index.html">Continuous Delivery</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../continuous-delivery/next/en/index.html">Next</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../continuous-delivery/v0.15/en/index.html">v0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../continuous-delivery/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../continuous-delivery/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../continuous-delivery/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../continuous-delivery/v0.11/en/index.html">0.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../continuous-delivery/v0.10/en/index.html">0.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../continuous-delivery/v0.9/en/index.html">0.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../k3s/latest/en/introduction.html">K3s</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../k3s/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../os-manager/1.9/en/index.html">OS Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../../os-manager/1.10/en/index.html">1.10-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../../os-manager/1.9/en/index.html">1.9</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../os-manager/1.8/en/index.html">1.8</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../os-manager/1.7/en/index.html">1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../os-manager/1.6/en/index.html">1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../os-manager/1.5/en/index.html">1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../rancher-ai/latest/en/introduction.html">Rancher AI</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../rancher-ai/latest/en/introduction.html">latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../turtles/stable/en/index.html">Rancher Turtles</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../turtles/stable/en/index.html">Stable</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../rke2/latest/en/introduction.html">RKE2</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../rke2/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../suse-observability/latest/en/classic.html">SUSE Observability</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../suse-observability/latest/en/classic.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">SUSE Rancher Developer Access</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component is-current">
+          <div class="title"><a href="../../../en/about-rancher/what-is-rancher.html">SUSE® Rancher for AWS</a></div>
+          <ul class="versions">
+            <li class="version is-current is-latest">
+              <a href="../../../en/about-rancher/what-is-rancher.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../rancher-manager/v2.14/en/about-rancher/what-is-rancher.html">SUSE® Rancher Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../../rancher-manager/v2.15/en/about-rancher/what-is-rancher.html">v2.15 (Unreleased)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../../rancher-manager/v2.14/en/about-rancher/what-is-rancher.html">v2.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../rancher-manager/v2.13/en/about-rancher/what-is-rancher.html">v2.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../rancher-manager/v2.12/en/about-rancher/what-is-rancher.html">v2.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../rancher-manager/v2.11/en/about-rancher/what-is-rancher.html">v2.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../rancher-manager/v2.10/en/about-rancher/what-is-rancher.html">v2.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../rancher-manager/v2.9/en/about-rancher/what-is-rancher.html">v2.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../security/5.6/en/overview.html">SUSE® Security</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../security/5.6/en/overview.html">5.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../security/5.5/en/overview.html">5.5</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../security/5.4/en/overview.html">5.4</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../security/5.3/en/overview.html">5.3</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../storage/1.11/en/longhorn-documentation.html">SUSE® Storage</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../../storage/1.12/en/longhorn-documentation.html">1.12 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../../storage/1.11/en/longhorn-documentation.html">1.11 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../storage/1.10/en/longhorn-documentation.html">1.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../storage/1.9/en/longhorn-documentation.html">1.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">SUSE® Virtual Clusters</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../../suse-virtual-clusters/1.2.0/en/release-notes/version-1.2.0.html">v1.2.0 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">v1.1.0-latest</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../suse-virtual-clusters/1.0.2/en/release-notes/version-1.0.2.html">v1.0.2</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../suse-virtual-clusters/v1.0.1/en/introduction.html">v1.0.1</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../suse-virtual-clusters/v1.0.0/en/introduction.html">v1.0.0</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../virtualization/v1.8/en/introduction/overview.html">SUSE® Virtualization</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../../virtualization/v1.9/en/introduction/overview.html">v1.9 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../../virtualization/v1.8/en/introduction/overview.html">v1.8 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../virtualization/v1.7/en/introduction/overview.html">v1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../virtualization/v1.6/en/introduction/overview.html">v1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../virtualization/v1.5/en/introduction/overview.html">v1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../vulnerability-scanner/0.12.0/en/introduction.html">Vulnerability Scanner</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../vulnerability-scanner/0.12.0/en/introduction.html">0.12.0</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../vulnerability-scanner/0.11.3/en/introduction.html">0.11.3</a>
+            </li>
+          </ul>
+        </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+<ul>
+    <li>
+  <a class="home-link-dsc" href="https://documentation.suse.com" title="SUSE Documentation Home" aria-label="SUSE Documentation Home"></a>
+    </li>
+    <li>
+      <a href="https://documentation.suse.com/cloudnative/rancher-srfa" title="SUSE Rancher for AWS" aria-label="SUSE Documentation - SUSE Rancher for AWS">
+        SUSE Rancher for AWS
+      </a>
+    </li>
+      <li>
+          Observabilidade
+      </li>
+  </ul>
+</nav>
+      <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <label class="visual-search-label-bc" for="search-input">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+          <input label="Search" aria-label="Search" id="search-input" type="text" placeholder="Pesquisar na documentação" >
+          <label class="filter checkbox" style="display: none">
+            <input type="checkbox" data-facet-filter="component:rancher-srfa" checked> Only this project
+          </label>
+        </div>
+      </div>
+</div>
+  <div class="content">
+<aside
+  class="toc sidebar"
+  data-title="Nesta página" data-levels="2">
+  <div class="toc-menu">
+    <div class="docsurvey-wrapper"><a class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_diCzHC9xxyJyuN0">Documentation survey</a></div>
+    <!-- start qualtrics -->
+    <div id='ZN_8qZUmklKYbBqAYe'><!--DO NOT REMOVE-CONTENTS PLACED HERE--></div>
+    <div id="qualtrics_container"></div>
+    <!-- end qualtrics -->
+  </div>
+</aside>
+
+<aside class="toc sidebar docsurvey-sidebar">
+  <div class="toc-menu">
+    <div class="docsurvey-wrapper"><a class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_diCzHC9xxyJyuN0">Documentation survey</a></div>
+  </div>
+</aside>
+<article class="doc">
+<h1 class="page">Como o Monitoramento Funciona</h1>
+<div class="sect1">
+<h2 id="_1_architecture_overview"><a class="anchor" href="#_1_architecture_overview"></a>1. Visão geral da arquitetura</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><em>*As seções a seguir descrevem como os dados fluem através do aplicativo de Monitoramento V2:*</em></p>
+</div>
+<div class="sect2">
+<h3 id="_prometheus_operator"><a class="anchor" href="#_prometheus_operator"></a>Prometheus Operator</h3>
+<div class="paragraph">
+<p>O Prometheus Operator observa a criação de ServiceMonitors, PodMonitors e PrometheusRules. Quando os recursos de configuração do Prometheus são criados, o Prometheus Operator chama a API do Prometheus para sincronizar a nova configuração. Como o diagrama no final desta seção mostra, o Prometheus Operator atua como intermediário entre o Prometheus e o Kubernetes, chamando a API do Prometheus para sincronizar o Prometheus com os recursos relacionados a monitoramento no Kubernetes.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_servicemonitors_and_podmonitors"><a class="anchor" href="#_servicemonitors_and_podmonitors"></a>ServiceMonitors e PodMonitors</h3>
+<div class="paragraph">
+<p>ServiceMonitors e PodMonitors especificam de forma declarativa os alvos, como Services e Pods, que precisam ser monitorados.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Os alvos são coletados em um cronograma recorrente com base no intervalo de coleta configurado do Prometheus, e as métricas coletadas são armazenadas no Banco de Dados de Séries Temporais do Prometheus (TSDB).</p>
+</li>
+<li>
+<p>Para realizar a coleta, ServiceMonitors e PodMonitors são definidos com seletores de rótulos que determinam quais Services ou Pods devem ser coletados e endpoints que determinam como a coleta deve ocorrer no alvo dado, por exemplo, scrape/metrics em TCP 10252, fazendo proxy através do IP x.x.x.x.</p>
+</li>
+<li>
+<p>De forma padrão, o Monitoramento V2 vem com certos exporters pré-configurados que são implantados com base no tipo de cluster Kubernetes em que está implantado. Para mais informações, veja <a href="#_5_scraping_and_exposing_metrics">Coletando e Expondo Métricas</a>.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_how_pushprox_works"><a class="anchor" href="#_how_pushprox_works"></a>Como o PushProx Funciona</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Certos componentes internos do Kubernetes são coletados via um proxy implantado como parte do Monitoramento V2 chamado <strong>PushProx</strong>. Os componentes do Kubernetes que expõem métricas ao Prometheus através do PushProx são os seguintes:
+<code>kube-controller-manager</code>, <code>kube-scheduler</code>, <code>etcd</code> e <code>kube-proxy</code>.</p>
+</li>
+<li>
+<p>Para cada exporter do PushProx, implantamos um cliente PushProx em todos os nós alvo. Por exemplo, um cliente PushProx é implantado em todos os nós do controlplane para kube-controller-manager, todos os nós etcd para kube-etcd e todos os nós para kubelet.</p>
+</li>
+<li>
+<p>Implantamos exatamente um proxy PushProx por exporter. O processo para exportar métricas é o seguinte:</p>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>O Cliente PushProx estabelece uma conexão de saída com o Proxy PushProx.</p>
+</li>
+<li>
+<p>O cliente então consulta o proxy em busca de solicitações de raspagem que chegaram ao proxy.</p>
+</li>
+<li>
+<p>Quando o proxy recebe uma solicitação de raspagem do Prometheus, o cliente a vê como um resultado da consulta.</p>
+</li>
+<li>
+<p>O cliente realiza a raspagem do componente interno.</p>
+</li>
+<li>
+<p>O componente interno responde enviando métricas de volta ao proxy.</p>
+</li>
+</ol>
+</div>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../../_images/pushprox-process.svg" alt="Processo para Exportar Métricas com PushProx">
+</div>
+<div class="title">Figure 1. Processo para Exportar Métricas com PushProx</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_prometheusrules"><a class="anchor" href="#_prometheusrules"></a>PrometheusRules</h3>
+<div class="paragraph">
+<p>As PrometheusRules permitem que os usuários definam regras para quais métricas ou consultas ao banco de dados de séries temporais devem resultar em alertas sendo disparados. As regras são avaliadas em um intervalo.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Regras de gravação</strong> criam uma nova série temporal com base em séries existentes que foram coletadas. Elas são frequentemente usadas para pré-computar consultas complexas.</p>
+</li>
+<li>
+<p><strong>Regras de alerta</strong> executam uma consulta específica e disparam um alerta do Prometheus se a consulta resultar em um valor diferente de zero.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_alert_routing"><a class="anchor" href="#_alert_routing"></a>Roteamento de alertas</h3>
+<div class="paragraph">
+<p>Uma vez que o Prometheus determina que um alerta precisa ser disparado, os alertas são encaminhados para <strong>Alertmanager</strong>.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Os alertas contêm rótulos que vêm da própria consulta PromQL e rótulos e anotações adicionais que podem ser fornecidos como parte da especificação da PrometheusRule inicial.</p>
+</li>
+<li>
+<p>Antes de receber qualquer alerta, o Alertmanager usará as <strong>rotas</strong> e <strong>receptores</strong> especificados em sua configuração para formar uma árvore de roteamento na qual todos os alertas recebidos são avaliados. Cada nó da árvore de roteamento pode especificar agrupamento, rotulagem e filtragem adicionais que precisam ocorrer com base nos rótulos anexados ao alerta do Prometheus. Um nó na árvore de roteamento (geralmente um nó folha) também pode especificar que um alerta que o atinge precisa ser enviado a um Receptor configurado, por exemplo, Slack, PagerDuty, SMS, etc. Observe que o Alertmanager enviará um alerta primeiro para <strong>alertingDriver</strong>, então o alertingDriver enviará ou encaminhará o alerta para o destino apropriado.</p>
+</li>
+<li>
+<p>Rotas e receptores também são armazenados na API do Kubernetes via o Secret do Alertmanager. Quando o Secret é atualizado, o Alertmanager também é atualizado automaticamente. Observe que o roteamento ocorre apenas via rótulos (não via anotações, etc.).</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_2_how_prometheus_works"><a class="anchor" href="#_2_how_prometheus_works"></a>2. Como o Prometheus funciona</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_storing_time_series_data"><a class="anchor" href="#_storing_time_series_data"></a>Armazenando dados de séries temporais</h3>
+<div class="paragraph">
+<p>Após coletar métricas de exporters, o Prometheus armazena as séries temporais em um banco de dados local de séries temporais em disco. O Prometheus opcionalmente se integra a sistemas remotos, mas <code>rancher-monitoring</code> utiliza armazenamento local para o banco de dados de séries temporais.</p>
+</div>
+<div class="paragraph">
+<p>Uma vez armazenados, os usuários podem consultar este TSDB usando PromQL, a linguagem de consulta do Prometheus.</p>
+</div>
+<div class="paragraph">
+<p>As consultas PromQL podem ser visualizadas de duas maneiras:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Fornecendo a consulta na interface gráfica do Prometheus, que mostrará uma visão gráfica simples dos dados.</p>
+</li>
+<li>
+<p>Criando um Dashboard no Grafana que contém a consulta PromQL e diretrizes de formatação adicionais que rotulam eixos, adicionam unidades, mudam cores, usam visualizações alternativas, etc.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_defining_rules_for_prometheus"><a class="anchor" href="#_defining_rules_for_prometheus"></a>Definindo Regras para o Prometheus</h3>
+<div class="paragraph">
+<p>Regras definem consultas que o Prometheus precisa executar regularmente <code>evaluationInterval</code> para realizar certas ações, como disparar um alerta (regras de alerta) ou pré-computar uma consulta com base em outras existentes em seu TSDB (regras de gravação). Essas regras são codificadas em recursos personalizados PrometheusRules. Quando recursos personalizados PrometheusRule são criados ou atualizados, o Operador Prometheus observa a mudança e chama a API do Prometheus para sincronizar o conjunto de regras que o Prometheus está avaliando atualmente em um intervalo regular.</p>
+</div>
+<div class="paragraph">
+<p>Um PrometheusRule permite que você defina um ou mais RuleGroups. Cada RuleGroup consiste em um conjunto de objetos Rule que podem representar uma regra de alerta ou uma regra de gravação com os seguintes campos:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>O nome do novo alerta ou registro</p>
+</li>
+<li>
+<p>Uma expressão PromQL para o novo alerta ou registro</p>
+</li>
+<li>
+<p>Rótulos que devem ser anexados ao alerta ou registro que o identificam (por exemplo, nome do cluster ou severidade)</p>
+</li>
+<li>
+<p>Anotações que codificam quaisquer informações adicionais importantes que precisam ser exibidas na notificação de um alerta (por exemplo, resumo, descrição, mensagem, URL do runbook, etc.). Este campo não é obrigatório para regras de gravação.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Ao avaliar uma <a href="https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/api-reference/api.md#rule">regra</a>, o Prometheus executa a consulta PromQL fornecida, adiciona os rótulos fornecidos e executa a ação apropriada para a regra. Se a regra acionar um alerta, o Prometheus também adiciona as anotações fornecidas. Por exemplo, uma regra de alerta que adiciona <code>team: front-end</code> como um rótulo à consulta PromQL fornecida irá anexar esse rótulo ao alerta disparado, o que permitirá que o Alertmanager encaminhe o alerta para o Receptor correto.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_alerting_and_recording_rules"><a class="anchor" href="#_alerting_and_recording_rules"></a>Regras de Alerta e Gravação</h3>
+<div class="paragraph">
+<p>O Prometheus não mantém o estado de se os alertas estão ativos. Ele dispara alertas repetidamente a cada intervalo de avaliação, confiando no Alertmanager para agrupar e filtrar os alertas em notificações significativas.</p>
+</div>
+<div class="paragraph">
+<p>A constante <code>evaluation_interval</code> define com que frequência o Prometheus avalia suas regras de alerta em relação ao banco de dados de séries temporais. Semelhante ao <code>scrape_interval</code>, o <code>evaluation_interval</code> também tem como padrão um minuto.</p>
+</div>
+<div class="paragraph">
+<p>As regras estão contidas em um conjunto de arquivos de regras. Os arquivos de regras incluem tanto regras de alerta quanto regras de gravação, mas apenas as regras de alerta resultam em alertas sendo disparados após sua avaliação.</p>
+</div>
+<div class="paragraph">
+<p>Para regras de gravação, o Prometheus executa uma consulta, e então a armazena como uma série temporal. Essa série temporal sintética é útil para armazenar os resultados de uma consulta cara ou demorada, para que possa ser consultada mais rapidamente no futuro.</p>
+</div>
+<div class="paragraph">
+<p>Regras de alerta são mais comumente usadas. Sempre que uma regra de alerta avalia para um número positivo, o Prometheus dispara um alerta.</p>
+</div>
+<div class="paragraph">
+<p>O arquivo de regras adiciona rótulos e anotações aos alertas antes de dispará-los, dependendo do caso de uso:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Rótulos indicam informações que identificam o alerta e podem afetar o roteamento do alerta. Por exemplo, ao enviar um alerta sobre um determinado contêiner, o ID do contêiner pode ser usado como um rótulo.</p>
+</li>
+<li>
+<p>Anotações denotam informações que não afetam para onde um alerta é roteado, por exemplo, um runbook ou uma mensagem de erro.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_3_how_alertmanager_works"><a class="anchor" href="#_3_how_alertmanager_works"></a>3. Como o Alertmanager funciona</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>O Alertmanager gerencia os alertas enviados por aplicações clientes, como o servidor Prometheus. Ele cuida das seguintes tarefas:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Deduplicação, agrupamento e roteamento de alertas para a integração de receptor correta, como e-mail, PagerDuty ou OpsGenie</p>
+</li>
+<li>
+<p>Silenciamento e inibição de alertas</p>
+</li>
+<li>
+<p>Acompanhamento de alertas que disparam ao longo do tempo</p>
+</li>
+<li>
+<p>Enviando o status de se um alerta está atualmente disparando ou se foi resolvido</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="_alerts_forwarded_by_alertingdrivers"><a class="anchor" href="#_alerts_forwarded_by_alertingdrivers"></a>Alertas encaminhados por alertingDrivers</h3>
+<div class="paragraph">
+<p>Quando os alertingDrivers estão instalados, isso cria um <code>Service</code> que pode ser usado como a URL do receptor para Teams ou SMS, com base na configuração do alertingDriver. A URL no Receptor aponta para os alertingDrivers; assim, o Alertmanager envia o alerta primeiro para o alertingDriver, e então o alertingDriver encaminha ou envia o alerta para o destino apropriado.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_routing_alerts_to_receivers"><a class="anchor" href="#_routing_alerts_to_receivers"></a>Roteando Alertas para Receptores</h3>
+<div class="paragraph">
+<p>O Alertmanager coordena para onde os alertas são enviados. Ele permite agrupar os alertas com base em rótulos e acioná-los quando certos rótulos corresponderem. Uma rota de nível superior aceita todos os alertas. A partir daí, o Alertmanager continua roteando alertas para receptores com base em se eles correspondem às condições da próxima rota.</p>
+</div>
+<div class="paragraph">
+<p>Enquanto os formulários da interface do Rancher permitem apenas editar uma árvore de roteamento de dois níveis, você pode configurar estruturas de roteamento mais profundamente aninhadas editando o Secret do Alertmanager.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_configuring_multiple_receivers"><a class="anchor" href="#_configuring_multiple_receivers"></a>Configurando Múltiplos Receptores</h3>
+<div class="paragraph">
+<p>Ao editar os formulários na interface do Rancher, você pode configurar um recurso Receptor com todas as informações que o Alertmanager precisa para enviar alertas ao seu sistema de notificação.</p>
+</div>
+<div class="paragraph">
+<p>Ao editar YAML personalizado na configuração do Alertmanager ou do Receptor, você também pode enviar alertas para múltiplos sistemas de notificação. Para mais informações, consulte a seção sobre configuração de <a href="configuration/receivers.html#_configuring_multiple_receivers" class="xref page">Receptores.</a></p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_4_monitoring_v2_specific_components"><a class="anchor" href="#_4_monitoring_v2_specific_components"></a>4. Monitoramento de Componentes Específicos V2</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>O Prometheus Operator introduz um conjunto de <a href="https://github.com/prometheus-operator/prometheus-operator#customresourcedefinitions">definições de recursos personalizados</a> que permitem aos usuários implantar e gerenciar instâncias do Prometheus e do Alertmanager criando e modificando esses recursos personalizados em um cluster.</p>
+</div>
+<div class="paragraph">
+<p>O Prometheus Operator atualizará automaticamente sua configuração do Prometheus com base no estado ao vivo dos recursos e nas opções de configuração que são editadas na interface do Rancher.</p>
+</div>
+<div class="sect2">
+<h3 id="_resources_deployed_by_default"><a class="anchor" href="#_resources_deployed_by_default"></a>Recursos Implantados por Padrão</h3>
+<div class="paragraph">
+<p>Por padrão, um conjunto de recursos curados pelo projeto <a href="https://github.com/prometheus-operator/kube-prometheus">kube-prometheus</a> é implantado em seu cluster como parte da instalação do Aplicativo de Monitoramento do Rancher para configurar uma pilha básica de Monitoramento/Alerta.</p>
+</div>
+<div class="paragraph">
+<p>Os recursos que são implantados em seu cluster para suportar esta solução podem ser encontrados no gráfico Helm <a href="https://github.com/rancher/charts/tree/main/charts/rancher-monitoring"><code>rancher-monitoring</code></a>, que acompanha de perto o gráfico Helm <a href="https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack">kube-prometheus-stack</a> mantido pela comunidade Prometheus, com certas alterações registradas no <a href="https://github.com/rancher/charts/blob/main/charts/rancher-monitoring/CHANGELOG.md">CHANGELOG.md</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_default_exporters"><a class="anchor" href="#_default_exporters"></a>Exportadores Padrão</h3>
+<div class="paragraph">
+<p>O Monitoramento V2 implanta três exportadores padrão que fornecem métricas adicionais para o Prometheus armazenar:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><code>node-exporter</code>: expõe métricas de hardware e do sistema operacional para hosts Linux. Para mais informações sobre <code>node-exporter</code>, consulte a <a href="https://prometheus.io/docs/guides/node-exporter/">documentação upstream</a>.</p>
+</li>
+<li>
+<p><code>windows-exporter</code>: expõe métricas de hardware e do sistema operacional para hosts Windows (somente implantado em clusters Windows). Para mais informações sobre <code>windows-exporter</code>, consulte a <a href="https://github.com/prometheus-community/windows_exporter">documentação upstream</a>.</p>
+</li>
+<li>
+<p><code>kube-state-metrics</code>: expõe métricas adicionais que rastreiam o estado dos recursos contidos na API do Kubernetes (por exemplo, pods, cargas de trabalho, etc.). Para mais informações sobre <code>kube-state-metrics</code>, consulte a <a href="https://github.com/kubernetes/kube-state-metrics/tree/master/docs">documentação upstream</a>.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>ServiceMonitors e PodMonitors irão coletar esses exportadores, conforme definido <a href="#_defining_what_metrics_are_scraped">aqui</a>. O Prometheus armazena essas métricas, e você pode consultar os resultados através da interface do Prometheus ou do Grafana.</p>
+</div>
+<div class="paragraph">
+<p>Veja a seção <a href="#_1_architecture_overview">arquitetura</a> para mais informações sobre regras de gravação, regras de alerta e Alertmanager.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_components_exposed_in_the_rancher_ui"><a class="anchor" href="#_components_exposed_in_the_rancher_ui"></a>Componentes Expostos na Interface do Rancher</h3>
+<div class="paragraph">
+<p>Quando o aplicativo de monitoramento estiver instalado, você poderá editar os seguintes componentes na interface do Rancher:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Componente</th>
+<th class="tableblock halign-left valign-top">Tipo de Componente</th>
+<th class="tableblock halign-left valign-top">Propósito e Casos de Uso Comuns para Edição</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ServiceMonitor</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Recurso Personalizado</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Configura Serviços do Kubernetes para coletar métricas personalizadas. Atualiza automaticamente a configuração de coleta no recurso personalizado do Prometheus.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PodMonitor</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Recurso Personalizado</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Configura Pods do Kubernetes para coletar métricas personalizadas. Atualiza automaticamente a configuração de coleta no recurso personalizado do Prometheus.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Receptor</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Bloco de configuração (parte do Alertmanager)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Modifica informações sobre onde enviar um alerta (por exemplo, Slack, PagerDuty, etc.) e quaisquer informações necessárias para enviar o alerta (por exemplo, certificados TLS, URLs de proxy, etc.). Atualiza automaticamente o recurso personalizado do Alertmanager.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Rota</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Bloco de configuração (parte do Alertmanager)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Modifica a árvore de roteamento que é usada para filtrar, rotular e agrupar alertas com base em rótulos e enviá-los ao Receptor apropriado. Atualiza automaticamente o recurso personalizado do Alertmanager.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PrometheusRule</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Recurso Personalizado</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Define consultas adicionais que precisam acionar alertas ou definir visões materializadas de séries existentes que estão dentro do TSDB do Prometheus.  Atualiza automaticamente o recurso personalizado do Prometheus.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_pushprox"><a class="anchor" href="#_pushprox"></a>PushProx</h3>
+<div class="paragraph">
+<p>PushProx permite que o Prometheus colete métricas através de uma fronteira de rede, o que impede que os usuários precisem expor portas de métricas para componentes internos do Kubernetes em cada nó em um cluster Kubernetes.</p>
+</div>
+<div class="paragraph">
+<p>Como as métricas para componentes do Kubernetes geralmente são expostas na rede host dos nós no cluster, o PushProx implanta um DaemonSet de clientes que ficam na hostNetwork de cada nó e fazem uma conexão de saída para um único proxy que está na API do Kubernetes. O Prometheus pode ser configurado para encaminhar as solicitações de coleta através do proxy para cada cliente, permitindo assim coletar métricas dos componentes internos do Kubernetes sem a necessidade de abrir portas de entrada nos nós.</p>
+</div>
+<div class="paragraph">
+<p>Consulte <a href="#_scraping_metrics_with_pushprox">Coletando Métricas com PushProx</a> para mais informações.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_5_scraping_and_exposing_metrics"><a class="anchor" href="#_5_scraping_and_exposing_metrics"></a>5. Coletando e Expondo Métricas</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_defining_what_metrics_are_scraped"><a class="anchor" href="#_defining_what_metrics_are_scraped"></a>Definindo quais Métricas são Coletadas</h3>
+<div class="paragraph">
+<p>ServiceMonitors e PodMonitors definem alvos que são destinados ao Prometheus para coleta. O <a href="https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/getting-started/design.md#prometheus">recurso personalizado do Prometheus</a> informa ao Prometheus quais ServiceMonitors ou PodMonitors ele deve usar para descobrir de onde coletar métricas.</p>
+</div>
+<div class="paragraph">
+<p>O Operador Prometheus observa os ServiceMonitors e PodMonitors. Quando observa que eles são criados ou atualizados, chama a API do Prometheus para atualizar a configuração de coleta no recurso personalizado do Prometheus e mantê-la sincronizada com a configuração de coleta nos ServiceMonitors ou PodMonitors. Esta configuração de coleta informa ao Prometheus quais endpoints coletar métricas e como ele rotulará as métricas desses endpoints.</p>
+</div>
+<div class="paragraph">
+<p>O Prometheus coleta todas as métricas definidas em sua configuração de coleta a cada <code>scrape_interval</code>, sendo esse intervalo de um minuto por padrão.</p>
+</div>
+<div class="paragraph">
+<p>A configuração de coleta pode ser visualizada como parte do recurso personalizado do Prometheus que é exposto na interface do Rancher.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_how_the_prometheus_operator_sets_up_metrics_scraping"><a class="anchor" href="#_how_the_prometheus_operator_sets_up_metrics_scraping"></a>Como o Operador Prometheus Configura a Coleta de Métricas</h3>
+<div class="paragraph">
+<p>A implantação ou o StatefulSet do Prometheus coleta métricas, e a configuração do Prometheus é controlada pelos recursos personalizados do Prometheus. O Operador Prometheus observa os recursos do Prometheus e do Alertmanager, e quando eles são criados, o Operador Prometheus cria uma implantação ou StatefulSet para o Prometheus ou Alertmanager com a configuração definida pelo usuário.</p>
+</div>
+<div class="paragraph">
+<p>Quando o Operador Prometheus observa a criação de ServiceMonitors, PodMonitors e PrometheusRules, ele sabe que a configuração de raspagem precisa ser atualizada no Prometheus. Ele atualiza o Prometheus primeiro atualizando os arquivos de configuração e regras nos volumes da implantação ou StatefulSet do Prometheus. Em seguida, ele chama a API do Prometheus para sincronizar a nova configuração, fazendo com que a implantação ou o StatefulSet do Prometheus sejam modificados in loco.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_how_kubernetes_component_metrics_are_exposed"><a class="anchor" href="#_how_kubernetes_component_metrics_are_exposed"></a>Como as Métricas dos Componentes do Kubernetes são Expostas</h3>
+<div class="paragraph">
+<p>O Prometheus coleta métricas de implantações conhecidas como <a href="https://prometheus.io/docs/instrumenting/exporters/">exporters,</a> que exportam os dados de séries temporais em um formato que o Prometheus pode ingerir. No Prometheus, as séries temporais consistem em fluxos de valores com timestamp pertencentes à mesma métrica e ao mesmo conjunto de dimensões rotuladas.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_scraping_metrics_with_pushprox"><a class="anchor" href="#_scraping_metrics_with_pushprox"></a>Coletando Métricas com PushProx</h3>
+<div class="paragraph">
+<p>Certos componentes internos do Kubernetes são coletados via um proxy implantado como parte do Monitoramento V2 chamado PushProx. Para informações detalhadas sobre o PushProx, consulte <a href="#_how_pushprox_works">aqui</a> e a seção <a href="#_1_architecture_overview">arquitetura</a> acima.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_scraping_metrics"><a class="anchor" href="#_scraping_metrics"></a>Coletando Métricas</h3>
+<div class="paragraph">
+<p>Os seguintes componentes do Kubernetes são coletados diretamente pelo Prometheus:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>kubelet*</p>
+</li>
+<li>
+<p>Traefik**</p>
+</li>
+<li>
+<p>coreDns/kubeDns</p>
+</li>
+<li>
+<p>kube-api-server</p>
+</li>
+<li>
+<p>Você pode opcionalmente usar <code>hardenedKubelet.enabled</code> para usar um PushProx, mas isso não é o padrão.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Para clusters RKE2, o Traefik é implantado por padrão e tratado como um componente interno do Kubernetes.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_scraping_metrics_based_on_kubernetes_distribution"><a class="anchor" href="#_scraping_metrics_based_on_kubernetes_distribution"></a>Coleta de Métricas Baseadas na Distribuição do Kubernetes</h3>
+<div class="paragraph">
+<p>As métricas são coletadas de maneira diferente com base na distribuição do Kubernetes. Para ajuda com a terminologia, consulte <a href="#_terminology">aqui</a>. Para detalhes, consulte a tabela abaixo:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. Como as Métricas são Expostas ao Prometheus</caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Componente Kubernetes</th>
+<th class="tableblock halign-left valign-top">RKE2</th>
+<th class="tableblock halign-left valign-top">KubeADM</th>
+<th class="tableblock halign-left valign-top">K3s</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">kube-controller-manager</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">rke2ControllerManager.enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">kubeAdmControllerManager.enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">k3sServer.enabled</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">kube-scheduler</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">rke2Scheduler.enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">kubeAdmScheduler.enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">k3sServer.enabled</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">etcd</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">rke2Etcd.enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">kubeAdmEtcd.enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Não disponível</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">kube-proxy</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">rke2Proxy.enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">kubeAdmProxy.enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">k3sServer.enabled</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">kubelet</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Coleta métricas diretamente expostas pelo kubelet</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Coleta métricas diretamente expostas pelo kubelet</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Coleta métricas diretamente expostas pelo kubelet</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Traefik*</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Coleta métricas diretamente expostas pelo kubelet</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Não disponível</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Não disponível</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">coreDns/kubeDns</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Coleta métricas diretamente expostas pelo coreDns/kubeDns</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Coleta métricas diretamente expostas pelo coreDns/kubeDns</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Coleta métricas diretamente expostas pelo coreDns/kubeDns</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">kube-api-server</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Coleta métricas diretamente expostas pelo kube-api-server</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Coleta métricas diretamente expostas pelo kube-api-server</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Coleta métricas diretamente expostas pelo kube-api-server</p></td>
+</tr>
+</tbody>
+</table>
+<div class="ulist">
+<ul>
+<li>
+<p>Para clusters RKE2, o Traefik é implantado por padrão e tratado como um componente interno do Kubernetes.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_terminology"><a class="anchor" href="#_terminology"></a>Terminologia</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>kube-scheduler:</strong> O componente interno do Kubernetes que usa informações na especificação do pod para decidir em qual nó executar um pod.</p>
+</li>
+<li>
+<p><strong>kube-controller-manager:</strong> O componente interno do Kubernetes que é responsável pela gestão de nós (detectando se um nó falha), replicação de pods e criação de endpoints.</p>
+</li>
+<li>
+<p><strong>etcd:</strong> O componente interno do Kubernetes que é o armazenamento distribuído de chave/valor que o Kubernetes usa para armazenamento persistente de todas as informações do cluster.</p>
+</li>
+<li>
+<p><strong>kube-proxy:</strong> O componente interno do Kubernetes que observa o servidor API para mudanças em pods/serviços a fim de manter a rede atualizada.</p>
+</li>
+<li>
+<p><strong>kubelet:</strong> O componente interno do Kubernetes que observa o servidor API para pods em um nó e garante que eles estejam em execução.</p>
+</li>
+<li>
+<p><strong>Traefik:</strong> Um controlador de Ingress para Kubernetes que pode ser usado como um proxy reverso e balanceador de carga.</p>
+</li>
+<li>
+<p><strong>coreDns/kubeDns:</strong> O componente interno do Kubernetes responsável pelo DNS.</p>
+</li>
+<li>
+<p><strong>kube-api-server:</strong> O principal componente interno do Kubernetes que é responsável por expor APIs para os outros componentes mestres.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="built-in-dashboards.html">Painéis Integrados</a></span>
+  <span class="next"><a href="promql-expressions.html">Referência de Expressão PromQL</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<script src="../../../../../_/js/site.js"></script>
+<script async src="../../../../../_/js/vendor/highlight.js"></script>
+<script src="../../../../../_/js/vendor/lunr.js"></script>
+<script src="../../../../../_/js/vendor/lunr-languages.js"></script>
+<script src="../../../../../_/js/search-ui.js" id="search-ui-script" data-site-root-path="../../../../.." data-snippet-length="100" data-stylesheet="../../../../../_/css/search.css"></script>
+<script async src="../../../../../search-index.js"></script>
+<script src="../../../../../_/js/vendor/langSelection.js"></script>
+<script async src="../../../../../_/js/vendor/tabs.js"></script>
+
+
+<script src="../../../../../_/js/CNLanguageSwitcher.js"></script>
+  </body>
+</html>

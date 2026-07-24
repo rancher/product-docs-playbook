@@ -1,0 +1,1432 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Migration à chaud | SUSE® Virtualization  v1.7</title>
+    <link rel="canonical" href="https://documentation.suse.com/cloudnative/virtualization/v1.7/fr/virtual-machines/live-migration.html">
+    <link rel="prev" href="backup-restore.html">
+    <link rel="next" href="hotplug-volume.html">
+    <meta name="generator" content="Antora 3.1.14">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+<meta http-equiv="last-modified" content="2025-12-30"/>
+<link rel="stylesheet" href="../../../../_/css/search.css">
+<link rel="icon" href="../../../../_/img/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="../../../../_/css/font-styles.css">
+<link rel="stylesheet" href="../../../../_/fonts/css/all.css">
+<link rel="stylesheet" href="../../../../_/css/site-extra.css">
+<link rel="stylesheet" href="../../../../_/css/vendor/tabs.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap&family=SUSE+Mono:ital,wght@0,100..800;1,100..800" rel="stylesheet">
+<link rel="stylesheet" href="../../../../_/css/vendor/light.css">
+<script src="/docserv/res/lightheaded/analytics.js" type="text/javascript"></script>
+<script type="module">
+  import { defineCustomElements, setAssetPath } from 'https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/shared-header.esm.js';
+  defineCustomElements();
+  setAssetPath("https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/assets");
+</script>
+<!-- Default English link -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/en/virtual-machines/live-migration.html" hreflang="x-default" rel="alternate"/>
+<!-- Link for the currently processed page -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/fr/virtual-machines/live-migration.html" hrefLang="fr-FR" rel="alternate" />
+<!-- Link for the English page -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/en/virtual-machines/live-migration.html" hreflang="en-US" rel="alternate" />
+<!-- Link for the Japanese page -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/ja/virtual-machines/live-migration.html" hreflang="ja-JP" rel="alternate" />
+<!-- Link for the Chinese page -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/zh/virtual-machines/live-migration.html" hreflang="zh-CN" rel="alternate" />
+<!-- Link for the German page -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/de/virtual-machines/live-migration.html" hreflang="de-DE" rel="alternate" />
+<!-- Link for the Spanish page -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/es/virtual-machines/live-migration.html" hreflang="es-ES" rel="alternate" />
+<!-- Link for the Brazilian Portuguese page -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.7/pt/virtual-machines/live-migration.html" hreflang="pt-BR" rel="alternate" />
+
+<!-- JSON-LD for doc metadata -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Migration à chaud | SUSE Virtualization v1.7",
+  "headline": "Migration à chaud",
+  "description": "Migration à chaud",
+  "inLanguage": "fr",
+  "dateModified": "2025-12-30T00:00:00Z",
+  "author": {
+    "@type": "Organization",
+    "name": "SUSE Product & Solution Documentation Team",
+    "url": "https://documentation.suse.com"
+  },
+  "mentions": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "SUSE Virtualization",
+      "softwareVersion": "v1.7",
+      "applicationCategory": "Cloud Infrastructure",
+      "operatingSystem": "Linux"
+    }
+  ],
+  "publisher": {
+    "@type": "Organization",
+    "name": "SUSE",
+    "url": "https://documentation.suse.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.suse.com/assets/img/suse-white-logo-green.svg"
+    }
+  }
+}
+</script>
+<!-- end JSON-LD for doc metadata -->
+
+<!-- SUVA - Begin Ask Geeko-->
+<!--
+searchUnifyChatbot ("Ask Geeko") Copyright ©2024 Grazitti Interactive - All Rights Reserved. NOTICE: All information contained herein is, and remains the property of Grazitti Interactive and its suppliers, if any. The intellectual and technical concepts contained herein are proprietary to Grazitti Interactive and its suppliers and may be covered by India, U.S. and Foreign Patents, patents in process, and are protected by trade secret or copyright law. Dissemination of this information or reproduction of this material is strictly forbidden unless prior written permission is obtained from Grazitti Interactive.
+-->
+<meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport"/>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/Allow/an.js?c485cb3c-93d4-4942-99e8-91f3b8ca5636"></script>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/js/index.js?q=gAAAAABp3JBN9VuEJTi5tFafLIMwgMkCPdJS3Qm56lSYx93ir3Twt9hgSvd3OHEt6-nYfSbY3yHq0Zv8PRPsSy4nbqZiaJ4cZvRc6ItVZdvwz9Urf35cH6OUyPOwdA0phlS-zVIznQ2rWW438p-91NlTHuxJuOFpnA=="></script>
+<link rel="stylesheet" href="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/css/index.css">
+<div id="searchUnifyChatbot"></div>
+<!-- SUVA - End Ask Geeko-->
+<!--BEGIN QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+<script type='text/javascript' src="../../../../_/js/qualtrics.js" defer></script>
+<!--END QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<script type="module">import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs'; mermaid.initialize({"startOnLoad":true});</script><shared-header
+language="en"
+languages='{
+    "en": { "label": "English", "url": "https://documentation.suse.com/en-us/" },
+    "de": { "label": "Deutsch", "url": "https://documentation.suse.com/de-de/" },
+    "fr": { "label": "Français", "url": "https://documentation.suse.com/fr-fr/" },
+    "es": { "label": "Español", "url": "https://documentation.suse.com/es-es/" },
+    "zh_CN": { "label": "中文", "url": "https://documentation.suse.com/zh-cn/" },
+    "pt_BR": { "label": "Português Brasileiro", "url": "https://documentation.suse.com/pt-br/" }
+}'
+enable-search='false'>
+</shared-header>
+<div class="body">
+<div class="nav-container" data-component="virtualization" data-version="v1.7">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title">SUSE® Virtualization</h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Introduction</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/overview.html">Présentation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/deploy-ha-cluster.html">Déployer un cluster à haute disponibilité</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/deploy-singlenode-cluster.html">Déployer un cluster à nœud unique</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/glossary.html">Glossaire</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../introduction/document-conventions.html">Conventions de documents</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Installation et configuration</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/requirements.html">Configurations matérielles et réseau requises</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Support d&#8217;installation</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/media/net-install.html">ISO d&#8217;installation réseau</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/media/install-binaries-mode.html">Installer uniquement des binaires</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Méthodes d&#8217;installation</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/methods/iso-install.html">Installation ISO</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/methods/usb-install.html">Installation USB</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/methods/pxe-boot-install.html">Installation de l&#8217;environnement PXE</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Configuration</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/config/configuration-file.html">Fichier de configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/config/update-configuration.html">Mettre à jour la configuration après l&#8217;installation</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/config/settings.html">Paramètres</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../installation-setup/config/cloudinitcrd.html">CloudInit CRD</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/post-installation.html">Tâches de post-installation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/management-address.html">Adresse de gestion</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/external-disk.html">Support des disques externes</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/authentication.html">Authentification</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/airgap.html">Environnement isolé physiquement</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../installation-setup/single-node-clusters.html">Clusters à nœud unique</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Mises à niveau</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/upgrades.html">Mises à niveau</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-1-2-to-v1-2-0.html">Mise à niveau de v1.1.2 vers v1.2.0 (non recommandée)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-2-0-to-v1-2-1.html">Mise à niveau de v1.1.2/v1.1.3/v1.2.0 à v1.2.1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-2-1-to-v1-2-2.html">Mise à niveau de v1.2.1 à v1.2.2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-2-2-to-v1-3-1.html">Mise à niveau de v1.2.2/v1.3.0 à v1.3.1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-3-1-to-v1-3-2.html">Mise à niveau de v1.3.1 à v1.3.2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-3-2-to-v1-4-0.html">Mise à niveau de v1.3.2 à v1.4.0</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-4-0-to-v1-4-1.html">Mettez à niveau de v1.4.0 à v1.4.1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-4-1-to-v1-4-2.html">Mise à niveau de v1.4.1 à v1.4.2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-4-1-to-v1-4-3.html">Mettez à niveau de v1.4.1 ou v1.4.2 vers v1.4.3</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-4-2-to-v1-5-0.html">Mettez à niveau de v1.4.2 ou v1.4.3 vers v1.5.0</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-4-2-to-v1-5-1.html">Mettez à niveau de v1.4.2 ou v1.4.3 à v1.5.1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-4-2-to-v1-5-2.html">Mettez à niveau de v1.4.2 ou v1.4.3 vers v1.5.2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-5-0-to-v1-5-1.html">Mettez à niveau de v1.5.0 à v1.5.1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-5-0-to-v1-5-2.html">Mettez à niveau de v1.5.0 ou v1.5.1 à v1.5.2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-5-x-to-v1-6-x.html">Mise à niveau de v1.5.x à v1.6.x</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-6-x-to-v1-6-y.html">Mise à niveau de v1.6.x à v1.6.y</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-6-x-to-v1-7-x.html">Mettez à niveau de v1.6.x vers v1.7.x</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/v1-7-x-to-v1-7-y.html">Mise à niveau de v1.7.x vers v1.7.y</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrades/troubleshooting.html">Dépannage</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Hôtes</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../hosts/hosts.html">Administration des hôtes</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../hosts/witness-node.html">Nœud témoin</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../hosts/vgpu-support.html">Prise en charge vGPU</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Machines virtuelles</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="virtual-machines.html">Machines virtuelles</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Images de machines virtuelles</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="vm-images/upload-image.html">Téléverser des images</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="vm-images/custom-suse-images.html">Images de machines virtuelles SUSE personnalisées</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="vm-images/image-security.html">Sécurité de l&#8217;image</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="create-vm.html">Créer une machine virtuelle</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="create-windows-vm.html">Créer une machine virtuelle Windows</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="edit-vm.html">Modifier une machine virtuelle</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="access-vm.html">Accès à la machine virtuelle</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="clone-vm.html">Cloner une machine virtuelle</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="backup-restore.html">Sauvegarde, instantané et restauration de machine virtuelle</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="live-migration.html">Migration à chaud</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="hotplug-volume.html">Volumes à chaud</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="resource-overcommit.html">Surallocation des ressources</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="cpu-pinning.html">Verrouillage d’UC</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="cpu-memory-hotplug.html">Ajout à chaud d&#8217;UC et de mémoire</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="nic-hotplug.html">Ajout à chaud de NIC</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Stockage</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Volumes</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../storage/volumes/create-volume.html">Création d&#8217;un volume</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../storage/volumes/edit-volume.html">Modifier un volume</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../storage/volumes/clone-volume.html">Cloner un volume</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../storage/volumes/export-volume.html">Exporter un volume vers une image</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../storage/volumes/volume-snapshots.html">Instantanés de volume</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../storage/volumes/volume-security.html">Sécurité du volume&#160;:</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../storage/storageclass.html">StorageClass</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../storage/csidriver.html">Prise en charge du stockage tiers</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../storage/longhorn-v2-data-engine.html">Moteur de données Longhorn V2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../storage/storage-validator.html">Validateur de stockage</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Réseautique</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/cluster-network.html">Réseau de cluster</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/vm-network.html">Réseau VM</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/deep-dive.html">Approfondissement du réseau</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/load-balancer.html">Équilibreur de charge</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/ip-pool.html">Pool IP</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/storage-network.html">Réseau de stockage</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/vm-migration-network.html">Réseau de migration de VM</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/kubeovn-vpc.html">Cloud privé virtuel</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/vm-isolation.html">Isolation des machines virtuelles</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/best-practices.html">Meilleures pratiques en matière de mise en réseau</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Observabilité</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../observability/logging.html">Consignation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../observability/monitoring.html">Surveillance</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Modules complémentaires</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/add-ons.html">Modules complémentaires</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/harvester-seeder.html">Harvester Seeder</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/kubeovn-operator.html">Kube-OVN Operator (Expérimental)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/lvm-local-storage.html">Pilote CSI LVM (Expérimental)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/nvidia-driver-toolkit.html">NVIDIA Driver Toolkit</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/pcidevices-controller.html">Contrôleur de périphériques PCI</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/rancher-vcluster.html">Rancher vCluster (Expérimental)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/virtual-machine-auto-balance.html">Équilibrage automatique de machine virtuelle (Expérimental)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/vm-dhcp-controller.html">Contrôleur DHCP VM (Expérimental)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/vm-import-controller.html">Contrôleur d&#8217;importation de VM</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Intégrations</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Intégration Rancher</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/rancher-integration.html">SUSE Rancher Prime Intégration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/virtualization-management.html">Gestion de la virtualisation</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Pilote de nœud</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../integrations/rancher/node-driver/node-driver.html">Pilote de nœud Harvester</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../integrations/rancher/node-driver/rke2-cluster.html">Création d&#8217;un cluster Kubernetes RKE2</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../integrations/rancher/node-driver/k3s-cluster.html">Créer un cluster Kubernetes K3s</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/cloud-provider.html">Fournisseur de Cloud Harvester</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/csi-driver.html">Pilote CSI Harvester</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/resource-quota.html">Quotas de ressources</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/rancher-terraform-provider.html">Rancher Terraform</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/import-vm.html">Importer un cluster construit sur une VM SUSE® Virtualization</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../integrations/rancher/harvester-ui-extension.html">Extension de l&#8217;interface utilisateur Harvester</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../integrations/terraform/terraform-provider.html">Fournisseur Terraform</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Dépannage</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/installation.html">Problèmes d&#8217;installation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/operating-system.html">Problèmes du système d&#8217;exploitation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/cluster.html">Problèmes de cluster</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/virtual-machines.html">Problèmes de machine virtuelle</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/monitoring.html">Problèmes de surveillance</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/logging.html">Problèmes de journalisation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/rancher.html">Problèmes de Rancher</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/faq.html">FAQ</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Contenu pour développeurs</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../developer/addon-development.html">Guide de développement de produits complémentaires</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../api.html">API</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">SUSE® Virtualization</span>
+    <span class="version">v1.7</span>
+  </div>
+  <ul class="components">
+        <li class="component">
+          <div class="title"><a href="../../../../admission-controller/1.36/en/introduction.html">Admission Controller</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../admission-controller/1.37/en/introduction.html">1.37-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../admission-controller/1.36/en/introduction.html">1.36</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.35/en/introduction.html">1.35</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.34/en/introduction.html">1.34</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.33/en/introduction.html">1.33</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.32/en/introduction.html">1.32</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.31/en/introduction.html">1.31</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.30/en/introduction.html">1.30</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.29/en/introduction.html">1.29</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.28/en/introduction.html">1.28</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../cluster-api/v0.26/en/index.html">Cluster API</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../cluster-api/v0.28/en/index.html">v0.28-dev</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.27/en/index.html">v0.27-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../cluster-api/v0.26/en/index.html">v0.26</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.25/en/index.html">0.25</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.24/en/index.html">0.24</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.23/en/index.html">0.23</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.22/en/index.html">0.22</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.21/en/index.html">0.21</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.20/en/index.html">0.20</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.19/en/index.html">0.19</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.18/en/index.html">0.18</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.17/en/index.html">0.17</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.16/en/index.html">0.16</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.11/en/index.html">0.11</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../continuous-delivery/next/en/index.html">Continuous Delivery</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../continuous-delivery/next/en/index.html">Next</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.15/en/index.html">v0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.11/en/index.html">0.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.10/en/index.html">0.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.9/en/index.html">0.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../k3s/latest/en/introduction.html">K3s</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../k3s/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../os-manager/1.9/en/index.html">OS Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../os-manager/1.10/en/index.html">1.10-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../os-manager/1.9/en/index.html">1.9</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.8/en/index.html">1.8</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.7/en/index.html">1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.6/en/index.html">1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.5/en/index.html">1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-ai/latest/en/introduction.html">Rancher AI</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-ai/latest/en/introduction.html">latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../turtles/stable/en/index.html">Rancher Turtles</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../turtles/stable/en/index.html">Stable</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rke2/latest/en/introduction.html">RKE2</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rke2/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-observability/latest/en/classic.html">SUSE Observability</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../suse-observability/latest/en/classic.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">SUSE Rancher Developer Access</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">SUSE® Rancher for AWS</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-manager/v2.14/en/about-rancher/what-is-rancher.html">SUSE® Rancher Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.15/en/about-rancher/what-is-rancher.html">v2.15 (Unreleased)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../rancher-manager/v2.14/en/about-rancher/what-is-rancher.html">v2.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.13/en/about-rancher/what-is-rancher.html">v2.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.12/en/about-rancher/what-is-rancher.html">v2.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.11/en/about-rancher/what-is-rancher.html">v2.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.10/en/about-rancher/what-is-rancher.html">v2.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.9/en/about-rancher/what-is-rancher.html">v2.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../security/5.6/en/overview.html">SUSE® Security</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../security/5.6/en/overview.html">5.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.5/en/overview.html">5.5</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.4/en/overview.html">5.4</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.3/en/overview.html">5.3</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../storage/1.11/en/longhorn-documentation.html">SUSE® Storage</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../storage/1.12/en/longhorn-documentation.html">1.12 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../storage/1.11/en/longhorn-documentation.html">1.11 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../storage/1.10/en/longhorn-documentation.html">1.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../storage/1.9/en/longhorn-documentation.html">1.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">SUSE® Virtual Clusters</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/1.2.0/en/release-notes/version-1.2.0.html">v1.2.0 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">v1.1.0-latest</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/1.0.2/en/release-notes/version-1.0.2.html">v1.0.2</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.1/en/introduction.html">v1.0.1</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.0/en/introduction.html">v1.0.0</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component is-current">
+          <div class="title"><a href="../../../v1.8/en/introduction/overview.html">SUSE® Virtualization</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../v1.9/en/introduction/overview.html">v1.9 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../v1.8/en/introduction/overview.html">v1.8 (Latest)</a>
+            </li>
+            <li class="version is-current">
+              <a href="../../en/introduction/overview.html">v1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../v1.6/en/introduction/overview.html">v1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../v1.5/en/introduction/overview.html">v1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../vulnerability-scanner/0.12.0/en/introduction.html">Vulnerability Scanner</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../vulnerability-scanner/0.12.0/en/introduction.html">0.12.0</a>
+            </li>
+            <li class="version">
+              <a href="../../../../vulnerability-scanner/0.11.3/en/introduction.html">0.11.3</a>
+            </li>
+          </ul>
+        </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+<ul>
+    <li>
+  <a class="home-link-dsc" href="https://documentation.suse.com" title="SUSE Documentation Home" aria-label="SUSE Documentation Home"></a>
+    </li>
+    <li>
+      <a href="https://documentation.suse.com/cloudnative/virtualization" title="SUSE Virtualization" aria-label="SUSE Documentation - SUSE Virtualization">
+        SUSE Virtualization
+      </a>
+    </li>
+      <li>
+          Machines virtuelles
+      </li>
+  </ul>
+</nav>
+<div class="page-versions">
+  <button class="version-menu-toggle" title="Show other versions of page">v1.7</button>
+  <div class="version-menu">
+    <a class="version is-missing" href="../../../v1.9/en/introduction/overview.html">v1.9 (Dev)</a>
+    <a class="version is-missing" href="../../../v1.8/en/introduction/overview.html">v1.8 (Latest)</a>
+    <a class="version is-current" href="live-migration.html">v1.7</a>
+    <a class="version is-missing" href="../../../v1.6/en/introduction/overview.html">v1.6</a>
+    <a class="version is-missing" href="../../../v1.5/en/introduction/overview.html">v1.5</a>
+  </div>
+</div>
+      <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <label class="visual-search-label-bc" for="search-input">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+          <input label="Search" aria-label="Search" id="search-input" type="text" placeholder="Searchercher dans les documents" >
+          <label class="filter checkbox" style="display: none">
+            <input type="checkbox" data-facet-filter="component:virtualization" checked> Only this project
+          </label>
+        </div>
+      </div>
+</div>
+  <div class="content">
+<aside
+  class="toc sidebar"
+  data-title="Sur cette page" data-levels="2">
+  <div class="toc-menu">
+    <div class="docsurvey-wrapper"><a class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_diCzHC9xxyJyuN0">Documentation survey</a></div>
+    <!-- start qualtrics -->
+    <div id='ZN_8qZUmklKYbBqAYe'><!--DO NOT REMOVE-CONTENTS PLACED HERE--></div>
+    <div id="qualtrics_container"></div>
+    <!-- end qualtrics -->
+  </div>
+</aside>
+
+<aside class="toc sidebar docsurvey-sidebar">
+  <div class="toc-menu">
+    <div class="docsurvey-wrapper"><a class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_diCzHC9xxyJyuN0">Documentation survey</a></div>
+  </div>
+</aside>
+<article class="doc">
+<h1 class="page">Migration à chaud</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>La migration à chaud signifie déplacer une machine virtuelle vers un autre hôte sans temps d&#8217;arrêt. Un certain nombre de processus et de tâches complets sont effectués en arrière-plan pour réaliser la migration à chaud.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_conditions_préalables"><a class="anchor" href="#_conditions_préalables"></a>Conditions préalables</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>La migration à chaud peut se produire lorsque les exigences suivantes sont remplies&#160;:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>En plus du nœud actuel, le cluster dispose d&#8217;au moins un nœud planifiable qui correspond à toutes les règles de planification de la machine virtuelle.</p>
+</li>
+<li>
+<p>Le nœud cible de migration dispose de suffisamment de ressources disponibles pour héberger la machine virtuelle.</p>
+</li>
+<li>
+<p>L&#8217;UC, la mémoire, <a href="create-vm.html#_volumes" class="xref page">volumes</a>, les périphériques et d&#8217;autres ressources demandées par la machine virtuelle peuvent être copiés ou reconstruits sur le nœud cible de migration pendant que la machine virtuelle source est encore en cours d&#8217;exécution.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_machines_virtuelles_non_migrables"><a class="anchor" href="#_machines_virtuelles_non_migrables"></a>Machines virtuelles non migrables</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Une machine virtuelle est considérée comme non migrable si elle a une ou plusieurs des caractéristiques suivantes&#160;:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Volume avec les propriétés suivantes&#160;:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Type&#160;: <code>CD-ROM</code> ou <code>Container Disk</code></p>
+</li>
+<li>
+<p>Mode d&#8217;accès&#160;: <code>ReadWriteOnce</code></p>
+</li>
+<li>
+<p>Nombre de répliques de StorageClass&#160;: <code>1</code> (Cela n&#8217;est pas détecté dans tous les cas.)</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Périphériques hôtes en passthrough tels que <code>PCI</code> et <code>vGPU</code></p>
+</li>
+<li>
+<p><a href="create-vm.html#_node_scheduling" class="xref page">Sélecteur de nœud</a> qui lie la machine virtuelle à un nœud spécifique</p>
+</li>
+<li>
+<p><a href="create-vm.html#_node_scheduling" class="xref page">Règles de planification</a> qui ne correspondent qu&#8217;à un seul nœud.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Les exemples suivants sont des conditions de règle qui sont vérifiées à l&#8217;exécution&#160;:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>La machine virtuelle est attachée à un réseau de cluster qui ne couvre qu&#8217;un seul nœud.</p>
+</li>
+<li>
+<p>Le pinning CPU est activé sur la machine virtuelle, et le gestionnaire de CPU n&#8217;est activé que sur un seul nœud.</p>
+</li>
+<li>
+<p>La machine virtuelle a des règles d&#8217;anti-affinité strictes qui l&#8217;empêchent d&#8217;être co-localisée avec certaines autres machines virtuelles.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Pour plus d&#8217;informations, voir <a href="create-vm.html#_automatically_applied_affinity_rules" class="xref page">Règles d&#8217;affinité appliquées automatiquement</a>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Pour migrer la machine virtuelle à chaud, vous devez d&#8217;abord supprimer les dispositifs non migrables et ajouter des nœuds planifiables.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_machines_virtuelles_migrables_à_chaud"><a class="anchor" href="#_machines_virtuelles_migrables_à_chaud"></a>Machines virtuelles migrables à chaud</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Les machines virtuelles qui ne possèdent pas les caractéristiques des machines virtuelles non migrables peuvent être migrées à chaud.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_comment_fonctionne_la_migration"><a class="anchor" href="#_comment_fonctionne_la_migration"></a>Comment fonctionne la migration</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_virtualmachineinstancemigration_objet"><a class="anchor" href="#_virtualmachineinstancemigration_objet"></a><code>VirtualMachineInstanceMigration</code> Objet</h3>
+<div class="paragraph">
+<p>Lorsqu&#8217;une action de migration de machine virtuelle est déclenchée, un <code>VirtualMachineInstanceMigration</code> objet est créé pour suivre l&#8217;état et la progression de l&#8217;opération. Le contrôleur SUSE Virtualization corrèle l&#8217;objet <code>VirtualMachineInstanceMigration</code> avec l&#8217;objet <code>VirtualMachineInstance</code> en s&#8217;assurant que l&#8217;identité de l&#8217;objet d&#8217;instance est reflétée dans l&#8217;objet de migration.</p>
+</div>
+<div class="paragraph">
+<p>Dans l&#8217;exemple suivant, la machine virtuelle nommée <code>demo</code> a un objet de migration associé. L&#8217;UID de cet objet est ajouté à la propriété <code>.status.migrationState.migrationUID</code> de l&#8217;objet d&#8217;instance pendant la migration.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ kubectl get vmi demo -ojsonpath={.status.migrationState.migrationUID}
+
+1d6d7273-275d-48e0-bb76-62e240b42aaf</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Le nom de l&#8217;objet d&#8217;instance est ajouté à la propriété <code>.spec.vmiName</code> de l&#8217;objet de migration.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ kubectl get vmim demo-6crrk -ojsonpath={.spec.vmiName}
+
+démo</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Le format du nom de l&#8217;objet <code>VirtualMachineInstanceMigration</code> varie selon que la migration est déclenchée manuellement ou automatiquement.</p>
+</div>
+<div class="paragraph">
+<p>Lorsqu&#8217;une migration est déclenchée depuis l&#8217;élément de menu <strong>Migrer</strong> (<a href="#_starting_a_migration">menu item</a>), le nom de l&#8217;objet <code>VirtualMachineInstanceMigration</code> est préfixé par le nom de la machine virtuelle et une chaîne aléatoire (par exemple, <code>vm1-a3d1f</code>).</p>
+</div>
+<div class="paragraph">
+<p>Lorsqu&#8217;une migration est déclenchée <a href="#_automatically_triggered_batch_migration">automatiquement</a>, le nom de l&#8217;objet <code>VirtualMachineInstanceMigration</code> est préfixé par <code>kubevirt-evacuation-</code> et une chaîne aléatoire (par exemple, <code>kubevirt-evacuation-9c485</code>).</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>L&#8217;interface utilisateur SUSE Virtualization ne spécifie pas la source de la migration. Vous devez vérifier le nom de l&#8217;objet <code>VirtualMachineInstanceMigration</code> pour récupérer cette information.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_correspondance_du_modèle_duc"><a class="anchor" href="#_correspondance_du_modèle_duc"></a>Correspondance du modèle d&#8217;UC</h3>
+<div class="paragraph">
+<p>Chaque nœud a plusieurs modèles d&#8217;UC qui sont étiquetés avec différentes clés.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Modèle d&#8217;UC principal&#160;: <code>host-model-cpu.node.kubevirt.io/{cpu-model}</code></p>
+</li>
+<li>
+<p>Modèles d&#8217;UC pris en charge&#160;: <code>cpu-model.node.kubevirt.io/{cpu-model}</code></p>
+</li>
+<li>
+<p>Modèles d&#8217;UC pris en charge pour la migration&#160;: <code>cpu-model-migration.node.kubevirt.io/{cpu-model}</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Lors de la migration en direct, le contrôleur vérifie la valeur de <code>spec.domain.cpu.model</code> dans le CR de l&#8217;instance de machine virtuelle (VMI), qui est dérivée de <code>spec.template.spec.domain.cpu.model</code> dans le CR de la machine virtuelle (VM). Si la valeur de <code>spec.template.spec.domain.cpu.model</code> n&#8217;est pas définie, le contrôleur utilise la valeur par défaut <code>host-model</code>.</p>
+</div>
+<div class="paragraph">
+<p>Lorsque <code>host-model</code> est utilisé, le processus récupère la valeur du modèle d&#8217;UC principal et remplit <code>spec.NodeSelectors</code> du pod nouvellement créé avec l&#8217;étiquette <code>cpu-model-migration.node.kubevirt.io/{cpu-model}</code>.</p>
+</div>
+<div class="paragraph">
+<p>Alternativement, vous pouvez personnaliser le modèle d&#8217;UC dans <code>spec.domain.cpu.model</code>. Par exemple, si le modèle d&#8217;UC est <code>XYZ</code>, le processus remplit <code>spec.NodeSelectors</code> du pod nouvellement créé avec l&#8217;étiquette <code>cpu-model.node.kubevirt.io/XYZ</code>.</p>
+</div>
+<div class="paragraph">
+<p>Cependant, <code>host-model</code> ne permet la migration de la VM que vers un nœud avec le même modèle d&#8217;UC. Pour plus d&#8217;informations, consultez <a href="#_limitations">Limitations</a>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_début_dune_migration"><a class="anchor" href="#_début_dune_migration"></a>Début d&#8217;une migration</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Allez à la page <strong>Machines Virtuelles</strong>.</p>
+</li>
+<li>
+<p>Trouvez la machine virtuelle que vous souhaitez migrer et sélectionnez <strong>⋮ &gt; Migrer</strong>.</p>
+</li>
+<li>
+<p>Choisissez le nœud vers lequel vous souhaitez migrer la machine virtuelle. Cliquez sur <strong>Appliquer</strong>.</p>
+</li>
+</ol>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/vm/migrate-action.png" alt="migrate action">
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>L&#8217;option de menu <strong>Migrer</strong> n&#8217;est pas disponible dans les situations suivantes&#160;:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Le cluster n&#8217;a qu&#8217;un seul nœud.</p>
+</li>
+<li>
+<p>La machine virtuelle est [non-migrable](#non-migrable-virtual-machines).</p>
+</li>
+<li>
+<p>La machine virtuelle a déjà un processus de migration en cours ou en attente.</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/vm/migrate.png" alt="migrate">
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_annuler_une_migration"><a class="anchor" href="#_annuler_une_migration"></a>Annuler une migration</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Allez à la page <strong>Machines Virtuelles</strong>.</p>
+</li>
+<li>
+<p>Trouvez la machine virtuelle en cours de migration que vous souhaitez annuler. Sélectionnez <strong>⋮ &#8594; Annuler la migration</strong>.</p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>L&#8217;élément de menu <strong>Annuler la migration</strong> est disponible lorsque la machine virtuelle a déjà un processus de migration en cours ou en attente.</p>
+</li>
+<li>
+<p>N&#8217;utilisez pas cette fonctionnalité de l&#8217;interface utilisateur si le processus de migration a été créé en utilisant <a href="#_automatically_triggered_batch_migration">migration par lot</a>. Pour plus d&#8217;informations, reportez-vous à <a href="#_virtualmachineinstancemigration_object"><code>VirtualMachineInstanceMigration</code> Objet</a>.</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_migration_par_lot_déclenchée_automatiquement"><a class="anchor" href="#_migration_par_lot_déclenchée_automatiquement"></a>Migration par lot déclenchée automatiquement</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><a href="#_live_migratable_virtual_machines">Mises à niveau</a> et <a href="../hosts/hosts.html#_node_maintenance" class="xref page">maintenance des nœuds</a> bénéficient tous deux de la migration à chaud. Le processus sous-jacent, appelé <strong>migration par lot</strong>, est légèrement différent de celui décrit dans <a href="#_starting_a_migration">Démarrer une migration</a>. Ce processus comprend les étapes suivantes&#160;:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Le contrôleur surveille une marque dédiée sur l&#8217;objet nœud.</p>
+</li>
+<li>
+<p>Le contrôleur crée un objet <code>VirtualMachineInstanceMigration</code> pour chaque <a href="#_live_migratable_virtual_machines">machine virtuelle migrable à chaud</a> sur le nœud actuel.</p>
+</li>
+<li>
+<p>Les migrations sont mises en file d&#8217;attente, programmées en interne et traitées par lots. L&#8217;interface utilisateur SUSE Virtualization affiche les statuts <strong>Migration en attente</strong> et <strong>En cours de migration</strong> pour indiquer la progression.</p>
+</li>
+<li>
+<p>Le contrôleur surveille le traitement et attend que toutes soient terminées ou aient expiré.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_délai_dexpiration_de_la_migration"><a class="anchor" href="#_délai_dexpiration_de_la_migration"></a>Délai d&#8217;expiration de la migration</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_délai_dexpiration_de_lachèvement"><a class="anchor" href="#_délai_dexpiration_de_lachèvement"></a>Délai d&#8217;expiration de l&#8217;achèvement</h3>
+<div class="paragraph">
+<p>Le processus de migration à chaud copie les pages de mémoire de la machine virtuelle et les blocs de disque vers la destination. Dans certains cas, la machine virtuelle peut écrire sur différentes pages de mémoire ou blocs de disque à un rythme plus élevé que celui auquel ils peuvent être copiés. En conséquence, le processus de migration est empêché d&#8217;être complété dans un délai raisonnable.</p>
+</div>
+<div class="paragraph">
+<p>La migration à chaud est annulée si elle dépasse le délai d&#8217;achèvement de 800 secondes par GiB de données. Par exemple, une machine virtuelle avec 8 GiB de mémoire dépasse le délai après 6400 secondes.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_délai_de_progression"><a class="anchor" href="#_délai_de_progression"></a>Délai de progression</h3>
+<div class="paragraph">
+<p>La migration à chaud est également annulée lorsque la copie de la mémoire ne progresse pas pendant 150 secondes.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_limites"><a class="anchor" href="#_limites"></a>limites</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_modèles_duc"><a class="anchor" href="#_modèles_duc"></a>Modèles d&#8217;UC</h3>
+<div class="paragraph">
+<p><code>host-model</code> ne permet la migration de la machine virtuelle que vers un nœud avec le même modèle de processeur. Cependant, spécifier un modèle d&#8217;UC n&#8217;est pas toujours nécessaire. Lorsque aucun modèle d&#8217;UC n&#8217;est spécifié, vous devez éteindre la machine virtuelle, attribuer un modèle d&#8217;UC pris en charge par tous les nœuds, puis redémarrer la machine virtuelle.</p>
+</div>
+<div class="paragraph">
+<p>Exemple :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Un nœud&#160;: <code>host-model-cpu.node.kubevirt.io/XYZ</code> <code>cpu-model-migration.node.kubevirt.io/XYZ</code> <code>cpu-model.node.kubevirt.io/123</code></p>
+</li>
+<li>
+<p>Nœud B&#160;: <code>host-model-cpu.node.kubevirt.io/ABC</code> <code>cpu-model-migration.node.kubevirt.io/ABC</code> <code>cpu-model.node.kubevirt.io/123</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Migrer une machine virtuelle avec <code>host-model</code> n&#8217;est pas possible car les valeurs de <code>host-model-cpu.node.kubevirt.io</code> ne sont pas identiques. Cependant, les deux nœuds prennent en charge le modèle d&#8217;UC <code>123</code>, vous pouvez donc migrer toute machine virtuelle avec le modèle d&#8217;UC <code>123</code> en utilisant l&#8217;une des méthodes suivantes&#160;:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Niveau de cluster&#160;: Exécutez <code>kubectl edit kubevirts.kubevirt.io -n harvester-system</code> et ajoutez <code>spec.configuration.cpuModel: "123"</code>. Ce changement affecte également les machines virtuelles nouvellement créées.</p>
+</li>
+<li>
+<p>Machines virtuelles individuelles&#160;: Modifiez la configuration de la machine virtuelle pour inclure <code>spec.template.spec.domain.cpu.model: "123"</code>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Les deux méthodes nécessitent que vous redémarriez les machines virtuelles. Si vous êtes certain que tous les nœuds du cluster prennent en charge un modèle d&#8217;UC spécifique, vous pouvez le définir au niveau du cluster avant de créer des machines virtuelles. Ce faisant, vous éliminez le besoin de redémarrer les machines virtuelles (pour attribuer le modèle d&#8217;UC) lors de la migration à chaud.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_pannes_de_réseau"><a class="anchor" href="#_pannes_de_réseau"></a>Pannes de réseau</h3>
+<div class="paragraph">
+<p>La migration à chaud est très sensible aux pannes de réseau. Toute interruption de la connexion réseau entre les nœuds source et cible pendant la migration peut avoir une variété de conséquences.</p>
+</div>
+<div class="sect3">
+<h4 id="_mgmt_pannes_de_réseau"><a class="anchor" href="#_mgmt_pannes_de_réseau"></a><code>mgmt</code> pannes de réseau</h4>
+<div class="paragraph">
+<p>La migration à chaud via <code>mgmt</code> (le réseau de cluster intégré) dépend de la disponibilité des interfaces de gestion sur les nœuds source et cible. Les <code>mgmt</code> pannes de réseau sont considérées comme critiques car elles perturbent non seulement le processus de migration mais affectent également la gestion globale des nœuds.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_pannes_de_réseau_de_migration_de_vm"><a class="anchor" href="#_pannes_de_réseau_de_migration_de_vm"></a>Pannes de réseau de migration de VM</h4>
+<div class="paragraph">
+<p>Un <a href="../networking/vm-network.html" class="xref page">réseau de migration de VM</a> isole le trafic de migration des autres activités réseau. Bien que cette configuration améliore les performances et la fiabilité de la migration, en particulier dans les environnements à fort trafic réseau, elle rend également le processus de migration dépendant de la disponibilité de ce réseau spécifique.</p>
+</div>
+<div class="paragraph">
+<p>Une panne sur le réseau de migration de VM peut affecter le processus de migration de la manière suivante&#160;:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Interruption brève&#160;: Le processus de migration s&#8217;interrompt brusquement. Une fois la connectivité rétablie, le processus reprend et peut être complété avec succès, bien qu&#8217;avec un retard.</p>
+</li>
+<li>
+<p>Panne prolongée&#160;: L&#8217;opération de migration expire et échoue. La machine virtuelle source continue de fonctionner normalement sur le nœud source.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Le processus de migration fonctionne en mode pair à pair, ce qui signifie que le démon libvirt (libvirtd) sur le nœud source contrôle la migration en appelant directement le démon de destination. Un mécanisme intégré de maintien de connexion garantit que la connexion client reste active pendant le processus de migration. Si la connexion reste inactive pendant une période spécifique, elle est fermée et le processus de migration est annulé.</p>
+</div>
+<div class="paragraph">
+<p>Par défaut, l&#8217;intervalle de maintien de connexion est fixé à 5 secondes, et le nombre de tentatives est fixé à 5. Étant donné ces valeurs par défaut, le processus de migration est annulé si la connexion est inactive pendant 30 secondes. Cependant, la migration peut échouer plus tôt ou plus tard, en fonction des conditions réelles du cluster.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="backup-restore.html">Sauvegarde, instantané et restauration de machine virtuelle</a></span>
+  <span class="next"><a href="hotplug-volume.html">Volumes à chaud</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<script src="../../../../_/js/site.js"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+<script src="../../../../_/js/vendor/lunr.js"></script>
+<script src="../../../../_/js/vendor/lunr-languages.js"></script>
+<script src="../../../../_/js/search-ui.js" id="search-ui-script" data-site-root-path="../../../.." data-snippet-length="100" data-stylesheet="../../../../_/css/search.css"></script>
+<script async src="../../../../search-index.js"></script>
+<script src="../../../../_/js/vendor/langSelection.js"></script>
+<script async src="../../../../_/js/vendor/tabs.js"></script>
+
+
+<script src="../../../../_/js/CNLanguageSwitcher.js"></script>
+  </body>
+</html>
