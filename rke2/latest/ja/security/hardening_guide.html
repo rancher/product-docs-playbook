@@ -1,0 +1,1398 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CISハードニングガイド | RKE2  Latest</title>
+    <link rel="canonical" href="https://documentation.suse.com/cloudnative/rke2/latest/ja/security/hardening_guide.html">
+    <link rel="prev" href="about_hardened_images.html">
+    <link rel="next" href="cis_self_assessment111.html">
+    <meta name="generator" content="Antora 3.1.14">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+<meta http-equiv="last-modified" content="2026-02-27"/>
+<link rel="stylesheet" href="../../../../_/css/search.css">
+<link rel="icon" href="../../../../_/img/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="../../../../_/css/font-styles.css">
+<link rel="stylesheet" href="../../../../_/fonts/css/all.css">
+<link rel="stylesheet" href="../../../../_/css/site-extra.css">
+<link rel="stylesheet" href="../../../../_/css/vendor/tabs.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap&family=SUSE+Mono:ital,wght@0,100..800;1,100..800" rel="stylesheet">
+<link rel="stylesheet" href="../../../../_/css/vendor/light.css">
+<script src="/docserv/res/lightheaded/analytics.js" type="text/javascript"></script>
+<script type="module">
+  import { defineCustomElements, setAssetPath } from 'https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/shared-header.esm.js';
+  defineCustomElements();
+  setAssetPath("https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/assets");
+</script>
+<!-- Default English link -->
+<link href="https://documentation.suse.com/cloudnative/rke2/latest/en/security/hardening_guide.html" hreflang="x-default" rel="alternate"/>
+<!-- Link for the currently processed page -->
+<link href="https://documentation.suse.com/cloudnative/rke2/latest/ja/security/hardening_guide.html" hrefLang="ja-JP" rel="alternate" />
+
+<!-- JSON-LD for doc metadata -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "CISハードニングガイド | SUSE Rancher Prime: RKE2 latest",
+  "headline": "CISハードニングガイド",
+  "description": "CISハードニングガイド",
+  "inLanguage": "ja",
+  "dateModified": "2026-02-27T00:00:00Z",
+  "author": {
+    "@type": "Organization",
+    "name": "SUSE Product & Solution Documentation Team",
+    "url": "https://documentation.suse.com"
+  },
+  "mentions": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "SUSE Rancher Prime: RKE2",
+      "softwareVersion": "latest",
+      "applicationCategory": "Cloud Infrastructure",
+      "operatingSystem": "Linux"
+    }
+  ],
+  "publisher": {
+    "@type": "Organization",
+    "name": "SUSE",
+    "url": "https://documentation.suse.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.suse.com/assets/img/suse-white-logo-green.svg"
+    }
+  }
+}
+</script>
+<!-- end JSON-LD for doc metadata -->
+
+<!-- SUVA - Begin Ask Geeko-->
+<!--
+searchUnifyChatbot ("Ask Geeko") Copyright ©2024 Grazitti Interactive - All Rights Reserved. NOTICE: All information contained herein is, and remains the property of Grazitti Interactive and its suppliers, if any. The intellectual and technical concepts contained herein are proprietary to Grazitti Interactive and its suppliers and may be covered by India, U.S. and Foreign Patents, patents in process, and are protected by trade secret or copyright law. Dissemination of this information or reproduction of this material is strictly forbidden unless prior written permission is obtained from Grazitti Interactive.
+-->
+<meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport"/>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/Allow/an.js?c485cb3c-93d4-4942-99e8-91f3b8ca5636"></script>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/js/index.js?q=gAAAAABp3JBN9VuEJTi5tFafLIMwgMkCPdJS3Qm56lSYx93ir3Twt9hgSvd3OHEt6-nYfSbY3yHq0Zv8PRPsSy4nbqZiaJ4cZvRc6ItVZdvwz9Urf35cH6OUyPOwdA0phlS-zVIznQ2rWW438p-91NlTHuxJuOFpnA=="></script>
+<link rel="stylesheet" href="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/css/index.css">
+<div id="searchUnifyChatbot"></div>
+<!-- SUVA - End Ask Geeko-->
+<!--BEGIN QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+<script type='text/javascript' src="../../../../_/js/qualtrics.js" defer></script>
+<!--END QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<script type="module">import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs'; mermaid.initialize({"startOnLoad":true});</script><shared-header
+language="en"
+languages='{
+    "en": { "label": "English", "url": "https://documentation.suse.com/en-us/" },
+    "de": { "label": "Deutsch", "url": "https://documentation.suse.com/de-de/" },
+    "fr": { "label": "Français", "url": "https://documentation.suse.com/fr-fr/" },
+    "es": { "label": "Español", "url": "https://documentation.suse.com/es-es/" },
+    "zh_CN": { "label": "中文", "url": "https://documentation.suse.com/zh-cn/" },
+    "pt_BR": { "label": "Português Brasileiro", "url": "https://documentation.suse.com/pt-br/" }
+}'
+enable-search='false'>
+</shared-header>
+<div class="body">
+<div class="nav-container" data-component="rke2" data-version="latest">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title">RKE2</h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../introduction.html">概要</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">インストール</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../install/quickstart.html">クイックスタート</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../install/requirements.html">要件</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../install/configuration.html">設定オプション</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../install/ha.html">高可用性</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../install/methods.html">インストール方法</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../install/private_registry.html">プライベートレジストリの設定</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../install/registry_mirror.html">埋め込みレジストリミラー</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../install/containerd_registry_configuration.html">Containerdレジストリの設定</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../install/airgap.html">エアギャップインストール</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../install/windows_airgap.html">Windows エアギャップ インストール</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../install/server_roles.html">サーバの役割の管理</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../install/packaged_components.html">パッケージ化されたコンポーネントの管理</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../install/uninstall.html">アンインストール</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">アップグレード</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrade/upgrade.html">アップグレードする SUSE® Rancher Prime: RKE2 クラスター</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrade/manual_upgrade.html">手動アップグレード</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrade/automated_upgrade.html">自動アップグレード</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../upgrade/roll_back.html">RKE2のロールバック</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">セキュリティ</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="about_hardened_images.html">ハードニングされたイメージについて</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="hardening_guide.html">CISハードニングガイド</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="cis_self_assessment111.html">CIS 1.11 セルフアセスメントガイド</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="cis_self_assessment110.html">CIS 1.10 自己評価ガイド</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="cis_self_assessment19.html">CIS 1.9 セルフアセスメントガイド</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="fips3_support.html">FIPS 140-3の有効化</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="pod_security_policies.html">デフォルトのポッドセキュリティポリシー</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="pod_security_standards.html">デフォルトポッドセキュリティ標準</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="secrets_encryption.html">シークレット暗号化</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="selinux.html">SELinux</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="certificates.html">証明書管理</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="token.html">トークン管理</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">データストア</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../datastore/embedded.html">組み込みデータストア</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../datastore/external.html">外部データストア</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../datastore/backup_restore.html">バックアップと回復</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../architecture.html">アーキテクチャ</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../cluster_access.html">クラスターアクセス</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">ネットワーキング</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/basic_network_options.html">ネットワークオプション</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/multus_sriov.html">MultusとSR-IOV</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/networking_services.html">ネットワークサービス</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../networking/windows_bgp.html">WindowsとBGP</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">アドオン</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/helm.html">Helm</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/import_images.html">画像をインポートする</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../add-ons/gpu_operators.html">GPUオペレーター</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../advanced.html">詳細オプションと設定</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">参考資料</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/ai_conformance.html">CNCF AI 準拠</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/cli_tools.html">CLIツール</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/linux_agent_config.html">エージェント構成リファレンス</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/logging.html">ログ記録</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/metrics.html">Metrics</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/resource_profiling.html">リソースプロファイリング</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/server_config.html">サーバー構成リファレンス</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/windows_agent_config.html">Windowsエージェント設定リファレンス</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">リリースノート</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="#release-notes/v1.35.X.adoc">release-notes/v1.35.X.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="#release-notes/v1.34.X.adoc">release-notes/v1.34.X.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="#release-notes/v1.33.X.adoc">release-notes/v1.33.X.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="#release-notes/v1.32.X.adoc">release-notes/v1.32.X.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">古い&#8230;&#8203;</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="#release-notes-old/v1.31.X.adoc">release-notes-old/v1.31.X.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="#release-notes-old/v1.30.X.adoc">release-notes-old/v1.30.X.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="#release-notes-old/v1.29.X.adoc">release-notes-old/v1.29.X.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="#release-notes-old/v1.28.X.adoc">release-notes-old/v1.28.X.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="#release-notes-old/v1.27.X.adoc">release-notes-old/v1.27.X.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="#release-notes-old/v1.26.X.adoc">release-notes-old/v1.26.X.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="#release-notes-old/v1.25.X.adoc">release-notes-old/v1.25.X.adoc</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="#release-notes-old/v1.24.X.adoc">release-notes-old/v1.24.X.adoc</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../known_issues.html">既知の問題および制限事項</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">RKE2</span>
+    <span class="version">Latest</span>
+  </div>
+  <ul class="components">
+        <li class="component">
+          <div class="title"><a href="../../../../admission-controller/1.37/en/introduction.html">Admission Controller</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../admission-controller/1.38/en/introduction.html">1.38-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../admission-controller/1.37/en/introduction.html">1.37-latest</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.36/en/introduction.html">1.36</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.35/en/introduction.html">1.35</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.34/en/introduction.html">1.34</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.33/en/introduction.html">1.33</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.32/en/introduction.html">1.32</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.31/en/introduction.html">1.31</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.30/en/introduction.html">1.30</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.29/en/introduction.html">1.29</a>
+            </li>
+            <li class="version">
+              <a href="../../../../admission-controller/1.28/en/introduction.html">1.28</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../cluster-api/v0.27/en/index.html">Cluster API</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../cluster-api/v0.28/en/index.html">v0.28-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../cluster-api/v0.27/en/index.html">v0.27</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.26/en/index.html">v0.26</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.25/en/index.html">0.25</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.24/en/index.html">0.24</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.23/en/index.html">0.23</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.22/en/index.html">0.22</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.21/en/index.html">0.21</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.20/en/index.html">0.20</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.19/en/index.html">0.19</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.18/en/index.html">0.18</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.17/en/index.html">0.17</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.16/en/index.html">0.16</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../cluster-api/v0.11/en/index.html">0.11</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../continuous-delivery/next/en/index.html">Continuous Delivery</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../continuous-delivery/next/en/index.html">Next</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.16/en/index.html">0.16</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.11/en/index.html">0.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.10/en/index.html">0.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../continuous-delivery/v0.9/en/index.html">0.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../k3s/latest/en/introduction.html">K3s</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../k3s/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../os-manager/1.9/en/index.html">OS Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../os-manager/1.10/en/index.html">1.10-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../os-manager/1.9/en/index.html">1.9</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.8/en/index.html">1.8</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.7/en/index.html">1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.6/en/index.html">1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../os-manager/1.5/en/index.html">1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-ai/1.1.0/en/introduction.html">Rancher AI</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../rancher-ai/1.2.0/en/introduction.html">1.2.0-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../rancher-ai/1.1.0/en/introduction.html">1.1.0-latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">Rancher Developer Access</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component is-current">
+          <div class="title"><a href="../../en/introduction.html">RKE2</a></div>
+          <ul class="versions">
+            <li class="version is-current is-latest">
+              <a href="../../en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../runtime-enforcer/0.8/en/introduction.html">Runtime Enforcer</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../runtime-enforcer/0.9/en/introduction.html">0.9-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../runtime-enforcer/0.8/en/introduction.html">0.8</a>
+            </li>
+            <li class="version">
+              <a href="../../../../runtime-enforcer/0.7/en/introduction.html">0.7</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-observability/latest/en/classic.html">SUSE Observability</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../suse-observability/latest/en/classic.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">SUSE® Rancher for AWS</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../rancher-manager/v2.15/en/about-rancher/what-is-rancher.html">SUSE® Rancher Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.16/en/about-rancher/what-is-rancher.html">v2.16 (Unreleased)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../rancher-manager/v2.15/en/about-rancher/what-is-rancher.html">v2.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.14/en/about-rancher/what-is-rancher.html">v2.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.13/en/about-rancher/what-is-rancher.html">v2.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.12/en/about-rancher/what-is-rancher.html">v2.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../rancher-manager/v2.11/en/about-rancher/what-is-rancher.html">v2.11</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../security/5.6/en/overview.html">SUSE® Security</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../security/5.6/en/overview.html">5.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.5/en/overview.html">5.5</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.4/en/overview.html">5.4</a>
+            </li>
+            <li class="version">
+              <a href="../../../../security/5.3/en/overview.html">5.3</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../storage/1.12/en/longhorn-documentation.html">SUSE® Storage</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../storage/1.13/en/longhorn-documentation.html">1.13 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../storage/1.12/en/longhorn-documentation.html">1.12 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../storage/1.11/en/longhorn-documentation.html">1.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../storage/1.10/en/longhorn-documentation.html">1.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../storage/1.9/en/longhorn-documentation.html">1.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">SUSE® Virtual Clusters</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/1.2.0/en/release-notes/version-1.2.0.html">v1.2.0 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">v1.1.0-latest</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/1.0.2/en/release-notes/version-1.0.2.html">v1.0.2</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.1/en/introduction.html">v1.0.1</a>
+            </li>
+            <li class="version">
+              <a href="../../../../suse-virtual-clusters/v1.0.0/en/introduction.html">v1.0.0</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../virtualization/v1.8/en/introduction/overview.html">SUSE® Virtualization</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../virtualization/v1.9/en/introduction/overview.html">v1.9 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../virtualization/v1.8/en/introduction/overview.html">v1.8 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../virtualization/v1.7/en/introduction/overview.html">v1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../../virtualization/v1.6/en/introduction/overview.html">v1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../virtualization/v1.5/en/introduction/overview.html">v1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../vulnerability-scanner/0.12.0/en/introduction.html">Vulnerability Scanner</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../vulnerability-scanner/0.12.0/en/introduction.html">0.12.0</a>
+            </li>
+            <li class="version">
+              <a href="../../../../vulnerability-scanner/0.11.3/en/introduction.html">0.11.3</a>
+            </li>
+          </ul>
+        </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+<ul>
+    <li>
+  <a class="home-link-dsc" href="https://documentation.suse.com" title="SUSE Documentation Home" aria-label="SUSE Documentation Home"></a>
+    </li>
+    <li>
+      <a href="https://documentation.suse.com/cloudnative/rke2" title="RKE2" aria-label="SUSE Documentation - RKE2">
+        RKE2
+      </a>
+    </li>
+      <li>
+          セキュリティ
+      </li>
+  </ul>
+</nav>
+      <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <label class="visual-search-label-bc" for="search-input">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+          <input label="Search" aria-label="Search" id="search-input" type="text" placeholder="ドキュメントを検索" >
+          <label class="filter checkbox" style="display: none">
+            <input type="checkbox" data-facet-filter="component:rke2" checked> Only this project
+          </label>
+        </div>
+      </div>
+</div>
+  <div class="content">
+<aside
+  class="toc sidebar"
+  data-title="このページで" data-levels="2">
+  <div class="toc-menu">
+    <div class="docsurvey-wrapper"><a class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_diCzHC9xxyJyuN0">Documentation survey</a></div>
+    <!-- start qualtrics -->
+    <div id='ZN_8qZUmklKYbBqAYe'><!--DO NOT REMOVE-CONTENTS PLACED HERE--></div>
+    <div id="qualtrics_container"></div>
+    <!-- end qualtrics -->
+  </div>
+</aside>
+
+<aside class="toc sidebar docsurvey-sidebar">
+  <div class="toc-menu">
+    <div class="docsurvey-wrapper"><a class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_diCzHC9xxyJyuN0">Documentation survey</a></div>
+  </div>
+</aside>
+<article class="doc">
+<h1 class="page">CISハードニングガイド</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>この文書は、SUSE® Rancher Prime: RKE2 の本番インストールをハードニングするための具体的なガイダンスを提供します。これは、インターネットセキュリティセンター（CIS）からのKubernetesベンチマークコントロールに対処するために必要な構成と制御を概説しています。</p>
+</div>
+<div class="paragraph">
+<p>ハードニングされたクラスターを公式のCISベンチマークに対して評価する詳細については、適切なCIS自己評価ガイドを参照してください：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="cis_self_assessment111.html" class="xref page">CIS自己評価ガイド v1.11</a> RKE2 v1.29以降用</p>
+</li>
+<li>
+<p><a href="cis_self_assessment110.html" class="xref page">CIS自己評価ガイド v1.10</a> RKE2 v1.29-v1.31用</p>
+</li>
+<li>
+<p><a href="cis_self_assessment19.html" class="xref page">CIS自己評価ガイド v1.9</a> RKE2 v1.27-v1.29用</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>RKE2はデフォルトでハードニングされており、ほとんどのKubernetes CIS制御を変更せずにクリアできます。しかし、この中にはCISベンチマークに完全に合格するために、手動での介入が必要な例外がいくつか存在します：</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>RKE2はホストオペレーティングシステムを変更しません。したがって、オペレーターであるあなたは、いくつかのホストレベルの変更を行う必要があります。</p>
+</li>
+<li>
+<p>ネットワークポリシーおよびポッドセキュリティ基準（RKE2 v1.25以前ではポッドセキュリティポリシー）に関する一部のCIS制御は、クラスターの機能を制限します。これらの設定をRKE2に自動で行わせるには、オプトインする必要があります。これらの要件が満たされることを保証するために、RKE2はそのバージョンに応じて`profile`フラグを`cis`または`cis-1.23`に設定して起動することができます。</p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="注記"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>本ガイドは、RKE2がインストール済みであるが、まだ起動していないことを前提としています。すでにRKE2を起動している場合は、RKE2サービスを停止する必要があります。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_ホストレベルの要件"><a class="anchor" href="#_ホストレベルの要件"></a>ホストレベルの要件</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>ホストレベルの要件は、カーネルパラメータ、kubeletのprotect-kernel-defaults、及びetcdプロセス／ディレクトリの設定という3つの領域に分かれます。これらはこのセクションで概説されています。</p>
+</div>
+<div class="sect2">
+<h3 id="_カーネルパラメータ"><a class="anchor" href="#_カーネルパラメータ"></a>カーネルパラメータ</h3>
+<div class="paragraph">
+<p>CISベンチマークでは、一部の特定のカーネルパラメータ設定が求められます。RKE2のインストール時に、必要なパラメータを適切に設定するためのsysctl設定ファイルが作成されます。しかし、この構成をホストに自動的に適用することはありません。これを手動で行う必要があります。設定ファイルの場所は、使用されるインストール方法によって異なります。</p>
+</div>
+<div class="paragraph">
+<p>RKE2がRPM、YUM、またはDNFを介してインストールされた場合（CentOSなどのRPMを使用するOSのデフォルト）、次のコマンドを実行してください：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">sudo cp -f /usr/share/rke2/rke2-cis-sysctl.conf /etc/sysctl.d/60-rke2-cis.conf
+sudo systemctl restart systemd-sysctl</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>RKE2がtarballを介してインストールされた場合（RPMを使用しないOSのデフォルトであるUbuntuなど）、次のコマンドを実行してください：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">sudo cp -f /usr/local/share/rke2/rke2-cis-sysctl.conf /etc/sysctl.d/60-rke2-cis.conf
+sudo systemctl restart systemd-sysctl</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>システムに`systemd-sysctl.service`および/または`/etc/sysctl.d`ディレクトリがない場合、起動時にsysctlが適用されることを確認するために、起動中に次のコマンドを実行する必要があります：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">sudo sysctl -p /usr/local/share/rke2/rke2-cis-sysctl.conf</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>このステップは、RKE2を使用してKubernetesをデプロイする前の新しいインストールにのみ実行してください。CNIプラグインを含む多くのKubernetesコンポーネントは、自分自身のsysctlを設定します。実行中のKubernetesクラスターで`systemd-sysctl`サービスを再起動すると、予期しない副作用が発生する可能性があります。</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_kubeletパラメータprotect_kernel_defaultsはtrueに設定されています"><a class="anchor" href="#_kubeletパラメータprotect_kernel_defaultsはtrueに設定されています"></a>Kubeletパラメータ`protect-kernel-defaults`は`true`に設定されています。</h3>
+<div class="paragraph">
+<p>これは、必要なカーネルパラメータが未設定またはkubeletのデフォルトと異なる値に設定されている場合、kubeletが終了する原因となるkubeletフラグです。</p>
+</div>
+<div class="paragraph">
+<p>RKE2は、`profile`フラグが設定されているときにフラグを`true`に自動的に設定します。</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="注記"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>`protect-kernel-defaults`はRKE2のトップレベルフラグとして公開されています。`profile`を`cis-1.XX`に、`protect-kernel-defaults`を`false`に明示的に設定した場合、RKE2はエラーで終了します。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>RKE2は、kubeletが行うのと同じカーネルパラメータもチェックし、kubeletと同じルールに従ってエラーで終了します。これは、オペレーターがkubeletのデフォルトを違反しているカーネルパラメータをより迅速かつ簡単に特定できるようにするための便宜として行われます。</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_etcdは適切に構成されています"><a class="anchor" href="#_etcdは適切に構成されています"></a>etcdは適切に構成されています。</h3>
+<div class="paragraph">
+<p>CISベンチマークでは、etcdデータディレクトリが`etcd`ユーザーおよびグループに所有されることが要求されます。これは、etcdプロセスがホストレベルの`etcd`ユーザーとして実行されることを暗黙的に要求します。これを達成するために、RKE2は有効な`cis`または`cis-1.XX`プロファイルで起動されたときにいくつかのステップを踏みます：</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>ホストに`etcd`ユーザーおよびグループが存在することを確認してください。存在しない場合は、エラーで終了します。</p>
+</li>
+<li>
+<p>`etcd`をユーザーおよびグループの所有者としてetcdのデータディレクトリを作成します。</p>
+</li>
+<li>
+<p>etcd静的ポッドの`SecurityContext`を適切に設定することで、etcdプロセスが`etcd`ユーザーおよびグループとして実行されることを確認します。</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>一部のLinux配布パッケージでは、<code>useradd`コマンドはグループを作成しません。それに対応するために、</code>-U`フラグが以下に含まれています。このフラグは、`useradd`にユーザーと同じ名前のグループを作成するよう指示します。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">sudo useradd -r -c "etcd user" -s /sbin/nologin -M etcd -U</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="注記"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>`etcd`ユーザーおよびグループは、/etc/passwdおよび/etc/groupの伝統的なデータベースファイルに定義されている必要があります。Golangのstdlib `os/user`パッケージは、NSSやsystemdユーザーデータベース（varlink）などの外部ユーザーデータベースをサポートしていません。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_rke2設定"><a class="anchor" href="#_rke2設定"></a>RKE2設定</h2>
+<div class="sectionbody">
+<div id="_tabs_1" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_1_v1_29以降" class="tab">
+<p>v1.29以降</p>
+</li>
+<li id="_tabs_1_v1_25_v1_28" class="tab">
+<p>v1.25 - v1.28</p>
+</li>
+<li id="_tabs_1_v1_24以前" class="tab">
+<p>v1.24以前</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_1_v1_29以降--panel" class="tabpanel" aria-labelledby="_tabs_1_v1_29以降">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">profile: "cis"
+# For cis-1.11 only, not needed on cis-1.9/cis-1.10
+kube-apiserver-arg:
+  - 'service-account-extend-token-expiration=false'</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_v1_25_v1_28--panel" class="tabpanel" aria-labelledby="_tabs_1_v1_25_v1_28">
+<div class="paragraph">
+<p><strong>一般的なCIS設定</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">profile: "cis"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>一般的な`cis`プロファイルを使用することで、クラスターがRKE2が実行しているKubernetesバージョンに関連するCISベンチマーク（rke2-cis-1.XX-profile-hardened）を通過することが保証されます。例えば、RKE2 v1.26.XXは`profile: cis`を使用すると、Rancherで`rke2-cis-1.8-profile-hardened`を通過します。</p>
+</div>
+<div class="paragraph">
+<p>一般的な`cis`プロファイルの使用により、RKE2へのアップグレードに既存の設定の変更が必要ないことが保証されます。適用可能なCISベンチマークを通過するために必要な変更は自動的に適用されます。</p>
+</div>
+<div class="paragraph">
+<p>RKE2バージョンとCISベンチマークバージョンの大まかなマッピングは以下の通りです：</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">RKE2マイナー</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">適用可能なCISベンチマーク</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">プロファイルフラグ</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.27-1.28</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.9</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>cis</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.26</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.8</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>cis-1.23</code>、<code>cis</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.25</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.7</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>cis-1.23</code>、<code>cis</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.24</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.24</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>cis-1.23</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.23</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.23</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>cis-1.23</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.19-1.22</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.6</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>cis-1.6</code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="_tabs_1_v1_24以前--panel" class="tabpanel" aria-labelledby="_tabs_1_v1_24以前">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">profile: "cis-1.23"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>設定ファイルは`config.yaml`という名前にして、`/etc/rancher/rke2`に配置する必要があります。ディレクトリはRKE2をインストールする前に作成する必要があります。</p>
+</div>
+<div class="paragraph">
+<p>`profile`フラグが設定されている場合、次のことを行います：</p>
+</div>
+</div>
+</div>
+</div>
+<div id="_tabs_2" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_2_v1_25以降" class="tab">
+<p>v1.25以降</p>
+</li>
+<li id="_tabs_2_v1_24以前" class="tab">
+<p>v1.24以前</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_2_v1_25以降--panel" class="tabpanel" aria-labelledby="_tabs_2_v1_25以降">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>ホストレベルの要件が満たされていることを確認します。満たされていない場合、RKE2は満たされていない要件を説明する致命的なエラーで終了します。</p>
+</li>
+<li>
+<p><a href="#_etcd_is_configured_properly">etcdハードニングガイド</a>で説明されているように、etcdユーザーおよびグループとして実行するようにetcd静的ポッドを構成します。</p>
+</li>
+<li>
+<p>関連する制御を通過させるためのネットワークポリシーを適用します。</p>
+</li>
+<li>
+<p>エージェントマニフェストおよびその他の設定ファイルに対して、より制限されたファイル権限（600対644）を適用します。</p>
+</li>
+<li>
+<p><code>kube-system</code>、<code>cis-operator-system</code>、および`tigera-operator`の名前空間を除いて、すべての名前空間で制限モードを強制するようにPod Security Admission Controllerを構成します。これらの名前空間は、システムポッドが制限なしで実行できるように免除されており、クラスターの適切な動作に必要です。PSA構成に関する詳細については、デフォルトの<a href="pod_security_standards.html#_pod_security_standards" class="xref page">Pod Security Admission構成</a>を参照してください。Pod Security Standardsに関する詳細については、 <a href="https://kubernetes.io/docs/concepts/security/pod-security-standards/">公式ドキュメント</a>を参照してください。</p>
+</li>
+</ol>
+</div>
+</div>
+<div id="_tabs_2_v1_24以前--panel" class="tabpanel" aria-labelledby="_tabs_2_v1_24以前">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>ホストレベルの要件が満たされていることを確認します。満たされていない場合、RKE2は満たされていない要件を説明する致命的なエラーで終了します。</p>
+</li>
+<li>
+<p>関連する制御を通過させるためのネットワークポリシーを適用します。</p>
+</li>
+<li>
+<p>クラスターが関連する制御を通過できるようにするランタイムのポッドセキュリティポリシーを構成します。</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_kubernetesランタイム要件"><a class="anchor" href="#_kubernetesランタイム要件"></a>Kubernetesランタイム要件</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>CISベンチマークを通過するためのランタイム要件は、ポッドセキュリティとネットワークポリシーに中心を置いています。これらのほとんどは、有効な`cis-1.XX`プロファイルを使用する際にRKE2によって自動的に処理されますが、追加のオペレーターの介入が必要です。</p>
+</div>
+<div class="sect2">
+<h3 id="_ポッドセキュリティ"><a class="anchor" href="#_ポッドセキュリティ"></a>ポッドセキュリティ</h3>
+<div class="paragraph">
+<p>RKE2は常にある程度のポッドセキュリティで実行されます。</p>
+</div>
+<div id="_tabs_3" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_3_v1_25以降" class="tab">
+<p>v1.25以降</p>
+</li>
+<li id="_tabs_3_v1_24以前" class="tab">
+<p>v1.24以前</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_3_v1_25以降--panel" class="tabpanel" aria-labelledby="_tabs_3_v1_25以降">
+<div class="paragraph">
+<p>v1.25以降では、 <a href="https://kubernetes.io/docs/concepts/security/pod-security-admission/">Pod Security Admission (PSA)</a>がポッドセキュリティに使用されます。デフォルトのPod Security Admission設定ファイルは、次のようにクラスターの起動時に追加されます：</p>
+</div>
+<div class="paragraph">
+<p><code>cis</code>/`cis-1.23`プロファイルを使用すると：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>RKE2は、クラスター全体で`restricted`モードを強制する設定ファイルを介して制限されたポッドセキュリティ基準を適用し、システムポッドの正常な動作を確保するために`kube-system`、<code>cis-operator-system</code>、および`tigera-operator`のネームスペースに例外を設けます。</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><code>cis</code>/<code>cis-1.23</code> プロファイルなしで：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>RKE2 は、クラスター全体で <code>privileged</code> モードを強制する設定ファイルを介して、制限のないポッドセキュリティ標準を適用します。これにより、クラスター内のすべてのポッドに対して完全に制限のないモードが許可されます。詳細については、<a href="pod_security_standards.html" class="xref page">ポッドセキュリティポリシー</a> ページをご覧ください。</p>
+</li>
+</ul>
+</div>
+</div>
+<div id="_tabs_3_v1_24以前--panel" class="tabpanel" aria-labelledby="_tabs_3_v1_24以前">
+<div class="paragraph">
+<p>v1.24 およびそれ以前のバージョンでは、<code>PodSecurityPolicy</code> アドミッションコントローラーは常に有効です。ポリシーは、RKE2 に渡されたプロファイルに基づいて適用されます。</p>
+</div>
+<div class="paragraph">
+<p>`cis-1.6`プロファイルを使用すると：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>RKE2 は、はるかに制限の厳しいポリシーセットを適用します。これらのポリシーは、CIS ベンチマークのセクション 5.2 に記載された要件を満たしています。</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><code>cis-1.6</code> プロファイルなしで：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>RKE2 は、<code>PodSecurityPolicy</code> アドミッションコントローラーが有効でないかのように Kubernetes を実行できる制限のないポリシーを適用します。詳細については、<a href="pod_security_policies.html" class="xref page">ポッドセキュリティポリシー</a> ページをご覧ください。</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="注記"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Kubernetes コントロールプレーンコンポーネントおよび CNI、DNS、Ingress などの重要な追加機能は、<code>kube-system</code> ネームスペース内でポッドとして実行されます。したがって、この名前空間には、これらのコンポーネントが適切に実行できるように、制限の少ないポリシーがあります。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_ネットワークポリシー"><a class="anchor" href="#_ネットワークポリシー"></a>ネットワークポリシー</h3>
+<div class="paragraph">
+<p>有効な "cis-1.XX" プロファイルで実行されると、RKE2 は Kubernetes のビルトインネームスペースに対して CIS ベンチマークを通過する <code>NetworkPolicies</code> を適用します。これらのネームスペースは、<code>kube-system</code>、<code>kube-public</code>、および <code>default</code> です。</p>
+</div>
+<div class="paragraph">
+<p>使用される <code>NetworkPolicy</code> は、同じネームスペース内のポッド同士が通信することのみを許可します。ただし、いくつかの注目すべき例外があり、DNS リクエストが解決されることが許可されています。</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>DNS リクエストは、DNS サーバーに到達することが許可されています。</p>
+</li>
+<li>
+<p>HTTP/s リクエストは、ingress-nginx サービスに到達することが許可されています。</p>
+</li>
+<li>
+<p>HTTPs リクエストは、metrics-server に到達することが許可されています。</p>
+</li>
+<li>
+<p>ingress-nginx ポッドによって指定されたポッドの ingress-nginx ウェブフックへのリクエスト（通常は 8443）</p>
+</li>
+<li>
+<p>rke2-snapshot-validation-webhook への HTTPs リクエスト</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="注意"></i>
+</td>
+<td class="content">
+<div class="title">オペレーターの介入が必要です。</div>
+<div class="paragraph">
+<p>オペレーターは、作成された追加の名前空間に対してネットワークポリシーを通常通り管理する必要があります。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_default_サービスアカウントを設定します"><a class="anchor" href="#_default_サービスアカウントを設定します"></a><code>default</code> サービスアカウントを設定します。</h3>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="注記"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><code>automountServiceAccountToken</code> サービスアカウントのために <code>false</code> を <code>default</code> に設定します。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Kubernetes は、ポッドに特定のサービスアカウントが割り当てられていないクラスターのワークロードによって使用される <code>default</code> サービスアカウントを提供します。ポッドから Kubernetes API へのアクセスが必要な場合、そのポッドのために特定のサービスアカウントを作成し、そのサービスアカウントに権限を付与する必要があります。<code>default</code> サービスアカウントは、サービスアカウントトークンを提供せず、明示的な権限の割り当てを持たないように構成する必要があります。</p>
+</div>
+<div class="paragraph">
+<p>標準の RKE2 インストールにおいて、<code>default</code> と <code>kube-system</code> を含む各ネームスペースに対して、<code>default</code> サービスアカウントはこの値を含む必要があります：</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">automountServiceAccountToken: false</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>RKE2 は、kube-system、cis-operator-system、kube-node-lease、および tigera-operator ネームスペースの値を自動的に正しく設定します。</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="警告"></i>
+</td>
+<td class="content">
+<div class="title">オペレーターの介入が必要です。</div>
+<div class="paragraph">
+<p>クラスターオペレーターによって作成されたネームスペースのために、<code>default</code> サービスアカウントを構成するために次のスクリプトと環境設定ファイルを使用できます。</p>
+</div>
+<div class="paragraph">
+<p>以下の設定は、<code>account_update.yaml</code> という名前のファイルに保存する必要があります。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: default
+automountServiceAccountToken: false</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>account_update.sh</code> という名前の bash スクリプトファイルを作成します。スクリプトに実行権限を与えるために、必ず <code>sudo chmod +x account_update.sh</code> を実行してください。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">#!/bin/bash -e
+
+for namespace in $(kubectl get namespaces -A -o=jsonpath="{.items[*]['metadata.name']}"); do
+  echo -n "Patching namespace $namespace - "
+  kubectl patch serviceaccount default -n ${namespace} -p "$(cat account_update.yaml)"
+done</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>このスクリプトを実行して、すべてのネームスペースの <code>default</code> サービスアカウントに <code>account_update.yaml</code> 設定を適用します。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_apiサーバー監査構成"><a class="anchor" href="#_apiサーバー監査構成"></a>APIサーバー監査構成</h3>
+<div class="paragraph">
+<p>CIS要件1.2.22から1.2.25は、APIサーバーの監査ログを構成することに関連しています。RKE2 が <code>profile</code> フラグを設定して起動されると、CIS チェックを通過させるために API サーバー内の強化された <code>--audit-log-</code> パラメータが自動的に構成されます。</p>
+</div>
+<div class="paragraph">
+<p>RKE2 のデフォルトの監査ポリシーは、API サーバーでのリクエストをログに記録しないように構成されています。これは、クラスターオペレーターが監査要件やニーズに合った監査ポリシーをカスタマイズする柔軟性を持つことを許可するために行われます。これらは各ユーザーの環境やポリシーに特有のものです。</p>
+</div>
+<div class="paragraph">
+<p>デフォルトの監査ポリシーは、<code>profile</code> フラグを設定して起動されたときに RKE2 によって作成されます。ポリシーは <code>/etc/rancher/rke2/audit-policy.yaml</code> に定義されています。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: audit.k8s.io/v1
+kind: Policy
+metadata:
+  creationTimestamp: null
+rules:
+- level: None</code></pre>
+</div>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="注意"></i>
+</td>
+<td class="content">
+<div class="title">オペレーターの介入が必要です。</div>
+<div class="paragraph">
+<p>API サーバーへのリクエストのログを開始するには、少なくとも <code>level</code> パラメータを変更する必要があります。例えば、<code>Metadata</code> に変更します。APIサーバーのポリシー設定に関する詳細情報は、Kubernetesの <a href="https://kubernetes.io/docs/tasks/debug-application-cluster/audit/">ドキュメント</a>で確認できます。</p>
+</div>
+<div class="paragraph">
+<p>監査ポリシーを適用した後、RKE2 を再起動して新しい設定を読み込む必要があります。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">sudo systemctl restart rke2-server.service</code></pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>API サーバーの監査ログは <code>/var/lib/rancher/rke2/server/logs/audit.log</code> に書き込まれます。</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_当バージョンの注意事項"><a class="anchor" href="#_当バージョンの注意事項"></a>当バージョンの注意事項</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>以下は、デフォルトの RKE2 が現在合格していないコントロールです。各ギャップについて説明し、どのように対処されるかを示します。</p>
+</div>
+<div class="sect2">
+<h3 id="_コントロール_1_1_12"><a class="anchor" href="#_コントロール_1_1_12"></a>コントロール 1.1.12</h3>
+<div class="paragraph">
+<p>etcdデータディレクトリの所有権が`etcd:etcd`に設定されていることを確認してください。</p>
+</div>
+<div class="sect3">
+<h4 id="_理由"><a class="anchor" href="#_理由"></a>理由</h4>
+<div class="paragraph">
+<p>etcdは、KubernetesのデプロイメントによってすべてのREST APIオブジェクトの永続的なストレージに使用される高可用性のキー-バリューストアです。このデータディレクトリは、無許可の読み取りや書き込みから保護されるべきです。`etcd:etcd`が所有者であるべきです。</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_補修"><a class="anchor" href="#_補修"></a>補修</h4>
+<div class="paragraph">
+<p>これは、<a href="#etcd is configured properly">上記</a>に記載されているように、<code>etcd</code> ユーザーとグループを作成することで修正できます。</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_コントロール_5_1_5"><a class="anchor" href="#_コントロール_5_1_5"></a>コントロール 5.1.5</h3>
+<div class="paragraph">
+<p>デフォルトのサービスアカウントが積極的に使用されていないことを確認してください。</p>
+</div>
+<div class="sect3">
+<h4 id="_理由_2"><a class="anchor" href="#_理由_2"></a>理由</h4>
+<div class="paragraph">
+<p>Kubernetes は、ポッドに特定のサービスアカウントが割り当てられていないクラスターのワークロードによって使用される <code>default</code> サービスアカウントを提供します。</p>
+</div>
+<div class="paragraph">
+<p>ポッドから Kubernetes API へのアクセスが必要な場合、そのポッドのために特定のサービスアカウントを作成し、そのサービスアカウントに権限を付与する必要があります。</p>
+</div>
+<div class="paragraph">
+<p><code>default</code> サービスアカウントは、サービスアカウントトークンを提供せず、明示的な権利の割り当てを持たないように構成されるべきです。</p>
+</div>
+<div class="paragraph">
+<p>これは、各ネームスペースの <code>default</code> サービスアカウントの <code>automountServiceAccountToken</code> フィールドを <code>false</code> に更新することで修正できます。</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_結論"><a class="anchor" href="#_結論"></a>結論</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>このガイドに従っていれば、あなたのRKE2クラスターはCIS Kubernetesベンチマークに合格するように構成されます。私たちのCIS自己評価ガイドを確認することで、各ベンチマークをどのように検証したか、そしてあなたのクラスターで同じことをどのように行うかを理解できます。</p>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="about_hardened_images.html">ハードニングされたイメージについて</a></span>
+  <span class="next"><a href="cis_self_assessment111.html">CIS 1.11 セルフアセスメントガイド</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<script src="../../../../_/js/site.js"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+<script src="../../../../_/js/vendor/lunr.js"></script>
+<script src="../../../../_/js/vendor/lunr-languages.js"></script>
+<script src="../../../../_/js/search-ui.js" id="search-ui-script" data-site-root-path="../../../.." data-snippet-length="100" data-stylesheet="../../../../_/css/search.css"></script>
+<script async src="../../../../search-index.js"></script>
+<script src="../../../../_/js/vendor/langSelection.js"></script>
+<script async src="../../../../_/js/vendor/tabs.js"></script>
+
+
+<script src="../../../../_/js/CNLanguageSwitcher.js"></script>
+  </body>
+</html>
