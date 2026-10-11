@@ -1,0 +1,2942 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Harvester Cloud Provider | SUSE® Virtualization  v1.9 (Dev)</title>
+    <link rel="canonical" href="https://documentation.suse.com/cloudnative/virtualization/v1.8/en/integrations/rancher/cloud-provider.html">
+    <link rel="prev" href="node-driver/k3s-cluster.html">
+    <link rel="next" href="csi-driver.html">
+    <meta name="description" content="Provision RKE2 and K3s clusters in Rancher using the Harvester Cloud Provider with SUSE Virtualization support">
+    <meta name="generator" content="Antora 3.1.14">
+    <link rel="stylesheet" href="../../../../../_/css/site.css">
+<meta http-equiv="last-modified" content="2026-10-05"/>
+<link rel="stylesheet" href="../../../../../_/css/search.css">
+<link rel="icon" href="../../../../../_/img/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="../../../../../_/css/font-styles.css">
+<link rel="stylesheet" href="../../../../../_/fonts/css/all.css">
+<link rel="stylesheet" href="../../../../../_/css/site-extra.css">
+<link rel="stylesheet" href="../../../../../_/css/vendor/tabs.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap&family=SUSE+Mono:ital,wght@0,100..800;1,100..800" rel="stylesheet">
+<link rel="stylesheet" href="../../../../../_/css/vendor/light.css">
+<script src="/docserv/res/lightheaded/analytics.js" type="text/javascript"></script>
+<script type="module">
+  import { defineCustomElements, setAssetPath } from 'https://static.scc.suse.com/shared-header/1.19/shared-header.esm.js';
+  defineCustomElements();
+  setAssetPath("https://static.scc.suse.com/shared-header/1.19/assets");
+</script>
+<!-- Default English link -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.9/en/integrations/rancher/cloud-provider.html" hreflang="x-default" rel="alternate"/>
+<!-- Link for the currently processed page -->
+<link href="https://documentation.suse.com/cloudnative/virtualization/v1.9/en/integrations/rancher/cloud-provider.html" hrefLang="en-US" rel="alternate" />
+
+<!-- JSON-LD for doc metadata -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Harvester Cloud Provider | SUSE Virtualization v1.9",
+  "headline": "Harvester Cloud Provider",
+  "description": "Provision RKE2 and K3s clusters in Rancher using the Harvester Cloud Provider with SUSE Virtualization support",
+  "inLanguage": "en",
+  "dateModified": "2026-10-05T00:00:00Z",
+  "author": {
+    "@type": "Organization",
+    "name": "SUSE Product & Solution Documentation Team",
+    "url": "https://documentation.suse.com"
+  },
+  "mentions": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "SUSE Virtualization",
+      "softwareVersion": "v1.9",
+      "applicationCategory": "Cloud Infrastructure",
+      "operatingSystem": "Linux"
+    }
+  ],
+  "publisher": {
+    "@type": "Organization",
+    "name": "SUSE",
+    "url": "https://documentation.suse.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.suse.com/assets/img/suse-white-logo-green.svg"
+    }
+  }
+}
+</script>
+<!-- end JSON-LD for doc metadata -->
+
+<!-- SUVA - Begin Ask Geeko-->
+<!--
+searchUnifyChatbot ("Ask Geeko") Copyright ©2024 Grazitti Interactive - All Rights Reserved. NOTICE: All information contained herein is, and remains the property of Grazitti Interactive and its suppliers, if any. The intellectual and technical concepts contained herein are proprietary to Grazitti Interactive and its suppliers and may be covered by India, U.S. and Foreign Patents, patents in process, and are protected by trade secret or copyright law. Dissemination of this information or reproduction of this material is strictly forbidden unless prior written permission is obtained from Grazitti Interactive.
+-->
+<meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport"/>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/Allow/an.js?c485cb3c-93d4-4942-99e8-91f3b8ca5636"></script>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/js/index.js?q=gAAAAABp3JBN9VuEJTi5tFafLIMwgMkCPdJS3Qm56lSYx93ir3Twt9hgSvd3OHEt6-nYfSbY3yHq0Zv8PRPsSy4nbqZiaJ4cZvRc6ItVZdvwz9Urf35cH6OUyPOwdA0phlS-zVIznQ2rWW438p-91NlTHuxJuOFpnA=="></script>
+<link rel="stylesheet" href="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/css/index.css">
+<div id="searchUnifyChatbot"></div>
+<!-- SUVA - End Ask Geeko-->
+<!--BEGIN QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+<script type='text/javascript' src="../../../../../_/js/qualtrics.js" defer></script>
+<!--END QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+    <script>var uiRootPath = '../../../../../_'</script>
+  </head>
+  <body class="article">
+<script type="module">import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs'; mermaid.initialize({"startOnLoad":true});</script><shared-header
+    language="en"
+    application="documentation-portal"
+    enable-search='false'
+    languages='{
+        "en": { "label": "English", "url": "https://documentation.suse.com/en-us/" },
+        "de": { "label": "Deutsch", "url": "https://documentation.suse.com/de-de/" },
+        "fr": { "label": "Français", "url": "https://documentation.suse.com/fr-fr/" },
+        "es": { "label": "Español", "url": "https://documentation.suse.com/es-es/" },
+        "zh_CN": { "label": "中文", "url": "https://documentation.suse.com/zh-cn/" },
+        "pt_BR": { "label": "Português Brasileiro", "url": "https://documentation.suse.com/pt-br/" }
+    }'>
+</shared-header>
+<div class="body">
+<div class="nav-container" data-component="virtualization" data-version="v1.9">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title">SUSE® Virtualization</h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Introduction</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../introduction/overview.html">Overview</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../introduction/deploy-ha-cluster.html">Deploy a High-Availability Cluster</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../introduction/deploy-singlenode-cluster.html">Deploy a Single-Node Cluster</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../introduction/glossary.html">Glossary</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../introduction/document-conventions.html">Document Conventions</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Installation and Setup</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../installation-setup/requirements.html">Hardware and Network Requirements</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Installation Media</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../installation-setup/media/net-install.html">Net Install ISO</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../installation-setup/media/install-binaries-mode.html">Install Binaries Only</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Installation Methods</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../installation-setup/methods/iso-install.html">ISO Installation</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../installation-setup/methods/usb-install.html">USB Installation</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../installation-setup/methods/pxe-boot-install.html">PXE Boot Installation</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Configuration</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../installation-setup/config/configuration-file.html">Configuration File</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../installation-setup/config/update-configuration.html">Update the Configuration After Installation</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../installation-setup/config/settings.html">Settings</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../installation-setup/config/cloudinitcrd.html">CloudInit CRD</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../installation-setup/post-installation.html">Post-Installation Tasks</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../installation-setup/management-address.html">Management Address</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../installation-setup/external-disk.html">External Disk Support</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../installation-setup/authentication.html">Authentication</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../installation-setup/airgap.html">Air-Gapped Environment</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../installation-setup/single-node-clusters.html">Single-Node Clusters</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Upgrades</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../upgrades/upgrades.html">Upgrades</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../upgrades/v1-5-0-to-v1-5-1.html">Upgrade from v1.5.0 to v1.5.1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../upgrades/v1-5-0-to-v1-5-2.html">Upgrade from v1.5.0 or v1.5.1 to v1.5.2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../upgrades/v1-5-x-to-v1-6-x.html">Upgrade from v1.5.x to v1.6.x</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../upgrades/v1-6-x-to-v1-6-y.html">Upgrade from v1.6.x to v1.6.y</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../upgrades/v1-6-x-to-v1-7-x.html">Upgrade from v1.6.x to v1.7.x</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../upgrades/v1-7-x-to-v1-7-y.html">Upgrade from v1.7.x to v1.7.y</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../upgrades/v1-7-x-to-v1-8-x.html">Upgrade from v1.7.x to v1.8.x</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../upgrades/v1-8-x-to-v1-8-y.html">Upgrade from v1.8.x to v1.8.y</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../upgrades/v1-8-x-to-v1-9-x.html">Upgrade from v1.8.x to v1.9.x</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../upgrades/troubleshooting.html">Troubleshooting</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Hosts</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../hosts/hosts.html">Host Management</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../hosts/witness-node.html">Witness Node</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../hosts/vgpu-support.html">vGPU Support</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Virtual Machines</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../virtual-machines/virtual-machines.html">Virtual Machines</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Virtual Machine Images</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../virtual-machines/vm-images/upload-image.html">Upload Images</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../virtual-machines/vm-images/custom-suse-images.html">Custom SUSE Virtual Machine Images</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../virtual-machines/vm-images/image-security.html">Image Security</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../virtual-machines/create-vm.html">Create a Virtual Machine</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../virtual-machines/create-windows-vm.html">Create a Windows Virtual Machine</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../virtual-machines/create-windows-vm-cloudbaseinit.html">Creating Windows Virtual Machines Using Cloudbase-Init</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../virtual-machines/edit-vm.html">Edit a Virtual Machine</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../virtual-machines/access-vm.html">Access to the Virtual Machine</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../virtual-machines/clone-vm.html">Clone a Virtual Machine</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../virtual-machines/backup-restore.html">Virtual Machine Backup, Snapshot &amp; Restore</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Virtual Machine Resources</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../virtual-machines/vm-resources/cpu-model-selection.html">CPU Model Selection</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../virtual-machines/vm-resources/cpu-pinning.html">CPU Pinning</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../virtual-machines/vm-resources/cpu-limits.html">CPU Limits</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../virtual-machines/vm-resources/resource-overcommit.html">Resource Overcommit</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../virtual-machines/vm-resources/cpu-memory-hotplug.html">CPU and Memory Hotplug</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../virtual-machines/vm-resources/nic-hotplug.html">NIC Hotplug</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../virtual-machines/vm-resources/volume-hotplug.html">Volume Hotplug</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../virtual-machines/vm-resources/cdrom-hotplug.html">CD-ROM Hotplug</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Virtual Machine Migration</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../virtual-machines/vm-migration/live-migration.html">Live Migration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../virtual-machines/vm-migration/vendor-compatibility-comparison.html">Vendor Compatibility and Comparison Guide</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Storage</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../storage/storage.html">Storage</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Volumes</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../storage/volumes/create-volume.html">Create a Volume</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../storage/volumes/edit-volume.html">Edit a Volume</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../storage/volumes/clone-volume.html">Clone a Volume</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../storage/volumes/export-volume.html">Export a Volume to Image</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../storage/volumes/volume-snapshots.html">Volume Snapshots</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../storage/volumes/volume-security.html">Volume Security</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../storage/storageclass.html">StorageClass</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../storage/csidriver.html">Third-Party Storage Support</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../storage/longhorn-v2-data-engine.html">Longhorn V2 Data Engine</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../storage/disk-filter-auto-provision.html">Disk Filtering and Automatic Provisioning</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../storage/storage-migration.html">Storage Migration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../storage/storage-validator.html">Storage Validator</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Networking</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../networking/cluster-network.html">Cluster Network</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../networking/vm-network.html">VM Network</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../networking/deep-dive.html">Networking Deep Dive</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../networking/load-balancer.html">Load Balancer</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../networking/ip-pool.html">IP Pool</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../networking/storage-network.html">Storage Network</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../networking/rwx-network.html">RWX Network</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../networking/vm-migration-network.html">VM Migration Network</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../networking/kubeovn-vpc.html">Virtual Private Cloud</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../networking/vpc-nat-gateway.html">VPC NAT Gateway</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../networking/vm-isolation.html">Virtual Machine Isolation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../networking/host-network-config.html">Host Network Configuration and Underlay Selection</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../networking/pure-underlay.html">Pure Underlay Networking</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../networking/best-practices.html">Networking Best Practices</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Cluster Management</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../cluster-management/kubevirt-components.html">KubeVirt Components</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../cluster-management/admin-access.html">Password Recovery for UI and Console User Accounts</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../cluster-management/ssh-users.html">Creating Users with SSH Access to SUSE Virtualization Nodes</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../cluster-management/additional-software.html">Installing Additional Software</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Security and Resilience</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../security-resilience/pod-security-standards.html">Cluster Pod Security Standards</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../security-resilience/ha-principles.html">High Availability Principles</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../security-resilience/failure-domains.html">Cluster Architecture and Failure Domains</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Observability</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../observability/logging.html">Logging</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../observability/monitoring.html">Monitoring</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Add-ons</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../add-ons/add-ons.html">Add-ons</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../add-ons/harvester-seeder.html">Seeder</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../add-ons/kubeovn-operator.html">Kube-OVN Operator (Experimental)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../add-ons/lvm-local-storage.html">CSI Driver LVM</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../add-ons/nvidia-driver-toolkit.html">NVIDIA Driver Toolkit</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../add-ons/pcidevices-controller.html">PCI Devices Controller</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../add-ons/rancher-vcluster.html">Rancher vCluster (Experimental)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../add-ons/suse-observability-agent.html">SUSE Observability Agent (Experimental)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../add-ons/virtual-machine-auto-balance.html">Virtual Machine Auto Balance</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../add-ons/vm-dhcp-controller.html">VM DHCP Controller (Experimental)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../add-ons/vm-import-controller.html">VM Import Controller</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../add-ons/upgrade-manager.html">Upgrade Manager</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Integrations</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Rancher Integration</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="rancher-integration.html">SUSE Rancher Prime Integration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="virtualization-management.html">Virtualization Management</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="rancher-rbac.html">Rancher Role-Based Access Control</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="overlay-underlay-guest-clusters.html">Underlay and Overlay Networking for Guest Clusters</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Node Driver</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="node-driver/node-driver.html">Harvester Node Driver</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="node-driver/rke2-cluster.html">Creating an RKE2 Kubernetes Cluster</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="node-driver/k3s-cluster.html">Creating a K3s Kubernetes Cluster</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item is-current-page" data-depth="3">
+    <a class="nav-link" href="cloud-provider.html">Harvester Cloud Provider</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="csi-driver.html">Harvester CSI Driver</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="resource-quota.html">Resource Quotas</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="rancher-terraform-provider.html">Rancher Terraform</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="import-vm.html">Import a Cluster Built on a SUSE® Virtualization VM</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="harvester-ui-extension.html">Harvester UI Extension</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="bare-metal-workloads.html">sidebar_label: Bare-Metal Workloads</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../terraform/terraform-provider.html">Terraform Provider</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Troubleshooting</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../troubleshooting/installation.html">Installation Issues</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../troubleshooting/operating-system.html">Operating System Issues</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../troubleshooting/cluster.html">Cluster Issues</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../troubleshooting/virtual-machines.html">Virtual Machine Issues</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../troubleshooting/monitoring.html">Monitoring Issues</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../troubleshooting/logging.html">Logging Issues</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../troubleshooting/rancher.html">SUSE Rancher Prime Issues</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../troubleshooting/faq.html">FAQ</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Developer Content</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../developer/addon-development.html">Add-on Development Guide</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../api.html">API</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">SUSE® Virtualization</span>
+    <span class="version">v1.9 (Dev)</span>
+  </div>
+  <ul class="components">
+        <li class="component">
+          <div class="title"><a href="../../../../../admission-controller/1.38/en/introduction.html">Admission Controller</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../../admission-controller/1.39/en/introduction.html">1.39-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../../admission-controller/1.38/en/introduction.html">1.38-latest</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../admission-controller/1.37/en/introduction.html">1.37</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../admission-controller/1.36/en/introduction.html">1.36</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../admission-controller/1.35/en/introduction.html">1.35</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../admission-controller/1.34/en/introduction.html">1.34</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../admission-controller/1.33/en/introduction.html">1.33</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../admission-controller/1.32/en/introduction.html">1.32</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../admission-controller/1.31/en/introduction.html">1.31</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../admission-controller/1.30/en/introduction.html">1.30</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../admission-controller/1.29/en/introduction.html">1.29</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../admission-controller/1.28/en/introduction.html">1.28</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../cluster-api/v0.27/en/index.html">Cluster API</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.28/en/index.html">v0.28-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../../cluster-api/v0.27/en/index.html">v0.27</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.26/en/index.html">v0.26</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.25/en/index.html">0.25</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.24/en/index.html">0.24</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.23/en/index.html">0.23</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.22/en/index.html">0.22</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.21/en/index.html">0.21</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.20/en/index.html">0.20</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.19/en/index.html">0.19</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.18/en/index.html">0.18</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.17/en/index.html">0.17</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.16/en/index.html">0.16</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../cluster-api/v0.11/en/index.html">0.11</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../continuous-delivery/next/en/index.html">Continuous Delivery</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../continuous-delivery/next/en/index.html">Next</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../continuous-delivery/v0.16/en/index.html">0.16</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../continuous-delivery/v0.15/en/index.html">0.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../continuous-delivery/v0.14/en/index.html">0.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../continuous-delivery/v0.13/en/index.html">0.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../continuous-delivery/v0.12/en/index.html">0.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../continuous-delivery/v0.11/en/index.html">0.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../continuous-delivery/v0.10/en/index.html">0.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../continuous-delivery/v0.9/en/index.html">0.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../k3s/latest/en/introduction.html">K3s</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../k3s/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../os-manager/1.9/en/index.html">OS Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../../os-manager/1.10/en/index.html">1.10-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../../os-manager/1.9/en/index.html">1.9</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../os-manager/1.8/en/index.html">1.8</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../os-manager/1.7/en/index.html">1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../os-manager/1.6/en/index.html">1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../os-manager/1.5/en/index.html">1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../rancher-ai/1.1.0/en/introduction.html">Rancher AI</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../../rancher-ai/1.2.0/en/introduction.html">1.2.0-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../../rancher-ai/1.1.0/en/introduction.html">1.1.0-latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">Rancher Developer Access</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../rke2/latest/en/introduction.html">RKE2</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../rke2/latest/en/introduction.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../runtime-enforcer/0.8/en/introduction.html">Runtime Enforcer</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../../runtime-enforcer/0.9/en/introduction.html">0.9-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../../runtime-enforcer/0.8/en/introduction.html">0.8</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../runtime-enforcer/0.7/en/introduction.html">0.7</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../suse-observability/latest/en/classic.html">SUSE Observability</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../suse-observability/latest/en/classic.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">SUSE® Rancher for AWS</a></div>
+          <ul class="versions">
+            <li class="version is-latest">
+              <a href="../../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">Latest</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../rancher-manager/v2.15/en/about-rancher/what-is-rancher.html">SUSE® Rancher Manager</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../../rancher-manager/v2.16/en/about-rancher/what-is-rancher.html">v2.16 (Unreleased)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../../rancher-manager/v2.15/en/about-rancher/what-is-rancher.html">v2.15</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../rancher-manager/v2.14/en/about-rancher/what-is-rancher.html">v2.14</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../rancher-manager/v2.13/en/about-rancher/what-is-rancher.html">v2.13</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../rancher-manager/v2.12/en/about-rancher/what-is-rancher.html">v2.12</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../rancher-manager/v2.11/en/about-rancher/what-is-rancher.html">v2.11</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../security/5.6/en/overview.html">SUSE® Security</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../../security/5.7/en/overview.html">5.7 (Unreleased)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../../security/5.6/en/overview.html">5.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../security/5.5/en/overview.html">5.5</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../security/5.4/en/overview.html">5.4</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../storage/1.12/en/longhorn-documentation.html">SUSE® Storage</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../../storage/1.13/en/longhorn-documentation.html">1.13 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../../storage/1.12/en/longhorn-documentation.html">1.12 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../storage/1.11/en/longhorn-documentation.html">1.11</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../storage/1.10/en/longhorn-documentation.html">1.10</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../storage/1.9/en/longhorn-documentation.html">1.9</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../suse-virtual-clusters/1.2.0/en/release-notes/version-1.2.0.html">SUSE® Virtual Clusters</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../../suse-virtual-clusters/1.3.0/en/introduction.html">v1.3.0 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../../suse-virtual-clusters/1.2.0/en/release-notes/version-1.2.0.html">v1.2.0-latest</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">v1.1.0</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../suse-virtual-clusters/1.0.2/en/release-notes/version-1.0.2.html">v1.0.2</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../suse-virtual-clusters/v1.0.1/en/introduction.html">v1.0.1</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../suse-virtual-clusters/v1.0.0/en/introduction.html">v1.0.0</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component is-current">
+          <div class="title"><a href="../../../../v1.8/en/introduction/overview.html">SUSE® Virtualization</a></div>
+          <ul class="versions">
+            <li class="version is-current">
+              <a href="../../introduction/overview.html">v1.9 (Dev)</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../v1.8/en/introduction/overview.html">v1.8 (Latest)</a>
+            </li>
+            <li class="version">
+              <a href="../../../../v1.7/en/introduction/overview.html">v1.7</a>
+            </li>
+            <li class="version">
+              <a href="../../../../v1.6/en/introduction/overview.html">v1.6</a>
+            </li>
+            <li class="version">
+              <a href="../../../../v1.5/en/introduction/overview.html">v1.5</a>
+            </li>
+          </ul>
+        </li>
+        <li class="component">
+          <div class="title"><a href="../../../../../vulnerability-scanner/0.12.0/en/introduction.html">Vulnerability Scanner</a></div>
+          <ul class="versions">
+            <li class="version">
+              <a href="../../../../../vulnerability-scanner/0.13.0/en/introduction.html">0.13.0-dev</a>
+            </li>
+            <li class="version is-latest">
+              <a href="../../../../../vulnerability-scanner/0.12.0/en/introduction.html">0.12.0</a>
+            </li>
+            <li class="version">
+              <a href="../../../../../vulnerability-scanner/0.11.3/en/introduction.html">0.11.3</a>
+            </li>
+          </ul>
+        </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+<ul>
+    <li>
+  <a class="home-link-dsc" href="https://documentation.suse.com" title="SUSE Documentation Home" aria-label="SUSE Documentation Home"></a>
+    </li>
+    <li>
+      <a href="https://documentation.suse.com/cloudnative/virtualization" title="SUSE Virtualization" aria-label="SUSE Documentation - SUSE Virtualization">
+        SUSE Virtualization
+      </a>
+    </li>
+      <li>
+          Integrations
+      </li>
+  </ul>
+</nav>
+<div class="page-versions">
+  <button class="version-menu-toggle" title="Show other versions of page">v1.9 (Dev)</button>
+  <div class="version-menu">
+    <a class="version is-current" href="cloud-provider.html">v1.9 (Dev)</a>
+    <a class="version" href="../../../../v1.8/en/integrations/rancher/cloud-provider.html">v1.8 (Latest)</a>
+    <a class="version" href="../../../../v1.7/en/integrations/rancher/cloud-provider.html">v1.7</a>
+    <a class="version" href="../../../../v1.6/en/integrations/rancher/cloud-provider.html">v1.6</a>
+    <a class="version" href="../../../../v1.5/en/integrations/rancher/cloud-provider.html">v1.5</a>
+  </div>
+</div>
+  <div class="edit-this-page"><a href="https://github.com/rancher/harvester-product-docs/edit/main/versions/v1.9/modules/en/pages/integrations/rancher/cloud-provider.adoc"><strong>Edit</strong></a></div>
+        <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <label class="visual-search-label-bc" for="search-input">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+          <input label="Search" aria-label="Search" id="search-input" type="text" placeholder="Search the docs" >
+          <label class="filter checkbox" style="display: none">
+            <input type="checkbox" data-facet-filter="component:virtualization" checked> Only this project
+          </label>
+        </div>
+      </div>
+</div>
+  <div class="content">
+<aside
+  class="toc sidebar"
+  data-title="On this page" data-levels="2">
+  <div class="toc-menu">
+        <!-- start qualtrics -->
+    <div id='ZN_8qZUmklKYbBqAYe'><!--DO NOT REMOVE-CONTENTS PLACED HERE--></div>
+    <div id="qualtrics_container"></div>
+    <!-- end qualtrics -->
+  </div>
+</aside>
+
+<aside class="toc sidebar docsurvey-sidebar">
+  <div class="toc-menu">
+      </div>
+</aside>
+<article class="doc">
+    <div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>This is unreleased documentation for SUSE® Virtualization v1.9 (Dev).</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+                        <h1 class="page">Harvester Cloud Provider</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>You can provision <a href="node-driver/rke2-cluster.html" class="xref page">SUSE® Rancher Prime: RKE2</a> clusters in SUSE® Rancher Prime using the built-in <strong>Harvester Node Driver</strong>. This component provides <a href="#_load_balancer_support">load balancer</a> and <a href="csi-driver.html" class="xref page">storage passthrough</a> capabilities to guest Kubernetes clusters.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_main_functionalities"><a class="anchor" href="#_main_functionalities"></a>Main functionalities</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <strong>Harvester Cloud Provider</strong> (also known as <strong>Cloud Controller Manager</strong>) implements a subset of the <code>cloudprovider</code> interface defined by <code>k8s.io/cloud-provider</code>.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#_guest_node_instance_metadata">Node metadata discovery and reporting</a>: Dynamically discovers and reports node metadata (such as node names, regions, zones, and IP addresses), acting as a critical bootstrap component for the guest cluster.</p>
+</li>
+<li>
+<p><a href="#_load_balancer_support">Load balancer provisioning</a>*: Automatically provisions and configures load balancers for Kubernetes <code>Service</code> objects (type: <code>LoadBalancer</code>), routing external traffic to the correct guest nodes.</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="_strictly_cloud_native_operation"><a class="anchor" href="#_strictly_cloud_native_operation"></a>Strictly cloud-native operation</h3>
+<div class="paragraph">
+<p>The Harvester Cloud Provider is built on the Kubernetes Cloud Controller Manager (CCM) framework. It operates natively by querying and managing resources directly through the SUSE Virtualization Kubernetes API server:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>API-driven metadata</strong>: Retrieves node metadata (such as <code>ProviderID</code>, region/zone topology, and IP addresses) by observing <code>VirtualMachineInstance</code> (VMI) status directly from the API server, eliminating host-level commands and hard-coded network interfaces or ports. Using the VMI status as the single source of truth guarantees consistent and deterministic metadata reporting across all nodes, providing a reliable foundation for downstream node lifecycle synchronization and load balancer traffic routing.</p>
+</li>
+<li>
+<p><strong>Centralized management</strong>: Runs as a standard Deployment rather than a per-node DaemonSet, centrally querying and monitoring virtual machine metadata across the guest cluster via standard Kubernetes API interactions.</p>
+</li>
+<li>
+<p><strong>CCM framework alignment</strong>: Uses both standard public flags and extended SUSE Virtualization flags (<code>--flag</code>) to modularly toggle controllers (standard CCM or custom VMI) and configure networking for complex cluster setups.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_backward_compatibility_notice"><a class="anchor" href="#_backward_compatibility_notice"></a>Backward compatibility notice</h2>
+<div class="sectionbody">
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Please note a known backward compatibility issue if you&#8217;re using the Harvester Cloud Provider version <strong>v0.2.2</strong> or higher. If your SUSE Virtualization version is below <strong>v1.2.0</strong> and you intend to use newer RKE2 versions (i.e., &gt;= <code>v1.26.6+rke2r1</code>, <code>v1.25.11+rke2r1</code>, <code>v1.24.15+rke2r1</code>), it is essential to upgrade your cluster to v1.2.0 or a higher version before proceeding with the upgrade of the guest Kubernetes cluster or Harvester Cloud Provider.</p>
+</div>
+<div class="paragraph">
+<p>For more informmation, see the <strong>Harvester CCM &amp; CSI Driver with RKE2 Releases</strong> section of the <a href="https://www.suse.com/suse-harvester/support-matrix/all-supported-versions/">Support Matrix</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_deployment"><a class="anchor" href="#_deployment"></a>Deployment</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Harvester Cloud Provider is packaged as an official Helm chart and is natively integrated into the Rancher and RKE2 ecosystem.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Automatic deployment (RKE2)</strong>: When provisioning an RKE2 guest cluster using the Harvester Node Driver, the Harvester Cloud Provider is automatically deployed to the guest cluster during cluster initialization as an <strong>RKE2 bootstrap chart</strong>.</p>
+</li>
+<li>
+<p><strong>Manual deployment</strong>: You can also <a href="#_deploying_k3s_cluster">manually install</a>, upgrade, or customize the provider&#8217;s configuration settings using the official Helm chart.</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="_chart_parameters"><a class="anchor" href="#_chart_parameters"></a>Chart parameters</h3>
+<div class="paragraph">
+<p>The following table lists the most common parameters:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Default Value</th>
+<th class="tableblock halign-left valign-top">First Available Version</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>extraArgs</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Additional CLI flags passed to cloud provider container</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.2.12</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>cloudConfigPath</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Legacy host path to cloud-config file</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>"/var/lib/rancher/rke2/etc/config-files/cloud-provider-config"</code> (Versions 0.2.3 to 0.2.9: <code>"/etc/kubernetes/cloud-config"</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.2.10</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>cloudConfig.secretName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name of Kubernetes Secret containing cloud-config data</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>""</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.2.12</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>cloudConfig.secretKey</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Key of Kubernetes Secret containing cloud-config data</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>"cloud-config"</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.2.12</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>cloudConfig.hostPath</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fallback host path to cloud-config file</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>"/var/lib/rancher/rke2/etc/config-files/cloud-provider-config"</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.2.12</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>global.cattle.clusterName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name of target cluster in Rancher</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>""</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.2.3</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>kube-vip.enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enables embedded <code>kube-vip</code> for load balancer VIPs</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.2.7</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>kube-vip.env.svc_enable</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enables <code>kube-vip</code> service controller</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>"true"</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.2.7</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>kube-vip.env.svc_election</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enables leader election for services (required for <code>externalTrafficPolicy: Local</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>"false"</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.2.12</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>For information about other configurable parameters, refer to the chart&#8217;s <a href="https://github.com/harvester/charts/blob/release/charts/harvester-cloud-provider/values.yaml"><code>values.yaml</code></a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_rancher_ui_options"><a class="anchor" href="#_rancher_ui_options"></a>Rancher UI options</h3>
+<div class="paragraph">
+<p>The Rancher UI provides dynamic forms driven by the chart&#8217;s <code>questions.yaml</code> file. While these forms expose standard settings, you can use the <strong>Edit as YAML</strong> feature to configure any parameter in <code>values.yaml</code>.</p>
+</div>
+<div class="paragraph">
+<p>The following image shows the default UI options for Harvester Cloud Provider v0.2.12:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../../_images/rancher/hcp-ui-options.png" alt="Rancher UI - Harvester Cloud Provider settings">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_cluster_identifier_configuration"><a class="anchor" href="#_cluster_identifier_configuration"></a>Cluster identifier configuration</h3>
+<div class="paragraph">
+<p>The <code>global.cattle.clusterName</code> parameter configures a unique cluster identifier that the Harvester Cloud Provider uses to tag and track resources allocated in the SUSE Virtualization cluster.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">global:
+  cattle:
+    clusterName: "cgc"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>How the cluster identifier is set depends on your deployment method:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Manual chart deployments</strong>: If you deploy or manage the <code>harvester-cloud-provider</code> chart manually, you must explicitly set a unique name for your cluster.</p>
+</li>
+<li>
+<p><strong>Rancher-provisioned clusters</strong>: If you deploy an RKE2 guest cluster using the Rancher UI, Rancher automatically injects the cluster&#8217;s unique name into <code>global.cattle.clusterName</code>.</p>
+<div class="paragraph">
+<p>In addition, Rancher automatically embeds the <code>harvester-cloud-provider</code> chart configuration in the <code>Cluster</code> custom resource (<code>provisioning.cattle.io/v1</code>). You can edit this resource using the Rancher UI.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: provisioning.cattle.io/v1
+kind: Cluster
+metadata:
+  name: cgc
+spec:
+  rkeConfig:
+    chartValues:
+      harvester-cloud-provider:
+        cloudConfigPath: /var/lib/rancher/rke2/etc/config-files/cloud-provider-config
+        global:
+          cattle:
+            clusterName: cgc</code></pre>
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../../_images/rancher/hcp-chart-config-path.png" alt="Rancher UI - Harvester Cloud Provider chart configuration path">
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>All Harvester Cloud Provider parameters must be nested directly under the <code>harvester-cloud-provider</code> key. Pay close attention to YAML indentation, as incorrect formatting can cause Helm to ignore or misinterpret your parameters.</p>
+</div>
+<div class="paragraph">
+<p>When using the <strong>Edit as YAML</strong> feature on the Rancher UI, the built-in editor automatically checks syntax and highlights indentation errors before you save.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="_resource_allocation_and_leakage_risks"><a class="anchor" href="#_resource_allocation_and_leakage_risks"></a>Resource allocation and leakage risks</h4>
+<div class="paragraph">
+<p>If the <code>global.cattle.clusterName</code> parameter is missing, the Cloud Controller Manager framework uses <code>kubernetes</code> as the cluster name by default.</p>
+</div>
+<div class="paragraph">
+<p>Because SUSE Virtualization manages multi-tenant and multi-cluster environments, using this generic name prevents SUSE Virtualization from effectively determining which guest cluster owns specific backing resources (such as load balancers). This can cause resource tracking conflicts, resource leaks, or unexpected resource exhaustion across clusters sharing the same SUSE Virtualization installation.</p>
+</div>
+<div class="paragraph">
+<p>Starting with Harvester Cloud Provider v0.2.12 and SUSE Virtualization v1.9.0, both <code>harvester-cloud-provider</code> (running in the guest cluster) and <code>harvester-load-balancer</code> (running in the SUSE Virtualization cluster) generate warning logs whenever <code>global.cattle.clusterName</code> is missing or <code>kubernetes</code> is used as the cluster name. If you observe these warning logs, inspect and update your Helm chart parameters immediately.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_parameter_alignment_and_terminology_mapping"><a class="anchor" href="#_parameter_alignment_and_terminology_mapping"></a>Parameter alignment and terminology mapping</h4>
+<div class="paragraph">
+<p>The cluster identifier is represented by different parameter names depending on where it is configured or referenced.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Context or Location</th>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Alignment Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Rancher UI</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Cluster Name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set during guest cluster creation.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Harvester Cloud Provider Helm chart</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>global.cattle.clusterName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Configured in <code>values.yaml</code>. Injected automatically by the Rancher UI for RKE2 guest clusters; must be set manually in all other cases.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Harvester Cloud Provider deployment flag</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>--cluster-name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Internal container argument injected into the Harvester Cloud Provider deployment. The Helm chart template automatically converts <code>global.cattle.clusterName</code> to <code>--cluster-name</code>. When troubleshooting, check the deployment manifest to verify this parameter, but <strong>do not edit it directly</strong>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Cloud Config Generation</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>serviceAccountName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Parameter specified when generating the cloud-config payload.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>Critical alignment requirement</strong></p>
+</div>
+<div class="paragraph">
+<p>Although different components use different parameter names, they all represent the exact same cluster identifier and <strong>must strictly match</strong>. If these values do not match, the Harvester Cloud Provider will fail to authenticate or properly manage resources in SUSE Virtualization.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_remote_cluster_cloud_configuration"><a class="anchor" href="#_remote_cluster_cloud_configuration"></a>Remote cluster cloud configuration</h3>
+<div class="paragraph">
+<p>Harvester Cloud Provider requires a <a href="#_generating_cloudconfig_cloudprovider">cloud-config</a> payload to connect to the remote SUSE Virtualization cluster for management of virtual machine metadata and load balancers. You can configure this payload using either legacy host-path mounts or Kubernetes Secrets.</p>
+</div>
+<div class="sect3">
+<h4 id="_file_based_cloud_configuration_legacy"><a class="anchor" href="#_file_based_cloud_configuration_legacy"></a>File-based cloud configuration (legacy)</h4>
+<div class="paragraph">
+<p>This approach relies on mounting the configuration file directly from the SUSE Virtualization node&#8217;s filesystem.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Default path</strong> (<code>cloudConfigPath</code>): RKE2 automatically injects the configuration file into <code>/var/lib/rancher/rke2/etc/config-files/cloud-provider-config</code> for the cloud-provider container to access.</p>
+</li>
+<li>
+<p><strong>Configuration syntax</strong>:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">    cloudConfigPath: "/var/lib/rancher/rke2/etc/config-files/cloud-provider-config"</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p><strong>Host path fallback</strong> (<code>cloudConfig.hostPath</code>): This is maintained for backward compatibility and evaluated only if <code>cloudConfig.secretName</code> is empty and <code>cloudConfigPath</code> is omitted.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_secret_based_cloud_configuration_recommended"><a class="anchor" href="#_secret_based_cloud_configuration_recommended"></a>Secret-based cloud configuration (recommended)</h4>
+<div class="paragraph">
+<p>This approach uses a Kubernetes Secret to store and manage the configuration payload natively inside the cluster.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">cloudConfig:
+  secretName: ""
+  secretKey: "cloud-config"
+  hostPath: "/var/lib/rancher/rke2/etc/config-files/cloud-provider-config"</code></pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Generate and copy the cloud-config content.</p>
+<div class="paragraph">
+<p>You must <a href="#_generating_cloudconfig_cloudprovider">generate</a> and copy the full string under the <code>content</code> key. This value is already Base64-encoded.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The value of <code>namespace</code> must match the namespace where the guest cluster is deployed, and the value of <code>serviceAccountName</code> must match the exact cluster name. Mismatched values will prevent the Harvester Cloud Provider from connecting to SUSE Virtualization.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../../_images/rancher/hcp-config-secret-content.png" alt="Rancher UI - Harvester Cloud Provider Cloud Config Secret contents">
+</div>
+</div>
+</li>
+<li>
+<p>Paste the secret manifest during cluster provisioning.</p>
+<div class="paragraph">
+<p>When provisioning the new guest cluster using the Rancher UI, paste the generated secret definition onto the <strong>Additional Manifest</strong> tab on the <strong>Cluster Configuration</strong> screen.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: v1
+kind: Secret
+metadata:
+  name: hcp-cloud-config
+  namespace: kube-system
+type: Opaque
+data:
+  cloud-config: &lt;BASE64_ENCODED_CLOUD_CONFIG&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Consider the following requirements when creating the secret:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Namespace</strong>: The secret must be created in <code>kube-system</code> to match the default <code>harvester-cloud-provider</code> namespace.</p>
+</li>
+<li>
+<p><strong>Secret key</strong>: If you use a custom key name instead of the default <code>cloud-config</code> under <code>data</code>, update the <strong>Cloud Config Secret Key</strong> field on the <strong>Addon: Harvester Cloud Provider</strong> tab.</p>
+<div class="imageblock">
+<div class="content">
+<img src="../../_images/rancher/hcp-config-additional-manifest.png" alt="Rancher UI - Additional Manifest">
+</div>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Reference the secret name in the Harvester Cloud Provider add-on.</p>
+<div class="paragraph">
+<p>Specify the secret name in the <strong>Cloud Config Secret Name</strong> field on the <strong>Addon: Harvester Cloud Provider</strong> tab.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../../_images/rancher/hcp-config-sc-name.png" alt="Rancher UI - Cloud Config Secret Name field">
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>In SELinux-enabled clusters, container runtimes enforce strict security context labeling that blocks the <code>harvester-cloud-provider</code> container from reading host files under <code>/var/lib/rancher/rke2/&#8230;&#8203;</code> (<code>EACCES: Permission denied</code>).</p>
+</div>
+<div class="paragraph">
+<p>Using a Kubernetes Secret eliminates host path dependencies, allowing the pod to access the configuration natively via Kubernetes volume mounts without SELinux permission violations.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Configuration settings are evaluated in the following order of precedence:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Precedence</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>cloudConfig.secretName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Highest</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Mounts a Kubernetes Secret and overrides all other settings when set.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>cloudConfig.secretKey</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">N/A</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Specifies the key inside the Secret containing the configuration payload (defaults to <code>cloud-config</code>).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>cloudConfigPath</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Secondary (legacy default)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maintained for backward compatibility; evaluated if <code>secretName</code> is empty.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>cloudConfig.hostPath</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fallback</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Evaluated only when <code>secretName</code> is empty and <code>cloudConfigPath</code> is explicitly set to <code>""</code>.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_extra_arguments"><a class="anchor" href="#_extra_arguments"></a>Extra arguments</h3>
+<div class="paragraph">
+<p>Built on top of the <a href="https://kubernetes.io/docs/concepts/architecture/cloud-controller/">Kubernetes Cloud Controller Manager</a> (CCM) framework, the Harvester Cloud Provider supports standard upstream CCM flags as well as SUSE Virtualization-specific extended runtime flags. These flags allow you to flexibly tune controller features, networking logic, and system behavior.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Prior to v0.2.12, custom flags added directly to the <code>harvester-cloud-provider</code> deployment or pod specification were non-persistent and overwritten during guest cluster upgrades or redeployments.</p>
+</div>
+<div class="paragraph">
+<p>Starting with v0.2.12, the Helm chart natively supports flag configuration via <code>extraArgs</code>, ensuring custom arguments persist across upgrades and redeployments.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_supported_flags"><a class="anchor" href="#_supported_flags"></a>Supported flags</h4>
+<div class="paragraph">
+<p>The Harvester Cloud Provider supports both standard upstream CCM flags and SUSE Virtualization-specific extended flags.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Flag</th>
+<th class="tableblock halign-left valign-top">Category</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>--controllers</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CCM framework</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">List of CCM controllers to enable (for example, <code>cloud-node-controller</code> and <code>node-route-controller</code>). Omit a controller to disable it.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>--v</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CCM framework</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Logging verbosity level (for example, <code>--v=5</code> for debug logging).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>--disable-vmi-controller</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUSE Virtualization extended</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Disables SUSE Virtualization&#8217;s custom VMI controller.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>--show-full-help-on-error</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUSE Virtualization extended</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Prints full CLI help if a flag parsing error occurs at startup.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>--management-network</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Networking and IP selection</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Target virtual machine network name used to allocate load balancer IP addresses and report node IP addresses in multi-network environments.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>--node-ip-cidr</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Networking and IP selection</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CIDR range for exact node IP selection in multi-IP address environments.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>--node-exclude-ip-ranges</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Networking and IP selection</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Comma-separated list of IP addresses or subnets to exclude from node status reports.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>--disable-annotation-alpha-provided-ip-addr</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Networking and IP selection</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Disables legacy alpha annotations, forcing the provider to rely strictly on CIDR logic.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Consider the following usage notes when configuring complex flags:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>--disable-vmi-controller</code>: The standard <code>--controllers</code> flag only manages upstream CCM controllers. SUSE Virtualization uses a dedicated VMI controller to watch VirtualMachineInstance resources and sync topology changes (such as region and zone updates) to guest <code>Node</code> objects. Set this flag to <code>false</code> to ensure dynamic topology sync works correctly as detailed in <a href="#_guest_node_instance_metadata">Guest node instance metadata</a>.</p>
+</li>
+<li>
+<p><code>--show-full-help-on-error</code>: By default, the Harvester Cloud Provider silences the upstream CCM&#8217;s long help output on startup errors to keep logs clean. Set this flag to <code>true</code> only when debugging startup configuration issues.</p>
+</li>
+<li>
+<p><code>--management-network</code>: Essential for environments where guest nodes are attached to multiple VM networks. Setting this flag overrides the default "first-hit" network selection logic.</p>
+<div class="paragraph">
+<p>The target SUSE Virtualization cluster must run SUSE Virtualization v1.9.0 or later to support the <code>--management-network</code> flag for <code>LoadBalancer</code> services, designating it as the target load balancer network. Earlier SUSE Virtualization versions fall back to <code>first-fit</code> resolution to select the target network. For more information, see <a href="../../networking/ip-pool.html#_guest_cluster_load_balancer_network_resolution" class="xref page">Guest Cluster Load Balancer Network Resolution</a>.</p>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_configuration_examples"><a class="anchor" href="#_configuration_examples"></a>Configuration examples</h4>
+<div class="paragraph">
+<p>The following examples demonstrate how to configure <code>extraArgs</code> for various deployment scenarios:</p>
+</div>
+<div class="sect4">
+<h5 id="_disabling_the_default_load_balancer_controller"><a class="anchor" href="#_disabling_the_default_load_balancer_controller"></a>Disabling the default load balancer controller</h5>
+<div class="paragraph">
+<p>Use this configuration when deploying an alternative to the default load balancer controller of the Harvester Cloud Provider.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">extraArgs:
+  - "--controllers=cloud-node-controller,cloud-node-lifecycle-controller,node-route-controller"</code></pre>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Because <code>kube-vip</code> is embedded within the Harvester Cloud Provider to advertise load balancer IP addresses, disabling the upstream service controller typically requires disabling <code>kube-vip</code> in your Helm values as well.</p>
+</div>
+<div class="paragraph">
+<p>If you keep <code>kube-vip</code> enabled while using an alternative load balancer controller, ensure the controller is compatible with <code>kube-vip</code>. Integrating third-party load balancer controllers with <code>kube-vip</code> is outside the scope of the Harvester Cloud Provider.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_multi_network_and_multi_ip_configurations_recommended"><a class="anchor" href="#_multi_network_and_multi_ip_configurations_recommended"></a>Multi-network and multi-IP configurations (recommended)</h5>
+<div class="paragraph">
+<p>When guest cluster nodes use multiple networks, dual-stack IPs, or secondary IPv4 addresses on a single interface, the default <code>first-hit</code> selection logic can cause non-deterministic IP reporting.</p>
+</div>
+<div class="paragraph">
+<p>The following scenarios demonstrate how to use <code>extraArgs</code> to handle complex networking setups:</p>
+</div>
+<div class="paragraph">
+<p><strong>Network selection in multi-network environments</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Scenario: Nodes are attached to multiple SUSE Virtualization VM networks (for example, <code>default/vlan-100</code> and <code>default/vlan-200</code>).</p>
+</li>
+<li>
+<p>Default behavior: The provider selects an interface non-deterministically based on discovery order.</p>
+</li>
+<li>
+<p>Goal: Force the provider to allocate load balancer IPs and report node IPs exclusively from a designated network (for example, <code>default/vlan-100</code>).</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">extraArgs:
+  - "--management-network=default/vlan-100"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Dual-stack interfaces in single-stack (IPv4-only) clusters</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Scenario: Nodes are assigned both IPv4 and IPv6 addresses in an IPv4-only cluster.</p>
+</li>
+<li>
+<p>Default behavior: The provider may report both addresses as <code>InternalIP</code>.</p>
+</li>
+<li>
+<p>Goal: Ensure the IPv4 address is assigned as the primary <code>InternalIP</code>, relegating the IPv6 address to <code>ExternalIP</code>.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">extraArgs:
+  - "--node-ip-cidr=192.168.1.0/24"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Excluding secondary IP ranges on the same network</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Scenario: Nodes have multiple IPv4 addresses on the same management interface (<code>default/vlan-100</code>), such as <code>192.168.100.0/25</code> for node management and <code>192.168.100.128/25</code> for internal storage.</p>
+</li>
+<li>
+<p>Default behavior: The provider assigns the first IPv4 address as <code>InternalIP</code> and automatically publishes the second IPv4 address as <code>ExternalIP</code>.</p>
+</li>
+<li>
+<p>Goal: Enforce network boundaries and prevent secondary internal subnets from leaking into Kubernetes node status as <code>ExternalIP</code>.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">extraArgs:
+  - "--management-network=default/vlan-100" # Specifies the target network interface
+  - "--node-ip-cidr=192.168.100.0/25" # Locks the primary internal IP selection to the node management subnet range
+  - "--node-exclude-ip-ranges=192.168.100.128/25" # Prevents the secondary IP range from being reported as ExternalIP</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Production Multi-Network Stack</strong></p>
+</div>
+<div class="paragraph">
+<p>Goal: Combine strict network selection, subnet binding, range exclusion, and runtime flags for a deterministic production configuration.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">extraArgs:
+    - "--management-network=default/vlan-100"
+    - "--node-ip-cidr=192.168.100.0/25"
+    - "--node-exclude-ip-ranges=192.168.100.128/25"
+    - "--disable-annotation-alpha-provided-ip-addr=true"
+    - "--show-full-help-on-error=true"</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_limitation_rancher_ui_ip_synchronization"><a class="anchor" href="#_limitation_rancher_ui_ip_synchronization"></a>Limitation: Rancher UI IP synchronization</h5>
+<div class="paragraph">
+<p>The Harvester Cloud Provider correctly applies network flags and updates Kubernetes node status (<code>InternalIP</code> or <code>ExternalIP</code>). However, the Rancher UI does not dynamically re-sync node IP changes if they are updated after initial node registration (see <a href="https://github.com/harvester/harvester/issues/10381#issuecomment-5264412173">issue #10381</a>).</p>
+</div>
+<div class="paragraph">
+<p><strong>Example</strong>: On an IPv4-only cluster where nodes initially report both IPv4 and IPv6 addresses as <code>InternalIP</code>, specifying <code>--node-ip-cidr</code> enables the Harvester Cloud Provider to successfully filter the Kubernetes node status to IPv4 addresses only. However, the Rancher UI may continue displaying the unsynced IP information.</p>
+</div>
+<div class="paragraph">
+<p><strong>Workaround</strong>: Set network flags in <code>extraArgs</code> during initial cluster bootstrapping. Applying these flags to an existing cluster requires a cluster redeployment for the Rancher UI to reflect the updated node metadata.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_embedded_kube_vip_integration"><a class="anchor" href="#_embedded_kube_vip_integration"></a>Embedded <code>kube-vip</code> integration</h3>
+<div class="paragraph">
+<p>The Harvester Cloud Provider integrates with <code>kube-vip</code> to provision and manage virtual IPs for Kubernetes <code>LoadBalancer</code> services.</p>
+</div>
+<div class="sect3">
+<h4 id="_disabling_the_embedded_kube_vip"><a class="anchor" href="#_disabling_the_embedded_kube_vip"></a>Disabling the embedded <code>kube-vip</code></h4>
+<div class="paragraph">
+<p>If you want the Harvester Cloud Provider to retain its load balancer IP allocation logic (such as pool-based IP assignment), but prefer using an external BGP/ARP speaker or alternative tool to handle VIP traffic routing, disable the embedded <code>kube-vip</code> sub-chart:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">kube-vip:
+  enabled: false</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_configuring_support_for_externaltrafficpolicy_local"><a class="anchor" href="#_configuring_support_for_externaltrafficpolicy_local"></a>Configuring support for <code>externalTrafficPolicy: Local</code></h4>
+<div class="paragraph">
+<p>By default, <code>kube-vip</code> runs exclusively on management nodes. To support <code>externalTrafficPolicy: Local</code> for <code>LoadBalancer</code> services, traffic must route directly to nodes hosting active workload pods.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Enable service leader election by setting <code>svc_election: "true"</code> in the <code>kube-vip</code> environment configuration.</p>
+</li>
+<li>
+<p>Expand <code>kube-vip.affinity</code> rules so <code>kube-vip</code> pods run on both management nodes and worker nodes.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">    kube-vip:
+      env:
+        svc_election: "true"
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: node-role.kubernetes.io/control-plane
+                operator: Exists
+            - matchExpressions:
+              - key: node-role.kubernetes.io/worker
+                operator: Exists</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>Best practice: Ensure node coverage for <code>externalTrafficPolicy: Local</code></strong></p>
+</div>
+<div class="paragraph">
+<p>Deploying <code>kube-vip</code> across all nodes in the guest cluster is strongly recommended when using <code>externalTrafficPolicy: Local</code>.
+Because <code>kube-vip</code> only elects a leader and advertises a VIP on nodes that actively host workload pods, restricting pod scheduling creates the following coverage gaps:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>No common nodes</strong>: If <code>kube-vip</code> runs only on management nodes while workload pods run exclusively on worker nodes, <code>kube-vip</code> cannot elect a leader and will fail to advertise the VIP for that service.</p>
+</li>
+<li>
+<p><strong>Partial overlap</strong>: If <code>kube-vip</code> runs on a subset of worker nodes (for example, <code>node1</code> and <code>node2</code>) while workload pods run on <code>node2</code> and <code>node3</code>, only the overlapping node (<code>node2</code>) can advertise the VIP.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>In both scenarios, the high availability aspect of the <code>LoadBalancer</code> service is severely compromised or lost entirely.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_prerequisites"><a class="anchor" href="#_prerequisites"></a>Prerequisites</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>The Kubernetes cluster is built on top of SUSE Virtualization virtual machines.</p>
+</li>
+<li>
+<p>The SUSE Virtualization virtual machines run as guest Kubernetes nodes are in the same namespace.</p>
+</li>
+<li>
+<p>The SUSE Virtualization virtual machine guests' hostnames match their corresponding SUSE Virtualization virtual machine names. Guest cluster SUSE Virtualization VMs can&#8217;t have different hostnames than their SUSE Virtualization VM names when using the Harvester CSI Driver. We hope <a href="https://github.com/harvester/harvester/issues/4396">to remove this limitation</a> in a future release.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If the Harvester Cloud Provider <code>kube-vip</code> is not disabled explicitly, each SUSE Virtualization virtual machine must have the <code>macvlan</code> kernel module, which is required for the <code>LoadBalancer</code> services of the <strong>DHCP</strong> IPAM mode.</p>
+</div>
+<div class="paragraph">
+<p>To check if the kernel module is available, access the VM and run the following commands:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">lsmod | grep macvlan
+sudo modprobe macvlan</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The kernel module is likely to be missing if the following occur:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>$ lsmod | grep macvlan</code> does not produce output.</p>
+</li>
+<li>
+<p><code>$ sudo modprobe macvlan</code> displays an error message similar to <code>modprobe: FATAL: Module macvlan not found in directory /lib/modules/5.14.21-150400.22-default</code>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>By default, the <code>macvlan</code> kernel module is not included in SUSE Linux Enterprise 15 Service Pack 4/5/6 minimal cloud images (see <a href="https://github.com/harvester/harvester/issues/6418">Issue #6418</a>). Those images contain the <a href="https://software.opensuse.org/package/kernel-default-base"><code>kernel-default-base</code></a> package, which includes only the base modules. However, the <code>macvlan</code> kernel driver becomes available when you install the <code>kernel-default</code> package.</p>
+</div>
+<div class="paragraph">
+<p>To eliminate the need for manual intervention after the guest cluster is provisioned, build your own cloud images using the openSUSE Build Service (OBS). You must remove the <code>kernel-default-base</code> package and add the <code>kernel-default</code> package in the <code>Minimal.kiwi</code> file to ensure that the resulting cloud image includes the <code>macvlan</code> kernel module. For more information, see <a href="../../virtual-machines/vm-images/custom-suse-images.html" class="xref page">Custom SUSE VM Images</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_deploying_to_the_rke2_cluster_with_harvester_node_driver"><a class="anchor" href="#_deploying_to_the_rke2_cluster_with_harvester_node_driver"></a>Deploying to the RKE2 Cluster with Harvester Node Driver</h3>
+<div class="paragraph">
+<p>When spinning up an RKE2 cluster using the Harvester Node Driver, select the <code>Harvester</code> cloud provider. The node driver will then help deploy both the CSI driver and CCM automatically.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../../_images/rancher/rke2-cloud-provider.png" alt="rke2 cloud provider">
+</div>
+</div>
+<div class="paragraph">
+<p>Starting with Rancher v2.9.0, you can configure a specific folder for cloud config data using the <strong>Data directory configuration path</strong> field.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../../_images/rancher/rke2-cloud-provider-custom-data-dir.png" alt="rke2 cloud provider custom data dir">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_manually_deploying_to_the_rke2_cluster"><a class="anchor" href="#_manually_deploying_to_the_rke2_cluster"></a>Manually deploying to the RKE2 cluster</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><a href="#_generating_cloudconfig_cloudprovider">Generate the <code>cloud-config</code> for the Harvester Cloud Provider</a>.</p>
+</li>
+<li>
+<p>On the RKE2 cluster creation page, go to the <strong>Cluster Configuration</strong> screen and set the value of <strong>Cloud Provider</strong> to <strong>External</strong>.</p>
+<div class="imageblock">
+<div class="content">
+<img src="../../_images/rancher/external-harvester-cloud-provider.png" alt="external harvester cloud provider">
+</div>
+</div>
+</li>
+<li>
+<p>Copy and paste the <code>cloud-init user data</code> content to <strong>Machine Pools</strong> &gt; <strong>Show Advanced</strong> &gt; <strong>User Data</strong>.</p>
+<div class="imageblock">
+<div class="content">
+<img src="../../_images/rancher/cloud-config-userdata.png" alt="cloud config userdata">
+</div>
+</div>
+</li>
+<li>
+<p>Add the <code>HelmChart</code> CRD for <code>harvester-cloud-provider</code> to <strong>Cluster Configuration</strong> &gt; <strong>Add-On Config</strong> &gt; <strong>Additional Manifest</strong>.</p>
+<div class="paragraph">
+<p>You must replace <code>&lt;cluster-name&gt;</code> with the name of your cluster.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml"> apiVersion: helm.cattle.io/v1
+ kind: HelmChart
+ metadata:
+   name: harvester-cloud-provider
+   namespace: kube-system
+ spec:
+   targetNamespace: kube-system
+   bootstrap: true
+   repo: https://raw.githubusercontent.com/rancher/charts/dev-v2.9
+   chart: harvester-cloud-provider
+   version:  104.0.2+up0.2.6
+   helmVersion: v3
+   valuesContent: |-
+     global:
+       cattle:
+         clusterName: &lt;cluster-name&gt;</code></pre>
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../../_images/rancher/external-cloud-provider-addon.png" alt="external cloud provider addon">
+</div>
+</div>
+</li>
+<li>
+<p>To create the load balancer, add the annotation <code>cloudprovider.harvesterhci.io/ipam: &lt;dhcp|pool&gt;</code>.</p>
+<div class="imageblock">
+<div class="content">
+<img src="../../_images/rancher/harvester-cloud-provider-loadbalancer-annotation.png" alt="harvester cloud provider loadbalancer annotation">
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_deploying_to_the_rke2_custom_cluster_experimental"><a class="anchor" href="#_deploying_to_the_rke2_custom_cluster_experimental"></a>Deploying to the RKE2 custom cluster (experimental)</h3>
+<div class="imageblock">
+<div class="content">
+<img src="../../_images/rancher/custom.png" alt="custom">
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><a href="#_generating_cloudconfig_cloudprovider">Generate the <code>cloud-config</code> for the SUSE Virtualization Cloud Provider</a>.</p>
+</li>
+<li>
+<p>Create a VM in the SUSE Virtualization cluster with the following settings:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Basics</strong> tab: The minimum requirements are 2 CPUs and 4 GiB of RAM. The required disk space depends on the VM image.</p>
+<div class="imageblock">
+<div class="content">
+<img src="../../_images/rancher/custom-cluster-vm-cpu-and-ram.png" alt="custom cluster vm cpu and ram">
+</div>
+</div>
+</li>
+<li>
+<p><strong>Networks</strong> tab: Specify a network name with the format <code>nic-&lt;number&gt;</code>.</p>
+<div class="imageblock">
+<div class="content">
+<img src="../../_images/rancher/custom-cluster-vm-network.png" alt="custom cluster vm network">
+</div>
+</div>
+</li>
+<li>
+<p><strong>Advanced Options</strong> tab: Copy and paste the content of the <strong>Cloud Config User Data</strong> screen.</p>
+<div class="imageblock">
+<div class="content">
+<img src="../../_images/rancher/custom-cluster-vm-user-data.png" alt="custom cluster vm user data">
+</div>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>On the <strong>Basics</strong> tab of the <strong>Cluster Configuration</strong> screen, select <strong>Harvester</strong> as the <strong>Cloud Provider</strong> and then select <strong>Create</strong> to spin up the cluster.</p>
+<div class="imageblock">
+<div class="content">
+<img src="../../_images/rancher/create-custom-rke2.png" alt="create custom rke2">
+</div>
+</div>
+</li>
+<li>
+<p>On the <strong>Registration</strong> tab, perform the steps required to run the RKE2 registration command on the VM.</p>
+<div class="imageblock">
+<div class="content">
+<img src="../../_images/rancher/custom-cluster-registration.png" alt="custom cluster registration">
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_deploying_k3s_cluster"><a class="anchor" href="#_deploying_k3s_cluster"></a>Deploying to a K3s cluster with Harvester Node Driver (experimental)</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><a href="#_generating_cloudconfig_cloudprovider">Generate the <code>cloud-config</code> for the Harvester Cloud Provider</a>.</p>
+</li>
+<li>
+<p>Copy and paste the <code>cloud-init user data</code> content to <strong>Machine Pools &gt; Show Advanced &gt; User Data</strong>.</p>
+<div class="paragraph">
+<p><span class="image"><img src="../../_images/rancher/cloud-config-userdata.png" alt="cloud config userdata"></span></p>
+</div>
+</li>
+<li>
+<p>Add the following <code>HelmChart</code> yaml of <code>harvester-cloud-provider</code> to <strong>Cluster Configuration &gt; Add-On Config &gt; Additional Manifest</strong>.</p>
+<div class="listingblock">
+<div class="content">
+<pre> apiVersion: helm.cattle.io/v1
+ kind: HelmChart
+ metadata:
+   name: harvester-cloud-provider
+   namespace: kube-system
+ spec:
+   targetNamespace: kube-system
+   bootstrap: true
+   repo: https://charts.harvesterhci.io/
+   chart: harvester-cloud-provider
+   version: 0.2.12
+   helmVersion: v3</pre>
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../../_images/rancher/external-cloud-provider-addon.png" alt="external cloud provider addon">
+</div>
+</div>
+</li>
+<li>
+<p>Disable the <code>in-tree</code> cloud provider in the following ways:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Click the <code>Edit as YAML</code> button.</p>
+<div class="imageblock">
+<div class="content">
+<img src="../../_images/rancher/edit-k3s-cluster-yaml.png" alt="edit k3s cluster yaml">
+</div>
+</div>
+</li>
+<li>
+<p>Disable <code>servicelb</code> and set <code>disable-cloud-controller: true</code> to disable the default K3s cloud controller.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">  machineGlobalConfig:
+    disable:
+      - servicelb
+    disable-cloud-controller: true</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Add <code>cloud-provider=external</code> to use the Harvester Cloud Provider.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">  machineSelectorConfig:
+    - config:
+        kubelet-arg:
+        - cloud-provider=external
+        protect-kernel-defaults: false</code></pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../../_images/rancher/k3s-cluster-yaml-content-for-harvester-cloud-provider.png" alt="k3s cluster yaml content for harvester cloud provider">
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>With these settings in place a K3s cluster should provision successfully while using the external cloud provider.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_generating_cloudconfig_cloudprovider"><a class="anchor" href="#_generating_cloudconfig_cloudprovider"></a>Generating the cloud-config for the Harvester Cloud Provider</h3>
+<div class="paragraph">
+<p>The Harvester Cloud Provider requires a cloud-config file to connect to the remote SUSE Virtualization cluster (for example, to query virtual machine information or allocate load balancers). You can generate this file using either the API endpoint or a bash script.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Support for the bash script method will be deprecated in a future release. Use the API endpoint to ensure long-term compatibility.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div id="_tabs_1" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_1_api" class="tab">
+<p>API</p>
+</li>
+<li id="_tabs_1_bash_script" class="tab">
+<p>Bash Script</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_1_api--panel" class="tabpanel" aria-labelledby="_tabs_1_api">
+<div class="paragraph">
+<p>You can send <code>POST</code> and <code>GET</code> requests to the SUSE Virtualization API endpoint <code>/v1/harvester/kubeconfig</code> using an admin bearer token.</p>
+</div>
+<div class="paragraph">
+<p>==== Request parameters</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>namespace</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Target namespace in SUSE Virtualization where the guest cluster is deployed.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>gc-test</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>serviceAccountName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the ServiceAccount created for <code>cloud-config</code> generation (This must strictly match the guest cluster name.)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>gc4</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>clusterRoleName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ClusterRole to bind to the service account (optional)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>harvesterhci.io:cloudprovider</code> (only supported value)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>outputFormat</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Output format</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>yaml</code> (only supported value)</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="ulist">
+<ul>
+<li>
+<p><code>clusterRoleName</code>: SUSE Virtualization uses <code>harvesterhci.io:cloudprovider</code> by default if this field is left empty.</p>
+</li>
+<li>
+<p><code>outputFormat</code>: Setting this to <code>yaml</code> retrieves the cloud-init user data. Specifying any other value or leaving the field empty returns the raw kubeconfig file.</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>==== <code>POST</code> request</p>
+</div>
+<div class="paragraph">
+<p>Add <code>-k</code>/<code>--insecure</code> to the <code>curl</code> command only if your SUSE Virtualization endpoint uses a self-signed certificate.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"> curl -X POST \
+  -H "Authorization: Bearer token-abcde:..." \
+  -H "Content-Type: application/json" \
+  -d '{"namespace": "gc-test", "serviceAccountName": "gc4", "outputFormat": "yaml"}' \
+  "https://&lt;vip&gt;/v1/harvester/kubeconfig"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>==== <code>POST</code> response</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">########## cloud-init user data ############
+write_files:
+- encoding: b64
+  content: &lt;BASE64_CONTENT&gt;
+  owner: root:root
+  path: /etc/kubernetes/cloud-config
+  permissions: '0644'
+- encoding: b64
+  content: &lt;BASE64_CONTENT&gt;
+  owner: root:root
+  path: /var/lib/rancher/rke2/etc/config-files/cloud-provider-config
+  permissions: '0644'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>==== <code>GET</code> request</p>
+</div>
+<div class="paragraph">
+<p>Use a single ampersand (<code>&amp;</code>) to separate query parameters.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -X GET \
+  -H "Authorization: Bearer token-abcde:..." \
+  "https://&lt;vip&gt;/v1/harvester/kubeconfig?namespace=gc-test&amp;serviceAccountName=gc4&amp;outputFormat=yaml"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>==== <code>GET</code> response</p>
+</div>
+<div class="paragraph">
+<p>The API response automatically includes cloud-init configurations for both legacy and new paths. Before applying this configuration, remove the block that does not apply to your environment.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">########## cloud-init user data ############
+write_files:
+- encoding: b64
+  content: &lt;BASE64_CONTENT&gt;
+  owner: root:root
+  path: /etc/kubernetes/cloud-config
+  permissions: '0644'
+- encoding: b64
+  content: &lt;BASE64_CONTENT&gt;
+  owner: root:root
+  path: /var/lib/rancher/rke2/etc/config-files/cloud-provider-config
+  permissions: '0644'</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_bash_script--panel" class="tabpanel" aria-labelledby="_tabs_1_bash_script">
+<div class="paragraph">
+<p>The script requires <code>kubectl</code> and <code>jq</code> to interact with the SUSE Virtualization cluster, and functions only when given access to the cluster&#8217;s kubeconfig file.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Generate the cloud-config data using the <code>generate_addon.sh</code> script.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -sfL https://raw.githubusercontent.com/harvester/cloud-provider-harvester/master/deploy/generate_addon.sh | bash -s &lt;serviceaccount name&gt; &lt;namespace&gt;</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Copy the generated data to every node.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Legacy path: <code>/etc/kubernetes/cloud-config</code></p>
+</li>
+<li>
+<p>RKE2 default path (v1.9.0 and later): <code>/var/lib/rancher/rke2/etc/config-files/cloud-provider-config</code></p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>You can find the kubeconfig file on any SUSE Virtualization management node at the following path: <code>/etc/rancher/rke2/rke2.yaml</code>. Before using the kubeconfig file, you must replace the IP address in the <code>server: field</code> with your cluster&#8217;s VIP address.</p>
+</div>
+<div class="paragraph">
+<p><strong>Example of content</strong>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority-data: &lt;redacted&gt;
+    server: https://127.0.0.1:6443
+  name: default
+# ...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You must specify the namespace in which the guest cluster will be created.</p>
+</div>
+<div class="paragraph">
+<p><strong>Example of output</strong>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">########## cloud config ############
+apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority-data: &lt;CACERT&gt;
+    server: https://HARVESTER-ENDPOINT/k8s/clusters/local
+  name: local
+contexts:
+- context:
+    cluster: local
+    namespace: default
+    user: harvester-cloud-provider-default-local
+  name: harvester-cloud-provider-default-local
+current-context: harvester-cloud-provider-default-local
+kind: Config
+preferences: {}
+users:
+- name: harvester-cloud-provider-default-local
+  user:
+    token: &lt;TOKEN&gt;
+
+########## cloud-init user data ############
+write_files:
+- encoding: b64
+  content: &lt;CONTENT&gt;
+  owner: root:root
+  path: /etc/kubernetes/cloud-config
+  permissions: '0644'</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>In newer RKE2 versions (such as v1.33.11), the default cloud-config path is <code>/var/lib/rancher/rke2/etc/config-files/cloud-provider-config</code>. You must ensure that the <code>cloudConfigPath</code> value matches the exact file location you write to.</p>
+</div>
+<div class="paragraph">
+<p>Depending on your setup, choose one of the following approaches:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Use the RKE2 default path</strong>: In the <code>write_files</code> entry in your cloud-init configuration, change the value of <code>path</code> to <code>/var/lib/rancher/rke2/etc/config-files/cloud-provider-config</code>.</p>
+</li>
+<li>
+<p><strong>Keep the legacy path</strong>: In the Rancher UI, set <code>.spec.rkeConfig.chartValues.harvester-cloud-provider.cloudConfigPath</code> to <code>/etc/kubernetes/cloud-config</code>.</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_upgrade_cloud_provider"><a class="anchor" href="#_upgrade_cloud_provider"></a>Upgrade Cloud Provider</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_upgrade_rke2"><a class="anchor" href="#_upgrade_rke2"></a>Upgrade RKE2</h3>
+<div class="paragraph">
+<p>The cloud provider can be upgraded by upgrading the RKE2 version. You can upgrade the RKE2 cluster via the Rancher UI as follows:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Click <strong>☰ &gt; Cluster Management</strong>.</p>
+</li>
+<li>
+<p>Find the guest cluster that you want to upgrade and select ⋮ <strong>&gt; Edit Config</strong>.</p>
+</li>
+<li>
+<p>Select <strong>Kubernetes Version</strong>.</p>
+</li>
+<li>
+<p>Click <strong>Save</strong>.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_upgrade_k3s"><a class="anchor" href="#_upgrade_k3s"></a>Upgrade K3s</h3>
+<div class="paragraph">
+<p>K3s upgrade cloud provider via the Rancher UI, as follows:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Click <strong>☰ &gt; K3s Cluster &gt; Apps &gt; Installed Apps</strong>.</p>
+</li>
+<li>
+<p>Find the cloud provider chart and select ⋮ <strong>&gt; Edit/Upgrade</strong>.</p>
+</li>
+<li>
+<p>Select <strong>Version</strong>.</p>
+</li>
+<li>
+<p>Click <strong>Next &gt; Update</strong>.</p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The upgrade process for a <a href="../../installation-setup/single-node-clusters.html" class="xref page">single-node guest cluster</a> may stall when the new <code>harvester-cloud-provider</code> pod is stuck in the <em>Pending</em> state. This issue is caused by a section in the <code>harvester-cloud-provider</code> deployment that describes the rolling update strategy. Specifically, the default value conflicts with the <code>podAntiAffinity</code> configuration in single-node clusters.</p>
+</div>
+<div class="paragraph">
+<p>For more information, see <a href="https://github.com/harvester/harvester/issues/5348#issuecomment-2055453709">this GitHub issue comment</a>. To address the issue, manually delete the old <code>harvester-cloud-provider</code> pod. You might need to do this multiple times until the new pod can be successfully scheduled.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_guest_node_instance_metadata"><a class="anchor" href="#_guest_node_instance_metadata"></a>Guest node instance metadata</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>When registering and updating guest nodes, <code>harvester-cloud-provider</code> queries the SUSE Virtualization API server to inspect the underlying <code>VirtualMachine</code> (VM) and <code>VirtualMachineInstance</code> (VMI) objects. It constructs the standard <code>cloudprovider.InstanceMetadata</code> struct by targeting three key metadata elements from the VMI:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Provider identifier</strong> (<code>ProviderID</code>): Sets a globally unique identifier for the guest node based on the underlying SUSE Virtualization virtual machine&#8217;s UID.</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Format</strong>: <code>harvester://&lt;vm.UID&gt;</code></p>
+</li>
+<li>
+<p><strong>Purpose</strong>: Allows Kubernetes to deterministically map the guest <code>Node</code> object back to its physical SUSE Virtualization VM resource.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>Topology metadata</strong> (<code>Region</code> and <code>Zone</code>): Reads topology annotations set on the <code>VMI</code> object to establish placement context for Kubernetes scheduling.</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Region</strong>: Extracted from the <code>topology.kubernetes.io/region</code> annotation.</p>
+</li>
+<li>
+<p><strong>Zone</strong>: Extracted from the <code>topology.kubernetes.io/zone</code> annotation.</p>
+</li>
+<li>
+<p><strong>Fallback</strong>: If the VMI lacks topology annotations, <code>ProviderID</code> is still reported while region/zone fields remain unset.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>Node addresses</strong> (<code>NodeAddresses</code>): Constructs the complete address list (<code>[]v1.NodeAddress</code>) for the guest node by combining hostname mapping with VMI status discovery.</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Host Name</strong> (<code>NodeHostName</code>): Sets <code>v1.NodeHostName</code> directly using the target <code>node.Name</code>.</p>
+</li>
+<li>
+<p><strong>IP Discovery</strong> (<code>InternalIP</code> &amp; <code>ExternalIP</code>): Evaluates active network interface IPs reported directly in the VMI status alongside provider configuration—eliminating the need for host-level probes or hardcoded NIC assumptions.</p>
+</li>
+<li>
+<p><strong>Deterministic Mapping</strong>: Assigns detected IPs to <code>InternalIP</code> and <code>ExternalIP</code> types, providing a consistent source of truth for downstream intra-cluster networking and load balancer traffic routing.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>To filter or customize the virtual machine network interfaces and IP ranges reported as node addresses, see <a href="#_extra_arguments">Extra arguments</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_load_balancer_support"><a class="anchor" href="#_load_balancer_support"></a>Load balancer support</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Once you&#8217;ve deployed the Harvester Cloud Provider, you can leverage the Kubernetes <code>LoadBalancer</code> service to expose a microservice within the guest cluster to the external world. Creating a Kubernetes <code>LoadBalancer</code> service assigns a dedicated SUSE Virtualization load balancer to the service, and you can make adjustments through the <code>Add-on Config</code> within the Rancher UI.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../../_images/rancher/lb-svc.png" alt="lb svc">
+</div>
+</div>
+<div class="sect2">
+<h3 id="_ipam"><a class="anchor" href="#_ipam"></a>IPAM</h3>
+<div class="paragraph">
+<p>SUSE Virtualization&#8217;s built-in load balancer offers both <strong>DHCP</strong> and <strong>Pool</strong> modes, and you can configure it by adding the annotation <code>cloudprovider.harvesterhci.io/ipam: $mode</code> to its corresponding service. Starting from Harvester Cloud Provider &gt;= v0.2.0, it also introduces a unique <strong>Share IP</strong> mode. A service shares its load balancer IP with other services in this mode.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>DHCP</strong>: A DHCP server is required. The SUSE Virtualization load balancer will request an IP address from the DHCP server.</p>
+<div class="paragraph">
+<p>Starting with <strong>Rancher v2.15.1</strong>, you can select a VM network when creating a <code>LoadBalancer</code> service using the UI. This enables explicit binding of the virtual IP to the correct network interface. If you do not select a VM network, the load balancer uses the default interface.</p>
+</div>
+<div class="paragraph">
+<p>In earlier Rancher versions (v2.12.x, v2.13.x, and v2.14.x), you can achieve the same result by adding the following annotations to the <code>Service</code> manifest:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>cloudprovider.harvesterhci.io/ipam: "dhcp"</code></p>
+</li>
+<li>
+<p><code>cloudprovider.harvesterhci.io/network: "default/mgmt-vlan1"</code></p>
+<div class="imageblock">
+<div class="content">
+<img src="../../_images/rancher/guest-cluster-load-balancer-dhcp.png" alt="Guest cluster load balancer (DHCP mode)">
+</div>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>Pool</strong>: A pre-configured <a href="../../networking/ip-pool.html" class="xref page">IP pool</a> is required. The SUSE Virtualization load balancer controller allocates an IP for the load balancer service according to the <a href="../../networking/ip-pool.html#_selection_policy" class="xref page">IP pool selection policy</a>. You can create IP pools using either the <a href="../../networking/ip-pool.html#_creating_an_IP_pool" class="xref page">SUSE Virtualization UI</a> or the <a href="../../networking/ip-pool.html#_creating_an_IP_pool_using_the_rancher_ui" class="xref page">Rancher UI</a>. For more information, see <a href="../../networking/ip-pool.html#_best_practices" class="xref page">Best practices</a>.</p>
+<div class="paragraph">
+<p>Starting with <strong>Rancher v2.15.1</strong>, you can select a VM network when creating a <code>LoadBalancer</code> service using the UI. This enables explicit binding of the load balancer to the correct network interface. If you do not select a VM network (specifically, the <code>cloudprovider.harvesterhci.io/network</code> is empty), the load balancer controller automatically determines the network to be used.</p>
+</div>
+<div class="paragraph">
+<p>On earlier Rancher versions (v2.12.x, v2.13.x, and v2.14.x), you can achieve the same result by adding the following annotations to the <code>Service</code> manifest:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>cloudprovider.harvesterhci.io/ipam: "ippool"</code></p>
+</li>
+<li>
+<p><code>cloudprovider.harvesterhci.io/network: "default/mgmt-vlan1"</code></p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The remote SUSE Virtualization cluster must run v1.9.0 or later to support custom <code>cloudprovider.harvesterhci.io/network</code> configurations in the Harvester Cloud Provider.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>When a guest cluster uses multiple networks, or when multiple guest clusters with distinct networks share a single namespace, configuring the correct network parameters is critical. For information about how the system automatically determines the network, see <a href="../../networking/ip-pool.html#_guest_cluster_load_balancer_network_resolution" class="xref page">Guest cluster load balancer network resolution</a>.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../../_images/rancher/guest-cluster-load-balancer-pool.png" alt="Guest cluster load balancer (Pool mode)">
+</div>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>Share IP</strong>: When creating a new load balancer service (secondary service), you can reuse the IP address of an existing service (primary service). To specify the primary service, add the annotation <code>cloudprovider.harvesterhci.io/primary-service: $primary-service-name</code> to the secondary service.</p>
+<div class="paragraph">
+<p>This mode has two known limitations:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Services sharing the same IP address cannot use identical ports.</p>
+</li>
+<li>
+<p>Secondary services cannot share their IP with additional services.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Modifying the IPAM mode of an existing service is not supported. To use a different IPAM mode, create a new load balancer service.</p>
+</div>
+<div class="paragraph">
+<p>See <a href="../../troubleshooting/rancher.html#_guest_cluster_load_balancer_ip_is_not_reachable" class="xref page">Guest cluster load balancer IP is not reachable</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_asymmetric_topology"><a class="anchor" href="#_asymmetric_topology"></a>Asymmetric network topology</h3>
+<div class="paragraph">
+<p>The network dropdown list on the UI displays only networks assigned to the <em>exact same interface position across all cluster nodes</em>.</p>
+</div>
+<div class="paragraph">
+<p>Example:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Network-Interface Mapping</th>
+<th class="tableblock halign-left valign-top">UI Behavior</th>
+<th class="tableblock halign-left valign-top">Node A</th>
+<th class="tableblock halign-left valign-top">Node B</th>
+<th class="tableblock halign-left valign-top">Displayed Networks</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Identical mapping across all nodes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">All networks are displayed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>enp1s0</code> → <code>mgmt</code>&lt;br/&gt;`enp2s0` → <code>net-101</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>enp1s0</code> → <code>mgmt</code>&lt;br/&gt;`enp2s0` → <code>net-101</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mgmt</code> and <code>net-101</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Network in different interface positions across nodes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Network is hidden</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>enp1s0</code> → <code>mgmt</code>&lt;br/&gt;`enp2s0` → <code>net-101</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>enp1s0</code> → <code>mgmt</code>&lt;br/&gt;`enp2s0` → <code>net-102</code>&lt;br/&gt;`enp3s0` → <code>net-101</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mgmt</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Network absent on some nodes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Network is hidden</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>enp1s0</code> → <code>mgmt</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>enp1s0</code> → <code>mgmt</code>&lt;br/&gt;`enp2s0` → <code>net-101</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mgmt</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Swapped interface mapping order</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Only matching networks are displayed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>enp1s0</code> → <code>mgmt</code>&lt;br/&gt;`enp2s0` → <code>net-101</code>&lt;br/&gt;`enp3s0` → <code>net-102</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>enp1s0</code> → <code>mgmt</code>&lt;br/&gt;`enp2s0` → <code>net-102</code>&lt;br/&gt;`enp3s0` → <code>net-101</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mgmt</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If VM network interfaces are attached in different orders across nodes, reconfigure the network interface order in the machine pool settings to allow Rancher and RKE2 to reprovision the guest cluster virtual machines.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_limitations"><a class="anchor" href="#_limitations"></a>Limitations</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Default load balancer provider</strong>: <code>kube-vip</code> is selected by default on the UI. If you disable <code>kube-vip</code> and use an alternative provider, refer to that provider&#8217;s documentation for configuration instructions.</p>
+</li>
+<li>
+<p><strong>Pre-condition for secondary network load balancing</strong>: The secondary network interface of each guest cluster node must have a valid IP address and route. Otherwise, the load balancer cannot route traffic. Verifying this interface configuration should be the first step when troubleshooting issues related to secondary network load balancers.</p>
+</li>
+<li>
+<p><strong>Load balancer network changes</strong>: Delete and recreate the load balancer service if you require changes to the load balancer network. Modifying the network annotation on an existing service may cause unexpected behavior and is not supported.</p>
+</li>
+<li>
+<p><strong>Incorrect network annotation</strong>: The load balancer may fail to obtain an IP address or become unreachable if you directly configure the <code>cloudprovider.harvesterhci.io/network</code> annotation and specify a network that is either invalid or exhibits an <a href="#_asymmetric_topology">asymmetric network topology</a>. Because webhook validation is not performed on this annotation, select the target network on the UI instead.</p>
+</li>
+<li>
+<p><strong>Secondary network load balancer traffic isolation</strong>: Incoming traffic arrives on the secondary network interface and undergoes NAT to the pod network. Consequently, only workloads listening on the pod network can receive load balancer traffic. Workloads configured to listen exclusively on the secondary network interface cannot. Full traffic isolation is currently unsupported.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_health_checks"><a class="anchor" href="#_health_checks"></a>Health checks</h3>
+<div class="paragraph">
+<p>Beginning with Harvester Cloud Provider v0.2.0, additional health checks of the <code>LoadBalancer</code> service within the guest Kubernetes cluster are no longer necessary. Instead, you can configure <a href="https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#define-a-tcp-liveness-probe">liveness</a> and <a href="https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#define-readiness-probes">readiness</a> probes for your workloads. Consequently, any unavailable pods will be automatically removed from the load balancer endpoints to achieve the same desired outcome.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_automatic_cleanup"><a class="anchor" href="#_automatic_cleanup"></a>Automatic cleanup</h3>
+<div class="paragraph">
+<p>When you delete a guest cluster that has the Harvester Cloud Provider enabled, SUSE Virtualization automatically cleans up all associated <code>LoadBalancer</code> resources. This offers the following key benefits:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Resource management: Automatic cleanup prevents orphaned load balancers from consuming IP addresses after the guest cluster is deleted.</p>
+</li>
+<li>
+<p>Zero manual intervention: The lifecycle of the load balancer is tied directly to the lifecycle of the guest cluster.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_stale_cloud_credentials_after_cluster_registration"><a class="anchor" href="#_stale_cloud_credentials_after_cluster_registration"></a>Stale cloud credentials after cluster registration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If you remove a SUSE Virtualization cluster from Rancher and later re-register the same cluster, Rancher may retain stale cloud credentials that reference the previous management cluster ID. This mismatch causes provisioning of guest clusters (such as RKE2 and K3s clusters) to fail.</p>
+</div>
+<div class="paragraph">
+<p>When this issue occurs, the system logs an error similar to the following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">clusters.management.cattle.io "&lt;old-cluster-id&gt;" not found</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The failure occurs because the existing cloud credential still points to the original SUSE Virtualization cluster ID, which no longer exists after the re-registration process.</p>
+</div>
+<div class="paragraph">
+<p>To mitigate the issue, perform the following workaround:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>On the Rancher UI, go to <strong>☰ &#8594; Cluster Management &#8594; Cloud Credentials</strong>.</p>
+</li>
+<li>
+<p>Delete the stale cloud credential associated with the removed SUSE Virtualization cluster.</p>
+</li>
+<li>
+<p>Create a new cloud credential using the updated SUSE Virtualization cluster details.</p>
+</li>
+<li>
+<p>Provision the guest cluster again.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Related issue: <a href="https://github.com/rancher/rancher/issues/53642">#53642</a></p>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="node-driver/k3s-cluster.html">Creating a K3s Kubernetes Cluster</a></span>
+  <span class="next"><a href="csi-driver.html">Harvester CSI Driver</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<script src="../../../../../_/js/site.js"></script>
+<script async src="../../../../../_/js/vendor/highlight.js"></script>
+<script src="../../../../../_/js/vendor/lunr.js"></script>
+<script src="../../../../../_/js/vendor/lunr-languages.js"></script>
+<script src="../../../../../_/js/search-ui.js" id="search-ui-script" data-site-root-path="../../../../.." data-snippet-length="100" data-stylesheet="../../../../../_/css/search.css"></script>
+<script async src="../../../../../search-index.js"></script>
+<script src="../../../../../_/js/vendor/langSelection.js"></script>
+<script async src="../../../../../_/js/vendor/tabs.js"></script>
+
+
+<script src="../../../../../_/js/CNLanguageSwitcher.js"></script>
+  </body>
+</html>
