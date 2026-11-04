@@ -27,21 +27,55 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           submodules: recursive
+      # Scheduled runs skip the build when the playbook and all content sources
+      # are unchanged since the last deploy. Push and manual runs always build.
+      # If a lookup fails, the run builds.
+      - name: Check for source changes
+        id: check
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          PLAYBOOK_SHA: ${{ github.sha }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if ci/source-fingerprint.sh product-docs-playbook-remote.yml "$PLAYBOOK_SHA" > "$RUNNER_TEMP/sources.txt"; then
+            fingerprint=$(sha256sum "$RUNNER_TEMP/sources.txt" | cut -d' ' -f1)
+          else
+            echo "::warning::Could not read the source SHAs. Building."
+            fingerprint="unknown-${GITHUB_RUN_ID}"
+          fi
+          cat "$RUNNER_TEMP/sources.txt"
+          echo "fingerprint=${fingerprint}" >> "$GITHUB_OUTPUT"
+          previous=$(gh api "repos/${GITHUB_REPOSITORY}/commits/gh-pages" --jq .commit.message \
+            | sed -n 's/^Build-Fingerprint: //p' | tail -n1) || previous=""
+          echo "Current fingerprint:  ${fingerprint}"
+          echo "Previous fingerprint: ${previous:-none}"
+          if [ "$EVENT_NAME" = "schedule" ] && [ "$fingerprint" = "$previous" ]; then
+            echo "No source changes since the last deploy. Skipping the build."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
       - name: Configure Pages
+        if: steps.check.outputs.skip != 'true'
         uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
       - name: Install Node.js
+        if: steps.check.outputs.skip != 'true'
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: '18'
       - name: Install Antora with the Antora Lunr Extension
+        if: steps.check.outputs.skip != 'true'
         run: make environment
       - name: Generate Site
+        if: steps.check.outputs.skip != 'true'
         run: make remote
       - name: Push the static site content to gh-pages branch
+        if: steps.check.outputs.skip != 'true'
         env:
           ACTOR: ${{ github.event_name == 'schedule' && 'github-actions[bot]' || github.actor }}
           ACTOR_EMAIL: ${{ github.event_name == 'schedule' && '41898282+github-actions[bot]' || github.actor }}
           COMMIT_MESSAGE: ${{ github.event_name == 'schedule' && '[scheduled] Deploy to gh-pages branch' || 'Deploy to gh-pages branch' }}
+          FINGERPRINT: ${{ steps.check.outputs.fingerprint }}
         run: |
           git config --global user.name "${ACTOR}"
           git config --global user.email "${ACTOR_EMAIL}@users.noreply.github.com"
@@ -51,12 +85,22 @@ jobs:
           rm -rf node_modules tmp
           mv ../site-temp/* .
           git add .
-          git commit -m "$COMMIT_MESSAGE"
+          {
+            echo "$COMMIT_MESSAGE"
+            echo
+            echo "Sources:"
+            cat "$RUNNER_TEMP/sources.txt"
+            echo
+            echo "Build-Fingerprint: ${FINGERPRINT}"
+          } > "$RUNNER_TEMP/commit-message.txt"
+          git commit -F "$RUNNER_TEMP/commit-message.txt"
           git push --force origin gh-pages
       - name: Upload Artifacts
+        if: steps.check.outputs.skip != 'true'
         uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
           path: .
       - name: Deploy to GitHub Pages
+        if: steps.check.outputs.skip != 'true'
         id: deployment
         uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
