@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Migrating from CAAPF to Fleet integration | Cluster API  v0.28-dev</title>
+    <link rel="prev" href="applications.html">
+    <link rel="next" href="gitops.html">
+    <meta name="description" content="Migrate CAPI clusters managed by the Cluster API Add-on Provider for Fleet (CAAPF) to Fleet integration before upgrading, using the migrate-caapf.sh script">
+    <meta name="generator" content="Antora 3.1.14">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+<meta http-equiv="last-modified" content="2026-10-29"/>
+<link rel="stylesheet" href="../../../../_/css/search.css">
+<link rel="icon" href="../../../../_/img/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="../../../../_/css/font-styles.css">
+<link rel="stylesheet" href="../../../../_/fonts/css/all.css">
+<link rel="stylesheet" href="../../../../_/css/site-extra.css">
+<link rel="stylesheet" href="../../../../_/css/vendor/tabs.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap&family=SUSE+Mono:ital,wght@0,100..800;1,100..800" rel="stylesheet">
+<link rel="stylesheet" href="../../../../_/css/vendor/light.css">
+<script src="/docserv/res/lightheaded/analytics.js" type="text/javascript"></script>
+<script type="module">
+  import { defineCustomElements, setAssetPath } from 'https://static.scc.suse.com/shared-header/1.19/shared-header.esm.js';
+  defineCustomElements();
+  setAssetPath("https://static.scc.suse.com/shared-header/1.19/assets");
+</script>
+<!-- Default English link -->
+<link href="https://documentation.suse.com/cloudnative/cluster-api/v0.28/en/user/caapf-migration.html" hreflang="x-default" rel="alternate"/>
+<!-- Link for the currently processed page -->
+<link href="https://documentation.suse.com/cloudnative/cluster-api/v0.28/en/user/caapf-migration.html" hrefLang="en-US" rel="alternate" />
+
+<!-- JSON-LD for doc metadata -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Migrating from CAAPF to Fleet integration | SUSE Rancher Prime Cluster API v0.28",
+  "headline": "Migrating from CAAPF to Fleet integration",
+  "description": "Migrate CAPI clusters managed by the Cluster API Add-on Provider for Fleet (CAAPF) to Fleet integration before upgrading, using the migrate-caapf.sh script",
+  "inLanguage": "en",
+  "dateModified": "2026-10-29T00:00:00Z",
+  "author": {
+    "@type": "Organization",
+    "name": "SUSE Product & Solution Documentation Team",
+    "url": "https://documentation.suse.com"
+  },
+  "mentions": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "SUSE Rancher Prime Cluster API",
+      "softwareVersion": "v0.28",
+      "applicationCategory": "Cloud Infrastructure",
+      "operatingSystem": "Linux"
+    }
+  ],
+  "publisher": {
+    "@type": "Organization",
+    "name": "SUSE",
+    "url": "https://documentation.suse.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.suse.com/assets/img/suse-white-logo-green.svg"
+    }
+  }
+}
+</script>
+<!-- end JSON-LD for doc metadata -->
+
+<!-- SUVA - Begin Ask Geeko-->
+<!--
+searchUnifyChatbot ("Ask Geeko") Copyright ©2024 Grazitti Interactive - All Rights Reserved. NOTICE: All information contained herein is, and remains the property of Grazitti Interactive and its suppliers, if any. The intellectual and technical concepts contained herein are proprietary to Grazitti Interactive and its suppliers and may be covered by India, U.S. and Foreign Patents, patents in process, and are protected by trade secret or copyright law. Dissemination of this information or reproduction of this material is strictly forbidden unless prior written permission is obtained from Grazitti Interactive.
+-->
+<meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport"/>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/Allow/an.js?c485cb3c-93d4-4942-99e8-91f3b8ca5636"></script>
+<script type="text/javascript" src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/js/index.js?q=gAAAAABp3JBN9VuEJTi5tFafLIMwgMkCPdJS3Qm56lSYx93ir3Twt9hgSvd3OHEt6-nYfSbY3yHq0Zv8PRPsSy4nbqZiaJ4cZvRc6ItVZdvwz9Urf35cH6OUyPOwdA0phlS-zVIznQ2rWW438p-91NlTHuxJuOFpnA=="></script>
+<link rel="stylesheet" href="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/css/index.css">
+<div id="searchUnifyChatbot"></div>
+<!-- SUVA - End Ask Geeko-->
+<!--BEGIN QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+<script type='text/javascript' src="../../../../_/js/qualtrics.js" defer></script>
+<!--END QUALTRICS WEBSITE FEEDBACK SNIPPET-->
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<script type="module">import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs'; mermaid.initialize({"startOnLoad":true});</script><shared-header
+    language="en"
+    application="documentation-portal"
+    enable-search='false'
+    languages='{
+        "en": { "label": "English", "url": "https://documentation.suse.com/en-us/" },
+        "de": { "label": "Deutsch", "url": "https://documentation.suse.com/de-de/" },
+        "fr": { "label": "Français", "url": "https://documentation.suse.com/fr-fr/" },
+        "es": { "label": "Español", "url": "https://documentation.suse.com/es-es/" },
+        "zh_CN": { "label": "中文", "url": "https://documentation.suse.com/zh-cn/" },
+        "pt_BR": { "label": "Português Brasileiro", "url": "https://documentation.suse.com/pt-br/" }
+    }'>
+</shared-header>
+<div class="body">
+<div class="nav-container" data-component="cluster-api" data-version="v0.28">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button type="button" class="nav-menu-toggle" aria-label="Expand all navigation sections" title="Expand all navigation sections" style="display: none">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M12 22v-6M12 8V2M4 12H2M10 12H8M16 12h-2M22 12h-2"/>
+        <path class="nav-unfold-icon" d="m15 19-3 3-3-3m6-14-3-3-3 3"/>
+        <path class="nav-fold-icon" d="m15 19-3-3-3 3m6-14-3 3-3-3"/>
+      </svg>
+    </button>
+    <h3 class="title">Cluster API</h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <a class="nav-link" href="../index.html">Overview</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../overview/architecture.html">Architecture</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../overview/glossary.html">Glossary</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../overview/features.html">Features</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../overview/certified.html">Certified Providers</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Tutorials</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tutorials/rancher.html">Rancher Setup</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tutorials/first-cluster.html">Your First Cluster</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tutorials/capi-v1beta2.html">Upgrading to CAPI v1beta2</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Reference</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/capiprovider.html">CAPIProvider</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../reference/clusterctlconfig.html">ClusterctlConfig</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">User Guide</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="clusterclass.html">Provision a CAPI cluster with ClusterClass</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="fleet.html">Create a cluster using Fleet</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="fleet-integration.html">Fleet Integration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="rancher-cluster-registration.html">Rancher Cluster Registration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="applications.html">Installing applications</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="caapf-migration.html">Migrating from CAAPF to Fleet integration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="gitops.html">GitOps best practices for Turtles and CAPI</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="cluster-resource-mapping.html">Cluster Resource Relationships in SUSE® Rancher Prime Cluster API</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="providers.html">Install certified providers</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Operator Guide</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operator/clusterclass.html">Enabling ClusterClass</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operator/in-place-updates.html">In-Place Updates for RKE2 Clusters</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operator/certification.html">Provider Certification</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operator/certificationsuite.html">Provider Test Suite</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../operator/airgapped.html">Air-Gapped Environment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Developer Guide</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../developer/development.html">Development Environment</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../developer/guidelines.html">Development Guideline</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Troubleshooting Guide</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../troubleshooting/troubleshooting.html">Troubleshooting</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle" aria-label="Toggle expand/collapse"></button>
+    <span class="nav-text">Security</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../security/slsa.html">SLSA</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../changelogs/index.html">Release Notes</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Cluster API</span>
+    <span class="version">v0.28-dev</span>
+  </div>
+  <ul class="components">
+    <li class="component">
+      <div class="title"><a href="../../../../admission-controller/1.38/en/introduction.html">Admission Controller</a></div>
+      <ul class="versions">
+        <li class="version">
+          <a href="../../../../admission-controller/1.39/en/introduction.html">1.39-dev</a>
+        </li>
+        <li class="version is-latest">
+          <a href="../../../../admission-controller/1.38/en/introduction.html">1.38-latest</a>
+        </li>
+        <li class="version">
+          <a href="../../../../admission-controller/1.37/en/introduction.html">1.37</a>
+        </li>
+        <li class="version">
+          <a href="../../../../admission-controller/1.36/en/introduction.html">1.36</a>
+        </li>
+        <li class="version">
+          <a href="../../../../admission-controller/1.35/en/introduction.html">1.35</a>
+        </li>
+        <li class="version">
+          <a href="../../../../admission-controller/1.34/en/introduction.html">1.34</a>
+        </li>
+        <li class="version">
+          <a href="../../../../admission-controller/1.33/en/introduction.html">1.33</a>
+        </li>
+        <li class="version">
+          <a href="../../../../admission-controller/1.32/en/introduction.html">1.32</a>
+        </li>
+        <li class="version">
+          <a href="../../../../admission-controller/1.31/en/introduction.html">1.31</a>
+        </li>
+        <li class="version">
+          <a href="../../../../admission-controller/1.30/en/introduction.html">1.30</a>
+        </li>
+        <li class="version">
+          <a href="../../../../admission-controller/1.29/en/introduction.html">1.29</a>
+        </li>
+        <li class="version">
+          <a href="../../../../admission-controller/1.28/en/introduction.html">1.28</a>
+        </li>
+      </ul>
+    </li>
+    <li class="component is-current">
+      <div class="title"><a href="../../../v0.27/en/index.html">Cluster API</a></div>
+      <ul class="versions">
+        <li class="version is-current">
+          <a href="../index.html">v0.28-dev</a>
+        </li>
+        <li class="version is-latest">
+          <a href="../../../v0.27/en/index.html">v0.27</a>
+        </li>
+        <li class="version">
+          <a href="../../../v0.26/en/index.html">v0.26</a>
+        </li>
+        <li class="version">
+          <a href="../../../v0.25/en/index.html">0.25</a>
+        </li>
+        <li class="version">
+          <a href="../../../v0.24/en/index.html">0.24</a>
+        </li>
+        <li class="version">
+          <a href="../../../v0.23/en/index.html">0.23</a>
+        </li>
+        <li class="version">
+          <a href="../../../v0.22/en/index.html">0.22</a>
+        </li>
+        <li class="version">
+          <a href="../../../v0.21/en/index.html">0.21</a>
+        </li>
+        <li class="version">
+          <a href="../../../v0.20/en/index.html">0.20</a>
+        </li>
+        <li class="version">
+          <a href="../../../v0.19/en/index.html">0.19</a>
+        </li>
+        <li class="version">
+          <a href="../../../v0.18/en/index.html">0.18</a>
+        </li>
+        <li class="version">
+          <a href="../../../v0.17/en/index.html">0.17</a>
+        </li>
+        <li class="version">
+          <a href="../../../v0.16/en/index.html">0.16</a>
+        </li>
+        <li class="version">
+          <a href="../../../v0.15/en/index.html">0.15</a>
+        </li>
+        <li class="version">
+          <a href="../../../v0.14/en/index.html">0.14</a>
+        </li>
+        <li class="version">
+          <a href="../../../v0.13/en/index.html">0.13</a>
+        </li>
+        <li class="version">
+          <a href="../../../v0.12/en/index.html">0.12</a>
+        </li>
+        <li class="version">
+          <a href="../../../v0.11/en/index.html">0.11</a>
+        </li>
+      </ul>
+    </li>
+    <li class="component">
+      <div class="title"><a href="../../../../continuous-delivery/next/en/index.html">Continuous Delivery</a></div>
+      <ul class="versions">
+        <li class="version is-latest">
+          <a href="../../../../continuous-delivery/next/en/index.html">Next</a>
+        </li>
+        <li class="version">
+          <a href="../../../../continuous-delivery/v0.16/en/index.html">0.16</a>
+        </li>
+        <li class="version">
+          <a href="../../../../continuous-delivery/v0.15/en/index.html">0.15</a>
+        </li>
+        <li class="version">
+          <a href="../../../../continuous-delivery/v0.14/en/index.html">0.14</a>
+        </li>
+        <li class="version">
+          <a href="../../../../continuous-delivery/v0.13/en/index.html">0.13</a>
+        </li>
+        <li class="version">
+          <a href="../../../../continuous-delivery/v0.12/en/index.html">0.12</a>
+        </li>
+        <li class="version">
+          <a href="../../../../continuous-delivery/v0.11/en/index.html">0.11</a>
+        </li>
+        <li class="version">
+          <a href="../../../../continuous-delivery/v0.10/en/index.html">0.10</a>
+        </li>
+        <li class="version">
+          <a href="../../../../continuous-delivery/v0.9/en/index.html">0.9</a>
+        </li>
+      </ul>
+    </li>
+    <li class="component">
+      <div class="title"><a href="../../../../k3s/latest/en/introduction.html">K3s</a></div>
+      <ul class="versions">
+        <li class="version is-latest">
+          <a href="../../../../k3s/latest/en/introduction.html">Latest</a>
+        </li>
+      </ul>
+    </li>
+    <li class="component">
+      <div class="title"><a href="../../../../os-manager/1.9/en/index.html">OS Manager</a></div>
+      <ul class="versions">
+        <li class="version">
+          <a href="../../../../os-manager/1.10/en/index.html">1.10-dev</a>
+        </li>
+        <li class="version is-latest">
+          <a href="../../../../os-manager/1.9/en/index.html">1.9</a>
+        </li>
+        <li class="version">
+          <a href="../../../../os-manager/1.8/en/index.html">1.8</a>
+        </li>
+        <li class="version">
+          <a href="../../../../os-manager/1.7/en/index.html">1.7</a>
+        </li>
+        <li class="version">
+          <a href="../../../../os-manager/1.6/en/index.html">1.6</a>
+        </li>
+        <li class="version">
+          <a href="../../../../os-manager/1.5/en/index.html">1.5</a>
+        </li>
+      </ul>
+    </li>
+    <li class="component">
+      <div class="title"><a href="../../../../rancher-ai/1.1.0/en/introduction.html">Rancher AI</a></div>
+      <ul class="versions">
+        <li class="version">
+          <a href="../../../../rancher-ai/1.2.0/en/introduction.html">1.2.0-dev</a>
+        </li>
+        <li class="version is-latest">
+          <a href="../../../../rancher-ai/1.1.0/en/introduction.html">1.1.0-latest</a>
+        </li>
+      </ul>
+    </li>
+    <li class="component">
+      <div class="title"><a href="../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">Rancher Developer Access</a></div>
+      <ul class="versions">
+        <li class="version is-latest">
+          <a href="../../../../rancher-developer-access/latest/en/onboarding-and-implementation.html">Latest</a>
+        </li>
+      </ul>
+    </li>
+    <li class="component">
+      <div class="title"><a href="../../../../rke2/latest/en/introduction.html">RKE2</a></div>
+      <ul class="versions">
+        <li class="version is-latest">
+          <a href="../../../../rke2/latest/en/introduction.html">Latest</a>
+        </li>
+      </ul>
+    </li>
+    <li class="component">
+      <div class="title"><a href="../../../../runtime-enforcer/0.8/en/introduction.html">Runtime Enforcer</a></div>
+      <ul class="versions">
+        <li class="version">
+          <a href="../../../../runtime-enforcer/0.9/en/introduction.html">0.9-dev</a>
+        </li>
+        <li class="version is-latest">
+          <a href="../../../../runtime-enforcer/0.8/en/introduction.html">0.8</a>
+        </li>
+        <li class="version">
+          <a href="../../../../runtime-enforcer/0.7/en/introduction.html">0.7</a>
+        </li>
+      </ul>
+    </li>
+    <li class="component">
+      <div class="title"><a href="../../../../suse-observability/latest/en/classic.html">SUSE Observability</a></div>
+      <ul class="versions">
+        <li class="version is-latest">
+          <a href="../../../../suse-observability/latest/en/classic.html">Latest</a>
+        </li>
+      </ul>
+    </li>
+    <li class="component">
+      <div class="title"><a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">SUSE® Rancher for AWS</a></div>
+      <ul class="versions">
+        <li class="version is-latest">
+          <a href="../../../../rancher-srfa/latest/en/about-rancher/what-is-rancher.html">Latest</a>
+        </li>
+      </ul>
+    </li>
+    <li class="component">
+      <div class="title"><a href="../../../../rancher-manager/v2.15/en/about-rancher/what-is-rancher.html">SUSE® Rancher Manager</a></div>
+      <ul class="versions">
+        <li class="version">
+          <a href="../../../../rancher-manager/v2.16/en/about-rancher/what-is-rancher.html">v2.16 (Unreleased)</a>
+        </li>
+        <li class="version is-latest">
+          <a href="../../../../rancher-manager/v2.15/en/about-rancher/what-is-rancher.html">v2.15</a>
+        </li>
+        <li class="version">
+          <a href="../../../../rancher-manager/v2.14/en/about-rancher/what-is-rancher.html">v2.14</a>
+        </li>
+        <li class="version">
+          <a href="../../../../rancher-manager/v2.13/en/about-rancher/what-is-rancher.html">v2.13</a>
+        </li>
+        <li class="version">
+          <a href="../../../../rancher-manager/v2.12/en/about-rancher/what-is-rancher.html">v2.12</a>
+        </li>
+        <li class="version">
+          <a href="../../../../rancher-manager/v2.11/en/about-rancher/what-is-rancher.html">v2.11</a>
+        </li>
+      </ul>
+    </li>
+    <li class="component">
+      <div class="title"><a href="../../../../security/5.6/en/overview.html">SUSE® Security</a></div>
+      <ul class="versions">
+        <li class="version">
+          <a href="../../../../security/5.7/en/overview.html">5.7 (Unreleased)</a>
+        </li>
+        <li class="version is-latest">
+          <a href="../../../../security/5.6/en/overview.html">5.6</a>
+        </li>
+        <li class="version">
+          <a href="../../../../security/5.5/en/overview.html">5.5</a>
+        </li>
+        <li class="version">
+          <a href="../../../../security/5.4/en/overview.html">5.4</a>
+        </li>
+      </ul>
+    </li>
+    <li class="component">
+      <div class="title"><a href="../../../../storage/1.12/en/longhorn-documentation.html">SUSE® Storage</a></div>
+      <ul class="versions">
+        <li class="version">
+          <a href="../../../../storage/1.13/en/longhorn-documentation.html">1.13 (Dev)</a>
+        </li>
+        <li class="version is-latest">
+          <a href="../../../../storage/1.12/en/longhorn-documentation.html">1.12 (Latest)</a>
+        </li>
+        <li class="version">
+          <a href="../../../../storage/1.11/en/longhorn-documentation.html">1.11</a>
+        </li>
+        <li class="version">
+          <a href="../../../../storage/1.10/en/longhorn-documentation.html">1.10</a>
+        </li>
+        <li class="version">
+          <a href="../../../../storage/1.9/en/longhorn-documentation.html">1.9</a>
+        </li>
+      </ul>
+    </li>
+    <li class="component">
+      <div class="title"><a href="../../../../suse-virtual-clusters/1.2.0/en/release-notes/version-1.2.0.html">SUSE® Virtual Clusters</a></div>
+      <ul class="versions">
+        <li class="version">
+          <a href="../../../../suse-virtual-clusters/1.3.0/en/introduction.html">v1.3.0 (Dev)</a>
+        </li>
+        <li class="version is-latest">
+          <a href="../../../../suse-virtual-clusters/1.2.0/en/release-notes/version-1.2.0.html">v1.2.0-latest</a>
+        </li>
+        <li class="version">
+          <a href="../../../../suse-virtual-clusters/1.1.0/en/release-notes/version-1.1.0.html">v1.1.0</a>
+        </li>
+        <li class="version">
+          <a href="../../../../suse-virtual-clusters/1.0.2/en/release-notes/version-1.0.2.html">v1.0.2</a>
+        </li>
+        <li class="version">
+          <a href="../../../../suse-virtual-clusters/v1.0.1/en/introduction.html">v1.0.1</a>
+        </li>
+        <li class="version">
+          <a href="../../../../suse-virtual-clusters/v1.0.0/en/introduction.html">v1.0.0</a>
+        </li>
+      </ul>
+    </li>
+    <li class="component">
+      <div class="title"><a href="../../../../virtualization/v1.8/en/introduction/overview.html">SUSE® Virtualization</a></div>
+      <ul class="versions">
+        <li class="version">
+          <a href="../../../../virtualization/v1.9/en/introduction/overview.html">v1.9 (Dev)</a>
+        </li>
+        <li class="version is-latest">
+          <a href="../../../../virtualization/v1.8/en/introduction/overview.html">v1.8 (Latest)</a>
+        </li>
+        <li class="version">
+          <a href="../../../../virtualization/v1.7/en/introduction/overview.html">v1.7</a>
+        </li>
+        <li class="version">
+          <a href="../../../../virtualization/v1.6/en/introduction/overview.html">v1.6</a>
+        </li>
+        <li class="version">
+          <a href="../../../../virtualization/v1.5/en/introduction/overview.html">v1.5</a>
+        </li>
+      </ul>
+    </li>
+    <li class="component">
+      <div class="title"><a href="../../../../vulnerability-scanner/0.12.0/en/introduction.html">Vulnerability Scanner</a></div>
+      <ul class="versions">
+        <li class="version">
+          <a href="../../../../vulnerability-scanner/0.13.0/en/introduction.html">0.13.0-dev</a>
+        </li>
+        <li class="version is-latest">
+          <a href="../../../../vulnerability-scanner/0.12.0/en/introduction.html">0.12.0</a>
+        </li>
+        <li class="version">
+          <a href="../../../../vulnerability-scanner/0.11.3/en/introduction.html">0.11.3</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+<ul>
+    <li>
+  <a class="home-link-dsc" href="https://documentation.suse.com" title="SUSE Documentation Home" aria-label="SUSE Documentation Home"></a>
+    </li>
+    <li>
+      <a href="https://documentation.suse.com/cloudnative/cluster-api" title="Cluster API" aria-label="SUSE Documentation - Cluster API">
+        Cluster API
+      </a>
+    </li>
+      <li>
+          User Guide
+      </li>
+  </ul>
+</nav>
+<div class="page-versions">
+  <button class="version-menu-toggle" title="Show other versions of page">v0.28-dev</button>
+  <div class="version-menu">
+    <a class="version is-current" href="caapf-migration.html">v0.28-dev</a>
+    <a class="version is-missing" href="../../../v0.27/en/index.html">v0.27</a>
+    <a class="version is-missing" href="../../../v0.26/en/index.html">v0.26</a>
+    <a class="version is-missing" href="../../../v0.25/en/index.html">0.25</a>
+    <a class="version is-missing" href="../../../v0.24/en/index.html">0.24</a>
+    <a class="version is-missing" href="../../../v0.23/en/index.html">0.23</a>
+    <a class="version is-missing" href="../../../v0.22/en/index.html">0.22</a>
+    <a class="version is-missing" href="../../../v0.21/en/index.html">0.21</a>
+    <a class="version is-missing" href="../../../v0.20/en/index.html">0.20</a>
+    <a class="version is-missing" href="../../../v0.19/en/index.html">0.19</a>
+    <a class="version is-missing" href="../../../v0.18/en/index.html">0.18</a>
+    <a class="version is-missing" href="../../../v0.17/en/index.html">0.17</a>
+    <a class="version is-missing" href="../../../v0.16/en/index.html">0.16</a>
+    <a class="version is-missing" href="../../../v0.15/en/index.html">0.15</a>
+    <a class="version is-missing" href="../../../v0.14/en/index.html">0.14</a>
+    <a class="version is-missing" href="../../../v0.13/en/index.html">0.13</a>
+    <a class="version is-missing" href="../../../v0.12/en/index.html">0.12</a>
+    <a class="version is-missing" href="../../../v0.11/en/index.html">0.11</a>
+  </div>
+</div>
+  <div class="edit-this-page"><a href="https://github.com/rancher/turtles-product-docs/edit/main/versions/v0.28/modules/en/pages/user/caapf-migration.adoc"><strong>Edit</strong></a></div>
+        <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <label class="visual-search-label-bc" for="search-input">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+          <input label="Search" aria-label="Search" id="search-input" type="text" placeholder="Search the docs" >
+          <label class="filter checkbox" style="display: none">
+            <input type="checkbox" data-facet-filter="component:cluster-api" checked> Only this project
+          </label>
+        </div>
+      </div>
+</div>
+  <div class="content">
+<aside
+  class="toc sidebar"
+  data-title="On this page" data-levels="2">
+  <div class="toc-menu">
+        <!-- start qualtrics -->
+    <div id='ZN_8qZUmklKYbBqAYe'><!--DO NOT REMOVE-CONTENTS PLACED HERE--></div>
+    <div id="qualtrics_container"></div>
+    <!-- end qualtrics -->
+  </div>
+</aside>
+
+<aside class="toc sidebar docsurvey-sidebar">
+  <div class="toc-menu">
+      </div>
+</aside>
+<article class="doc">
+    <div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>This is unreleased documentation for Cluster API v0.28-dev.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+                        <h1 class="page">Migrating from CAAPF to Fleet integration</h1>
+<div class="sect1">
+<h2 id="_overview"><a class="anchor" href="#_overview"></a>Overview</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>SUSE® Rancher Prime Cluster API v0.28 (Rancher v2.16) removes support for the Cluster API Add-on Provider for Fleet (CAAPF). In this release:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The <code>use-caapf</code> feature gate no longer exists. SUSE® Rancher Prime Cluster API removes the <code>provisioning.cattle.io/externally-managed</code> annotation from every imported Rancher cluster, so Rancher always registers CAPI workload clusters with Fleet and manages the <code>fleet-agent</code> on them.</p>
+</li>
+<li>
+<p>The SUSE® Rancher Prime Cluster API Providers chart no longer contains CAAPF, and the associated chart values that controlled its installation have been removed.</p>
+</li>
+<li>
+<p>The new <code>fleet-integration</code> feature gate is enabled by default. With it, SUSE® Rancher Prime Cluster API provides the CAPI-specific Fleet functionality that previously required CAAPF, on top of the <code>Fleet</code> clusters that Rancher manages in the <code>fleet-default</code> namespace.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>If you never enabled the <code>use-caapf</code> feature gate, your clusters are already registered with Fleet by Rancher and no migration is necessary. Upgrading to v0.28 (Rancher v2.16) enables <code>fleet-integration</code> automatically.</p>
+</div>
+<div class="paragraph">
+<p>If you enabled <code>use-caapf</code> and installed CAAPF by following the <a href="../../../v0.27/en/user/caapf.html" class="xref page">CAAPF user guide</a>, follow this page <strong>before</strong> you upgrade.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Upgrading a management cluster that still has CAAPF-managed clusters without running the migration leaves applications that target the CAAPF-created <code>Fleet</code> clusters undeployed on the new, Rancher-managed <code>Fleet</code> clusters.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_check_whether_you_need_to_migrate"><a class="anchor" href="#_check_whether_you_need_to_migrate"></a>Check whether you need to migrate</h3>
+<div class="paragraph">
+<p>Check whether <code>use-caapf</code> is enabled in the <code>rancher-config</code> ConfigMap:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get configmap rancher-config -n cattle-system -o jsonpath='{.data.rancher-turtles}'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The gate is enabled if the output contains a <code>use-caapf</code> entry with <code>enabled: true</code> under <code>features</code>. If the entry is missing, or set to <code>enabled: false</code>, the gate is disabled.</p>
+</div>
+<div class="paragraph">
+<p>Whatever the result, run the next check as well: it shows whether any clusters are still managed by CAAPF, and is what determines whether there is anything to migrate.</p>
+</div>
+<div class="paragraph">
+<p>Then list the CAPI clusters that CAAPF still manages, identified by the <code>fleet.addons.cluster.x-k8s.io</code> finalizer:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get clusters.cluster.x-k8s.io -A -o json \
+  | jq -r '.items[] | select(.metadata.finalizers // [] | index("fleet.addons.cluster.x-k8s.io")) | "\(.metadata.namespace)/\(.metadata.name)"'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If the command returns no clusters, there is nothing to migrate.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_how_fleet_integration_replaces_caapf"><a class="anchor" href="#_how_fleet_integration_replaces_caapf"></a>How Fleet integration replaces CAAPF</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The main difference between the two is <strong>where</strong> each CAPI workload cluster is registered with Fleet. CAAPF created a <code>Fleet</code> <code>Cluster</code> with the same name and namespace as the CAPI cluster. Rancher creates the <code>Fleet</code> <code>Cluster</code> in the <code>fleet-default</code> namespace, named after the Rancher management cluster (for example <code>c-m-abcd1234</code>). Fleet resources such as <code>GitRepos</code>, <code>HelmOps</code> and <code>Bundles</code> only target clusters in their own namespace, so the resources that targeted the CAAPF-created clusters must be made to reach the new clusters in <code>fleet-default</code>.</p>
+</div>
+<div class="paragraph">
+<p>The table below lists each CAAPF feature and its replacement:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 40%;">
+<col style="width: 40%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Feature</th>
+<th class="tableblock halign-left valign-top">CAAPF</th>
+<th class="tableblock halign-left valign-top">SUSE® Rancher Prime Cluster API with <code>fleet-integration</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fleet registration and <code>fleet-agent</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CAAPF creates the <code>Fleet</code> <code>Cluster</code> in the CAPI cluster namespace and installs the <code>fleet-agent</code>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Rancher creates the <code>Fleet</code> <code>Cluster</code> in <code>fleet-default</code> and installs the <code>fleet-agent</code> as part of the standard import.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Label propagation</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CAPI cluster labels are copied to the <code>Fleet</code> <code>Cluster</code>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CAPI cluster labels are copied to the Rancher management cluster, and Rancher copies them to the <code>Fleet</code> <code>Cluster</code>. Labels containing <code>cattle.io</code> or <code>x-k8s.io</code> are not propagated.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ClusterClass grouping</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A <code>ClusterGroup</code> is created automatically for every <code>ClusterClass</code>, and clusters are labeled with <code>clusterclass-name.fleet.addons.cluster.x-k8s.io</code> and <code>clusterclass-namespace.fleet.addons.cluster.x-k8s.io</code>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Each <code>Fleet</code> <code>Cluster</code> is labeled with <code>cluster-api.cattle.io/clusterclass-name</code> and <code>cluster-api.cattle.io/clusterclass-namespace</code>. No <code>ClusterGroups</code> are created automatically: target these labels with a <code>clusterSelector</code>, or create your own <code>ClusterGroup</code> that selects them.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Cross-namespace ClusterClass</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A <code>BundleNamespaceMapping</code> lets resources in the <code>ClusterClass</code> namespace reach clusters in the CAPI cluster namespace.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A <code>BundleNamespaceMapping</code> lets resources in the <code>ClusterClass</code> namespace reach clusters in <code>fleet-default</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Helm templating</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spec.templateValues</code> of the <code>Fleet</code> <code>Cluster</code> contains <code>Cluster</code>, <code>ControlPlane</code> and <code>InfrastructureCluster</code>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unchanged. The same keys are kept up to date in <code>spec.templateValues</code>, so <code>.ClusterValues.Cluster</code>, <code>.ClusterValues.ControlPlane</code> and <code>.ClusterValues.InfrastructureCluster</code> keep working.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_what_the_migration_script_does"><a class="anchor" href="#_what_the_migration_script_does"></a>What the migration script does</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>migrate-caapf.sh</code> script automates the migration of existing CAAPF-managed clusters. It runs in two phases:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong><code>pre</code></strong>, run <strong>before</strong> the upgrade while CAAPF still manages the clusters. It:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>scales down the SUSE® Rancher Prime Cluster API and CAAPF controllers.</p>
+</li>
+<li>
+<p>copies the <code>Fleet</code> cluster labels onto the corresponding Rancher management clusters, so that Rancher applies them to the new <code>Fleet</code> clusters.</p>
+</li>
+<li>
+<p>checks for collisions and aborts, without pausing anything, if it finds one (see <a href="#_resolving_collisions">Resolving collisions</a>).</p>
+</li>
+<li>
+<p>copies the <code>ClusterGroups</code> created by CAAPF into <code>fleet-default</code>, labeled with <code>migration.fleet.cattle.io/from-caapf=true</code>.</p>
+</li>
+<li>
+<p>sets <code>keepResources: true</code> on the affected <code>GitRepos</code>, <code>HelmOps</code> and <code>Bundles</code> so that workloads on the downstream clusters are not removed when the old <code>Fleet</code> clusters are deleted.</p>
+</li>
+<li>
+<p>pauses and labels the affected <code>Fleet</code> resources, and creates a <code>BundleNamespaceMapping</code> named <code>migration-mapping-2-14</code> in each namespace so that those resources can be deployed to clusters in <code>fleet-default</code>.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong><code>post</code></strong>, run <strong>after</strong> the upgrade, once Rancher has created the new <code>Fleet</code> clusters in <code>fleet-default</code>. It:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>copies <code>templateValues</code> onto the new <code>Fleet</code> clusters.</p>
+</li>
+<li>
+<p>unpauses the migrated resources.</p>
+</li>
+<li>
+<p>deletes each old <code>Fleet</code> cluster once every bundle it had is also present on the new cluster, along with the <code>BundleNamespaceMapping</code> CAAPF created for it.</p>
+</li>
+<li>
+<p>removes the <code>keepResources</code> setting it added, and deletes the CAAPF-created <code>ClusterGroups</code> from the CAPI cluster and <code>ClusterClass</code> namespaces.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>After the <code>post</code> phase removes the old <code>Fleet</code> cluster, SUSE® Rancher Prime Cluster API removes the <code>fleet.addons.cluster.x-k8s.io</code> finalizer from the CAPI cluster.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_before_you_begin"><a class="anchor" href="#_before_you_begin"></a>Before you begin</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>You are running a SUSE® Rancher Prime Cluster API version earlier than v0.28 (Rancher v2.16), with the <code>use-caapf</code> feature gate enabled and CAAPF installed.</p>
+</li>
+<li>
+<p><code>kubectl</code> is configured to point at the Rancher management cluster.</p>
+</li>
+<li>
+<p><code>jq</code> is available on the <code>PATH</code>.</p>
+</li>
+<li>
+<p>You have a backup of the management cluster.</p>
+</li>
+<li>
+<p>No CAPI workload clusters are created or deleted during the migration.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_migrate"><a class="anchor" href="#_migrate"></a>Migrate</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_download_the_script"><a class="anchor" href="#_download_the_script"></a>Download the script</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -sSfLO https://raw.githubusercontent.com/rancher/turtles/refs/heads/release/v0.28/scripts/migrate-caapf.sh
+chmod +x migrate-caapf.sh</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The script defaults to a <strong>dry run</strong> (<code>DRY_RUN=true</code>), which prints the actions it would take without modifying any resources. Always start with a dry run and review the output before applying any changes.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_run_the_pre_phase"><a class="anchor" href="#_run_the_pre_phase"></a>Run the <code>pre</code> phase</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Dry-run the <code>pre</code> phase and review the planned changes:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">./migrate-caapf.sh pre</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If the output reports a collision, resolve it as described in <a href="#_resolving_collisions">Resolving collisions</a> and run the dry run again.</p>
+</div>
+</li>
+<li>
+<p>Apply the <code>pre</code> phase:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">DRY_RUN=false ./migrate-caapf.sh pre</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>pre</code> phase waits up to 10 minutes for <code>keepResources</code> to reach every <code>BundleDeployment</code>, and aborts if it does not.</p>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_remove_caapf"><a class="anchor" href="#_remove_caapf"></a>Remove CAAPF</h3>
+<div class="paragraph">
+<p>Remove the CAAPF provider so that it does not start again and re-create the old <code>Fleet</code> clusters after the upgrade.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">helm upgrade rancher-turtles-providers oci://&lt;REGISTRY_URL&gt;/rancher/charts/rancher-turtles-providers \
+    --namespace cattle-turtles-system \
+    --reuse-values \
+    --set providers.addonFleet.enabled=false</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The SUSE® Rancher Prime Cluster API controller is scaled down at this point, so the <code>CAPIProvider</code> stays in the <code>Terminating</code> state until the controller is running again after the upgrade. Removing CAAPF does not delete the existing <code>Fleet</code> clusters or the workloads deployed to them.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_upgrade"><a class="anchor" href="#_upgrade"></a>Upgrade</h3>
+<div class="paragraph">
+<p>Upgrade Rancher to the release that ships SUSE® Rancher Prime Cluster API v0.28 (Rancher v2.16). The upgrade restores the SUSE® Rancher Prime Cluster API controller, which then removes the <code>provisioning.cattle.io/externally-managed</code> annotation from the imported clusters and lets Rancher register them in <code>fleet-default</code>.</p>
+</div>
+<div class="paragraph">
+<p>Wait for Rancher to create a <code>Fleet</code> cluster in <code>fleet-default</code> for each migrated cluster:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get clusters.fleet.cattle.io -n fleet-default</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Run the <code>post</code> phase <strong>immediately after</strong> the upgrade completes. The migrated <code>Fleet</code> resources stay paused until then, so any delay leaves application changes undeployed.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_run_the_post_phase"><a class="anchor" href="#_run_the_post_phase"></a>Run the <code>post</code> phase</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Dry-run and then apply the <code>post</code> phase:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">./migrate-caapf.sh post
+DRY_RUN=false ./migrate-caapf.sh post</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The <code>post</code> phase waits for each new <code>Fleet</code> cluster to reconcile and verifies that every bundle from the old cluster is present on the new one before deleting the old cluster. If any bundles are still missing, it logs a warning and skips deleting that cluster, so it is safe to re-run the <code>post</code> phase after resolving the issue.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_verify_the_migration"><a class="anchor" href="#_verify_the_migration"></a>Verify the migration</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Check that no CAPI cluster still has the CAAPF finalizer, using the command from <a href="#_check_whether_you_need_to_migrate">Check whether you need to migrate</a>. The command should return no clusters.</p>
+<div class="paragraph">
+<p>While a CAPI cluster still has a <code>Fleet</code> cluster created by CAAPF, SUSE® Rancher Prime Cluster API keeps the finalizer and logs <code>Keeping CAAPF finalizer on CAPI cluster, run scripts/migrate-caapf.sh to migrate its Fleet resources</code>. Re-run the <code>post</code> phase for that cluster.</p>
+</div>
+</li>
+<li>
+<p>Check that the <code>Fleet</code> clusters in <code>fleet-default</code> are ready and carry the <code>ClusterClass</code> labels:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get clusters.fleet.cattle.io -n fleet-default -L cluster-api.cattle.io/clusterclass-name</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Check that no CAAPF components remain:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get capiproviders -A</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Remove the <code>use-caapf</code> entry from the <code>rancher-turtles</code> key of the <code>rancher-config</code> ConfigMap. The feature gate no longer exists and is ignored. Because the patch replaces the whole value, keep all the other entries, and do not set <code>fleet-integration</code> to <code>false</code>. Refer to <a href="../overview/features.html#_how_to_set_feature_gates" class="xref page">How to set feature gates</a>.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_after_the_migration"><a class="anchor" href="#_after_the_migration"></a>After the migration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The script migrates the resources that exist at the time it runs. Update your Fleet resources, and the Git repositories they come from, so that new resources keep working:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Create new Fleet resources in <code>fleet-default</code>.</strong> The <code>migration-mapping-2-14</code> <code>BundleNamespaceMapping</code> only applies to resources labeled with <code>migration.fleet.cattle.io/upgrade-2.14=true</code>. Resources you add later to a CAPI cluster namespace do not reach the clusters in <code>fleet-default</code>. Resources in a <code>ClusterClass</code> namespace keep working for clusters using that class, through the <code>BundleNamespaceMapping</code> that SUSE® Rancher Prime Cluster API manages.</p>
+</li>
+<li>
+<p><strong>Replace CAAPF labels in selectors.</strong> New clusters no longer receive the <code>clusterclass-name.fleet.addons.cluster.x-k8s.io</code> and <code>clusterclass-namespace.fleet.addons.cluster.x-k8s.io</code> labels. Use <code>cluster-api.cattle.io/clusterclass-name</code> and <code>cluster-api.cattle.io/clusterclass-namespace</code> instead, for example:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">  targets:
+  - clusterSelector:
+      matchLabels:
+        cluster-api.cattle.io/clusterclass-name: &lt;cluster-class-name&gt;</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p><strong>Replace the copied <code>ClusterGroups</code>.</strong> The <code>ClusterGroups</code> labeled <code>migration.fleet.cattle.io/from-caapf=true</code> in <code>fleet-default</code> keep the CAAPF selectors, so they only match the migrated clusters. Update their selectors to the labels above, and create a <code>ClusterGroup</code> for any new <code>ClusterClass</code> you want to target as a group.</p>
+</li>
+<li>
+<p><strong>Replace <code>clusterName</code> targets.</strong> A target such as <code>clusterName: &lt;CAPI cluster name&gt;</code> matched the CAAPF-created cluster by name. In <code>fleet-default</code>, clusters are named after the Rancher management cluster, so use a <code>clusterSelector</code> on the propagated labels instead.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_resolving_collisions"><a class="anchor" href="#_resolving_collisions"></a>Resolving collisions</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>BundleNamespaceMappings</code> make every migrated resource eligible for deployment to any cluster in <code>fleet-default</code>, instead of only the clusters in its own namespace. The <code>pre</code> phase aborts before changing any <code>Fleet</code> resource if this would deploy to the wrong clusters:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Name collision</strong>: <code>GitRepos</code>, <code>HelmOps</code> or <code>Bundles</code> with the same name exist in different namespaces, and would produce conflicting <code>BundleDeployments</code>. Rename one of them.</p>
+</li>
+<li>
+<p><strong>Label collision</strong>: a <code>clusterSelector</code> that only matched one cluster inside its namespace matches more clusters in <code>fleet-default</code>. Make the selector more specific.</p>
+</li>
+<li>
+<p><strong>Missing or empty targets</strong>: a resource with no <code>targets</code>, or with an empty <code>clusterSelector</code>, would be deployed to every cluster in <code>fleet-default</code>. Add explicit targets.</p>
+</li>
+<li>
+<p><strong><code>ClusterGroup</code> collisions</strong>: a CAAPF <code>ClusterGroup</code> has an empty selector, the same <code>ClusterGroup</code> name exists in several namespaces with different selectors, or a <code>ClusterGroup</code> with that name already exists in <code>fleet-default</code>. Rename or remove the conflicting <code>ClusterGroup</code>.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="applications.html">Installing applications</a></span>
+  <span class="next"><a href="gitops.html">GitOps best practices for Turtles and CAPI</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<script src="../../../../_/js/site.js"></script>
+<script src="../../../../_/js/nav-menu-toggle.js"></script>
+<script src="../../../../_/js/product-release.js"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+<script src="../../../../_/js/vendor/lunr.js"></script>
+<script src="../../../../_/js/vendor/lunr-languages.js"></script>
+<script src="../../../../_/js/search-ui.js" id="search-ui-script" data-site-root-path="../../../.." data-snippet-length="100" data-stylesheet="../../../../_/css/search.css"></script>
+<script async src="../../../../search-index.js"></script>
+<script src="../../../../_/js/vendor/langSelection.js"></script>
+<script async src="../../../../_/js/vendor/tabs.js"></script>
+
+
+<script src="../../../../_/js/CNLanguageSwitcher.js"></script>
+  </body>
+</html>
